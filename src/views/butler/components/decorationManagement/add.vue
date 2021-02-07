@@ -3,7 +3,7 @@
   <div>
     <el-drawer title="我是标题"
                :visible.sync="isVisibleDrawe"
-               size="58%"
+               size="65%"
                :before-close="handleClose"
                :with-header="false">
       <div class="drawer-box">
@@ -42,11 +42,11 @@ export default {
   props: {
     drawerVrisible: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {
-    formDatechildren
+    formDatechildren,
   },
   data () {
     return {
@@ -59,8 +59,8 @@ export default {
           options: [
             {
               label: '一单元',
-              value: '1'
-            }
+              value: '1',
+            },
           ],
           label: '投票标题',
           prop: 'userNam2e',
@@ -87,15 +87,13 @@ export default {
           label: '联系方式',
           prop: 'enddate',
           disabled: true,
-        }
-        ,
+        },
         {
           type: 'Input',
           value: '',
           label: '装修押金',
           prop: 'public',
           disabled: true,
-
         },
         {
           type: 'Input',
@@ -103,9 +101,7 @@ export default {
           label: '装修清理费',
           prop: 'imagePreview',
           disabled: true,
-
-        }
-        ,
+        },
         {
           type: 'Input',
           value: '',
@@ -113,76 +109,83 @@ export default {
           prop: 'imagePreview1',
           width: '100%',
           disabled: true,
-
-        }
-        ,
+        },
         {
           type: 'select',
           value: '',
           label: '实际开始时间',
           prop: 'imagePreview2',
           disabled: true,
-
-        }
-        ,
+        },
         {
           type: 'select',
           value: '',
           label: '实际结束时间',
           prop: 'imagePreview3',
           disabled: true,
-
-        }
-        ,
+        },
         {
           type: 'select',
           value: '',
           label: '状态',
           prop: 'imagePreview4',
-          options: []
-        }
-        ,
+          options: [],
+        },
         {
           type: 'textarea',
           value: '',
           label: '状态',
           prop: 'textarea_1',
           width: '100%',
-          rows: 8
-        }
+          rows: 8,
+        },
         // imagePreview
       ],
       rules_item: {
         date: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          {
+            required: true,
+            message: '请输入活动名称',
+            trigger: 'blur',
+          },
         ],
         userNam2e: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          {
+            required: true,
+            message: '请输入活动名称',
+            trigger: 'blur',
+          },
         ],
         enddate: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          {
+            required: true,
+            message: '请输入活动名称',
+            trigger: 'blur',
+          },
         ],
         public: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          {
+            required: true,
+            message: '请输入活动名称',
+            trigger: 'blur',
+          },
         ],
         imagePreview: [
-          { required: true, message: '', trigger: 'blur' }
+          { required: true, message: '', trigger: 'blur' },
         ],
         imagePreview1: [
-          { required: true, message: '', trigger: 'blur' }
+          { required: true, message: '', trigger: 'blur' },
         ],
         imagePreview2: [
-          { required: true, message: '', trigger: 'blur' }
+          { required: true, message: '', trigger: 'blur' },
         ],
         imagePreview3: [
-          { required: true, message: '', trigger: 'blur' }
+          { required: true, message: '', trigger: 'blur' },
         ],
         imagePreview4: [
-          { required: true, message: '', trigger: 'blur' }
+          { required: true, message: '', trigger: 'blur' },
         ],
-        content: [
-          { required: true, message: '', trigger: 'blur' }
-        ]
+        content: [{ required: true, message: '', trigger: 'blur' }],
         // date userNam2e
       },
     }
@@ -194,13 +197,13 @@ export default {
     // 提交
     onSubmit () {
       console.log()
-      this.$emit('handleClose', "onSubmit")
+      this.$emit('handleClose', 'onSubmit')
     },
     // 重置
     // 取消关闭esc
     handleClose () {
-      this.$emit('handleClose', "Close")
-    }
+      this.$emit('handleClose', 'Close')
+    },
   },
   watch: {
     drawerVrisible: {
@@ -208,16 +211,15 @@ export default {
         this.isVisibleDrawe = newValue
         console.log(newValue)
       },
-      immediate: true
+      immediate: true,
     },
-
-  }
+  },
 }
 </script>
 <style scoped>
 .content-titel2 {
-  margin: 0px 0px 20px 30px;
-  padding-top: 30px;
-  border-top: 1px solid #e8e8e8;
+    margin: 0px 0px 20px 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e8e8e8;
 }
 </style>

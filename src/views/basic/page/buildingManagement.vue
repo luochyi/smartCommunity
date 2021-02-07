@@ -6,227 +6,330 @@
     <div class="content">
       <div class="content-btn">
         <el-button class="init-button"
-                   @click="addBuilding = true"
+                   @click="addBuild()"
                    icon="el-icon-plus">新增楼栋</el-button>
       </div>
-      <!-- 查询重制 -->
-      <div class="">
-        <input-form :formItem="form_item"
-                    :btnWidth="'20%'"> </input-form>
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow='tableRow'></tableData>
+      <VueTable ref="table"
+                :config='config'
+                @tableCheck="tableCheck">
+        <template slot="footer">
           <div class="table-footer">
-            <button @click="reviseBuilding = true">修改</button>
+            <button @click="revise(table_row)">修改</button>
             <button @click="del(table_row)">删除</button>
-            <button>增加单元</button>
           </div>
-        </div>
-        <table-pagination></table-pagination>
-        <!-- 添加 -->
-        <el-drawer title="我是标题"
-                   :visible.sync="addBuilding"
-                   size="56.26%"
-                   :with-header="false">
-          <add-building></add-building>
-        </el-drawer>
-        <!-- 修改 -->
-        <el-drawer title="我是标题"
-                   :visible.sync="reviseBuilding"
-                   size="56.26%"
-                   :with-header="false">
-          <revise-building></revise-building>
-        </el-drawer>
-        <!-- 编辑提示弹窗-->
-        <Dialog :dialogVisible='dialog_visible'
-                :dialog_config='dialog_config'
-                @cancel='cancel'
-                @confirm='confirm'>
-        </Dialog>
-      </div>
+        </template>
+      </VueTable>
     </div>
+    <Drawer :drawerTitle="drawerTitle"
+            @drawerClose="drawerClose"
+            :drawerVrisible='drawer_vrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="childFrom"
+                     @ruleSubmit='ruleSubmit'
+                     :formObj='reviseForm'></VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="drawerClose"><span>取消</span></button>
+      </div>
+    </Drawer>
+    <!-- 删除提示弹窗-->
+    <Dialog :dialogVisible='dialog_visible'
+            :dialog_config='dialog_config'
+            @cancel='cancel'
+            @confirm='confirm'>
+    </Dialog>
   </div>
 </template>
 <script>
-import tablePagination from '@/components/tablePagination'
-import addBuilding from '@/views/basic/components/buildingManagement/addBuilding'
-import reviseBuilding from '@/views/basic/components/buildingManagement/reviseBuilding'
-import Dialog from '@/components/dialog/Dialog.vue'
+import { buildingInsert, Login, buildingUpdate } from '@/api/basic'
 export default {
   data () {
     return {
+      // 抽屉标题
+      drawerTitle: '',
+      // 是否通过校验
+      bool: false,
+      // 抽屉显示隐藏
+      drawer_vrisible: false,
+      // 控制弹窗为添加或修改  默认为true 添加
+      drawerControl: true,
       // 控制dialog显示隐藏
       dialog_visible: false,
+      // 弹窗提示
       dialog_config: {
-        title: '',
-        content: ''
+        title: '删除提示',
+        content: '是否确认删除？删除无法撤回！'
+      },
+      config: {
+        thead: [
+          { label: '序号', type: 'index', width: '80' },
+          { label: '编号', prop: 'no', width: 'auto' },
+          { label: '楼栋名称', prop: 'name', width: 'auto' },
+          { label: '楼栋ID', prop: 'code', width: 'auto' }
+        ],
+        url: 'buildList',
+        data: {
+          pageNum: 1,
+          size: 10,
+        },
+        // search_item
+        search_item: [
+          {
+            type: 'Input',
+            label: '楼栋名称',
+            placeholder: '请输入内容',
+            prop: 'name'
+          },
+          {
+            type: 'Input',
+            label: '楼栋编号',
+            placeholder: '请输入',
+            prop: 'no'
+          }
+        ],
       },
       // 选中表格数据
-      table_row: {},
-      form_item: [
-        {
-          type: 'Input',
-          label: '楼栋名称',
-          placeholder: '请输入内容',
-          prop: 'house'
+      table_row: [],
+      // addForm: {
+      //   ruleForm: {
+      //     no: null,
+      //     name: null
+      //   },
+      //   rules: {
+      //     name: [
+      //       {
+      //         required: true,
+      //         message: '请填写楼栋名称',
+      //         trigger: 'blur'
+      //       }
+      //     ],
+      //     no: [
+      //       { required: true, message: '请填写楼栋编号', trigger: 'blur', }
+      //     ]
+      //   },
+      //   form_item: [
+      //     {
+      //       type: 'Int',
+      //       label: '楼栋编号',
+      //       placeholder: '请输入',
+      //       width: '100%',
+      //       prop: 'no'
+      //     },
+      //     {
+      //       type: 'Input',
+      //       label: '楼栋名称',
+      //       placeholder: '请输入',
+      //       width: '100%',
+      //       prop: 'name'
+      //     }
+      //   ]
+      // },
+      // 修改
+      reviseForm: {
+        ruleForm: {
+          code: null,
+          name: null,
+          no: null
         },
-        {
-          type: 'Input',
-          label: '楼栋编号',
-          placeholder: '请输入',
-          prop: 'pho323ne'
-        }
-      ],
-      // 添加
-      addBuilding: false,
-      reviseBuilding: false,
-      table_config: {
-        thead: [
-          { label: '序号', prop: 'table1', width: 'auto' },
-          { label: '编号', prop: 'table2', width: 'auto' },
-          { label: '楼栋名称', prop: 'table3', width: 'auto' },
-          { label: '楼栋ID', prop: 'table4', width: 'auto' },
-
-        ],
-        table_data: [{
-          table1: "1",
-          table2: "001",
-          table3: "1栋",
-          table4: "777828171617",
+        rules: {
+          code: [
+            {
+              required: true,
+              message: '请填写楼栋名称',
+              trigger: 'blur'
+            }
+          ],
+          no: [
+            { required: true, message: '请填写楼栋编号', trigger: 'blur' }
+          ],
+          name: [
+            {
+              required: true,
+              message: '请填写楼栋名称',
+              trigger: 'blur'
+            }
+          ]
         },
-        {
-          table1: "2",
-          table2: "002",
-          table3: "2栋",
-          table4: "777828171617",
-        },
-        {
-          table1: "3",
-          table2: "003",
-          table3: "3栋",
-          table4: "777828171617",
-        },
-        {
-          table1: "4",
-          table2: "004",
-          table3: "4栋",
-          table4: "777828171617",
-        },
-        {
-          table1: "5",
-          table2: "005",
-          table3: "5栋",
-          table4: "777828171617",
-        },
-        {
-          table1: "6",
-          table2: "006",
-          table3: "6栋",
-          table4: "777828171617",
-        },
-        {
-          table1: "7",
-          table2: "007",
-          table3: "7栋",
-          table4: "777828171617",
-        },
-        {
-          table1: "8",
-          table2: "008",
-          table3: "8栋",
-          table4: "777828171617",
-        },
-        {
-          table1: "9",
-          table2: "009",
-          table3: "9栋",
-          table4: "777828171617",
-        },
-        {
-          table1: "10",
-          table2: "0010",
-          table3: "10栋",
-          table4: "777828171617",
-        }
+        form_item: [
+          // {
+          //   type: 'Input',
+          //   label: '楼栋ID',
+          //   placeholder: '请输入',
+          //   disabled: true,
+          //   width: '100%',
+          //   prop: 'code'
+          // },
+          {
+            type: 'Int',
+            label: '楼栋编号',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'no'
+          },
+          {
+            type: 'Input',
+            label: '楼栋名称',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'name'
+          }
         ]
-      }
-
+      },
     }
   },
-  components: {
-    Dialog,
-    tablePagination,
-    addBuilding,
-    reviseBuilding,
+  mounted () {
+    Login().then((res) => {
+      console.log(res)
+      sessionStorage.setItem('X-Admin-Token', res.token)
+    })
   },
   methods: {
-    tableRow (data) {
-      this.table_row = data;
+    /**
+     * 监听提交验证是否通过
+     * */
+    ruleSubmit (val) {
+      this.bool = val;
+    },
+    // 增加或修改
+    onSubmit () {
+      /**
+       * 检查form表单校验 调用子组件方法验证
+       * */
+      this.$refs.childFrom.submitForm();
+      if (this.bool) {
+        if (this.drawerControl) {
+          // 添加
+          let requestData = {
+            no: parseInt(this.reviseForm.ruleForm.no),
+            name: this.reviseForm.ruleForm.name,
+          }
+          buildingInsert(requestData)
+            .then((res) => {
+              console.log(res)
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.getData()
+                this.drawerClose()
+              }
+            }).catch((error) => {
+              console.log(error)
+            })
+        } else {
+          // 修改
+          let requestData = {
+            id: this.table_row[0].id,
+            no: parseInt(this.reviseForm.ruleForm.no),
+            name: this.reviseForm.ruleForm.name,
+          }
+          buildingUpdate(requestData)
+            .then((res) => {
+              console.log(res)
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.getData()
+                this.drawerClose()
+              }
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
+      }
+    },
+    tableCheck (arr) {
+      this.table_row = arr
+    },
+    getData () {
+      // 调用子组件的方法
+      this.$refs.table.loadData()
+    },
+    // 弹窗关闭
+    drawerClose () {
+      /****
+       * 关闭弹窗 调用子组件重置事件清空状态 在修改传入的值是重置不了 手动重置
+      */
+      console.log(this.$refs.childFrom.reset)
+
+      this.$refs.childFrom.reset();
+      for (let key in this.reviseForm.ruleForm) {
+        this.reviseForm.ruleForm[key] = ''
+      }
+      if (!this.drawerControl) {
+        this.reviseForm.form_item.shift();
+      }
+      this.drawer_vrisible = false
+    },
+    addBuild () {
+      this.drawerControl = true;
+      this.drawer_vrisible = true
+      this.drawerTitle = '添加楼栋'
+    },
+    // 修改
+    revise (data) {
+      console.log(data)
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('只能单条数据修改')
+          return
+        }
+      } else {
+        this.$message.error('请选中需要修改的数据')
+        return
+      }
+      let obj = {
+        type: 'Input',
+        label: '楼栋ID',
+        placeholder: '请输入',
+        disabled: true,
+        width: '100%',
+        prop: 'code'
+      }
+      this.reviseForm.form_item.splice(0, 0, obj)
+      this.drawerControl = false;
+      this.drawerTitle = '修改楼栋'
+      this.drawer_vrisible = true
+      this.reviseForm.ruleForm.code = data[0].code
+      this.reviseForm.ruleForm.name = data[0].name
+      this.reviseForm.ruleForm.no = data[0].no
     },
     // 删除
     del (data) {
-      if (JSON.stringify(data) != "{}") {
-        this.dialog_config.title = '删除提示'
-        this.dialog_config.content = '是否确认删除？删除无法撤回！'
+      if (data.length) {
         this.dialog_visible = true
       } else {
-        this.$message.error('请选中需要删除的表格数据');
+        this.$message.error('请选中需要删除的表格数据')
       }
     },
-    // 监听子组件取消事件
+    // 监听删除取消事件
     cancel (data) {
-      this.dialog_visible = false;
+      this.dialog_visible = false
     },
-    // 监听子组件确认事件
+    // 监听删除确认确认事件
     confirm (data) {
-      this.dialog_visible = false;
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      });
-    },
+      let arr = []
+      for (let i = 0; i < this.table_row.length; i++) {
+        arr.push(this.table_row[i].id)
+      }
+      // 调用子组件的方法
+      this.$refs.table.tableDelete(arr)
+      this.dialog_visible = false
+    }
   }
 }
 </script>
-<style scoped>
-.main-titel span {
-  font-size: 16px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
-  padding-left: 21px;
-}
-.content {
-  padding: 20px;
-}
-.content-btn {
-  padding-bottom: 20px;
-}
-.form-box {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-.form-box > .form-input {
-  margin-right: 170px;
-}
-.form-btn {
-  flex: 1;
-}
-.input-box {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-}
-.input-box > div > span {
-  color: #999999;
-  font-size: 14px;
-  padding-right: 10px;
-}
-.content-table {
-  margin-top: 20px;
-  border: 1px solid #f5f5f6;
-}
+<style scoped lang='scss'>
 </style>

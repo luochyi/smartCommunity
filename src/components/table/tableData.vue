@@ -2,9 +2,16 @@
   <div>
     <el-table :data="table_data"
               style="width: 100%"
-              @row-click="clickrow"
+              v-loading="table_config.loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
               highlight-current-row
+              @selection-change="clickrow"
               :header-cell-style="{ background: '#F5F5F6', color: '#999999' }">
+      <el-table-column v-if="table_config.checkbox"
+                       type="selection"
+                       width="80">
+      </el-table-column>
       <template v-for="item in this.table_config.thead">
         <!--查看图片按钮 -->
         <el-table-column v-if="item.type === 'imagebtn'"
@@ -49,6 +56,13 @@
             </div>
           </template>
         </el-table-column>
+        <!-- 序号 -->
+        <el-table-column v-else-if="item.type === 'index'"
+                         :key="item.type"
+                         :type="item.type"
+                         :label="item.label"
+                         :width="item.width">
+        </el-table-column>
         <!-- 文字提示 -->
         <el-table-column v-else-if="item.type === 'tooltip'"
                          :key="item.prop"
@@ -92,7 +106,6 @@
             </div>
           </template>
         </el-table-column>
-        <!--插槽slot-->
         <el-table-column v-else-if="item.type === 'slot_check'"
                          :key="item.prop"
                          :prop="item.prop"
@@ -151,37 +164,36 @@ import viewsPhoto from '@/components/dialog/viewsPhoto'
 export default {
   data () {
     return {
-      // 加载提示
       isVisible: false,
       loading_table: true,
       // tableData
       // 绑定数据
       table_data: [],
       table_config: {
+        loading: false,
+        checkbox: true,
         // 表头
         thead: [],
         // 绑定数据
-        data: {}
+        data: {},
       },
       colors: ['#FB4702', '#FB4702', '#FB4702'],
-      form_data: {}
+      form_data: {},
     }
   },
   components: {
-    viewsPhoto
+    viewsPhoto,
   },
   props: {
     config: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   methods: {
-    clickrow (row, event, column) {
-      console.log('当前选中行')
-      console.log(row)
-      this.$emit('clickrow', row)
+    clickrow (val) {
 
+      this.$emit('clickrow', val)
     },
     // 查看图片
     getPhotos () {
@@ -201,6 +213,7 @@ export default {
       // 配置完成后开始读取接口数据
       this.loadData()
     },
+
     loadData () {
       // let requestData = {
       //   url: this.table_config.url,
@@ -226,7 +239,7 @@ export default {
       //   })
       // console.log(this.config.table_data)
       this.table_data = this.config.table_data
-    }
+    },
   },
   watch: {
     config: {
@@ -235,28 +248,29 @@ export default {
         // console.log('------ table')
         // console.log(newValue)
       },
-      immediate: true
-    }
-  }
+      immediate: true,
+      deep: true,
+    },
+  },
 }
 </script>
 
 <style scoped>
 .slot-check,
 .slot-close {
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
-  color: white;
-  text-align: center;
-  line-height: 18px;
-  font-size: 18px;
-  font-weight: 600;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    color: white;
+    text-align: center;
+    line-height: 18px;
+    font-size: 18px;
+    font-weight: 600;
 }
 .slot-check {
-  background: #39b54a;
+    background: #39b54a;
 }
 .slot-close {
-  background: #ff6969;
+    background: #ff6969;
 }
 </style>

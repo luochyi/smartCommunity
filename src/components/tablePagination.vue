@@ -3,28 +3,29 @@
     <div class="pagination-box">
       <div class="pagination-item">
         <p>
-          当前1-{{ pageArr }}，共{{totalNumber}}条 <span>每页显示{{ pageSize }}条</span>
+          当前1-{{ pageCount }}，共{{totalNumber}}条 <span>每页显示{{ limit }}条</span>
         </p>
       </div>
       <div class="pagination-item">
         <div class="block">
-          <el-pagination @size-change="handleSizeChange"
-                         @current-change="handleCurrentChange"
-                         :page-size="pageSize"
+          <el-pagination @current-change="handleCurrentChange"
+                         @size-change="handleSizeChange"
+                         :page-size="limit"
                          background
                          :pager-count="9"
                          :current-page="currentPage"
-                         layout="prev, pager, next,slot"
+                         :page-sizes="[1, 10, 50, 100]"
+                         layout="sizes,prev, pager, next,slot"
                          :total="totalNumber">
             <div class="page-slot">
               <span>向第</span>
-              <el-input v-model="page"
-                        @keyup.enter.native="fn()"
+              <el-input v-model.number="page"
+                        @keyup.enter.native="jump()"
                         class="page-jump"
                         style="width:52px"></el-input>
               <span>页</span>
               <div class="slot-jump"
-                   @click="fn()">跳转</div>
+                   @click="jump()">跳转</div>
             </div>
           </el-pagination>
         </div>
@@ -37,42 +38,41 @@
 export default {
   data () {
     return {
-      currentPage: 1,
-      // totalNumber: 1000,
-      // pageSize: 100,
       input: '',
-      page: ''
+      page: null
     }
   },
   props: {
-    pageSize: {
+    currentPage: {
+      type: Number,
+      default: 1,
+    },
+    limit: {
       type: Number,
       default: 10,
     },
     totalNumber: {
       type: Number,
-      default: 1000
-    }
-  },
-  computed: {
-    pageArr () {
-      var totalPage = this.totalNumber / this.pageSize
-      return totalPage
-    }
+      default: 100
+    },
+    pageCount: {
+      type: Number,
+      default: 1
+    },
   },
   methods: {
-    submitForm (formName) { },
-    resetForm (formName) { },
-    // 表格分页
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.$emit('handleSizeChange', val)
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.$emit('handleCurrentChange', val)
     },
-    fn () {
-      this.currentPage = parseInt(this.page)
-      this.$options.methods.handleCurrentChange(this.currentPage)
+    // 跳转
+    jump () {
+      if (parseInt(this.page) > this.pageCount) {
+        this.page = this.pageCount
+      }
+      this.$emit('handleCurrentChange', parseInt(this.page))
     }
   }
 }

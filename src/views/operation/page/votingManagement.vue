@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div class="main-titel">
-      <span>公告管理</span>
+      <span>投票管理</span>
     </div>
     <div class="content">
       <div class="content-btn">
@@ -11,8 +11,19 @@
       </div>
       <!-- 查询重制 -->
       <div class="">
+        <VueTable ref="table"
+                  :config='config'
+                  @tableCheck="tableCheck">
 
-        <input-form :formItem="form_item"
+          <template slot="footer">
+            <div class="table-footer">
+              <button @click="dialogVisible = true">查看</button>
+              <button @click="reviseUnit = true">修改</button>
+              <button @click="del(table_row)">删除</button>
+            </div>
+          </template>
+        </VueTable>
+        <!-- <input-form :formItem="form_item"
                     :btnWidth="'20%'"> </input-form>
         <div class="content-table">
           <tableData :config="table_config"
@@ -32,7 +43,7 @@
             <button @click="del(table_row)">删除</button>
           </div>
         </div>
-        <table-pagination></table-pagination>
+        <table-pagination></table-pagination> -->
         <!-- 添加 -->
         <el-drawer title="我是标题"
                    :visible.sync="addUnit"
@@ -60,7 +71,6 @@
   </div>
 </template>
 <script>
-import tablePagination from '@/components/tablePagination'
 import addUnit from '@/views/basic/components/unitInfo/addUnit'
 import reviseUnit from '@/views/basic/components/unitInfo/reviseUnit'
 export default {
@@ -72,233 +82,77 @@ export default {
         title: '',
         content: ''
       },
-      table_row: {},
-      form_item: [
-        {
-          type: 'Input',
-          label: '投票标题',
-          placeholder: '请输入',
-          prop: 'p1'
-        },
-        {
-          type: 'startEndDate',
-          label: '投票时间',
-          rangeSeparator: '~',
-          startPlaceholder: "请选择开始时间",
-          endPlaceholder: '请选择结束时间',
-          placeholder: '请输入',
-          prop: 'p2'
-        },
-        {
-          type: 'select',
-          label: '投票状态',
-          value: '',
-          options: [
-            { label: '未开始', value: '1' },
-            { label: '进行中', value: '2' },
-            { label: '已结束', value: '3' },
-          ],
-          placeholder: '请选择推送状态',
-          prop: 'p3'
-        }
-      ],
-      table_config: {
+      table_row: [],
+      config: {
         thead: [
-          { label: '序号', prop: 'table1', width: '80' },
-          { label: '投票标题', prop: 'table2', width: 'auto' },
-
+          { label: '序号', type: 'index', width: '80' },
+          { label: '投票标题', prop: 'title', width: 'auto' },
           {
-            label: '候选人', prop: 'table3', width: 'atuo',
-            type: 'slot',
-            slotName: 'table3'
+            label: '候选人', prop: 'votePersonnelNum', width: 'atuo',// type: 'slot',slotName: 'table3'
           },
-          { label: '投票开始时间', prop: 'table4', width: 'atuo' },
-          { label: '投票结束时间', prop: 'table5', width: 'atuo' },
-          { label: '投票状态', prop: 'table6', width: 'atuo' },
-          { label: '投票结果', prop: 'table7', width: 'atuo' },
-
-          {
-            label: '是否有效', prop: 'table8', width: 'atuo',
-          },
+          { label: '投票开始时间', prop: 'beginDate', width: 'atuo' },
+          { label: '投票结束时间', prop: 'endDate', width: 'atuo' },
+          { label: '投票状态', prop: 'status', width: 'atuo' },
+          { label: '投票结果', prop: 'voteResult', width: 'atuo' },
+          // {
+          //   label: '是否有效', prop: 'table8', width: 'atuo',
+          // },
         ],
-        table_data: [
+        table_data: [],
+        url: 'voteList',
+        search_item: [
           {
-            table1: '1',
-            table2: '最美保洁员',
-            table3: '5',
-            table4: '2020-08-01',
-            table5: '2020-08-10',
-            table6: '未开始',
-            table7: '',
-            table8: '',
+            type: 'Input',
+            label: '投票标题',
+            placeholder: '请输入',
+            prop: 'title'
+          },
+          {
+            type: 'startDate',
+            label: '投票开始时间',
+            placeholder: "请选择开始时间",
+            prop: 'beginDate'
+          },
+          {
+            type: 'endDate',
+            label: '投票结束时间',
+            placeholder: '请选择结束时间',
+            prop: 'endDate'
+          },
+          {
+            type: 'select',
+            label: '投票状态',
+            value: '',
+            options: [
+              { label: '未开始', value: '1' },
+              { label: '进行中', value: '2' },
+              { label: '已结束', value: '3' },
+            ],
+            placeholder: '请选择推送状态',
+            prop: 'status'
           }
-          ,
-          {
-            table1: '2',
-            table2: '最敬业安保员',
-            table3: '5',
-            table4: '2020-06-01',
-            table5: '2020-09-02',
-            table6: '进行中',
-            table7: '',
-            table8: '',
-          },
-          {
-            table1: '3',
-            table2: '最佳明星物业服务人员',
-            table3: '5',
-            table4: '2020-06-06',
-            table5: '2020-06-25',
-            table6: '已结束',
-            table7: '郝搏粲，30票',
-            table8: '有效',
-          },
-        ]
+        ],
+        data: {
+          pageNum: 1,
+          size: 10
+        },
       },
-      // 添加
-      value1: '',
       // 添加
       addUnit: false,
       reviseUnit: false,
       dialogVisible: false,
-      activeName: 'first',
-      input: '',
-      numberValidateForm: {
-        age: ''
-      },
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
-      value: '',
-      tableData: [
-        {
-          id: 1,
-          ParkingNumber: 'A128',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 2,
-          ParkingNumber: 'A128',
-          status: '已售',
-          ParkingType: '临时车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 3,
-          ParkingNumber: 'A1238',
-          status: '已出租',
-          ParkingType: '产权车位',
-          owner: '吴彦祖',
-          userName: '吴彦祖 ',
-          phone: '18965334242'
-        },
-        {
-          id: 4,
-          ParkingNumber: 'A1223',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 5,
-          ParkingNumber: 'A1223',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 6,
-          ParkingNumber: 'A1223',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 4,
-          ParkingNumber: 'A1223',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 4,
-          ParkingNumber: 'A1223',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 7,
-          ParkingNumber: 'A1223',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 8,
-          ParkingNumber: 'A1223',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        },
-        {
-          id: 9,
-          ParkingNumber: 'A1223',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        }
-      ]
     }
   },
   components: {
-    tablePagination,
+
     addUnit,
     reviseUnit
   },
   computed: {},
   methods: {
+    tableCheck () {
+      this.table_row = data;
+    },
     // 删除
     del (data) {
       if (JSON.stringify(data) != "{}") {

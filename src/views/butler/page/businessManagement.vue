@@ -1,14 +1,4 @@
-<style scoped>
-.tips {
-  margin: 20px;
-  height: 38px;
-  line-height: 38px;
-  background: #fafafa;
-  border-radius: 4px;
-  opacity: 0.8;
-  border: 1px solid #e8e8e8;
-}
-</style>
+
 <template>
   <div class="main-content">
     <div class="main-titel">
@@ -17,34 +7,23 @@
     <div class="content">
       <div class="content-btn">
         <el-button class="init-button"
-                   @click="reviseDrawer = true"
                    icon="el-icon-plus">新增成员</el-button>
-        <el-button type="init-button2"
-                   icon="el-icon-folder-add"
-                   plain>新增问卷调查</el-button>
       </div>
       <!-- 查询重制 -->
       <div class="">
-        <input-form :formItem="input_form"></input-form>
-        <!-- 头部输入框 -->
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow='tableRow'></tableData>
-          <div class="table-footer">
-            <button>预览</button>
-            <button>编辑</button>
-            <button>分析报表</button>
-            <button>删除</button>
-            <button>打印</button>
-          </div>
-        </div>
-        <table-pagination></table-pagination>
+        <VueTable ref="table"
+                  :config='config'
+                  @tableCheck="tableCheck">
+          <template slot="footer">
+            <div class="table-footer">
+              <button>编辑</button>
+              <button @click="del(table_row)">删除</button>
+
+            </div>
+          </template>
+        </VueTable>
       </div>
-      <Dialog :dialogVisible='dialog_visible'
-              :dialog_config='dialog_config'
-              @cancel='cancel'
-              @confirm='confirm'>
-      </Dialog>
+
     </div>
   </div>
 </template>
@@ -53,140 +32,110 @@
 export default {
   data () {
     return {
-      // 控制dialog显示隐藏
-      dialog_visible: false,
-      dialog_config: {
-        title: '',
-        content: ''
-      },
       // 选中表格数据
-      table_row: {},
-      table_config: {
+      table_row: [],
+      config: {
         thead: [
-          { label: '序号', prop: 'table1', width: 'auto' },
-          { label: '职位', prop: 'table2', width: 'auto' },
-          { label: '姓名', prop: 'table3', width: 'auto' },
-          { label: '性别', prop: 'table4', width: 'auto' },
-          { label: '年龄', prop: 'table5', width: 'auto' },
-          { label: '学历', prop: 'table6', width: 'auto' },
-          { label: '房屋信息', prop: 'table7', width: 'auto' },
-          { label: '职业', prop: 'table8', width: 'auto' },
+          { label: '序号', type: 'index', width: '80' },
+          { label: '职位', prop: 'positionId', width: 'auto' },
+          { label: '姓名', prop: 'name', width: 'auto' },
+          { label: '性别', prop: 'sexId', width: 'auto' },
+          { label: '年龄', prop: 'age', width: 'auto' },
+          { label: '学历', prop: 'educationId', width: 'auto' },
+          { label: '房屋信息', prop: 'roomName', width: 'auto' },
+          { label: '职业', prop: 'profession', width: 'auto' },
         ],
-        table_data: [
+        table_data: [],
+        url: 'ownersCommitteeList',
+        search_item: [
           {
-            table1: 1,
-            table2: '业委会主任',
-            table3: '白初梓',
-            table4: '男',
-            table5: '45 ',
-            table6: '本科',
-            table7: '1-3-1101',
-            table8: '语文老师',
+            type: 'select',
+            label: '职位',
+            placeholder: '请输入',
+            prop: 'positionId',
+            value: '',
+            options: [
+              { value: 1, label: '业委会主任' },
+              { value: 2, label: '业委会副主任' },
+              { value: 3, label: '业委会委员' },
+            ]
           },
           {
-            table1: 2,
-            table2: '业委会副主任',
-            table3: '龚丹丹',
-            table4: '女',
-            table5: '44  ',
-            table6: '本科',
-            table7: '2-4-0802',
-            table8: '科长',
+            type: 'Input',
+            label: '姓名',
+            placeholder: '请输入',
+            prop: 'name',
           },
           {
-            table1: 3,
-            table2: '业委会委员',
-            table3: '毛杵亦',
-            table4: '男',
-            table5: '45 ',
-            table6: '本科',
-            table7: '2-2-1204',
-            table8: '化学老师',
+            type: 'select',
+            label: '学历',
+            placeholder: '请选择',
+            prop: 'educationId',
+            options: [
+              { value: 1, label: '专科' },
+              { value: 2, label: '本科' },
+              { value: 3, label: '硕士' },
+              { value: 4, label: '博士' },
+            ]
           },
           {
-            table1: 4,
-            table2: '业委会委员',
-            table3: '谭涔海',
-            table4: '男',
-            table5: '45 ',
-            table6: '本科',
-            table7: '3-1-1003 ',
-            table8: '大学教授',
+            type: 'select',
+            label: '性别',
+            placeholder: '请选择',
+            prop: 'sexId',
+            value: '',
+            options: [
+              { value: '1', label: '男' },
+              { value: '2', label: '女' }
+            ]
           },
           {
-            table1: 5,
-            table2: '业委会委员',
-            table3: '侯淡夫',
-            table4: '女',
-            table5: '42 ',
-            table6: '本科',
-            table7: '1-2-0602',
-            table8: '公司经理',
+            type: 'Input',
+            label: '房屋信息',
+            placeholder: '请输入',
+            prop: 'roomName'
+          },
+          {
+            type: 'Input',
+            label: '职业',
+            placeholder: '请输入',
+            prop: 'profession'
           }
-        ]
+        ],
+        data: {
+          pageNum: 1,
+          size: 10
+        },
       },
-      input_form: [
-        {
-          type: 'select',
-          label: '职位',
-          placeholder: '请输入',
-          prop: 'userName1',
-          value: '',
-          options: []
-        },
-        {
-          type: 'Input',
-          label: '姓名',
-          placeholder: '请输入',
-          prop: 'userName2',
-          value: '',
-          options: []
-        },
-        {
-          type: 'select',
-          label: '学历',
-          placeholder: '请选择',
-          prop: 'phone2ssobj'
-        },
-        {
-          type: 'select',
-          label: '性别',
-          placeholder: '请选择',
-          prop: 'sex',
-          value: '',
-          options: [
-            { value: '1', label: '男' },
-            { value: '2', label: '女' }
-          ]
-        },
-        {
-          type: 'Input',
-          label: '房屋信息',
-          placeholder: '请输入',
-          prop: 'use232rName'
-        },
-        {
-          type: 'Input',
-          label: '职业',
-          placeholder: '请输入',
-          prop: 'use3rName'
-        }
-      ],
+
     }
   },
   methods: {
-    handleClick (row) {
-      console.log(row)
+    tableCheck (data) {
+      this.table_row = data;
     },
     onSubmit () {
-      console.log('submit!')
     },
-    ckimg () {
-      this.showViewer = true
-    }, // 关闭查看器
-    closeViewer () {
-      this.showViewer = false
-    }
+    // 提醒
+    del (data) {
+      let arr = []
+      for (let i = 0; i < this.table_row.length; i++) {
+        arr.push(this.table_row[i].id)
+      }
+      if (!arr.length) {
+        this.$message.error('请选中需要删除的表格数据')
+        return
+      }
+      this.$confirm('是否删除？删除不可找回', '删除', {
+        confirmButtonText: '确定',
+        // showCancelButton: false
+        cancelButtonText: '取消',
+        // confirmButtonClass: 'confirmButton',
+        // cancelButtonClass: 'cancelButton'
+      }).then(() => {
+        this.$refs.table.tableDelete(arr)
+      }).catch(action => { });
+    },
   }
 }
 </script>

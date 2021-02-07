@@ -33,14 +33,14 @@
                   <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
               </el-form-item> -->
-              <el-upload action="https://jsonplaceholder.typicode.com/posts/">
+              <!-- <el-upload action="https://jsonplaceholder.typicode.com/posts/">
                 <el-button icon="el-icon-edit"
                            size="small">上传图片</el-button>
                 <div slot="tip"
                      class="el-upload__tip">
                   <span>支持扩展名：png.pdf.jpg</span>
                 </div>
-              </el-upload>
+              </el-upload> -->
               <el-form-item label="营业执照"
                             prop="region">
                 <el-upload action="https://jsonplaceholder.typicode.com/posts/">
@@ -154,14 +154,14 @@ export default {
 </script>
 <style scoped>
 .content-titel2 {
-  margin: 0px 0px 20px 30px;
-  padding-top: 30px;
-  border-top: 1px solid #e8e8e8;
+    margin: 0px 0px 20px 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e8e8e8;
 }
 .el-form-item {
-  width: 100%;
+    width: 100%;
 }
 .el-form-item.el-form-item2 {
-  width: 50%;
+    width: 50%;
 }
 </style>

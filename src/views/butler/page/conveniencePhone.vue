@@ -1,14 +1,3 @@
-<style scoped>
-.tips {
-  margin: 20px;
-  height: 38px;
-  line-height: 38px;
-  background: #fafafa;
-  border-radius: 4px;
-  opacity: 0.8;
-  border: 1px solid #e8e8e8;
-}
-</style>
 <template>
   <div class="main-content">
     <div class="main-titel">
@@ -17,189 +6,429 @@
     <div class="content">
       <div class="content-btn">
         <el-button class="init-button"
-                   @click="drawer_vrisible = true"
+                   @click="addBuild()"
                    icon="el-icon-plus">新增电话</el-button>
         <el-button type="init-button2"
-                   icon="el-icon-folder-add"
-                   plain
-                   @click="drawer_Regular = true">定时器检查</el-button>
+                   icon="el-icon-time"
+                   @click="InspectionDrawer()"
+                   plain>定时检查</el-button>
       </div>
-      <!-- 查询重制 -->
-      <div class="">
-        <input-form :formItem="input_form"></input-form>
-        <!-- 头部输入框 -->
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow='tableRow'></tableData>
+      <VueTable ref="table"
+                :config='config'
+                @tableCheck="tableCheck">
+        <template slot="footer">
           <div class="table-footer">
-            <button>编辑</button>
-            <button @click="del">删除</button>
-            <button>详情</button>
-            <button>发布</button>
+            <button @click="revise(table_row)">编辑</button>
+            <button @click="del(table_row)">删除</button>
+            <button>检查</button>
+
           </div>
-        </div>
-        <table-pagination></table-pagination>
-      </div>
+        </template>
+      </VueTable>
     </div>
-    <!-- 编辑/删除 提示弹窗-->
+    <Drawer :drawerTitle="drawerTitle"
+            @drawerClose="drawerClose"
+            :drawerVrisible='drawer_vrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="childFrom"
+                     @ruleSubmit='ruleSubmit'
+                     :formObj='reviseForm'></VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="drawerClose"><span>取消</span></button>
+      </div>
+    </Drawer>
+    <!--定时检查-->
+    <Drawer drawerTitle="定时检查"
+            @drawerClose="InspectionDrawerClose"
+            :drawerVrisible='Inspection_vrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="childFroms"
+                     @ruleSubmit='ruleSubmit'
+                     :formObj='InspectionForm'></VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="InspectionSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="InspectionDrawerClose"><span>取消</span></button>
+      </div>
+    </Drawer>
+    <!-- 删除提示弹窗-->
     <Dialog :dialogVisible='dialog_visible'
             :dialog_config='dialog_config'
             @cancel='cancel'
             @confirm='confirm'>
     </Dialog>
-    <!-- 添加 -->
-    <addDrawer :drawerVrisible='drawer_vrisible'
-               @handleClose='getClose'></addDrawer>
-    <!-- 定时检查 -->
-    <Regular :drawerVrisible='drawer_Regular'
-             @handleClose='getClose'></Regular>
   </div>
 </template>
 <script>
-import Dialog from '@/components/dialog/Dialog.vue'
-import addDrawer from '@/views/butler/components/conveniencePhone/addDrawer.vue'
-import Regular from '@/views/butler/components/conveniencePhone/Regular.vue'
-
-// conveniencePhone
+import { conveniencePhoneInsert, conveniencePhoneUpdate, conveniencePhoneUpdateReminder, conveniencePhoneFindById } from '@/api/basic'
 export default {
   data () {
     return {
+      // 抽屉标题
+      drawerTitle: '',
+      Inspection_vrisible: false,
+      // 是否通过校验
+      bool: false,
+      // 抽屉显示隐藏
+      drawer_vrisible: false,
+      // 控制弹窗为添加或修改  默认为true 添加
+      drawerControl: true,
       // 控制dialog显示隐藏
       dialog_visible: false,
-      // 添加
-      drawer_vrisible: false,
-      // 添加
-      drawer_Regular: false,
-      // 传入dialog的参数
+      // 弹窗提示
       dialog_config: {
-        title: '',
-        content: ''
+        title: '删除提示',
+        content: '是否确认删除？删除无法撤回！'
+      },
+      config: {
+        thead: [
+          { label: '序号', type: 'index', width: '80' },
+          { label: '名称', prop: 'name', width: 'auto' },
+          { label: '联系方式', prop: 'tel', width: 'auto' },
+          { label: '状态', prop: 'status', width: 'auto' },
+          { label: '类型', prop: 'type', width: 'auto' },
+          { label: '下次检查时间', prop: 'nextControlDate', width: 'auto' },
+          { label: '检查状态', prop: 'checkStatus', width: 'auto' },
+          { label: '权重', prop: 'weight', width: 'auto' }
+        ],
+        url: 'conveniencePhoneList',
+        data: {
+          pageNum: 1,
+          size: 10,
+        },
+        // search_item
+        search_item: [
+          {
+            type: 'Input',
+            label: '联系名称',
+            placeholder: '请输入内容',
+            prop: 'name'
+          },
+          {
+            type: 'Input',
+            label: '联系电话',
+            placeholder: '请输入',
+            prop: 'tel'
+          }
+        ],
       },
       // 选中表格数据
-      table_row: {},
-      // 搜索重置数据
-      input_form: [
-        {
-          type: 'Input',
-          label: '联系名称',
-          placeholder: '请输入',
-          prop: 'userName'
+      table_row: [],
+      InspectionForm: {
+        ruleForm: {
+          reminderInterval: null,
+          reminderContent: null,
         },
-        {
-          type: 'Input',
-          label: '联系电话',
-          placeholder: '请输入',
-          prop: 'phone'
-        }
-      ],
-      // 表格数据
-      table_config: {
-        thead: [
-          { label: '序号', prop: 'table1', width: 'auto' },
-          { label: '名称', prop: 'table2', width: 'auto' },
-          { label: '联系方式', prop: 'table3', width: 'auto' },
-          { label: '状态', prop: 'table4', width: 'auto' },
-          { label: '下次检查时间', prop: 'table5', width: 'auto' },
-          { label: '检查状态', prop: 'table6', width: 'auto' },
-          { label: '权重', prop: 'table7', width: 'auto' }
-        ],
-        table_data: [
+        rules: {
+          reminderInterval: [
+            {
+              required: true,
+              message: '请选择定时检查时间',
+              trigger: 'blur'
+            }
+          ],
+          reminderContent: [
+            {
+              required: true,
+              message: '请填写提醒内容',
+              trigger: 'blur'
+            }
+          ],
+        },
+        form_item: [
           {
-            table1: '1',
-            table2: '13幢管家服务',
-            table3: '18850988790',
-            table4: '正常',
-            table5: '2019-10-12 ',
-            table6: '已检查',
-            table7: '9'
+            type: 'Select',
+            label: '提醒间隔',
+            placeholder: '请选择',
+            options: [
+              { value: 1, label: '一个月' },
+              { value: 2, label: '半年' }
+            ],
+            width: '100%',
+            prop: 'reminderInterval'
           },
           {
-            table1: '2',
-            table2: '物业前台电话',
-            table3: '18850988790',
-            table4: '正常',
-            table5: '2019-10-12 ',
-            table6: '未检查',
-            table7: '3'
-          },
-          {
-            table1: '3',
-            table2: '维修工小徐',
-            table3: '18850988790',
-            table4: '正常',
-            table5: '2019-10-12 ',
-            table6: '已检查',
-            table7: '7'
-          },
-          {
-            table1: '4',
-            table2: '业委会电话',
-            table3: '18850988790',
-            table4: '正常',
-            table5: '2019-09-12 ',
-            table6: '未检查',
-            table7: '8'
-          },
-          {
-            table1: '5',
-            table2: '顺丰取件电话',
-            table3: '18850988790',
-            table4: '空号',
-            table5: '2019-04-12 ',
-            table6: '已检查',
-            table7: '9'
-          },
-          {
-            table1: '6',
-            table2: '开锁匠',
-            table3: '18850988790',
-            table4: '有误',
-            table5: '2019-10-12 ',
-            table6: '未检查',
-            table7: '10'
+            type: 'textarea',
+            label: '提醒内容',
+            placeholder: '请输入',
+            rows: 5,
+            width: '100%',
+            prop: 'reminderContent'
           }
         ]
-      }
+      },
+      reviseForm: {
+        ruleForm: {
+          name: null,
+          status: null,
+          tel: null,
+          weight: null,
+          type: null,
+        },
+        rules: {
+          name: [
+            {
+              required: true,
+              message: '请填写楼栋名称',
+              trigger: 'blur'
+            }
+          ], status: [
+            {
+              required: true,
+              message: '请填写楼栋名称',
+              trigger: 'blur'
+            }
+          ], tel: [
+            {
+              required: true,
+              message: '请填写楼栋名称',
+              trigger: 'blur'
+            }
+          ],
+          weight: [
+            {
+              required: true,
+              message: '请填写楼栋名称',
+              trigger: 'blur'
+            }
+          ],
+          type: [
+            {
+              required: true,
+              message: '请填写楼栋名称',
+              trigger: 'blur'
+            }
+          ],
+        },
+        form_item: [
+          {
+            type: 'Input',
+            label: '联系名称',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'name'
+          }, {
+            type: 'Int',
+            label: '联系方式',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'tel'
+          }, {
+            type: 'Select',
+            label: '状态',
+            placeholder: '请输入',
+            options: [
+              { value: 1, label: '正常' },
+              { value: 2, label: '有误' },
+              { value: 3, label: '空号' },
+            ],
+            width: '50%',
+            prop: 'status'
+          },
+          {
+            type: 'Select',
+            label: '类型',
+            placeholder: '请输入',
+            options: [
+              { value: 1, label: '业委会' },
+              { value: 2, label: '绿化' },
+              { value: 3, label: '快递' },
+              { value: 4, label: '搬家' },
+
+            ],
+            width: '50%',
+            prop: 'type'
+          }, {
+            type: 'Int',
+            label: '权重',
+            placeholder: '请输入权重',
+            width: '50%',
+            prop: 'weight'
+          },
+
+        ]
+      },
     }
   },
-  components: {
-    Dialog,
-    addDrawer,
-    Regular
+  mounted () {
   },
   methods: {
-    // table选中行
-    tableRow (data) {
-      this.table_row = data;
+    ruleSubmit (val) {
+      this.bool = val;
     },
-    // 监听子组件取消事件
-    cancel (data) {
-      this.dialog_visible = false;
+    // 增加或修改
+    onSubmit () {
+      this.$refs.childFrom.submitForm();
+      if (this.bool) {
+        if (this.drawerControl) {
+          // 添加
+          let requestData = {
+            name: this.reviseForm.ruleForm.name,
+            status: parseInt(this.reviseForm.ruleForm.status),
+            tel: this.reviseForm.ruleForm.tel,
+            weight: parseInt(this.reviseForm.ruleForm.weight),
+            type: parseInt(this.reviseForm.ruleForm.type),
+          }
+          conveniencePhoneInsert(requestData)
+            .then((res) => {
+              console.log(res)
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.getData()
+                this.drawerClose()
+              }
+            }).catch((error) => {
+              console.log(error)
+            })
+        } else {
+          // 修改
+          let requestData = {
+            id: this.table_row[0].id,
+            name: this.reviseForm.ruleForm.name,
+            status: parseInt(this.reviseForm.ruleForm.status),
+            tel: this.reviseForm.ruleForm.tel,
+            weight: parseInt(this.reviseForm.ruleForm.weight),
+            type: parseInt(this.reviseForm.ruleForm.type),
+          }
+          conveniencePhoneUpdate(requestData)
+            .then((res) => {
+              console.log(res)
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.getData()
+                this.drawerClose()
+              }
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
+      }
     },
-    // 监听子组件确认事件
-    confirm (data) {
-      this.dialog_visible = false;
-      this.$message({
-        message: '删除成功',
-        type: 'success'
+    tableCheck (arr) {
+      this.table_row = arr
+    },
+    getData () {
+      // 调用子组件的方法
+      this.$refs.table.loadData()
+    },
+    // 弹窗关闭
+    drawerClose () {
+      this.$refs.childFrom.reset();
+      for (let key in this.reviseForm.ruleForm) {
+        this.reviseForm.ruleForm[key] = ''
+      }
+      this.drawer_vrisible = false
+    },
+    // 定时检查
+    InspectionSubmit () {
+      this.$refs.childFroms.submitForm();
+      if (this.bool) {
+        let requestData = {
+          reminderInterval: this.InspectionForm.ruleForm.reminderInterval,
+          reminderContent: this.InspectionForm.ruleForm.reminderContent,
+        }
+        conveniencePhoneUpdateReminder(requestData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.getData()
+            this.InspectionDrawerClose()
+          }
+        })
+      }
+
+    },
+    InspectionDrawer () {
+      this.Inspection_vrisible = true
+    },
+    InspectionDrawerClose () {
+      this.Inspection_vrisible = false
+      this.$refs.childFroms.reset();
+      for (let key in this.InspectionForm.ruleForm) {
+        this.InspectionForm.ruleForm[key] = ''
+      }
+    },
+    addBuild () {
+      this.drawerControl = true;
+      this.drawer_vrisible = true
+      this.drawerTitle = '新增电话'
+    },
+    // 修改
+    revise (data) {
+      console.log(data)
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('只能单条数据修改')
+          return
+        }
+      } else {
+        this.$message.error('请选中需要修改的数据')
+        return
+      }
+      let resData = {
+        id: data[0].id
+      }
+      conveniencePhoneFindById(resData).then(result => {
+        this.reviseForm.ruleForm.name = result.voConveniencePhone.name
+        this.reviseForm.ruleForm.status = result.voConveniencePhone.status
+        this.reviseForm.ruleForm.tel = result.voConveniencePhone.tel
+        this.reviseForm.ruleForm.weight = result.voConveniencePhone.weight
+        this.reviseForm.ruleForm.type = result.voConveniencePhone.type
+
+        this.drawerControl = false;
+        this.drawerTitle = '修改电话'
+        this.drawer_vrisible = true
       })
     },
     // 删除
     del (data) {
-      if (JSON.stringify(data) != "{}") {
-        this.dialog_config.title = '删除提示'
-        this.dialog_config.content = '您是否确认删除该联系方式？'
+      if (data.length) {
         this.dialog_visible = true
       } else {
-        this.$message.error('请选中需要删除的表格数据');
+        this.$message.error('请选中需要删除的表格数据')
       }
     },
-    // 关闭抽屉
-    getClose (data) {
-      this.drawer_vrisible = false;
-      this.drawer_Regular = false;
-      console.log(data + "投票管理父组件");
+    // 监听删除取消事件
+    cancel (data) {
+      this.dialog_visible = false
     },
+    // 监听删除确认确认事件
+    confirm (data) {
+      let arr = []
+      for (let i = 0; i < this.table_row.length; i++) {
+        arr.push(this.table_row[i].id)
+      }
+      // 调用子组件的方法
+      this.$refs.table.tableDelete(arr)
+      this.dialog_visible = false
+    }
   }
 }
 </script>
+<style scoped lang='scss'>
+</style>

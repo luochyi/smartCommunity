@@ -34,62 +34,62 @@ import Draft from '@/views/commodity/components/commodityManagement/Draft'
 export default {
   data () {
     return {
-      activeName: 'first'
+      activeName: 'first',
     }
   },
 
   components: {
     Online,
     Release,
-    Draft
+    Draft,
   },
   computed: {},
   methods: {
     handleClick (tab, event) {
       console.log(tab, event)
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped>
 .main-titel span {
-  font-size: 16px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
-  padding-left: 21px;
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    padding-left: 21px;
 }
 .content {
-  padding: 20px;
+    padding: 20px;
 }
 .content-btn {
-  padding-bottom: 20px;
+    padding-bottom: 20px;
 }
 .form-box {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .form-box > .form-input {
-  margin-right: 170px;
+    margin-right: 170px;
 }
 .form-btn {
-  flex: 1;
+    flex: 1;
 }
 .input-box {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
 }
 .input-box > div > span {
-  color: #999999;
-  font-size: 14px;
-  padding-right: 10px;
+    color: #999999;
+    font-size: 14px;
+    padding-right: 10px;
 }
 .content-table {
-  margin-top: 20px;
-  border: 1px solid #f5f5f6;
+    margin-top: 20px;
+    border: 1px solid #f5f5f6;
 }
 </style>

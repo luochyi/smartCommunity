@@ -1,24 +1,7 @@
-# basic-admin
+#### 智慧社区后台管理系统数据存在问题
 
-## Project setup
-```
-npm install
-```
+#### 存在问题
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+1、房产管理修改 id 查询数据
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+2、车位信息 添加 在已售 出租状态要添加业主 不用添加多个业主（暂未修改）

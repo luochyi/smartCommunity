@@ -19,7 +19,8 @@
         <div class="content">
           <div class="content-btn">
             <el-button class="init-button"
-                       icon="el-icon-plus">新增品牌</el-button>
+                       icon="el-icon-plus"
+                       @click="chargeComponents=false">新增品牌</el-button>
           </div>
           <!-- 查询重制 -->
           <div class="">
@@ -63,7 +64,7 @@ export default {
     components: { addQualification },
     data() {
         return {
-            chargeComponents: false,
+            chargeComponents: true,
             // 选中表格数据
             table_row: {},
             // 搜索重置数据

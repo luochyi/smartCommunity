@@ -5,20 +5,37 @@
         <div class="main-titel">
           <span>费用账单</span>
         </div>
-
         <div class="content">
           <div class="content-btn">
             <el-button class="init-button"
                        icon="el-icon-plus"
                        @click="drawer_vrisible = true">添加费用</el-button>
-            <!-- 
-        <el-button class="init-text" type="text">模板下载</el-button> -->
           </div>
           <!-- 查询重制 -->
           <div class="">
-            <!-- 头部输入框 -->
-            <input-form :formItem="input_form"></input-form>
-            <el-tabs v-model="activeName"
+            <VueTable ref="table"
+                      :config='config'
+                      @tableCheck="tableCheck">
+              <template slot="tabs">
+                <el-tabs v-model="activeName"
+                         @tab-click="handleClick">
+                  <el-tab-pane label="全部"
+                               name="0"></el-tab-pane>
+                  <el-tab-pane label="未缴纳"
+                               name="1"></el-tab-pane>
+                  <el-tab-pane label="部分缴纳"
+                               name="2"></el-tab-pane>
+                </el-tabs>
+              </template>
+              <template slot="footer">
+                <div class="table-footer">
+                  <button @click="Pay()">缴费</button>
+                  <button @click="refundVrisible=true">退款</button>
+                  <button>修改</button>
+                </div>
+              </template>
+            </VueTable>
+            <!-- <el-tabs v-model="activeName"
                      @tab-click="handleClick">
               <el-tab-pane label="全部"
                            name="first"></el-tab-pane>
@@ -36,11 +53,12 @@
               </div>
             </div>
             <table-pagination :pageSize='10'
-                              :totalNumber="90"></table-pagination>
+                              :totalNumber="90"></table-pagination> -->
           </div>
         </div>
         <!-- 添加费用 -->
         <drawer :drawerVrisible='drawer_vrisible'
+                :drawerSize="'65%'"
                 @handleClose='getClose'
                 :drawer_config="drawer_config"></drawer>
         <!-- 退款 -->
@@ -197,124 +215,80 @@ export default {
         ],
       },
       drawer_vrisible: false,
-      table_config: {
+      config: {
         thead: [
-          { label: '序号', prop: 'table1', width: '110' },
-          { label: '费用名称', prop: 'table2', width: '180' },
-          { label: '交易号', prop: 'table3', width: '180' },
-          { label: '房屋信息', prop: 'table4', width: '180' },
-          { label: '缴费时间', prop: 'table5', width: '180' },
-          { label: '计费开始时间', prop: 'table6', width: '180' },
-          { label: '计费结束时间', prop: 'table7', width: '180' },
-          { label: '费用金额', prop: 'table8', width: '180' },
-          { label: '应收总计', prop: 'table9', width: '180' },
-          { label: '状态', prop: 'table10', width: '180' },
-          { label: '缴费人', prop: 'table11', width: '180' },
-          { label: '缴费人联系方式', prop: 'table12', width: '280' },
-          { label: '备注', prop: 'table13', width: '180' },
-          { label: '创建人', prop: 'table14', width: '180' },
-          { label: '更新时间', prop: 'table15', width: '180' },
+          { label: '序号', type: 'index', width: '80' },
+          { label: '费用名称', prop: 'name', width: '180' },
+          { label: '交易号', prop: 'orderCode', width: '180' },
+          { label: '房屋信息', prop: 'roomName', width: '180' },
+          { label: '缴费时间', prop: 'payDate', width: '180' },
+          { label: '计费开始时间', prop: 'beginDate', width: '180' },
+          { label: '计费结束时间', prop: 'endDate', width: '180' },
+          { label: '费用金额', prop: 'costPrice', width: '180' },
+          { label: '应收总计', prop: 'totalPrice', width: '180' },
+          { label: '状态', prop: 'status', width: '180' },
+          { label: '缴费人', prop: 'createName', width: '180' },
+          { label: '缴费人联系方式', prop: 'payTel', width: '280' },
+          { label: '备注', prop: 'remake', width: '180' },
+          { label: '创建人', prop: 'payName', width: '180' },
+          { label: '更新时间', prop: 'updateDate', width: '180' },
         ],
-        table_data: [
+        table_data: [],
+        url: 'expenseBillList',
+        search_item: [
           {
-            table1: 1,
-            table2: '报事报修',
-            table3: '330887878234',
-            table4: '3-1-808',
-            table5: '2020-09-04',
-            table6: '2020-09-04',
-            table7: '2020-09-04',
-            table8: '100',
-            table9: '100',
-            table10: '未缴纳',
-            table11: '陈玉',
-            table12: '15924671979',
-            table13: '',
-            table14: '任颢淳',
-            table15: '2020-08-01',
+            type: 'select',
+            label: '费用项目名称',
+            placeholder: '请选择',
+            value: '',
+            prop: 'chargesTemplateDetailId',
+            options: [
+              {
+                label: '水电费',
+                value: '1'
+              },
+              {
+                label: '车辆费',
+                value: '2'
+              }
+            ],
           },
           {
-            table1: 2,
-            table2: '报事报修',
-            table3: '330887878234',
-            table4: '4-1-101',
-            table5: '2020-08-04',
-            table6: '2020-08-04',
-            table7: '2020-09-04',
-            table8: '100',
-            table9: '100',
-            table10: '未缴纳',
-            table11: '张丽',
-            table12: '15924671979',
-            table13: '',
-            table14: '任静',
-            table15: '2020-08-01',
+            type: 'Input',
+            label: '房屋信息',
+            placeholder: '楼栋/单元/房间号',
+            prop: 'roomName'
           },
           {
-            table1: 3,
-            table2: '报事报修',
-            table3: '330887878234',
-            table4: '2-1-808',
-            table5: '2020-09-04',
-            table6: '2020-09-04',
-            table7: '2020-09-04',
-            table8: '100',
-            table9: '100',
-            table10: '未缴纳',
-            table11: '陈玉',
-            table12: '15924671979',
-            table13: '',
-            table14: '段放',
-            table15: '2020-08-01',
+            type: 'Input',
+            label: '缴费人',
+            placeholder: '请选择',
+            prop: 'payName'
+          },
+          {
+            type: 'Input',
+            label: '联系方式',
+            placeholder: '请输入',
+            prop: 'tel'
+          },
+          {
+            type: 'startDate',
+            label: '计费时间',
+            placeholder: '请选择开始日期',
+            prop: 'beginDate'
+          },
+          {
+            type: 'endDate',
+            label: '计费时间',
+            placeholder: '请选择结束时间',
+            prop: 'endDate'
           }
-        ]
-      },
-      input_form: [
-        {
-          type: 'select',
-          label: '费用项目名称',
-          placeholder: '请选择',
-          value: '',
-          prop: 'houssssd',
-          options: [
-            {
-              label: '水电费',
-              value: '1'
-            },
-            {
-              label: '车辆费',
-              value: '2'
-            }
-          ],
+        ],
+        data: {
+          pageNum: 1,
+          size: 10
         },
-        {
-          type: 'Input',
-          label: '房屋信息',
-          placeholder: '楼栋/单元/房间号',
-          prop: 'hou23sadasssssd'
-        },
-        {
-          type: 'Input',
-          label: '缴费人',
-          placeholder: '请选择',
-          prop: 'houses'
-        },
-        {
-          type: 'Input',
-          label: '联系方式',
-          placeholder: '请输入',
-          prop: 'housad22ssssd'
-        },
-        {
-          type: 'startEndDate',
-          label: '计费时间',
-          rangeSeparator: '~',
-          startPlaceholder: '请选择开始日期',
-          endPlaceholder: '结束时间',
-          prop: 'date1'
-        },
-        // 房屋信息
-      ]
+      }
     }
   },
   components: {
@@ -323,8 +297,22 @@ export default {
     Pay
   },
   methods: {
-    handleClick (row) {
-      console.log(row)
+    handleClick (tab, event) {
+      let status = null
+      if (this.activeName != 0) {
+        status = this.activeName
+      } else {
+        status = null
+      }
+      const requestData = {
+        pageNum: 1,
+        size: 10,
+        status: status
+      }
+      this.$refs.table.requestData(requestData);
+    },
+    tableCheck (data) {
+      this.table_row = data;
     },
     // 关闭抽屉
     getClose (data) {

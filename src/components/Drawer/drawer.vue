@@ -3,7 +3,7 @@
   <div>
     <el-drawer title="我是标题"
                :visible.sync="isVisibleDrawe"
-               size="58%"
+               :size="drawer_size"
                :before-close="handleClose"
                :with-header="false">
 
@@ -30,6 +30,9 @@
                               :prop="item.prop"
                               :rules="item.rules"
                               :style="{width: item.width}">
+                  <!-- slot -->
+                  <slot v-if="item.type === 'Slot'"
+                        :name="item.slotName" />
                   <el-input v-if="item.type === 'Input'"
                             v-model.trim="configObj.ruleForm[item.prop]"
                             :placeholder="item.placeholder"
@@ -75,7 +78,6 @@
                       <span>支持扩展名：png.pdf.jpg</span>
                     </div>
                   </el-upload>
-
                 </el-form-item>
               </el-form>
             </div>
@@ -96,24 +98,29 @@
 </template>
 
 <script>
-import editorBar from '@/components/editor/editorBar.vue';
+import editorBar from '@/components/editor/editorBar.vue'
 export default {
   props: {
     drawerVrisible: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    drawerSize: {
+      type: String,
+      default: '58%',
     },
     drawer_config: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
   },
   components: {
-    editorBar
+    editorBar,
   },
   data () {
     return {
       input: '',
+      drawer_size: '',
       isVisibleDrawe: false,
       configObj: {
         // 表头
@@ -121,33 +128,31 @@ export default {
         // 绑定数据
         ruleForm: {},
         rules: {},
-        form_item: []
+        form_item: [],
       },
     }
   },
-  mounted () {
-
-  },
+  mounted () { },
   methods: {
     // 提交
     onSubmit (formName) {
-      // 
+      //
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log('submit!')
-          this.$refs['ruleForm'].resetFields();
+          this.$refs['ruleForm'].resetFields()
           this.$emit('handleClose', 'submit')
         } else {
           console.log('error submit!!')
-          return false;
+          return false
         }
       })
     },
     // 重置
     // 取消关闭esc
     handleClose () {
-      this.$refs['ruleForm'].resetFields();
-      this.$emit('handleClose', "Close")
+      this.$refs['ruleForm'].resetFields()
+      this.$emit('handleClose', 'Close')
     },
     initConfig () {
       // 父组件传递数据过滤
@@ -163,21 +168,29 @@ export default {
       handler (newValue) {
         this.isVisibleDrawe = newValue
       },
-      immediate: true
+      immediate: true,
     },
     drawer_config: {
       handler (newValue) {
         this.initConfig()
       },
-      immediate: true
+      immediate: true,
     },
-  }
+    drawerSize: {
+      handler (newValue) {
+        this.drawer_size = newValue
+        console.log(newValue)
+      },
+      immediate: true,
+      deep: true,
+    }
+  },
 }
 </script>
 <style >
 .content-titel2 {
-  margin: 0px 0px 20px 30px;
-  padding-top: 30px;
-  border-top: 1px solid #e8e8e8;
+    margin: 0px 0px 20px 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e8e8e8;
 }
 </style>

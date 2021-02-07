@@ -12,7 +12,8 @@
       <!-- 查询重制 -->
       <div class="">
         <div>
-          <input-form :formItem="input_form"></input-form>
+          <input-form :formItem="input_form"
+                      :labelWidth="'120px'"></input-form>
         </div>
 
         <div style="margin-bottom:20px">
@@ -66,7 +67,6 @@ export default {
   data () {
     return {
       radio1: '全部',
-
       table_config: {
         thead: [
           {
@@ -74,13 +74,13 @@ export default {
             prop: 'table1',
             width: '450',
             type: 'slot',
-            slotName: 'table1'
+            slotName: 'table1',
           },
           { label: '售价（元）', prop: 'table2', width: '280' },
           {
             label: '总库存',
             prop: 'table3',
-            width: '180'
+            width: '180',
           },
           { label: '销量', prop: 'table4', width: '180' },
           {
@@ -88,8 +88,8 @@ export default {
             prop: 'table5',
             width: '450',
             type: 'slot',
-            slotName: 'table5'
-          }
+            slotName: 'table5',
+          },
         ],
         table_data: [
           {
@@ -98,8 +98,8 @@ export default {
                 span:
                   ' 俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
                 url:
-                  'https://dss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2222110592,1898022873&fm=26&gp=0.jpg'
-              }
+                  'https://dss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2222110592,1898022873&fm=26&gp=0.jpg',
+              },
             ],
 
             table2: '¥28.8',
@@ -108,9 +108,9 @@ export default {
             table5: [
               {
                 time: '2020-08-20 09:00',
-                status: '售卖中'
-              }
-            ]
+                status: '售卖中',
+              },
+            ],
           },
           {
             table1: [
@@ -118,8 +118,8 @@ export default {
                 span:
                   ' 【超定制】三只松鼠 零食坚果大礼包1490g中秋节礼盒送礼9袋装',
                 url:
-                  'https://img.alicdn.com/imgextra/i1/777170039/O1CN01yJFxH61C9u4gfyzTT_!!0-saturn_solar.jpg_220x220.jpg_.webp'
-              }
+                  'https://img.alicdn.com/imgextra/i1/777170039/O1CN01yJFxH61C9u4gfyzTT_!!0-saturn_solar.jpg_220x220.jpg_.webp',
+              },
             ],
 
             table2: '¥128.8',
@@ -128,24 +128,24 @@ export default {
             table5: [
               {
                 time: '2020-05-22 12:00',
-                status: '售卖中'
-              }
-            ]
-          }
-        ]
+                status: '售卖中',
+              },
+            ],
+          },
+        ],
       },
       input_form: [
         {
           type: 'Input',
           label: '商品编号',
           placeholder: '请输入商品编号',
-          prop: 'p1'
+          prop: 'p1',
         },
         {
           type: 'Input',
           label: '商品名称',
           placeholder: '请输入',
-          prop: 'p2'
+          prop: 'p2',
         },
         {
           type: 'select',
@@ -156,21 +156,21 @@ export default {
           options: [
             {
               label: '全部',
-              value: '1'
+              value: '1',
             },
             {
               label: '上衣',
-              value: '2'
+              value: '2',
             },
             {
               label: '裙子',
-              value: '3'
+              value: '3',
             },
             {
               label: '袜子',
-              value: '4'
-            }
-          ]
+              value: '4',
+            },
+          ],
         },
         {
           type: 'select',
@@ -181,17 +181,17 @@ export default {
           options: [
             {
               label: '全部',
-              value: '1'
+              value: '1',
             },
             {
               label: '是',
-              value: '2'
+              value: '2',
             },
             {
               label: '否',
-              value: '3'
-            }
-          ]
+              value: '3',
+            },
+          ],
         },
         {
           type: 'startEndDate',
@@ -199,7 +199,7 @@ export default {
           prop: 'p6',
           startPlaceholder: '请选择开始时间',
           rangeSeparator: ' ～',
-          endPlaceholder: '结束时间'
+          endPlaceholder: '结束时间',
         },
         {
           type: 'select',
@@ -210,17 +210,17 @@ export default {
           options: [
             {
               label: '全部',
-              value: '1'
+              value: '1',
             },
             {
               label: '是',
-              value: '2'
+              value: '2',
             },
             {
               label: '否',
-              value: '3'
-            }
-          ]
+              value: '3',
+            },
+          ],
         },
         {
           type: 'select',
@@ -231,21 +231,21 @@ export default {
           options: [
             {
               label: '全部',
-              value: '1'
+              value: '1',
             },
             {
               label: '上衣',
-              value: '2'
+              value: '2',
             },
             {
               label: '裙子',
-              value: '3'
+              value: '3',
             },
             {
               label: '袜子',
-              value: '4'
-            }
-          ]
+              value: '4',
+            },
+          ],
         },
         {
           type: 'select',
@@ -256,23 +256,23 @@ export default {
           options: [
             {
               label: '全部',
-              value: '1'
+              value: '1',
             },
             {
               label: '上衣',
-              value: '2'
+              value: '2',
             },
             {
               label: '裙子',
-              value: '3'
+              value: '3',
             },
             {
               label: '袜子',
-              value: '4'
-            }
-          ]
-        }
-      ]
+              value: '4',
+            },
+          ],
+        },
+      ],
     }
   },
 
@@ -282,23 +282,23 @@ export default {
     resetForm (formName) { },
     handleClick (tab, event) {
       console.log(tab, event)
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped>
 .img {
-  display: flex;
+    display: flex;
 }
 .img div {
-  margin-right: 23px;
+    margin-right: 23px;
 }
 .img span {
-  font-size: 14px;
-  font-family: PingFangSC-Regular, PingFang SC;
-  font-weight: 400;
-  color: #333333;
-  line-height: 20px;
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    line-height: 20px;
 }
 </style>

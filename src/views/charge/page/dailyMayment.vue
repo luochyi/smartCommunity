@@ -17,27 +17,28 @@
           </div>
           <!-- 查询重制 -->
           <div class="">
-            <!-- 头部输入框 -->
-            <input-form :formItem="input_form"></input-form>
-            <el-tabs v-model="activeName"
-                     @tab-click="handleClick">
-              <el-tab-pane label="全部"
-                           name="first"></el-tab-pane>
-              <el-tab-pane label="未缴纳"
-                           name="second"></el-tab-pane>
-              <el-tab-pane label="部分缴纳"
-                           name="third"></el-tab-pane>
-            </el-tabs>
-            <div class="content-table">
-              <tableData :config="table_config"></tableData>
-              <div class="table-footer">
-                <button @click="Pay()">缴费</button>
-                <button>备注</button>
-                <button @click="drawer_vrisible = true">推送提醒</button>
-              </div>
-            </div>
-            <table-pagination :pageSize='10'
-                              :totalNumber="30"></table-pagination>
+            <VueTable ref="table"
+                      :config='config'
+                      @tableCheck="tableCheck">
+              <template slot="tabs">
+                <el-tabs v-model="activeName"
+                         @tab-click="handleClick">
+                  <el-tab-pane label="全部"
+                               name="0"></el-tab-pane>
+                  <el-tab-pane label="未缴纳"
+                               name="1"></el-tab-pane>
+                  <el-tab-pane label="部分缴纳"
+                               name="2"></el-tab-pane>
+                </el-tabs>
+              </template>
+              <template slot="footer">
+                <div class="table-footer">
+                  <button @click="Pay()">缴费</button>
+                  <button>备注</button>
+                  <button @click="drawer_vrisible = true">推送提醒</button>
+                </div>
+              </template>
+            </VueTable>
           </div>
         </div>
         <!-- 添加费用 -->
@@ -68,7 +69,7 @@ export default {
       addFee_show: false,
       Pay_show: false,
       change: true,
-      activeName: 'first',
+
       // 添加点击确认后弹出抽屉
       // 添加抽屉数据
       drawer_config: {
@@ -81,190 +82,143 @@ export default {
         },
         form_item: [
           {
-            type: "span",
-            label: "被推送人姓名",
-            width: "100%",
-            prop: "name",
+            type: 'span',
+            label: '被推送人姓名',
+            width: '100%',
+            prop: 'name',
           },
           {
-            type: "textarea",
-            label: "推送内容",
-            placeholder: "请输入",
+            type: 'textarea',
+            label: '推送内容',
+            placeholder: '请输入',
             rows: 6,
-            width: "100%",
-            prop: "jj",
-          }
+            width: '100%',
+            prop: 'jj',
+          },
         ],
       },
       drawer_vrisible: false,
-      table_config: {
+      activeName: '0',
+      config: {
         thead: [
-          { label: '序号', prop: 'table1', width: '110' },
-          { label: '收费项目名称', prop: 'table2', width: '180' },
-          { label: '房屋信息', prop: 'table3', width: '180' },
-          { label: '计费开始时间', prop: 'table4', width: '180' },
-          { label: '计费结束时间', prop: 'table5', width: '180' },
-          { label: '计费单价/单位', prop: 'table6', width: '180' },
-          { label: '面积/用量/数量', prop: 'table7', width: '180' },
-          { label: '费用金额', prop: 'table8', width: '180' },
-          { label: '已缴金额', prop: 'table9', width: '180' },
-          { label: '应收金额', prop: 'table10', width: '180' },
-          { label: '待缴金额', prop: 'table11', width: '180' },
-          { label: '状态', prop: 'table12', width: '180' },
-          { label: '备注', prop: 'table13', width: '180' },
-          { label: '创建人', prop: 'table14', width: '180' },
-          { label: '更新时间', prop: 'table15', width: '180' },
-
+          { label: '序号', type: 'index', width: '80' },
+          { label: '收费项目名称', prop: 'name', width: '180' },
+          { label: '房屋信息', prop: 'roomName', width: '180' },
+          { label: '计费开始时间', prop: 'beginDate', width: '180' },
+          { label: '计费结束时间', prop: 'endDate', width: '180' },
+          { label: '计费单价/单位', prop: 'unitPrice', width: '180' },
+          { label: '面积/用量/数量', prop: 'num', width: '180' },
+          { label: '费用金额', prop: 'costPrice', width: '180' },
+          { label: '已缴金额', prop: 'paidPrice', width: '180' },
+          { label: '应收金额', prop: 'totalPrice', width: '180' },
+          { label: '待缴金额', prop: 'paymentPrice', width: '180' },
+          { label: '状态', prop: 'status', width: '180' },
+          { label: '备注', prop: 'remake', width: '180' },
+          { label: '创建人', prop: 'createName', width: '180' },
+          { label: '更新时间', prop: 'updateDate', width: '180' },
         ],
-        table_data: [
+        table_data: [],
+        url: 'dailyPaymentList',
+        search_item: [
           {
-            table1: 1,
-            table2: '物业费',
-            table3: '4-2-108',
-            table4: '2020-08-01',
-            table5: '2021-07-31',
-            table6: '2.9元/月/平方米',
-            table7: '100平方米',
-            table8: '1200.00',
-            table9: '1000.00',
-            table10: '1200.00',
-            table11: '200.00',
-            table12: '部分缴纳',
-            table13: '200.00',
-            table14: '-',
-            table15: '2020-08-01',
+            type: 'select',
+            label: '费用名称',
+            placeholder: '请输入',
+            value: '',
+            prop: 'workOrderTypeDetailId',
+            options: [
+              {
+                label: '水电费',
+                value: '1',
+              },
+              {
+                label: '车辆费',
+                value: '2',
+              },
+            ],
           },
           {
-            table1: 2,
-            table2: '公共能耗费',
-            table3: '3-2-201',
-            table4: '2020-08-01',
-            table5: '2021-07-31',
-            table6: '2.9元/月/平方米',
-            table7: '100平方米',
-            table8: '1200.00',
-            table9: '1000.00',
-            table10: '1200.00',
-            table11: '200.00',
-            table12: '未缴纳',
-            table13: '200.00',
-            table14: '-',
-            table15: '2020-08-01',
+            type: 'startDate',
+            label: '计费时间',
+            placeholder: '请选择开始日期',
+            prop: 'beginDate',
           },
           {
-            table1: 3,
-            table2: '水费',
-            table3: '3-1-808',
-            table4: '2020-08-01',
-            table5: '2021-07-31',
-            table6: '0.7元/月/平方米',
-            table7: '100平方米',
-            table8: '1200.00',
-            table9: '1000.00',
-            table10: '1200.00',
-            table11: '200.00',
-            table12: '未缴纳',
-            table13: '',
-            table14: '',
-            table15: '2020-08-01',
+            type: 'endDate',
+            label: '计费时间',
+            placeholder: '结束时间',
+            prop: 'endDate',
           },
           {
-            table1: 4,
-            table2: '公共能耗费',
-            table3: '1-3-009',
-            table4: '2020-08-01',
-            table5: '2021-07-31',
-            table6: '2.9元/月/平方米',
-            table7: '50平方米',
-            table8: '1200.00',
-            table9: '1000.00',
-            table10: '1200.00',
-            table11: '200.00',
-            table12: '部分缴纳',
-            table13: '',
-            table14: '',
-            table15: '2020-08-01',
-          }
-        ]
+            type: 'Input',
+            label: '缴费人',
+            placeholder: '请选择',
+            prop: 'payName',
+          },
+          {
+            type: 'Input',
+            label: '联系方式',
+            placeholder: '请输入',
+            prop: 'tel',
+          },
+          {
+            type: 'Input',
+            label: '房屋信息',
+            placeholder: '楼栋/单元/房间号',
+            prop: 'roomName',
+          },
+          // 房屋信息
+        ],
+        data: {
+          pageNum: 1,
+          size: 10
+        },
       },
-      input_form: [
-
-        {
-          type: 'select',
-          label: '费用名称',
-          placeholder: '请输入',
-          value: '',
-          prop: 'houssssd',
-          options: [
-            {
-              label: '水电费',
-              value: '1'
-            },
-            {
-              label: '车辆费',
-              value: '2'
-            }
-          ],
-        },
-        {
-          type: 'startEndDate',
-          label: '计费时间',
-          rangeSeparator: '~',
-          startPlaceholder: '请选择开始日期',
-          endPlaceholder: '结束时间',
-          prop: 'date1'
-        },
-        {
-          type: 'Input',
-          label: '缴费人',
-          placeholder: '请选择',
-          prop: 'houses'
-        },
-        {
-          type: 'Input',
-          label: '联系方式',
-          placeholder: '请输入',
-          prop: 'housad22ssssd'
-        },
-        {
-          type: 'Input',
-          label: '房屋信息',
-          placeholder: '楼栋/单元/房间号',
-          prop: 'hou23sadasssssd'
-        },
-        // 房屋信息
-      ]
     }
   },
   components: {
     drawer,
     addFee,
-    Pay
+    Pay,
   },
   methods: {
+    handleClick (tab, event) {
+      let status = null
+      if (this.activeName != 0) {
+        status = this.activeName
+      } else {
+        status = null
+      }
+      const requestData = {
+        pageNum: 1,
+        size: 10,
+        status: status
+      }
+      this.$refs.table.requestData(requestData);
+    },
+    tableCheck (data) {
+      this.table_row = data;
+    },
     addFee () {
-      this.change = false;
-      this.addFee_show = true;
+      this.change = false
+      this.addFee_show = true
     },
     Pay () {
-      this.change = false;
-      this.Pay_show = true;
-    },
-    handleClick (row) {
-      console.log(row)
+      this.change = false
+      this.Pay_show = true
     },
     // 关闭抽屉
     getClose (data) {
-      this.drawer_vrisible = false;
-      console.log(data + "投票管理父组件");
+      this.drawer_vrisible = false
+      console.log(data + '投票管理父组件')
     },
     cancel (data) {
-      this.addFee_show = false;
-      this.Pay_show = false;
+      this.addFee_show = false
+      this.Pay_show = false
 
-      this.change = true;
-      console.log(data + "")
-    }
-  }
+      this.change = true
+      console.log(data + '')
+    },
+  },
 }
 </script>

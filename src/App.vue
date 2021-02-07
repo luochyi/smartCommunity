@@ -5,7 +5,7 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {}
   },
   components: {},
@@ -14,7 +14,7 @@ export default {
 </script>
 <style scoped>
 #app {
-  height: 100%;
-  overflow: hidden;
+    height: 100%;
+    overflow: hidden;
 }
 </style>

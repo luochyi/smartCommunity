@@ -9,45 +9,40 @@
         <el-button class="init-button"
                    icon="el-icon-plus"
                    @click="drawer_vrisible = true">添加费用</el-button>
-        <!-- 
-        <el-button class="init-text" type="text">模板下载</el-button> -->
       </div>
       <!-- 查询重制 -->
       <div class="">
-        <!-- 头部输入框 -->
-        <input-form :formItem="input_form"></input-form>
-        <el-tabs v-model="activeName"
-                 @tab-click="handleClick">
-          <el-tab-pane label="全部"
-                       name="first"></el-tab-pane>
-          <el-tab-pane label="未退"
-                       name="second"></el-tab-pane>
-          <el-tab-pane label="已退"
-                       name="third"></el-tab-pane>
-        </el-tabs>
-        <div class="content-table">
-          <tableData :config="table_config"></tableData>
-          <div class="table-footer">
-            <button @click="refundVrisible=true">退款</button>
-            <button>修改</button>
-          </div>
-        </div>
-        <table-pagination :pageSize='10'
-                          :totalNumber="30"></table-pagination>
+        <VueTable ref="table"
+                  :config='config'
+                  @tableCheck="tableCheck">
+          <template slot="tabs">
+            <el-tabs v-model="activeName"
+                     @tab-click="handleClick">
+              <el-tab-pane label="全部"
+                           name="0"></el-tab-pane>
+              <el-tab-pane label="未退"
+                           name="1"></el-tab-pane>
+              <el-tab-pane label="已退"
+                           name="2"></el-tab-pane>
+            </el-tabs>
+          </template>
+          <template slot="footer">
+            <div class="table-footer">
+              <button @click="refundVrisible=true">退款</button>
+              <button>修改</button>
+            </div>
+          </template>
+        </VueTable>
       </div>
     </div>
     <!-- 添加费用 -->
     <drawer :drawerVrisible='drawer_vrisible'
+            :drawerSize="'65%'"
             @handleClose='getClose'
             :drawer_config="drawer_config"></drawer>
     <!-- 退款 -->
     <Refund :drawerVrisible='refundVrisible'
             @handleClose='getClose'></Refund>
-    <!-- <record :drawerVrisible='recordVrisible'
-            @handleClose='getClose'></record> -->
-    <!-- recordVrisible: false,
-      this.recordVrisible = false;
-                 -->
   </div>
 </template>
 
@@ -57,7 +52,7 @@ import Refund from '@/views/charge/components/depositManagement/Refund.vue'
 export default {
   data () {
     return {
-      activeName: 'first',
+      activeName: '0',
       // 退款
       refundVrisible: false,
       // 添加抽屉数据
@@ -189,146 +184,100 @@ export default {
         ],
       },
       drawer_vrisible: false,
-      table_config: {
+      config: {
         thead: [
-          { label: '序号', prop: 'table1', width: '110' },
-          { label: '费用名称', prop: 'table2', width: '180' },
-          { label: '交易号', prop: 'table3', width: '180' },
-          { label: '房屋信息', prop: 'table4', width: '180' },
-          { label: '押金人姓名', prop: 'table5', width: '180' },
-          { label: '押金人联系方式', prop: 'table6', width: '180' },
-          { label: '缴费时间', prop: 'table7', width: '180' },
-          { label: '押金金额', prop: 'table8', width: '180' },
-          { label: '状态', prop: 'table9', width: '180' },
-          { label: '来源', prop: 'table10', width: '180' },
-          { label: '支付方式', prop: 'table11', width: '180' },
-          { label: '装修开始时间', prop: 'table12', width: '180' },
-          { label: '装修结束时间', prop: 'table13', width: '180' },
-          { label: '备注', prop: 'table14', width: '280' },
-          { label: '创建人', prop: 'table15', width: '180' },
-          { label: '更新时间', prop: 'table16', width: '180' },
+          { label: '序号', type: 'index', width: '80' },
+          { label: '费用名称', prop: 'chargesTemplateDetailName', width: '180' },
+          { label: '交易号', prop: 'orderCode', width: '180' },
+          { label: '房屋信息', prop: 'roomName', width: '180' },
+          { label: '押金人姓名', prop: 'depositName', width: '180' },
+          { label: '押金人联系方式', prop: 'tel', width: '180' },
+          { label: '缴费时间', prop: 'payDate', width: '180' },
+          { label: '押金金额', prop: 'depositPrice', width: '180' },
+          { label: '状态', prop: 'status', width: '180' },
+          { label: '来源', prop: 'froms', width: '180' },
+          { label: '支付方式', prop: 'payType', width: '180' },
+          { label: '装修开始时间', prop: 'renovationDateStart', width: '180' },
+          { label: '装修结束时间', prop: 'renovationDateEnd', width: '180' },
+          { label: '备注', prop: 'remake', width: '280' },
+          { label: '创建人', prop: 'createName', width: '180' },
+          { label: '更新时间', prop: 'updateDate', width: '180' },
         ],
-        table_data: [
+        table_data: [],
+        url: 'depositManagementList',
+        search_item: [
           {
-            table1: 1,
-            table2: '装修押金',
-            table3: '',
-            table4: '3-1-808',
-            table5: '田肖',
-            table6: '13446590637',
-            table7: '2020-08-01 10:22',
-            table8: '1000.00',
-            table9: '未退',
-            table10: 'app',
-            table11: 'app支付宝',
-            table12: '2020-08-01',
-            table13: '2020-08-01',
-            table14: '装修押金，若无破坏，押金全额退还',
-            table15: '任颢淳',
-            table16: '2020-08-01',
+            type: 'select',
+            label: '费用名称',
+            placeholder: '请选择',
+            value: '',
+            prop: 'chargesTemplateDetailId',
+            options: [
+              {
+                label: '水电费',
+                value: '1'
+              },
+              {
+                label: '车辆费',
+                value: '2'
+              }
+            ],
           },
           {
-            table1: 2,
-            table2: '进场保证金',
-            table3: '',
-            table4: '2-1-108',
-            table5: '王伟',
-            table6: '13446590637',
-            table7: '2020-08-01 10:22',
-            table8: '1000.00',
-            table9: '未退',
-            table10: 'app',
-            table11: 'app支付宝',
-            table12: '2020-08-01',
-            table13: '2020-08-01',
-            table14: '装修押金，若无破坏，押金全额退还',
-            table15: '任颢淳',
-            table16: '2020-08-01',
+            type: 'Input',
+            label: '房屋信息',
+            placeholder: '楼栋/单元/房间号',
+            prop: 'roomName'
           },
           {
-            table1: 3,
-            table2: '进场保证金',
-            table3: '202008090006322',
-            table4: '1-1-023',
-            table5: '李涛',
-            table6: '13446590637',
-            table7: '2020-08-01 10:22',
-            table8: '1000.00',
-            table9: '未退',
-            table10: 'app',
-            table11: 'app支付宝',
-            table12: '2020-08-01',
-            table13: '2020-08-01',
-            table14: '装修押金，若无破坏，押金全额退还',
-            table15: '任颢淳',
-            table16: '2020-08-01',
-          }
-        ]
-      },
-      input_form: [
-        {
-          type: 'select',
-          label: '费用名称',
-          placeholder: '请选择',
-          value: '',
-          prop: 'houssssd',
-          options: [
-            {
-              label: '水电费',
-              value: '1'
-            },
-            {
-              label: '车辆费',
-              value: '2'
-            }
-          ],
-        },
-        {
-          type: 'Input',
-          label: '房屋信息',
-          placeholder: '楼栋/单元/房间号',
-          prop: 'hou23sadasssssd'
-        },
-        {
-          type: 'startEndDate',
-          label: '计费时间',
-          rangeSeparator: '~',
-          startPlaceholder: '请选择开始日期',
-          endPlaceholder: '结束时间',
-          prop: 'date1'
-        },
-        {
-          type: 'select',
-          label: '来源',
-          placeholder: '请选择',
-          value: '',
-          prop: 'laiyuan',
-          options: [
-            {
-              label: '水电费',
-              value: '1'
-            },
-            {
-              label: '车辆费',
-              value: '2'
-            }
-          ],
-        },
-        {
-          type: 'Input',
-          label: '押金人',
-          placeholder: '请选择',
-          prop: 'houses'
-        },
-        {
-          type: 'Input',
-          label: '联系方式',
-          placeholder: '请输入',
-          prop: 'housad22ssssd'
-        },
+            type: 'startDate',
+            label: '计费时间',
+            placeholder: '请选择开始日期',
+            prop: 'payDateStart'
+          },
+          {
+            type: 'endDate',
+            label: '计费时间',
+            placeholder: '请选择结束日期',
+            prop: 'payDateEnd'
+          },
+          {
+            type: 'select',
+            label: '来源',
+            placeholder: '请选择',
+            value: '',
+            prop: 'froms',
+            options: [
+              {
+                label: '线下',
+                value: '1'
+              },
+              {
+                label: 'app',
+                value: '2'
+              }
+            ],
+          },
+          {
+            type: 'Input',
+            label: '押金人',
+            placeholder: '请选择',
+            prop: 'depositName'
+          },
+          {
+            type: 'Input',
+            label: '联系方式',
+            placeholder: '请输入',
+            prop: 'tel'
+          },
 
-        // 房屋信息
-      ]
+          // 房屋信息
+        ],
+        data: {
+          pageNum: 1,
+          size: 10
+        },
+      }
     }
   },
   components: {
@@ -337,8 +286,22 @@ export default {
 
   },
   methods: {
-    handleClick (row) {
-      console.log(row)
+    handleClick (tab, event) {
+      let status = null
+      if (this.activeName != 0) {
+        status = this.activeName
+      } else {
+        status = null
+      }
+      const requestData = {
+        pageNum: 1,
+        size: 10,
+        status: status
+      }
+      this.$refs.table.requestData(requestData);
+    },
+    tableCheck (data) {
+      this.table_row = data;
     },
     // 关闭抽屉
     getClose (data) {

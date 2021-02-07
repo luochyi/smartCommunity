@@ -1,140 +1,133 @@
 <template>
 
   <div>
-    <el-drawer title="我是标题"
-               :visible.sync="isVisibleDrawe"
-               size="58%"
-               :before-close="handleClose"
-               :with-header="false">
-      <div class="drawer-box">
-        <div class="dra-header">
-          <span>投票详情</span>
+    <Drawer drawerTitle="投票详情"
+            :drawerVrisible="isVisibleDrawe"
+            size="58%"
+            :before-close="handleClose">
+      <FromCard style="margin:30px">
+        <span slot="title">基本信息</span>
+        <VueForm ref="childFroms"
+                 :formObj='formData'>
+        </VueForm>
+        <div style="padding:20px">
+          <!-- 表格 -->
+          <!-- <tableData :config="table_config">
+            <template slot="button"
+                      slot-scope="slotData">
+              <el-button type="text"
+                         class="init-text"
+                         v-model="slotData.data.button"
+                         @click="details(slotData.data)">详情</el-button>
+            </template>
+          </tableData> -->
+          <VueTable ref="table"
+                    :config='config'>
+
+          </VueTable>
         </div>
-        <div class="dra-body">
-          <div class="dra-content">
-            <div class="content-titel">
-              <span>活动信息</span>
-            </div>
-            <div class="">
-              <!-- from 表单 -->
-              <form-datechildren :formItem="form_item"
-                                 :rulesItem="rules_item"
-                                 ref="formData">
-              </form-datechildren>
-              <div style="padding:20px">
-                <!-- 表格 -->
-                <tableData :config="table_config">
-                  <template slot="button"
-                            slot-scope="slotData">
-                    <el-button type="text"
-                               class="init-text"
-                               v-model="slotData.data.button"
-                               @click="details(slotData.data)">详情</el-button>
-                  </template>
-                </tableData>
-                <!-- 页码 -->
-                <table-pagination :pageSize='10'
-                                  :totalNumber='30'>
-                </table-pagination>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="dra-footer">
-          <div class="dra-footer-content">
-            <button class="dra-cancel"
-                    @click="handleClose()"><span>关闭</span></button>
-          </div>
-        </div>
+      </FromCard>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="handleClose"><span>取消</span></button>
       </div>
-    </el-drawer>
+    </Drawer>
 
   </div>
 </template>
 
 <script>
-// /Users/apple/Desktop/smartCommunity/basic-admin/src/components/form/formDate.vue
-import formDatechildren from '@/components/form/formDatechildren'
+import { voteFindDetailById, voteListVotePersonnel, voteListDetailCandidate } from '@/api/butler'
 export default {
   props: {
     drawerVrisible: {
       type: Boolean,
       default: false
-    }
-  },
-  components: {
-    formDatechildren
+    },
+    voteId: {
+      type: Number,
+      default: () => 0
+    },
   },
   data () {
     return {
       drawer: false,
       isVisibleDrawe: false,
-      form_item: [
-        {
-          type: 'span',
-          value: '赛龙舟节目最美龙舟评选',
-          label: '投票标题',
-          prop: 'userNam2e',
-          // disabled: 1
+      formData: {
+        ruleForm: {
+          title: '123123',
+          beginDate: null,
+          content: null,
+          endDate: null,
+          imgUrls: null,
+          type: null,
+
         },
-        {
-          type: 'span',
-          value: '2020-06-23 12:00',
-          label: '投票起始时间',
-          prop: 'date',
-          // disabled: 1
+        form_item: [
+          {
+            type: 'span',
+            width: '50%',
+            label: '投票标题',
+            prop: 'title',
+          },
+          {
+            type: 'span',
+            width: '50%',
+            label: '投票起始时间',
+            prop: 'beginDate',
+          },
+          {
+            type: 'span',
+            width: '50%',
+            label: '投票结束时间',
+            prop: 'endDate',
+          }
+          ,
+          {
+            type: 'span',
+            width: '50%',
+            label: '公开人群',
+            prop: 'type',
+          },
+          {
+            type: 'imagePreview',
+            width: '50%',
+            label: '公开人群',
+            prop: 'imgUrls',
+            width: '100%'
+          }
+          ,
+          {
+            type: 'span',
+            width: '50%',
+            label: '投票内容',
+            prop: 'content',
+            width: '100%'
+          }
+        ],
+        rules: {
+          content: [{ required: true },],
+          beginDate: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+          ],
+          endDate: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+          ],
+          imgUrls: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+          ],
+          type: [
+            { required: true, message: '', trigger: 'blur' }
+          ],
+          title: [
+            { required: true, message: '', trigger: 'blur' }
+          ]
+          // date userNam2e
         },
-        {
-          type: 'span',
-          value: '2020-06-23 18:00',
-          label: '投票结束时间',
-          prop: 'enddate',
-        }
-        ,
-        {
-          type: 'span',
-          value: '全部',
-          label: '公开人群',
-          prop: 'public',
-        },
-        {
-          type: 'imagePreview',
-          value: '全部',
-          label: '公开人群',
-          prop: 'imagePreview',
-          width: '100%'
-        }
-        ,
-        {
-          type: 'span',
-          value: '请大家踊跃参加，选举出2020年最美龙舟队',
-          label: '投票内容',
-          prop: 'content',
-          width: '100%'
-        }
-        // imagePreview
-      ],
-      rules_item: {
-        date: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-        ],
-        userNam2e: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-        ],
-        enddate: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-        ],
-        public: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-        ],
-        imagePreview: [
-          { required: true, message: '', trigger: 'blur' }
-        ],
-        content: [
-          { required: true, message: '', trigger: 'blur' }
-        ]
-        // date userNam2e
       },
+      details_voteId: null,
       table_config: {
         thead: [
           { label: '序号', prop: 'table1', width: 'auto' },
@@ -170,43 +163,74 @@ export default {
           },
 
         ]
-      }
-    
+      },
+      config: {
+        checkbox: false,
+        thead: [
+          { label: '序号', type: 'index', width: '80' },
+          { label: '投票标题', prop: 'title', width: 'auto' },
+          { label: '投票开始时间', prop: 'beginDate', width: 'auto' },
+          { label: '投票结束时间', prop: 'endDate', width: 'auto' },
+          { label: '活动状态', prop: 'status', width: 'auto' },
+          { label: '备注', prop: 'voteResult', width: 'auto' },
+        ],
+        url: 'voteList',
+        table_data: [],
+        search_item: [],
+        data: {
+          pageNum: 1,
+          size: 3,
+        },
+      },
     }
-  },
-  mounted () {
-    console.log('---------mounted')
   },
   methods: {
     // 提交
     onSubmit () {
+      this.isVisibleDrawe = false
       this.$emit('handleClose', "onSubmit")
-
     },
     details (obj) {
-      console.log('---------')
       this.$emit('details_obj', obj)
+    },
+    getData () {
+      if (!this.isVisibleDrawe || !this.details_voteId) {
+        return
+      }
+      let resData = {
+        id: this.details_voteId
+      }
+      voteFindDetailById(resData).then(res => {
+        // console.log(res)
+      })
+      let resDataD = {
+        pageNum: 1,
+        size: 10,
+        id: this.details_voteId
+      }
+      voteListDetailCandidate(resDataD).then(res => {
+        console.log(res)
+      })
     },
     // 重置
     // 取消关闭esc
     handleClose () {
+      this.isVisibleDrawe = false
       this.$emit('handleClose', "Close")
     },
-    initConfig () {
-      // 父组件传递数据过滤
-      for (const key in this.drawer_config) {
-        if (Object.keys(this.configObj).includes(key)) {
-          this.configObj[key] = this.drawer_config[key]
-        }
-      }
 
-    },
   },
   watch: {
     drawerVrisible: {
       handler (newValue) {
         this.isVisibleDrawe = newValue
-        console.log(newValue)
+      },
+      immediate: true
+    },
+    voteId: {
+      handler (newValue) {
+        this.details_voteId = newValue
+        this.getData()
       },
       immediate: true
     },
@@ -214,10 +238,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-.content-titel2 {
-  margin: 0px 0px 20px 30px;
-  padding-top: 30px;
-  border-top: 1px solid #e8e8e8;
-}
-</style>

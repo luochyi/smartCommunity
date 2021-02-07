@@ -10,83 +10,78 @@
             <span>基本信息</span>
           </div>
           <div class="">
-            <el-form
-              :model="ruleForm"
-              :rules="rules"
-              ref="ruleForm"
-              label-width="100px"
-              class="demo-ruleForm"
-            >
-              <el-form-item label="公告标题" prop="name">
-                <el-input
-                  size="small"
-                  style="width:240px"
-                  placeholder="请输入"
-                  v-model="ruleForm.name"
-                >
+            <el-form :model="ruleForm"
+                     :rules="rules"
+                     ref="ruleForm"
+                     label-width="100px"
+                     class="demo-ruleForm">
+              <el-form-item label="公告标题"
+                            prop="name">
+                <el-input size="small"
+                          style="width:240px"
+                          placeholder="请输入"
+                          v-model="ruleForm.name">
                 </el-input>
               </el-form-item>
-              <el-form-item label="公告类型" prop="region">
-                <el-select
-                  size="small"
-                  style="width:240px"
-                  v-model="ruleForm.region"
-                  placeholder="请选择活动区域"
-                >
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+              <el-form-item label="公告类型"
+                            prop="region">
+                <el-select size="small"
+                           style="width:240px"
+                           v-model="ruleForm.region"
+                           placeholder="请选择活动区域">
+                  <el-option label="区域一"
+                             value="shanghai"></el-option>
+                  <el-option label="区域二"
+                             value="beijing"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="公告图片" prop="region">
+              <el-form-item label="公告图片"
+                            prop="region">
                 <el-upload action="https://jsonplaceholder.typicode.com/posts/">
-                  <el-button icon="el-icon-edit" size="small"
-                    >上传图片</el-button
-                  >
-                  <span>建议比例：3:2</span>
-                  <div slot="tip" class="el-upload__tip">
+                  <el-button icon="el-icon-edit"
+                             size="small">上传图片</el-button>
+                  <span style='margin-left:10px;font-size:12px;color:#444444'>建议比例：3:2</span>
+                  <div slot="tip"
+                       class="el-upload__tip">
                     <span>支持扩展名：png.pdf.jpg</span>
                   </div>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="公告内容" prop="region">
-                <el-input
-                  type="textarea"
-                  :rows="5"
-                  placeholder="请输入内容"
-                  v-model="ruleForm.textarea"
-                >
+              <el-form-item label="公告内容"
+                            prop="region">
+                <el-input type="textarea"
+                          :rows="5"
+                          placeholder="请输入内容"
+                          v-model="ruleForm.textarea">
                 </el-input>
               </el-form-item>
-              <el-form-item label="活动区域" prop="region">
-                <el-upload
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  size="small"
-                  style="width:300px"
-                >
-                  <el-button icon="el-icon-edit" size="small"
-                    >上传文件</el-button
-                  >
+              <el-form-item label="活动区域"
+                            prop="region">
+                <el-upload action="https://jsonplaceholder.typicode.com/posts/"
+                           size="small"
+                           style="width:300px">
+                  <el-button icon="el-icon-edit"
+                             size="small">上传文件</el-button>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="状态" prop="region">
-                <el-select
-                  size="small"
-                  style="width:240px;"
-                  v-model="ruleForm.region"
-                  placeholder="请选择活动区域"
-                >
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+              <el-form-item label="状态"
+                            prop="region">
+                <el-select size="small"
+                           style="width:240px;"
+                           v-model="ruleForm.region"
+                           placeholder="请选择活动区域">
+                  <el-option label="区域一"
+                             value="shanghai"></el-option>
+                  <el-option label="区域二"
+                             value="beijing"></el-option>
                 </el-select>
                 <!-- <el-date-picker v-model="value1" placeholder="选择日期">
                 </el-date-picker> -->
-                <el-date-picker
-                  type="date"
-                  size="small"
-                  style="width:240px;margin-left:30px; margin-bottom:99px"
-                  placeholder="选择日期"
-                  v-model="ruleForm.date1"
-                ></el-date-picker>
+                <el-date-picker type="date"
+                                size="small"
+                                style="width:240px;margin-left:30px; margin-bottom:99px"
+                                placeholder="选择日期"
+                                v-model="ruleForm.date1"></el-date-picker>
               </el-form-item>
             </el-form>
           </div>
@@ -94,10 +89,8 @@
       </div>
       <div class="dra-footer">
         <div class="dra-footer-content">
-          <button
-            class="dra-submit el-icon-circle-check"
-            @click="onSubmit('ruleForm')"
-          >
+          <button class="dra-submit el-icon-circle-check"
+                  @click="onSubmit('ruleForm')">
             <span>提交</span>
           </button>
           <button class="dra-cancel"><span>取消</span></button>
@@ -109,7 +102,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       input: '',
       ruleForm: {
@@ -186,7 +179,7 @@ export default {
     }
   },
   methods: {
-    onSubmit(ruleForm) {
+    onSubmit (ruleForm) {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
           // console.log(this.ruleForm)
@@ -202,11 +195,11 @@ export default {
 </script>
 <style scoped>
 .content-titel2 {
-  margin: 0px 0px 20px 30px;
-  padding-top: 30px;
-  border-top: 1px solid #e8e8e8;
+    margin: 0px 0px 20px 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e8e8e8;
 }
 .el-form-item {
-  width: 100%;
+    width: 100%;
 }
 </style>

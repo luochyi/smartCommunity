@@ -1,167 +1,164 @@
 <template>
   <div>
-    <div class="drawer-box">
-      <div class="dra-header">
-        <span>详情</span>
-      </div>
-      <div class="dra-body">
-        <div class="dra-content">
-          <div class="content-titel">
-            <span>基本信息</span>
+    <Drawer :drawerTitle="drawerTitle"
+            @drawerClose="drawerClose"
+            :drawerVrisible='drawer_vrisible'>
+      <FromCard style="margin:30px">
+        <span slot="title">基本信息</span>
+        <div class="flex">
+          <div class="from_item">
+            <div class="from_lable"><span>姓名</span></div>
+            <div class="from_content"><span>{{userResident.name}}</span></div>
           </div>
-          <div class="">
-            <el-form
-              ref="form"
-              label-position="right"
-              :model="form"
-              label-width="100px"
-            >
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="姓名">
-                    <span>王康康</span>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="手机号">
-                    <span>13380259377</span>
-                  </el-form-item>
-                </div>
-              </div>
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="房屋产权1">
-                    <span>1-2-303</span>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="房屋产权2">
-                    <span>1-2-304</span>
-                  </el-form-item>
-                </div>
-              </div>
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="车位产权1">
-                    <span>A220</span>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="车位产权2">
-                    <span>A206</span>
-                  </el-form-item>
-                </div>
-              </div>
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="车辆1">
-                    <span>浙BA1U88</span>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="车辆2">
-                    <span>浙BC88U2</span>
-                  </el-form-item>
-                </div>
-              </div>
-            </el-form>
+          <div class="from_item">
+            <div class="from_lable"><span>手机号</span></div>
+            <div class="from_content"><span>{{userResident.tel}}</span></div>
           </div>
+          <template v-if="cpmBuildingUnitEstateIdList.length > 0">
+            <div class="from_item"
+                 v-for="(item,index) in cpmBuildingUnitEstateIdList"
+                 :key="'house'+index">
+              <div class="from_lable"><span>房屋产权{{index + 1}}</span></div>
+              <div class="from_content"><span>{{item}}</span></div>
+            </div>
+          </template>
+
+          <template v-if="cpmParkingSpaceIdList.length > 0">
+            <div class="from_item"
+                 v-for="(item,index) in cpmParkingSpaceIdList"
+                 :key="'park' + index">
+              <div class="from_lable"><span>车位产权{{index + 1}}</span></div>
+              <div class="from_content"><span>{{item}}</span></div>
+            </div>
+          </template>
+
         </div>
-        <div class="dra-content">
-          <div class="content-titel">
-            <span>家庭成员</span>
-          </div>
-          <div class="dra-table">
-            <el-table
-              :data="tableData"
-              highlight-current-row
-              :header-cell-style="{ background: '#F5F5F6', color: '#999999' }"
-            >
-              <el-table-column prop="id" label="序号" width="180">
+      </FromCard>
+      <FromCard style="margin:30px">
+        <span slot="title">家庭成员</span>
+        <div class="content-table">
+          <template>
+            <el-table :data="tableData"
+                      highlight-current-row
+                      :header-cell-style="{ background: '#F5F5F6', color: '#999999' }"
+                      style="width: 100%">
+              <el-table-column label="序号"
+                               width="80"
+                               type="index">
               </el-table-column>
-              <el-table-column prop="ParkingNumber" label="姓名" width="180">
+              <el-table-column prop="name"
+                               label="姓名">
               </el-table-column>
-              <el-table-column prop="status" label="手机号"> </el-table-column>
-              <el-table-column prop="ParkingType" label="身份">
+              <el-table-column prop="tel"
+                               label="手机号">
+              </el-table-column>
+              <el-table-column prop="identity"
+                               label="身份">
               </el-table-column>
             </el-table>
-          </div>
+          </template>
         </div>
+      </FromCard>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="drawerClose"><span>取消</span></button>
       </div>
-      <div class="dra-footer">
-        <div class="dra-footer-content">
-          <button class="dra-submit el-icon-circle-check">
-            <span>提交</span>
-          </button>
-          <button class="dra-cancel"><span>取消</span></button>
-        </div>
-      </div>
-    </div>
+    </Drawer>
   </div>
 </template>
 
 <script>
+import { userResidentFindById } from '@/api/basic'
 export default {
-  data() {
+  props: {
+    drawerVrisible: {
+      type: Boolean,
+      default: () => false
+    },
+    drawerTitle: {
+      type: String,
+      default: () => "业主详情"
+    },
+    owerId: {
+      type: Number,
+      default: () => null
+    }
+  },
+  data () {
     return {
-      input: '',
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
-      value: '',
-      tableData: [
-        {
-          id: 1,
-          ParkingNumber: 'A128',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
-        }
-      ]
+      drawer_vrisible: false,
+      tableData: [],
+      userResident: {},
+      cpmBuildingUnitEstateIdList: [],
+      cpmParkingSpaceIdList: []
     }
   },
   methods: {
-    onSubmit() {
-      console.log('submit!')
-    }
+    onSubmit () {
+
+    },
+    getData (id) {
+      let resData = {
+        id: id
+      }
+      userResidentFindById(resData).then(res => {
+        console.log(res)
+        this.tableData = res.voRelativesList
+        this.cpmParkingSpaceIdList = res.cpmParkingSpaceIdList
+        this.userResident = res.userResident
+        this.cpmBuildingUnitEstateIdList = res.cpmBuildingUnitEstateIdList
+      })
+    },
+    drawerClose () {
+      this.drawer_vrisible = false;
+      this.$emit('handleClose', 'Close')
+    },
+  },
+  watch: {
+    drawerVrisible: {
+      handler (newValue) {
+        this.drawer_vrisible = newValue
+      }
+    },
+    owerId: {
+      handler (newValue) {
+        this.getData(newValue)
+      }
+    },
   }
 }
 </script>
-<style scoped>
-.el-form-item span {
-  color: #666666;
-  font-weight: 400;
-  font-size: 14px;
+
+<style scoped lang='scss'>
+.flex {
+    margin: 17px 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    .from_item {
+        display: flex;
+        align-items: center;
+        width: 50%;
+        margin-bottom: 30px;
+        .from_lable {
+            font-size: 14px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #333333;
+            text-align: right;
+            width: 80px;
+        }
+        .from_content {
+            width: 80px;
+            margin-left: 24px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #666666;
+        }
+    }
 }
 </style>
+

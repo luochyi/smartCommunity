@@ -99,63 +99,63 @@ export default {
 
 <style scoped>
 .imgbtn {
-  cursor: pointer;
-  width: 100px;
-  height: 40px;
-  border-radius: 8px;
-  background: skyblue;
-  margin: 200px auto;
-  opacity: 0.8;
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    background: skyblue;
+    margin: 200px auto;
+    opacity: 0.8;
 }
 
 .imgbtn:hover {
-  opacity: 1;
+    opacity: 1;
 }
 .imgitem {
-  font-style: 0;
+    font-style: 0;
 }
 .imgitem img {
-  width: 100%;
-  height: 100%;
-  font-size: 0;
-  z-index: 10;
+    width: 100%;
+    height: 100%;
+    font-size: 0;
+    z-index: 10;
 }
 .imglist {
-  position: relative;
+    position: relative;
 }
 .imgfooter {
-  z-index: 100;
-  width: 100%;
-  text-align: center;
-  position: absolute;
-  bottom: 20px;
+    z-index: 100;
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 20px;
 }
 .imgfooter span {
-  font-size: 20px;
-  font-size: 20px;
-  font-weight: 500;
-  color: #ffffff;
-  line-height: 28px;
+    font-size: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 28px;
 }
 .imgleft img,
 .imgright img {
-  width: 100%;
+    width: 100%;
 }
 .imgleft,
 .imgright {
-  cursor: pointer;
-  position: relative;
-  width: 24px;
-  height: 40px;
+    cursor: pointer;
+    position: relative;
+    width: 24px;
+    height: 40px;
 }
 .imgleft {
-  position: absolute;
-  top: 50%;
-  left: 20px;
+    position: absolute;
+    top: 50%;
+    left: 20px;
 }
 .imgright {
-  position: absolute;
-  top: 50%;
-  right: 20px;
+    position: absolute;
+    top: 50%;
+    right: 20px;
 }
 </style>

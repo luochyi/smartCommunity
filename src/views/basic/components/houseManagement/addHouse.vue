@@ -10,28 +10,35 @@
             <span>基本信息</span>
           </div>
           <div class="">
-            <el-form ref="form" label-position="right" :model="form" label-width="100px">
+            <el-form ref="form"
+                     label-position="right"
+                     :model="form"
+                     label-width="100px">
               <div class="form-box">
-                 <div class="form-item">
-                   <el-form-item label="楼栋">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                <div class="form-item">
+                  <el-form-item label="楼栋">
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small"
+                               style="width:240px">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
                       </el-option>
                     </el-select>
                   </el-form-item>
                 </div>
                 <div class="form-item">
-                   <el-form-item label="单元号">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                  <el-form-item label="单元号">
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small"
+                               style="width:240px">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -40,47 +47,28 @@
               <div class="form-box">
                 <div class="form-item">
                   <el-form-item label="房屋名称">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small"
+                               style="width:240px">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
                       </el-option>
                     </el-select>
                   </el-form-item>
                 </div>
                 <div class="form-item">
-                   <el-form-item label="房屋状态">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="车位编号">
-                    <el-input v-model="form.name"
-                    size="small"
-                    style="width:240px"
-                    placeholder="请输入"
-                    >
-                    <i slot="suffix" style="font-style:normal" class="metre">㎡</i>
-                    </el-input>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                   <el-form-item label="房屋类型">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                  <el-form-item label="房屋状态">
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small"
+                               style="width:240px">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -88,15 +76,42 @@
                 <div class="form-item">
                   <el-form-item label="车位编号">
                     <el-input v-model="form.name"
-                    size="small"
-                    style="width:240px"
-                    placeholder="请输入"
-                    >
-                    <i slot="suffix" style="font-style:normal" class="metre">㎡</i>
+                              size="small"
+                              style="width:240px"
+                              placeholder="请输入">
+                      <i slot="suffix"
+                         style="font-style:normal"
+                         class="metre">㎡</i>
                     </el-input>
                   </el-form-item>
                 </div>
-                 <div class="form-item">
+                <div class="form-item">
+                  <el-form-item label="房屋类型">
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small"
+                               style="width:240px">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </div>
+                <div class="form-item">
+                  <el-form-item label="车位编号">
+                    <el-input v-model="form.name"
+                              size="small"
+                              style="width:240px"
+                              placeholder="请输入">
+                      <i slot="suffix"
+                         style="font-style:normal"
+                         class="metre">㎡</i>
+                    </el-input>
+                  </el-form-item>
+                </div>
+                <div class="form-item">
                 </div>
               </div>
               <!-- <el-form-item>
@@ -106,31 +121,35 @@
             </el-form>
           </div>
         </div>
-         <div class="dra-content">
+        <div class="dra-content">
           <div class="content-titel">
             <span>业主关联</span>
           </div>
           <div class="">
-            <el-form ref="form" label-position="right" :model="form" label-width="100px">
+            <el-form ref="form"
+                     label-position="right"
+                     :model="form"
+                     label-width="100px">
               <div class="form-box">
                 <div class="form-item">
                   <el-form-item label="业主姓名">
                     <el-input v-model="form.name"
-                    size="small"
-                    style="width:240px"
-                    placeholder="请输入"
-                    >
+                              size="small"
+                              style="width:240px"
+                              placeholder="请输入">
                     </el-input>
                   </el-form-item>
                 </div>
-                 <div class="form-item">
-                   <el-form-item label="联系方式">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                <div class="form-item">
+                  <el-form-item label="联系方式">
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small"
+                               style="width:240px">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -139,24 +158,28 @@
               <div class="form-box">
                 <div class="form-item">
                   <el-form-item label="证件类型">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small"
+                               style="width:240px">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
                       </el-option>
                     </el-select>
                   </el-form-item>
                 </div>
-                 <div class="form-item">
+                <div class="form-item">
                   <el-form-item label="证件号码">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small"
+                               style="width:240px">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -173,7 +196,7 @@
 
       <div class="dra-footer">
         <div class="dra-footer-content">
-          <button  class="dra-submit el-icon-circle-check"><span>提交</span></button>
+          <button class="dra-submit el-icon-circle-check"><span>提交</span></button>
           <button class="dra-cancel"><span>取消</span></button>
         </div>
       </div>

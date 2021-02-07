@@ -1,400 +1,303 @@
 <template>
   <div>
-    <div class="drawer-box">
-      <div class="dra-header">
-        <span>修改租户</span>
-      </div>
-      <div class="dra-body">
-        <div class="dra-content">
-          <div class="content-titel">
-            <span>基本信息</span>
-          </div>
-          <div class="">
-            <el-form ref="form" label-position="right" :model="form" label-width="100px">
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="姓名">
-                    <el-input v-model="form.name"
-                    disabled
-                    size="small"
-                    style="width:240px"
-                    placeholder="程计园"
-                    >
-                    </el-input>
-                  </el-form-item>
-                </div>
-                 <div class="form-item">
-                   <el-form-item label="手机号">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
+    <Drawer :drawerTitle="drawerTitle"
+            @drawerClose="drawerClose"
+            :drawerVrisible='drawer_vrisible'>
+      <FromCard style="margin:30px">
+        <span slot="title">基本信息</span>
+        <VueForm ref="childFrom"
+                 :formObj='fromjson'>
+        </VueForm>
+        <template>
+          <div>
+            <div class="hr"></div>
+            <div>
+              <div class="add">
+                <span @click="addMember">添加成员</span>
               </div>
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="证件类型">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="证件号码">
-                    <el-input v-model="form.name"
-                    size="small"
-                    style="width:240px"
-                    placeholder="请输入"
-                    >
-                    </el-input>
-                  </el-form-item>
-                </div>
-              </div>
-               <div class="form-box">
-                <div class="form-item" style="width:100%">
-                  <el-form-item label="状态">
-                    <div style="display:flex">
-                      <el-select v-model="value" placeholder="幢" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="单元" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="房间号" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-
-                    </div>
-                  </el-form-item>
-                </div>
-                <div class="form-item" style="width:100%">
-                  <el-form-item label="状态">
-                    <div style="display:flex">
-                      <el-select v-model="value" placeholder="幢" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="单元" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="房间号" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-button type="text" icon="el-icon-circle-plus-outline" style="font-size:19px;color:#444444"></el-button>
-                      <el-button type="text" icon="el-icon-remove-outline" style="font-size:19px;color:#444444"></el-button>
-                    </div>
-                  </el-form-item>
-                </div>
-               </div>
-               <div class="form-box">
-                <div class="form-item" style="width:100%">
-                  <el-form-item label="状态">
-                    <div style="display:flex">
-                      <el-select v-model="value" placeholder="幢" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="单元" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="房间号" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-
-                    </div>
-                  </el-form-item>
-                </div>
-                <div class="form-item" style="width:100%">
-                  <el-form-item label="状态">
-                    <div style="display:flex">
-                      <el-select v-model="value" placeholder="幢" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="单元" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="房间号" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-button type="text" icon="el-icon-circle-plus-outline" style="font-size:19px;color:#444444" @click="addDomain"></el-button>
-                      <el-button type="text" icon="el-icon-remove-outline" style="font-size:19px;color:#444444" @click.prevent="removeDomain(domain)"></el-button>
-                    </div>
-                  </el-form-item>
-                </div>
-                <div class="form-item" style="width:100%" v-for="(domain, index) in dynamicValidateForm.domains" :key="domain.key">
-                  <el-form-item :label="'车位'+index">
-                    <div style="display:flex">
-                      <!-- :prop="'domains.' + index + '.value'" -->
-                      <el-select v-model="value" placeholder="幢" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="单元" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="房间号" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-button type="text" icon="el-icon-circle-plus-outline" style="font-size:19px;color:#444444" @click="addDomain"></el-button>
-                      <el-button type="text" icon="el-icon-remove-outline" style="font-size:19px;color:#444444" @click.prevent="removeDomain(domain)"></el-button>
-                    </div>
-                  </el-form-item>
-                </div>
-                <!-- <el-form-item
-    v-for="(domain, index) in dynamicValidateForm.domains"
-    :label="'域名' + index"
-    :key="domain.key"
-    :prop="'domains.' + index + '.value'"
-    :rules="{
-      required: true, message: '域名不能为空', trigger: 'blur'
-    }"
-  >
-    <el-input v-model="domain.value"></el-input><el-button @click.prevent="removeDomain(domain)">删除</el-button>
-  </el-form-item> -->
-               </div>
-            </el-form>
-          </div>
-          <div class="dra-content2">
-            <div class="content-titel2">
-              <el-button class="init-text" type="text">添加成员</el-button>
-            </div>
-            <div class="dra-table">
               <div class="content-table">
-                <el-table
-                :data="tableData"
-                style="width: 100%"
-                highlight-current-row
-                :header-cell-style="{background:'#F5F5F6',color:'#999999'}"
-                >
-                  <el-table-column
-                    prop="id"
-                    label="序号"
-                    width="70">
-                  </el-table-column>
-                  <el-table-column
-                    label="姓名">
-                    <template>
-                      <el-input size="small" v-model="input" placeholder="请输入内容"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    label="手机号">
-                    <template>
-                      <el-input size="small" v-model="input" placeholder="请输入内容"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    label="身份">
-                    <template>
-                      <el-select v-model="value" placeholder="请选择" size="small">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    label="证件类型">
-                    <el-select v-model="value" placeholder="请选择" size="small">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                  </el-table-column>
-                  <el-table-column
-                    label="证件号码"
-                    width="180"
-                    prop="input">
-                    <template>
-                      <div style="display:flex;align-items: center;">
-                        <div>
-                          <el-input size="small" v-model="input" placeholder="请输入内容"></el-input>
+                <template>
+                  <el-table :data="tableData"
+                            highlight-current-row
+                            :header-cell-style="{ background: '#F5F5F6', color: '#999999' }"
+                            style="width: 100%">
+                    <el-table-column label="序号"
+                                     width="80"
+                                     type="index">
+                    </el-table-column>
+                    <el-table-column prop="date"
+                                     label="姓名">
+                      <template slot-scope="scope">
+                        <el-input size="small"
+                                  v-model="scope.row.name"
+                                  placeholder="请输入"></el-input>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="name"
+                                     label="手机号">
+                      <template slot-scope="scope">
+                        <el-input size="small"
+                                  v-model="scope.row.tel"
+                                  placeholder="请输入"></el-input>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="address"
+                                     label="身份">
+                      <template slot-scope="scope">
+                        <!-- <el-input size="small"
+                                  v-model="scope.row.identity"
+                                  placeholder="请输入"></el-input> -->
+                        <el-select size="small"
+                                   v-model="scope.row.identity"
+                                   placeholder="请输入">
+                          <el-option v-for="item in userOptions"
+                                     :key="item.value"
+                                     :label="item.label"
+                                     :value="item.value">
+                          </el-option>
+                        </el-select>
+                        <!-- userOptions -->
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="证件类型">
+                      <template slot-scope="scope">
+                        <el-select size="small"
+                                   v-model="scope.row.idType"
+                                   placeholder="请输入">
+                          <el-option v-for="item in idTypeOptions"
+                                     :key="item.value"
+                                     :label="item.label"
+                                     :value="item.value">
+                          </el-option>
+                        </el-select>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="address"
+                                     width="220"
+                                     label="证件号码">
+                      <template slot-scope="scope">
+                        <div class="column_flex">
+                          <div style='flex:1'>
+                            <el-input size="small"
+                                      v-model="scope.row.idNumber"
+                                      placeholder="请输入"></el-input>
+                          </div>
+                          <div @click="deleteRow(scope.$index, tableData)"
+                               v-if="scope.$index !== 0"
+                               style='padding-left:10px;'><span><i class="el-icon-delete"></i></span></div>
                         </div>
-                        <div>
-                          <el-button type="text"  icon="el-icon-delete" style="color:#444444;font-size:20px"></el-button>
-                        </div>
-                      </div>
-                    </template>
-                  </el-table-column>
-                </el-table>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
               </div>
             </div>
           </div>
-        </div>
+        </template>
+      </FromCard>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="drawerClose"><span>取消</span></button>
       </div>
-      <div class="dra-footer">
-        <div class="dra-footer-content">
-          <button  class="dra-submit el-icon-circle-check"><span>提交</span></button>
-          <button class="dra-cancel"><span>取消</span></button>
-        </div>
-      </div>
-    </div>
+    </Drawer>
   </div>
 </template>
 
 <script>
+import { userResidentFindById, userResidentUpdateRelatives } from '@/api/basic'
 export default {
+  props: {
+    drawerVrisible: {
+      type: Boolean,
+      default: () => false
+    },
+    drawerTitle: {
+      type: String,
+      default: () => ""
+    },
+    owerId: {
+      type: Number,
+      default: () => null
+    }
+  },
   data () {
     return {
-      input: '',
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      dynamicValidateForm: {
-        domains: [{
-          value: ''
-        }]
-      },
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      },
-      {
-        value: '选项2',
-        label: '双皮奶'
-      },
-      {
-        value: '选项3',
-        label: '蚵仔煎'
-      },
-      {
-        value: '选项4',
-        label: '龙须面'
-      },
-      {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value: '',
-      tableData: [{
-        id: 1,
-        ParkingNumber: 'A128',
-        status: '已售',
-        ParkingType: '产权车位',
-        owner: '夏恒灵',
-        userName: '夏恒灵 ',
-        phone: '18965334842'
-      }]
+      // 亲属
+      userOptions: [
+        {
+          label: '父亲',
+          value: 1
+        },
+        {
+          label: '母亲',
+          value: 2
+        }
+      ],
+      // 亲属
+      idTypeOptions: [
+        {
+          label: '身份证',
+          value: 1
+        },
+        {
+          label: '营业执照',
+          value: 2
+        }
+      ],
+      drawer_vrisible: false,
+      // 亲属表格
+      tableData: [],
+      userResident: {},
+      cpmBuildingUnitEstateIdList: [],
+      cpmParkingSpaceIdList: [],
+      // 基本信息
+      fromjson: {
+        ruleForm: {
+          tel: null,
+          name: null,
+          idType: null,
+          idNumber: null,
+        },
+        form_item: [
+          {
+            type: 'Input',
+            label: '业主姓名',
+            placeholder: '请输入',
+            disabled: true,
+            width: '50%',
+            prop: 'name'
+          },
+          {
+            type: 'Input',
+            label: '联系方式',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'tel'
+          },
+          {
+            type: 'Select',
+            label: '证件类型',
+            disabled: true,
+            placeholder: '请输入',
+            options: [
+              { value: 1, label: '身份证' },
+              { value: 2, label: '营业执照' },
+            ],
+            width: '50%',
+            prop: 'idType'
+          },
+          {
+            type: 'Input',
+            label: '证件号码',
+            placeholder: '请输入',
+            disabled: true,
+            width: '50%',
+            prop: 'idNumber'
+          }
+        ]
+      }
     }
   },
   methods: {
+    //  提交
     onSubmit () {
-      console.log('submit!')
-    },
-    addDomain () {
-      this.dynamicValidateForm.domains.push({
-        value: '',
-        key: Date.now()
+      this.fromjson.ruleForm.id = this.owerId
+      let table_data = this.tableData.map(({ name, tel, idType, idNumber, identity }) => ({ name, tel, idType, idNumber, identity }))
+      let resData = {
+        userResident: this.fromjson.ruleForm,
+        userRelatives: table_data
+      }
+      userResidentUpdateRelatives(resData).then(res => {
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.drawerClose()
+        }
       })
     },
-    removeDomain (item) {
-      var index = this.dynamicValidateForm.domains.indexOf(item)
-      if (index !== -1) {
-        this.dynamicValidateForm.domains.splice(index, 1)
+    getData (id) {
+      let resData = {
+        id: id
       }
+      userResidentFindById(resData).then(res => {
+        this.fromjson.ruleForm.tel = res.userResident.tel
+        this.fromjson.ruleForm.name = res.userResident.name
+        this.fromjson.ruleForm.idType = res.userResident.idType
+        this.fromjson.ruleForm.idNumber = res.userResident.idNumber
+        this.tableData = res.voRelativesList
+      })
+    },
+    // 弹窗关闭
+    drawerClose () {
+      this.drawer_vrisible = false;
+      this.$emit('handleClose', 'Close')
+    },
+    // 添加成员
+    addMember () {
+      this.tableData.push({
+        name: null,
+        tel: null,
+        idType: null,
+        idNumber: null,
+        identity: null
+      })
+    },
+    deleteRow (index, rows) {
+      rows.splice(index, 1);
     }
+  },
+  watch: {
+    drawerVrisible: {
+      handler (newValue) {
+        this.drawer_vrisible = newValue
+      }
+    },
+    owerId: {
+      handler (newValue) {
+        this.getData(newValue)
+      }
+    },
   }
 }
 </script>
-<style scoped>
-  .content-titel2{
-    margin: 0px 0px 20px 30px;
-    padding-top: 30px;
-    border-top: 1px solid #E8E8E8;
-  }
+
+<style scoped lang='scss'>
+.flex {
+    margin: 17px 0;
+    display: flex;
+    align-items: center;
+}
+.label-span {
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    width: 80px;
+}
+.add {
+    margin-bottom: 20px;
+
+    span {
+        cursor: pointer;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #fb4702;
+        line-height: 20px;
+    }
+}
+.hr {
+    margin: 30px 0;
+    height: 1px;
+    background: #e8e8e8;
+}
+.column_flex {
+    display: flex;
+    align-items: center;
+}
 </style>
+

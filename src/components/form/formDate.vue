@@ -1,214 +1,260 @@
-<template>
-  <el-table
-    :data="tableData"
-    style="width: 100%"
-    highlight-current-row
-    :header-cell-style="{ background: '#F5F5F6', color: '#999999' }"
-  >
-    <el-table-column type="expand">
-      <template>
-        <div class="shop_table_box" style="margin-left:32px">
-          <div class="shop_table">
-            <div class="shop_th"><span>主订单编号：323534520359</span></div>
-            <div class="shop_th"><span>订单类型：零售订单</span></div>
-            <div class="shop_th">
-              <span>下单时间：2020-08-12 17:14:39</span>
-            </div>
-            <div class="shop_th">
-              <span>支付方式：在线支付-微信支付</span>
-            </div>
-            <div class="shop_th">
-              <span>操作： <span>联系买家</span></span>
-            </div>
-          </div>
-          <tableData :config="table_config" @clickrow="tableRow"></tableData>
-        </div>
-      </template>
-    </el-table-column>
-    <el-table-column label="商品 ID" prop="id"> </el-table-column>
-    <el-table-column label="商品名称" prop="name"> </el-table-column>
-    <el-table-column label="描述" prop="desc"> </el-table-column>
-  </el-table>
-</template>
-
-<style>
-.demo-table-expand {
-  font-size: 0;
-}
-.demo-table-expand label {
-  width: 90px;
-  color: #99a9bf;
-}
-.demo-table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  width: 50%;
-}
-.shop_table {
-  height: 44px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  background: #f5f5f6;
-  justify-content: space-around;
+<style scoped>
+.tips {
+    margin: 20px;
+    height: 38px;
+    line-height: 38px;
+    background: #fafafa;
+    border-radius: 4px;
+    opacity: 0.8;
+    border: 1px solid #e8e8e8;
 }
 </style>
+<template>
+  <div class="main-content">
+    <div class="main-titel">
+      <span>客服信息</span>
+    </div>
+    <div class="content">
+      <div>
+        <div class="phone_title"><span>电话</span></div>
+        <div class="phone_row">
+          <div class="phone_box">
+            <div>
+              <span class="phone_txt">手机</span>
+              <span class="phone_del">删除</span>
+            </div>
+            <div>
+              <span>1592830791</span>
+            </div>
+          </div>
+          <div class="phone_add"
+               @click="drawer_vrisible= true">
+            <span class="el-icon-circle-plus-outline">
+              添加
+            </span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:60px">
+        <div class="phone_title"><span>微信</span></div>
+        <div class="phone_row">
+          <div class="phone_box">
+            <div>
+              <span class="phone_txt">微信号</span>
+              <span class="phone_del">编辑</span>
+            </div>
+            <div>
+              <span>1592830791</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 添加 -->
+    <!-- 添加 -->
+    <drawer ref="ruleForm"
+            :drawerVrisible='drawer_vrisible'
+            @handleClose='getClose'
+            :drawer_config="drawer_config"
+            :formHandler="form_handler">
+      <template v-slot:picker>
+        <el-date-picker type="date"
+                        size="small"
+                        v-model.trim="drawer_config.ruleForm.area"
+                        style="width: 240px;"></el-date-picker>
+      </template>
+    </drawer>
+
+  </div>
+</template>
 
 <script>
+import drawer from '@/components/Drawer'
+
 export default {
-  data() {
-    return {
-      table_config: {
-        thead: [
-          { label: '拼团ID', prop: 'table1', width: 'auto' },
-          { label: '商品ID', prop: 'table2', width: 'auto' },
-          { label: '商品名称', prop: 'table3', width: 'auto' },
-          { label: '状态 ', prop: 'table4', width: 'auto' }
-        ],
-        table_data: [
-          {
-            table1: '20200001',
-            table2: '3187873204',
-            table3:
-              '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-            table4: '拼团成功-已发货 ',
-            table5: '100/100',
-            table6: '2020-08-20 09:00',
-            table7: '2020-10-19 09:00'
-          },
-          {
-            table1: '20200001',
-            table2: '3187873204',
-            table3:
-              '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-            table4: '拼团成功-已发货 ',
-            table5: '100/100',
-            table6: '2020-08-20 09:00',
-            table7: '2020-10-19 09:00'
-          },
-          {
-            table1: '20200001',
-            table2: '3187873204',
-            table3:
-              '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-            table4: '拼团成功-已发货 ',
-            table5: '100/100',
-            table6: '2020-08-20 09:00',
-            table7: '2020-10-19 09:00'
-          },
-          {
-            table1: '20200001',
-            table2: '3187873204',
-            table3:
-              '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-            table4: '拼团成功-已发货 ',
-            table5: '100/100',
-            table6: '2020-08-20 09:00',
-            table7: '2020-10-19 09:00'
-          },
-          {
-            table1: '20200001',
-            table2: '3187873204',
-            table3:
-              '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-            table4: '拼团成功-已发货 ',
-            table5: '100/100',
-            table6: '2020-08-20 09:00',
-            table7: '2020-10-19 09:00'
-          }
-        ]
-      },
-      table_data: [
-        {
-          table1: '20200001',
-          table2: '3187873204',
-          table3:
-            '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-          table4: '拼团成功-已发货 ',
-          table5: '100/100',
-          table6: '2020-08-20 09:00',
-          table7: '2020-10-19 09:00'
-        },
-        {
-          table1: '20200001',
-          table2: '3187873204',
-          table3:
-            '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-          table4: '拼团成功-已发货 ',
-          table5: '100/100',
-          table6: '2020-08-20 09:00',
-          table7: '2020-10-19 09:00'
-        },
-        {
-          table1: '20200001',
-          table2: '3187873204',
-          table3:
-            '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-          table4: '拼团成功-已发货 ',
-          table5: '100/100',
-          table6: '2020-08-20 09:00',
-          table7: '2020-10-19 09:00'
-        },
-        {
-          table1: '20200001',
-          table2: '3187873204',
-          table3:
-            '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-          table4: '拼团成功-已发货 ',
-          table5: '100/100',
-          table6: '2020-08-20 09:00',
-          table7: '2020-10-19 09:00'
-        },
-        {
-          table1: '20200001',
-          table2: '3187873204',
-          table3:
-            '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-          table4: '拼团成功-已发货 ',
-          table5: '100/100',
-          table6: '2020-08-20 09:00',
-          table7: '2020-10-19 09:00'
+    data() {
+        var validatePass = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请填写'))
+            } else {
+                callback()
+            }
         }
-      ],
-      tableData: [
-        {
-          id: '12987122',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        },
-        {
-          id: '12987123',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        },
-        {
-          id: '12987125',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        },
-        {
-          id: '12987126',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
+        return {
+            drawer_vrisible: false,
+            drawer_config: {
+                drawer_vrisible: false,
+                head_title: '添加预警联系方式',
+                content_title: '基本信息',
+                form_item: [
+                    {
+                        type: 'Radio',
+                        label: '上架时间',
+                        prop: 'status',
+                        options: [
+                            { value: 1, label: '手机' },
+                            { value: 2, label: '普通座机' },
+                            { value: 3, label: '400-800电话' },
+                        ],
+                        width: '100%',
+                    },
+                    {
+                        type: 'Input',
+                        label: '手机号',
+                        placeholder: '请选择停车场',
+                        width: '100%%',
+                        prop: 'phoneNumber',
+                    },
+                    {
+                        type: 'Input',
+                        label: '验证码',
+                        placeholder: '输入验证码',
+                        prop: 'VerCode',
+                        width: '100%',
+                    },
+                ],
+
+                ruleForm: {
+                    phoneNumber: '',
+                    status: '',
+                    VerCode: '',
+                },
+                rules: {
+                    status: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
+                    VerCode: [
+                        {
+                            required: true,
+                            message: '请输入验证码',
+                            trigger: 'blur',
+                        },
+                    ],
+                    phoneNumber: [
+                        {
+                            required: true,
+                            validator: validatePass,
+                            trigger: 'blur',
+                        },
+                    ],
+                },
+                // upload
+            },
+            form_handler: [
+                {
+                    label: '确定',
+                    key: 'submit',
+                    class: 'dra-submit',
+                    handler: (fromData, refs) =>
+                        this.formValidate(fromData, refs),
+                },
+                {
+                    label: '重置',
+                    key: 'reset',
+                    class: 'dra-cancel',
+                    // res是数据
+                    handler: (fromData, refs) => this.reset(fromData, refs),
+                },
+            ],
         }
-      ]
-    }
-  }
+    },
+    components: {
+        drawer,
+    },
+    methods: {
+        // 提交
+        formValidate(fromData, refs) {
+            //验证规则
+            refs.validate((valid) => {
+                if (valid) {
+                    // 成功提交
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                    })
+                    console.log('submit!!' + JSON.stringify(fromData.ruleForm))
+                    this.getClose()
+                } else {
+                    // 失败保存
+                    console.log('error submit!!')
+                    return false
+                }
+            })
+        },
+        reset(fromData, refs) {
+            console.log()
+            refs.resetFields()
+            // fromData.ruleForm.resetFields()
+            // res.region = ''
+        },
+        // 添加
+        addDrawer() {
+            this.drawer_vrisible = true
+        },
+        getClose(data) {
+            this.drawer_vrisible = false
+        },
+    },
 }
 </script>
+
+<style scoped>
+.phone_title {
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 22px;
+}
+.content {
+    height: 100vh;
+}
+.phone_row {
+    display: flex;
+    margin-top: 23px;
+}
+.phone_box {
+    width: 199px;
+    height: 80px;
+
+    box-sizing: border-box;
+    padding: 10px;
+    background: #ffffff;
+    box-shadow: 0px 2px 16px 6px rgba(124, 124, 124, 0.1);
+    border-radius: 2px;
+}
+.phone_box > div {
+    display: flex;
+    justify-content: space-between;
+}
+.phone_txt {
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 20px;
+}
+.phone_del {
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #fb4702;
+    line-height: 20px;
+}
+.phone_add {
+    cursor: pointer;
+    margin-left: 20px;
+    width: 199px;
+    font-size: 14px;
+    line-height: 80px;
+    text-align: center;
+    height: 80px;
+    background: #ffffff;
+    border-radius: 2px;
+    border: 1px dashed #e8e8e8;
+}
+</style>

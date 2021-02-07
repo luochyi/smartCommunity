@@ -9,17 +9,8 @@
       <!-- 查询重制 -->
 
       <div class="">
-        <div style="margin-bottom:20px">
-          <span class="el_lable">时间范围</span>
-          <el-date-picker v-model="date1"
-                          type="daterange"
-                          size="small"
-                          range-separator="~"
-                          start-placeholder="请选择开始时间 "
-                          end-placeholder="结束时间"
-                          style="width:280px">
-          </el-date-picker>
-        </div>
+        <input-form :formItem="input_form"
+                    :btnWidth="'30%'"> </input-form>
         <div>
           <span class="el_lable">订单总额</span><span class="el_txt">¥10371.62</span>
           <span class="el_lable">订单总额</span><span class="el_txt"
@@ -50,6 +41,17 @@ export default {
       date1: '',
       // 选中表格数据
       table_row: {},
+      input_form: [
+        {
+          type: 'startEndDate',
+          label: '时间范围',
+          prop: 'p1',
+          startPlaceholder: '请选择开始时间',
+          rangeSeparator: ' ～',
+          endPlaceholder: '结束时间',
+        },
+
+      ],
       // 表格数据
       table_config: {
         thead: [
@@ -160,18 +162,18 @@ export default {
 </script>
 <style scoped>
 .el_lable {
-  font-size: 14px;
-  padding-right: 10px;
-  font-family: PingFangSC-Regular, PingFang SC;
-  font-weight: 400;
-  color: #999999;
-  line-height: 20px;
+    font-size: 14px;
+    padding-right: 10px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+    line-height: 20px;
 }
 .el_txt {
-  font-size: 16px;
-  padding-right: 30px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
+    font-size: 16px;
+    padding-right: 30px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
 }
 </style>

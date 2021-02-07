@@ -2,226 +2,257 @@
   <div>
     <div class="drawer-box">
       <div class="dra-header">
-        <span>添加车位</span>
+        <span>新增房屋</span>
       </div>
-      <div class="dra-body">
-        <div class="dra-content">
-          <div class="content-titel">
-            <span>基本信息</span>
-          </div>
-          <div class="">
-            <el-form ref="form" label-position="right" :model="form" label-width="100px">
-              <div class="form-box">
-                 <div class="form-item">
-                   <el-form-item label="楼栋">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                   <el-form-item label="单元号">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-              </div>
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="房屋名称">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                   <el-form-item label="房屋状态">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="车位编号">
-                    <el-input v-model="form.name"
-                    size="small"
-                    style="width:240px"
-                    placeholder="请输入"
-                    >
-                    <i slot="suffix" style="font-style:normal" class="metre">㎡</i>
-                    </el-input>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                   <el-form-item label="房屋类型">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="车位编号">
-                    <el-input v-model="form.name"
-                    size="small"
-                    style="width:240px"
-                    placeholder="请输入"
-                    >
-                    <i slot="suffix" style="font-style:normal" class="metre">㎡</i>
-                    </el-input>
-                  </el-form-item>
-                </div>
-                 <div class="form-item">
-                </div>
-              </div>
-              <!-- <el-form-item>
-                <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
-                <el-button>取消</el-button>
-              </el-form-item> -->
-            </el-form>
-          </div>
+      <div>
+        <contentBox style="margin:30px">
+          <span slot="title">基本信息</span>
+          <Form ref="childFroms"
+                :formObj='fromjson'>
+            <template v-slot:buildArea>
+              <el-input v-model="fromjson.ruleForm.buildArea"
+                        size="small"
+                        style="width:240px"
+                        placeholder="请输入">
+                <i slot="suffix"
+                   style="font-style:normal"
+                   class="metre">㎡</i>
+              </el-input>
+            </template>
+            <template v-slot:roomArea>
+              <el-input v-model="fromjson.ruleForm.roomArea"
+                        size="small"
+                        style="width:240px"
+                        placeholder="请输入">
+                <i slot="suffix"
+                   style="font-style:normal"
+                   class="metre">㎡</i>
+              </el-input>
+            </template>
+          </Form>
+        </contentBox>
+        <div style="margin:30px"
+             v-for="(item,index) in froms"
+             :key="item.key">
+          <contentBox>
+            <span slot="title">业主关联 {{index+1}}</span>
+            <span slot="btn">
+              <el-button type="text"
+                         @click='del(item)'><span style="color:#fb4702">删除</span></el-button>
+            </span>
+            <div class="">
+              <Form ref="childFrom"
+                    @ruleSubmit='ruleSubmit'
+                    :formObj='item.addForm'></Form>
+            </div>
+          </contentBox>
         </div>
-         <div class="dra-content">
-          <div class="content-titel">
-            <span>业主关联</span>
-          </div>
-          <div class="">
-            <el-form ref="form" label-position="right" :model="form" label-width="100px">
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="业主姓名">
-                    <el-input v-model="form.name"
-                    size="small"
-                    style="width:240px"
-                    placeholder="请输入"
-                    >
-                    </el-input>
-                  </el-form-item>
-                </div>
-                 <div class="form-item">
-                   <el-form-item label="联系方式">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-              </div>
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="证件类型">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                 <div class="form-item">
-                  <el-form-item label="证件号码">
-                    <el-select v-model="value" placeholder="请选择" size="small" style="width:240px">
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-              </div>
-              <!-- <el-form-item>
-                <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
-                <el-button>取消</el-button>
-              </el-form-item> -->
-            </el-form>
-          </div>
+        <div style="display:flex;justify-content: center;">
+          <el-button @click="addForms()"
+                     type="text"><span style="color:#fb4702">添加</span></el-button>
         </div>
       </div>
-
       <div class="dra-footer">
         <div class="dra-footer-content">
-          <button  class="dra-submit el-icon-circle-check"><span>提交</span></button>
+          <button class="btn-orange"
+                  @click="onSubmit('childFrom')"><span><span><i class="el-icon-circle-check"></i></span> 提交</span></button>
           <button class="dra-cancel"><span>取消</span></button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
+import { UnitEstateFindById, Login, buildingUpdate } from '@/api/basic'
 export default {
   data () {
     return {
-      form: {
-        name: '123',
-        region: '12',
-        date1: '3',
-        date2: '11',
-        delivery: false,
-        type: [],
-        resource: '2',
-        desc: ''
+      fromjson: {
+        ruleForm: {
+          buildingName: null,
+          roomNumber: null,
+          name: null,
+          status: null,
+          buildArea: null,
+          roomstatus: null,
+          roomArea: null,
+        },
+        rules: {},
+        form_item: [
+          {
+            type: 'Select',
+            label: '楼栋',
+            placeholder: '请输入',
+            options: [
+              { value: 1, label: '身份证' },
+              { value: 2, label: '营业执照' },
+
+            ],
+            width: '50%',
+            prop: 'buildingName'
+          },
+          {
+            type: 'Select',
+            label: '单元号',
+            placeholder: '请输入',
+            options: [
+              { value: 1, label: '身份证' },
+              { value: 2, label: '营业执照' },
+            ],
+            width: '50%',
+            prop: 'roomNumber'
+          },
+          {
+            type: 'Input',
+            label: '房屋名称',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'name'
+          },
+          {
+            type: 'Select',
+            label: '房屋状态',
+            placeholder: '请输入',
+            options: [
+              { value: 1, label: '身份证' },
+              { value: 2, label: '营业执照' },
+            ],
+            width: '50%',
+            prop: 'status'
+          },
+          {
+            type: 'Slot',
+            label: '建筑面积',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'buildArea',
+            slotName: 'buildArea'
+          },
+          {
+            type: 'Select',
+            label: '房屋类型',
+            placeholder: '请输入',
+            options: [
+              { value: 1, label: '身份证' },
+              { value: 2, label: '营业执照' },
+            ],
+            width: '50%',
+            prop: 'roomstatus'
+          },
+          {
+            type: 'Slot',
+            label: '室内面积',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'roomArea',
+            slotName: 'roomArea'
+          },
+        ]
       },
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      },
-      {
-        value: '选项2',
-        label: '双皮奶'
-      },
-      {
-        value: '选项3',
-        label: '蚵仔煎'
-      },
-      {
-        value: '选项4',
-        label: '龙须面'
-      },
-      {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      froms: [],
       value: ''
     }
   },
+  mounted () {
+    this.getData()
+  },
   methods: {
+    ruleSubmit () { },
+    // 提交
     onSubmit () {
-      console.log('submit!')
-    }
+      // 检查form表单校验
+      console.log(this.$refs.childFrom)
+      for (let i = 0; i < this.froms.length; i++) {
+        this.$refs.childFrom[i].submitForm()
+      }
+    },
+    del (item) {
+      console.log(item)
+      let index = this.froms.indexOf(item)
+      if (index !== -1) {
+        this.froms.splice(index, 1)
+      }
+    },
+    addForms () {
+      let that = this
+      this.froms.push({
+        addForm: {
+          ruleForm: {
+            no: null,
+            name: null,
+            totalFloor: null
+          },
+          rules: {
+            name: [
+              {
+                required: true,
+                message: '请填写业主姓名',
+                trigger: 'blur'
+              }
+            ],
+            no: [
+              { required: true, message: '请填写楼栋名称', trigger: 'blur' }
+            ],
+          },
+          form_item: [
+            {
+              type: 'Int',
+              label: '业主姓名',
+              placeholder: '请输入',
+              width: '50%',
+              prop: 'name'
+            },
+            {
+              type: 'Input',
+              label: '联系方式',
+              placeholder: '请输入',
+              width: '50%',
+              prop: 'tel'
+            },
+            {
+              type: 'Select',
+              label: '证件类型',
+              placeholder: '请输入',
+              options: [
+                { value: 1, label: '身份证' },
+                { value: 2, label: '营业执照' },
+
+              ],
+              width: '50%',
+              prop: 'stuats'
+            },
+            {
+              type: 'Input',
+              label: '证件号码',
+              placeholder: '请输入',
+              width: '50%',
+              prop: 'nameID'
+            }
+          ]
+        },
+        key: Date.now()
+      })
+      console.log(this.froms)
+    },
+    getData () {
+      let requestData = {
+        id: 1,
+      }
+      UnitEstateFindById(requestData)
+        .then((res) => {
+          console.log(res)
+        }).catch((error) => {
+          console.log(error)
+        })
+    },
   }
 }
 </script>
+<style lang="scss" scoped>
+.content-titel.btn {
+    padding-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+</style>

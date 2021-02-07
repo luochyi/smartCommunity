@@ -11,20 +11,19 @@
       </div>
       <!-- 查询重制 -->
       <div class="">
-        <input-form :formItem="form_item"
-                    :btnWidth="'20%'"> </input-form>
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow='tableRow'></tableData>
-          <div class="table-footer">
-            <button @click="dialogPreview = true">预览</button>
-            <button>修改</button>
-            <button>打印</button>
-            <button @click="release(table_row)">发布</button>
-            <button @click='del(table_row)'>删除</button>
-          </div>
-        </div>
-        <table-pagination></table-pagination>
+        <VueTable ref="table"
+                  :config='config'
+                  @tableCheck="tableCheck">
+          <template slot="footer">
+            <div class="table-footer">
+              <button @click="dialogPreview = true">预览</button>
+              <button>修改</button>
+              <button>打印</button>
+              <button @click="release(table_row)">发布</button>
+              <button @click='del(table_row)'>删除</button>
+            </div>
+          </template>
+        </VueTable>
         <!-- 提示弹窗-->
         <Dialog :dialogVisible='dialog_visible'
                 :dialog_config='dialog_config'
@@ -79,13 +78,11 @@
             </div>
           </div>
         </el-dialog>
-
       </div>
     </div>
   </div>
 </template>
 <script>
-import tablePagination from '@/components/tablePagination'
 import addAnnouncement from '@/views/operation/components/announcementManagement/addAnnouncement'
 import previewImg from '@/assets/images/dialogPreviewbg.png'
 // /Users/apple/Desktop/smartCommunity/basic-admin/src/assets/images/dialogPreviewbg.png
@@ -98,143 +95,57 @@ export default {
         title: '',
         content: ''
       },
-      form_item: [
-        {
-          type: 'Input',
-          label: '公告标题',
-          placeholder: '请输入内容',
-          prop: 'p1'
-        },
-        {
-          type: 'select',
-          label: '公告状态',
-          value: '',
-          options: [
-            { label: '未发布', value: '1' },
-            { label: '已发布', value: '2' },
-          ],
-          placeholder: '请选择',
-          prop: 'p2'
-        }
-      ],
       // 添加
       previewImg: previewImg,
       addAnnouncement: false,
-
       dialogPreview: false,
-      input: '',
-      numberValidateForm: {
-        age: ''
-      },
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
-      value: '',
-      table_row: {},
-      table_config: {
+      table_row: [],
+      config: {
         thead: [
-          { label: '序号', prop: 'table1', width: 'auto' },
-          { label: '公告标题', prop: 'table2', width: 'auto' },
-          { label: '推送对象', prop: 'table3', width: 'auto' },
-          { label: '阅读量', prop: 'table4', width: 'auto' },
-          { label: '状态', prop: 'table5', width: 'auto' },
-          { label: '创建人', prop: 'table6', width: 'auto' },
-          { label: '更新时间', prop: 'table7', width: 'auto' },
+          { label: '序号', type: 'index', width: '80' },
+          { label: '公告标题', prop: 'title', width: 'auto' },
+          { label: '推送对象', prop: 'pushObject', width: 'auto' },
+          { label: '阅读量', prop: 'readingVolume', width: 'auto' },
+          { label: '状态', prop: 'status', width: 'auto' },
+          { label: '创建人', prop: 'createName', width: 'auto' },
+          { label: '更新时间', prop: 'updateDate', width: 'auto' },
         ],
-        table_data: [
+        table_data: [],
+        url: 'announcementManagementList',
+        search_item: [
           {
-            table1: '1',
-            table2: '最佳明星保洁员',
-            table3: '业主',
-            table4: '128',
-            table5: '未发布',
-            table6: '任岚岚',
-            table7: '2020-12-01',
+            type: 'Input',
+            label: '公告标题',
+            placeholder: '请输入内容',
+            prop: 'title'
           },
           {
-            table1: '2',
-            table2: '华城园最佳维修员',
-            table3: '管家',
-            table4: '99',
-            table5: '未发布',
-            table6: '邹悦',
-            table7: '2020-02-14',
+            type: 'select',
+            label: '公告状态',
+            value: '',
+            options: [
+              { label: '未发布', value: '1' },
+              { label: '已发布', value: '2' },
+            ],
+            placeholder: '请选择',
+            prop: 'status'
           }
-          ,
-          {
-            table1: '3',
-            table2: '周六组织全小区联谊会地址选择',
-            table3: '业主，管家',
-            table4: '153',
-            table5: '未发布',
-            table6: '许智',
-            table7: '2020-07-16',
-          },
-          {
-            table1: '4',
-            table2: '2019年华城园最美绿化带评选',
-            table3: '业主',
-            table4: '115',
-            table5: '未发布',
-            table6: '孙平',
-            table7: '2020-05-21',
-          },
-          {
-            table1: '5',
-            table2: '元旦联欢会最佳表演组',
-            table3: '业主，管家',
-            table4: '67',
-            table5: '未发布',
-            table6: '蒋豆豆',
-            table7: '',
-          },
-          {
-            table1: '6',
-            table2: '植树节地区选举',
-            table3: '业主',
-            table4: '136',
-            table5: '已发布',
-            table6: '曹路',
-            table7: '2020-10-26',
-          },
-          {
-            table1: '7',
-            table2: '五一欢动会',
-            table3: '管家',
-            table4: '73',
-            table5: '已发布',
-            table6: '高力',
-            table7: '2020-05-19',
-          }
-        ]
+        ],
+        data: {
+          pageNum: 1,
+          size: 10
+        },
       }
     }
   },
   components: {
-    tablePagination,
     addAnnouncement
   },
   computed: {},
   methods: {
+    tableCheck (data) {
+      this.table_row = data;
+    },
     // 删除
     del (data) {
       if (JSON.stringify(data) != "{}") {
@@ -282,70 +193,70 @@ export default {
 </script>
 <style scoped>
 .preview-header {
-  width: 100%;
-  height: 62px;
-  display: flex;
-  align-items: center;
-  /* background: #e6e7e9; */
+    width: 100%;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    /* background: #e6e7e9; */
 }
 .esc-preview {
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  font-family: PingFangSC-Regular, PingFang SC;
-  font-weight: 400;
-  color: #333333;
-  line-height: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    line-height: 20px;
 }
 .body-content {
-  width: 100%;
-  height: calc(100vh - 62px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    height: calc(100vh - 62px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 /* previewImg */
 .preview-img {
-  width: 344px;
-  height: 689px;
-  background-image: url(../../../assets/images/dialogPreviewbg.png);
-  background-size: 100% 100%;
+    width: 344px;
+    height: 689px;
+    background-image: url(../../../assets/images/dialogPreviewbg.png);
+    background-size: 100% 100%;
 }
 .preview-titel {
-  font-size: 20px;
+    font-size: 20px;
 }
 .preview-content {
-  margin: 120px 30px 90px 30px;
-  height: calc(100% - 210px);
-  overflow-y: auto;
+    margin: 120px 30px 90px 30px;
+    height: calc(100% - 210px);
+    overflow-y: auto;
 }
 .preview-title {
-  text-align: center;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-size: 12px;
-  font-weight: 600;
-  color: #000000;
-  line-height: 17px;
+    text-align: center;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-size: 12px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 17px;
 }
 .preview-content-img {
-  width: 276px;
-  height: 94px;
-  margin: 22px auto;
-  background: gray;
+    width: 276px;
+    height: 94px;
+    margin: 22px auto;
+    background: gray;
 }
 .preview-content-text {
-  font-size: 12px;
-  font-weight: 400;
-  color: #333333;
-  line-height: 23px;
-  transform: scale(0.91);
+    font-size: 12px;
+    font-weight: 400;
+    color: #333333;
+    line-height: 23px;
+    transform: scale(0.91);
 }
 .preview-content-footer {
-  font-size: 12px;
-  font-weight: 400;
-  color: #999999;
-  margin-left: -20px;
-  transform: scale(0.75);
+    font-size: 12px;
+    font-weight: 400;
+    color: #999999;
+    margin-left: -20px;
+    transform: scale(0.75);
 }
 </style>

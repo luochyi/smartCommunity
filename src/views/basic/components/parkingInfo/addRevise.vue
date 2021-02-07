@@ -1,224 +1,186 @@
 <template>
-  <div>
-    <div class="drawer-box">
-      <div class="dra-header">
-        <span>添加车位</span>
-      </div>
-      <div class="dra-body">
-        <div class="dra-content">
-          <div class="content-titel">
-            <span>基本信息</span>
-          </div>
-          <div class="">
-            <el-form
-              ref="form"
-              label-position="right"
-              :model="form"
-              label-width="100px"
-            >
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="车位编号">
-                    <el-input
-                      v-model="form.name"
-                      size="small"
-                      style="width:240px"
-                      placeholder="请输入"
-                    >
-                    </el-input>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="状态">
-                    <el-select
-                      v-model="value"
-                      placeholder="请选择"
-                      size="small"
-                      style="width:240px"
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-              </div>
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="车辆类型">
-                    <el-select
-                      v-model="value"
-                      placeholder="请选择"
-                      size="small"
-                      style="width:240px"
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="form-item"></div>
-              </div>
-              <!-- <el-form-item>
-                <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
-                <el-button>取消</el-button>
-              </el-form-item> -->
-            </el-form>
-          </div>
-        </div>
-        <div class="dra-content">
-          <div class="content-titel">
-            <span>业主关联</span>
-          </div>
-          <div class="">
-            <el-form
-              ref="form"
-              label-position="right"
-              :model="form"
-              label-width="100px"
-            >
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="业主姓名">
-                    <el-input
-                      v-model="form.name"
-                      size="small"
-                      style="width:240px"
-                      placeholder="请输入"
-                    >
-                    </el-input>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="联系方式">
-                    <el-select
-                      v-model="value"
-                      placeholder="请选择"
-                      size="small"
-                      style="width:240px"
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-              </div>
-              <div class="form-box">
-                <div class="form-item">
-                  <el-form-item label="证件类型">
-                    <el-select
-                      v-model="value"
-                      placeholder="请选择"
-                      size="small"
-                      style="width:240px"
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="form-item">
-                  <el-form-item label="证件号码">
-                    <el-select
-                      v-model="value"
-                      placeholder="请选择"
-                      size="small"
-                      style="width:240px"
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </div>
-              </div>
-              <!-- <el-form-item>
-                <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
-                <el-button>取消</el-button>
-              </el-form-item> -->
-            </el-form>
-          </div>
-        </div>
-      </div>
 
-      <div class="dra-footer">
-        <div class="dra-footer-content">
-          <button class="dra-submit el-icon-circle-check">
-            <span>提交</span>
-          </button>
-          <button class="dra-cancel"><span>取消</span></button>
+  <div class="drawer_box">
+    <el-drawer title="添加车位"
+               :visible.sync="isVisibleDrawe"
+               size="58%"
+               :before-close="handleClose"
+               :with-header="true">
+      <div class="">
+        <div class="">
+          <div class="dra-content">
+            <div class="content-titel">
+              <span>基本信息</span>
+            </div>
+            <div class="">
+              <form-datechildren :formItem="form_item"
+                                 ref="formData">
+              </form-datechildren>
+            </div>
+          </div>
+          <div class="dra-content">
+            <div class="content-titel">
+              <span>业主关联</span>
+            </div>
+            <div class="">
+              <form-datechildren :formItem="form_item2"
+                                 ref="formData">
+                <template v-slot:f3>
+                  <el-input placeholder="请选择日期"
+                            size="small"
+                            v-model="form_item.f3">
+                  </el-input>
+                  <span style="font-size:24px; color:#444444;margin-left:10px">
+                    <i class="el-icon-circle-plus-outline"></i>
+                  </span>
+                </template>
+              </form-datechildren>
+            </div>
+          </div>
+        </div>
+        <div class="dra-footer">
+          <div class="dra-footer-content">
+            <button class="dra-submit el-icon-circle-check"
+                    @click="onSubmit"><span>提交</span></button>
+            <button class="dra-cancel"
+                    @click="handleClose"><span>取消</span></button>
+          </div>
         </div>
       </div>
-    </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import formDatechildren from '@/components/form/formDatechildren'
 export default {
-  data() {
+  props: {
+    drawerVrisible: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  components: {
+    formDatechildren
+  },
+  data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      options: [
+      isVisibleDrawe: false,
+      form_item: [
         {
-          value: '选项1',
-          label: '黄金糕'
+          type: 'Input',
+          label: '车位编号',
+          placeholder: '请输入',
+          prop: 'f1',
+          width: '50%'
         },
         {
-          value: '选项2',
-          label: '双皮奶'
+          type: 'select',
+          label: '状态',
+          options: [
+            { label: '售出', value: '1' },
+            { label: '无', value: '2' }
+          ],
+          placeholder: '请选择状态',
+          prop: 'f2',
+          width: '50%'
         },
+
         {
-          value: '选项3',
-          label: '蚵仔煎'
+          type: 'select',
+          label: '车位类型',
+          options: [
+            { label: '一单元', value: '1' },
+            { label: '二单元', value: '2' }
+          ],
+          placeholder: '请选择',
+          prop: 'f3',
+          width: '50%'
         },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
       ],
-      value: ''
+      form_item2: [
+        {
+          type: 'Input',
+          label: '业主姓名',
+          placeholder: '请输入',
+          prop: 'f1',
+          width: '50%'
+        },
+        {
+          type: 'Input',
+          label: '联系方式',
+          placeholder: '请输入',
+          prop: 'f2',
+          width: '50%'
+        },
+        {
+          type: 'select',
+          label: '证件类型',
+          options: [
+            { label: '身份证', value: '1' },
+            { label: '银行卡', value: '2' }
+          ],
+          placeholder: '请选择',
+          prop: 'f3',
+          width: '50%'
+        },
+        {
+          type: 'Input',
+          label: '证件号码',
+          placeholder: '请输入',
+          prop: 'f4',
+          width: '50%'
+        },
+      ]
+
     }
   },
+  mounted () {
+  },
   methods: {
-    onSubmit() {
-      console.log('submit!')
+    // 提交
+    onSubmit () {
+      this.$emit('handleClose', 'Close')
+
+    },
+    // 重置
+    // 取消关闭esc
+    handleClose () {
+      // this.$refs['ruleForm'].resetFields()
+      this.$emit('handleClose', 'Close')
     }
-  }
+  },
+  watch: {
+    drawerVrisible: {
+      handler (newValue) {
+        this.isVisibleDrawe = newValue
+      },
+      immediate: true,
+    }
+  },
 }
 </script>
+<style lang="scss">
+.drawer_box {
+    .el-drawer__header {
+        span {
+            font-size: 16px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+        }
+    }
+    .el-drawer__body {
+        background: #e8ebf2;
+        overflow-y: auto;
+        padding-bottom: 81px;
+    }
+    :focus {
+        outline: 0;
+    }
+
+    .dra-content {
+        padding-bottom: 60px;
+    }
+}
+</style>

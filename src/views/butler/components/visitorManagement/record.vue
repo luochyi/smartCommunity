@@ -16,7 +16,8 @@
             </div>
             <div class="">
               <el-form label-width="120px">
-                <el-form-item label="">
+                <el-form-item label=""
+                              style="width:100%">
                   <tableData :config="table_config"></tableData>
                 </el-form-item>
               </el-form>

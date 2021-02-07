@@ -4,7 +4,7 @@
     <div class="title-input">
       <el-form :model="form"
                ref="form"
-               label-width="auto"
+               :label-width="labelWidth"
                size="mini">
         <div class="title-input-box">
           <div class="title-item"
@@ -25,7 +25,7 @@
                               :range-separator="item.rangeSeparator"
                               :start-placeholder="item.startPlaceholder"
                               :end-placeholder="item.endPlaceholder"
-                              style="width:280px">
+                              style="width:240px">
               </el-date-picker>
               <el-select v-else-if="item.type === 'select'"
                          v-model="form[item.prop]"
@@ -37,6 +37,7 @@
                 </el-option>
               </el-select>
               <el-checkbox-group v-else-if="item.type === 'checkbox'"
+                                 :style="{ width: item.checkboxWidth }"
                                  v-model="form[item.prop]">
                 <el-checkbox v-for="item in item.options"
                              :key="item.value"
@@ -53,6 +54,9 @@
                         v-model="form[item.prop]"
                         :placeholder="item.placeholder">
               </el-input>
+              <slot v-else-if="item.type = 'slot'"
+                    :name="item.slotName
+              "></slot>
             </el-form-item>
           </div>
         </div>
@@ -60,7 +64,7 @@
              :style="{ width: btnWidth }">
           <el-form-item label-width="0px">
             <button class="inquire-button"
-                    @click="onSubmit('form')">
+                    @click="onSubmit()">
               查询
             </button>
             <button class="reset-button"
@@ -77,29 +81,34 @@
 <script>
 export default {
   // 获取父组件传递参数
+
   props: {
+    labelWidth: {
+      type: String,
+      default: "auto"
+    },
     formItem: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     btnWidth: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   mounted () {
     // console.log('---------mounted')
   },
   data () {
     return {
-      form: {}
+      form: {},
     }
   },
   methods: {
     initFromDate () {
       const forDate = {}
       // 取出formItem的prop
-      this.formItem.forEach(item => {
+      this.formItem.forEach((item) => {
         if (item.prop) {
           forDate[item.prop] = item.value || null
         }
@@ -107,68 +116,64 @@ export default {
       })
       this.form = forDate
     },
-    onSubmit (form) {
+    onSubmit () {
       console.log('------onSubmit')
-
       console.log(this.form)
-      console.log(this.form.date1)
+      this.$emit('searchForm', this.form)
     },
     resetForm (form) {
-      // this.ruleForm = {}
-      // this.ruleForm = Object.assign({}, '')
       this.$refs[form].resetFields()
-      console.log('------resetForm')
-    }
+      this.$emit('searchForm', this.form)
+    },
   },
   watch: {
     formItem: {
       handler (newValue) {
         this.initFromDate()
       },
-      immediate: true
+      immediate: true,
     },
     btnWidth: {
       handler (newValue) {
         this.btnWidth = newValue
-        console.log(1111)
       },
       immediate: true,
-      deep: true
-    }
-  }
+      deep: true,
+    },
+  },
 }
 </script>
 
 <style scoped>
 .el-form {
-  display: flex;
+    display: flex;
 }
 
 .title-input-box {
-  flex: 1;
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
 }
 .title-item {
-  display: flex;
-  flex-wrap: wrap;
-  min-width: 25%;
-  box-sizing: border-box;
-  padding-right: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 25%;
+    box-sizing: border-box;
+    padding-right: 20px;
 }
 .title-input .el-form .el-form-item .el-select,
 .title-input .el-form .el-form-item .el-input {
-  width: 240px;
+    width: 240px;
 }
 .title-input-btn {
-  width: 10%;
+    width: 10%;
 }
 .el-form-item__content .inquire-button {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 .title-input-btn > .el-form-item {
-  width: 100%;
-  line-height: 20px;
+    width: 100%;
+    line-height: 20px;
 }
 </style>

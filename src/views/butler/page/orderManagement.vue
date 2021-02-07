@@ -1,57 +1,57 @@
-<style scoped>
-.tips {
-  margin: 20px;
-  height: 38px;
-  line-height: 38px;
-  background: #fafafa;
-  border-radius: 4px;
-  opacity: 0.8;
-  border: 1px solid #e8e8e8;
-}
-</style>
+
 <template>
   <div class="main-content">
     <div class="main-titel">
       <span>派工单管理</span>
     </div>
     <div class="content">
-      <!-- 查询重制 -->
       <div class="">
-        <!-- 头部输入框 -->
-        <input-form :formItem="input_form"></input-form>
-        <el-tabs v-model="activeName"
-                 @tab-click="handleClick">
-          <el-tab-pane label="全部"
-                       name="first"></el-tab-pane>
-          <el-tab-pane label="待分配"
-                       name="second"></el-tab-pane>
-          <el-tab-pane label="已分配未接单"
-                       name="third"></el-tab-pane>
-          <el-tab-pane label="已处理"
-                       name="fourth"></el-tab-pane>
-          <el-tab-pane label="已确认已完成"
-                       name="four12h"></el-tab-pane>
-          <el-tab-pane label="已关闭"
-                       name="fou2rth"></el-tab-pane>
-          <el-tab-pane label="已取消"
-                       name="fou3rth"></el-tab-pane>
-          <el-tab-pane label="已作废"
-                       name="four31th"></el-tab-pane>
-        </el-tabs>
-        <div class="content-table">
-          <tableData :config="table_config"></tableData>
-          <div class="table-footer">
-            <button>详情</button>
-            <button>编辑</button>
-            <button>派工</button>
-            <button>回访</button>
-            <button>作废</button>
-            <button>删除</button>
-          </div>
-        </div>
-        <table-pagination></table-pagination>
+        <VueTable ref="table"
+                  :config='config'
+                  @tableCheck="tableCheck">
+          <template slot="tabs">
+            <el-tabs v-model="activeName"
+                     @tab-click="handleClick">
+              <el-tab-pane label="全部"
+                           name="0"></el-tab-pane>
+              <el-tab-pane label="待分配"
+                           name="1"></el-tab-pane>
+              <el-tab-pane label="已分配未接单"
+                           name="2"></el-tab-pane>
+              <el-tab-pane label="已分配处理中"
+                           name="3"></el-tab-pane>
+              <el-tab-pane label="已处理"
+                           name="4"></el-tab-pane>
+              <el-tab-pane label="已确认已完成"
+                           name="5"></el-tab-pane>
+              <el-tab-pane label="已关闭"
+                           name="6"></el-tab-pane>
+              <el-tab-pane label="已作废"
+                           name="7"></el-tab-pane>
+              <el-tab-pane label="已取消"
+                           name="8"></el-tab-pane>
+            </el-tabs>
+          </template>
+          <template slot="footer">
+            <div class="table-footer">
+              <button>详情</button>
+              <button>编辑</button>
+              <button>派工</button>
+              <button>回访</button>
+              <button>作废</button>
+
+              <button @click="del(table_row)">删除</button>
+            </div>
+          </template>
+        </VueTable>
       </div>
     </div>
+    <!-- 删除提示弹窗-->
+    <Dialog :dialogVisible='dialog_visible'
+            :dialog_config='dialog_config'
+            @cancel='cancel'
+            @confirm='confirm'>
+    </Dialog>
   </div>
 </template>
 
@@ -59,146 +59,132 @@
 export default {
   data () {
     return {
-      activeName: 'first',
-      table_config: {
-        thead: [
-          { label: '序号', prop: 'table1', width: '110' },
-          { label: '工单号', prop: 'table2', width: '180' },
-          { label: '工单类型', prop: 'table3', width: '180' },
-          { label: '状态', prop: 'table4', width: '180' },
-          { label: '派工时间', prop: 'table5', width: '180' },
-          { label: '工单时限', prop: 'table6', width: '180' },
-          { label: '提交', prop: 'table7', width: '180' },
-          { label: '提交人电话', prop: 'table8', width: '180' },
-          { label: '操作人', prop: 'table9', width: 'auto' },
-          { label: '操作地点', prop: 'table10', width: '180' },
-          { label: '要求处理事项', prop: 'table11', width: '180' },
-          { label: '派工备注', prop: 'table12', width: '180' },
-          { label: '开始处理时间', prop: 'table13', width: '180' },
-          { label: '回访时间', prop: 'table14', width: '180' },
-          { label: '回访情况说明', prop: 'table15', width: '180' }
-        ],
-        table_data: [
-          {
-            table1: 1,
-            table2: '330887879384',
-            table3: '报事报修',
-            table4: '已分配处理中',
-            table5: '2020-01-20 12:00',
-            table6: '8小时内处理',
-            table7: '周玲慧',
-            table8: '18850988790',
-            table9: '卢志',
-            table10: '1-2-0801',
-            table11: '窗户坏了',
-            table12: '快点来修',
-            table13: '2020-01-20 14:00',
-            table14: '2020-01-22 14:00',
-            table15: '满意'
-          },
-          {
-            table1: 2,
-            table2: '330887879384',
-            table3: '报事报修',
-            table4: '待分配',
-            table5: '2020-01-20 12:00',
-            table6: '8小时内处理',
-            table7: '马泽鹏',
-            table8: '18850988790',
-            table9: '姜铧绒',
-            table10: '1-2-0701',
-            table11: '下水道疏通',
-            table12: '晚上来修，白天没人',
-            table13: '2020-01-20 14:00',
-            table14: '2020-01-22 14:00',
-            table15: '满意'
-          },
-          {
-            table1: 3,
-            table2: '330887879384',
-            table3: '报事报修',
-            table4: '已处理',
-            table5: '2020-01-20 12:00',
-            table6: '8小时内处理',
-            table7: '王珂',
-            table8: '18850988790',
-            table9: '秦维',
-            table10: '1-2-0701',
-            table11: '中央空调不冷',
-            table12: '快点来修',
-            table13: '2020-01-20 14:00',
-            table14: '2020-01-22 14:00',
-            table15: '满意'
-          }
-        ]
+      // 控制dialog显示隐藏
+      dialog_visible: false,
+      dialog_config: {
+        title: '',
+        content: '',
       },
-      input_form: [
-        {
-          type: 'Input',
-          label: '报修单号',
-          placeholder: '请输入',
-          prop: 'houssssd'
+      // 选中表格数据
+      table_row: [],
+      config: {
+        thead: [
+          { label: '序号', type: 'index', width: '80' },
+          { label: '工单单号', prop: 'code', width: '180' },
+          { label: '工单类型', prop: 'workOrderTypeName', width: '180' },
+          { label: '状态', prop: 'status', width: '180' },
+          { label: '派工时间', prop: 'dispatchDate', width: '120' },
+          { label: '工单时限', prop: 'workOrderTimeLimit', width: '180' },
+          { label: '提交人', prop: 'createName', width: '180' },
+          { label: '提交人电话', prop: 'tel', width: '120' },
+          { label: '维修人', prop: 'operatorName', width: '120' },
+          { label: '房屋信息', prop: 'roomName', width: '180' },
+          { label: '要求处理事项', prop: 'reportDetail', width: '180' },
+          { label: '派工备注', prop: 'remake', width: '180' },
+          { label: '开始处理时间', prop: 'beginDate', width: '180' },
+          { label: '回访时间', prop: 'revisitDate', width: '180' },
+          { label: '回访情况说明', prop: 'revisitDetail', width: '180' }
+        ],
+        url: 'dispatchList',
+        table_data: [],
+        search_item: [
+          {
+            type: 'Input',
+            label: '工单单号',
+            placeholder: '请输入',
+            prop: 'code'
+          },
+          {
+            type: 'Input',
+            label: '提交人',
+            placeholder: '请输入',
+            prop: 'createName'
+          },
+          {
+            type: 'Input',
+            label: '房屋信息',
+            placeholder: '单元/楼栋/房号',
+            prop: 'roomName'
+          },
+          {
+            type: 'startDate',
+            label: '开始日期',
+            placeholder: '请选择开始日期',
+            prop: 'beginDateStart'
+          },
+          {
+            type: 'endDate',
+            label: '结束时间',
+            placeholder: '请选择结束日期',
+            prop: 'beginDateEnd'
+          },
+          // {
+          //   type: 'Input',
+          //   label: '分配人',
+          //   placeholder: '请输入分配人',
+          //   prop: 'distributor'
+          // },
+          {
+            type: 'Input',
+            label: '维修人',
+            placeholder: '请输入维修人	',
+            prop: 'operatorName'
+          }
+        ],
+        data: {
+          pageNum: 1,
+          size: 10
         },
-        {
-          type: 'Input',
-          label: '报修人',
-          placeholder: '请输入',
-          prop: 'houses'
-        },
-
-        {
-          type: 'select',
-          label: '工单大类',
-          placeholder: '请选择',
-          value: [],
-          prop: 'house',
-          options: [
-            { value: '1', label: '阿斯顿' },
-            { value: '2', label: '阿斯as顿' }
-          ]
-        },
-        {
-          type: 'Input',
-          label: '房屋信息',
-          placeholder: '单元/楼栋/房号',
-          prop: 'hous2wsssd'
-        },
-        {
-          type: 'startEndDate',
-          label: '发布时间',
-          rangeSeparator: '~',
-          startPlaceholder: '请选择开始日期',
-          endPlaceholder: '结束时间',
-          prop: 'date1'
-        },
-        {
-          type: 'Input',
-          label: '分配人',
-          placeholder: '请输入',
-          prop: 'hou22ssssd'
-        },
-        {
-          type: 'Input',
-          label: '维修人',
-          placeholder: '请ss输入',
-          prop: 'hou23ssssd'
-        }
-      ]
+      },
+      // tab默认绑定
+      activeName: 0,
     }
+
   },
   methods: {
-    handleClick (row) {
-      console.log(row)
+    handleClick (tab, event) {
+      let status = null
+      if (this.activeName != 0) {
+        status = this.activeName
+      } else {
+        status = null
+      }
+      const requestData = {
+        pageNum: 1,
+        size: 10,
+        status: status
+      }
+      this.$refs.table.requestData(requestData);
     },
-    onSubmit () {
-      console.log('submit!')
+    tableCheck (arr) {
+      this.table_row = arr
+
     },
-    ckimg () {
-      this.showViewer = true
-    }, // 关闭查看器
-    closeViewer () {
-      this.showViewer = false
+    // 删除
+    del (data) {
+      console.log(data)
+      if (data.length) {
+        this.dialog_config.title = '删除提示'
+        this.dialog_config.content = '是否确认删除？删除无法撤回！'
+        this.dialog_visible = true
+      } else {
+        this.$message.error('请选中需要删除的表格数据')
+      }
+    },
+    // 监听子组件取消事件
+    cancel (data) {
+      this.dialog_visible = false
+    },
+    // 监听删除确认确认事件
+    confirm (data) {
+      let arr = []
+      for (let i = 0; i < this.table_row.length; i++) {
+        arr.push(this.table_row[i].id)
+      }
+      // 调用子组件的方法
+      this.$refs.table.tableDelete(arr)
+      this.dialog_visible = false
     }
-  }
+  },
 }
 </script>

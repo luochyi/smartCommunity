@@ -1,12 +1,12 @@
 <template>
   <div class="main-content">
     <div class="main-titel">
-      <span>车辆档案 </span>
+      <span>车位信息</span>
     </div>
     <div class="content">
       <div class="content-btn">
         <el-button class="init-button"
-                   @click="reviseDrawer = true"
+                   @click="add()"
                    icon="el-icon-plus">新增车辆</el-button>
         <el-button type="init-button2"
                    icon="el-icon-folder-add"
@@ -14,30 +14,20 @@
         <el-button class="init-text"
                    type="text">模板下载</el-button>
       </div>
-      <!-- 查询重制 -->
-      <div class="">
-        <input-form :formItem="form_item"
-                    :btnWidth="'20%'"> </input-form>
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow='tableRow'></tableData>
-
+      <VueTable ref="table"
+                :config='config'
+                @tableCheck="tableCheck">
+        <template slot="footer">
           <div class="table-footer">
-            <button @click="reviseDrawer = true">修改</button>
+            <button @click="revises(table_row)">修改</button>
             <button @click="del(table_row)">删除</button>
-            <!-- 添加 -->
-            <el-drawer title="我是标题"
-                       :visible.sync="reviseDrawer"
-                       size="56.26%"
-                       :with-header="false">
-              <add-revise></add-revise>
-            </el-drawer>
           </div>
-        </div>
-        <table-pagination></table-pagination>
-      </div>
+        </template>
+      </VueTable>
     </div>
-    <!-- 编辑提示弹窗-->
+    <addEidt :drawerTitle="drawerTitle"
+             @handleClose="handleClose"
+             :drawerVrisible='drawer_vrisible'></addEidt>
     <Dialog :dialogVisible='dialog_visible'
             :dialog_config='dialog_config'
             @cancel='cancel'
@@ -46,166 +36,166 @@
   </div>
 </template>
 <script>
-import tablePagination from '@/components/tablePagination'
-import addRevise from '@/views/basic/components/parkingInfo/addRevise'
+import addEidt from '../components/parkingInfo/add.vue'
+import { findParkingSpaceType, findParkingSpaceStatus, cpmParkingSpaceFindById } from '@/api/basic'
 export default {
+  components: {
+    addEidt,
+  },
   data () {
     return {
+      // 抽屉标题
+      drawerTitle: '',
+      // 是否通过校验
+      // 抽屉显示隐藏
+      drawer_vrisible: false,
       // 控制dialog显示隐藏
       dialog_visible: false,
+      table_row: [],
+      // 弹窗提示
       dialog_config: {
-        title: '',
-        content: ''
+        title: '删除提示',
+        content: '是否确认删除？删除无法撤回！'
       },
-      // 选中表格数据
-      table_row: {},
-      form_item: [
-        {
-          type: 'Input',
-          label: '车位号',
-          placeholder: '请输入内容',
-          prop: 'p1'
-        },
-        {
-          type: 'select',
-          label: '状态',
-          placeholder: '请选择',
-          value: '',
-          options: [
-            { label: '已售', value: '1' },
-            { label: '已出租', value: '2' },
-          ],
-          prop: 'p2'
-        },
-        {
-          type: 'Input',
-          label: '业主',
-          placeholder: '请输入',
-          prop: 'p3'
-        }
-      ],
-      reviseDrawer: false,
-
-      table_config: {
-        thead: [
-          { label: '序号', prop: 'id', width: 'auto' },
-          { label: '车位编号', prop: 'ParkingNumber', width: 'auto' },
-          { label: '状态', prop: 'status', width: 'auto' },
-          { label: '车位类型', prop: 'ParkingType', width: 'auto' },
-          { label: '业主', prop: 'owner', width: 'auto' },
-          { label: '使用人', prop: 'userName', width: 'auto' },
-          { label: '联系方式', prop: 'phone', width: 'auto' },
-        ],
-        table_data: [
+      parkType: [],
+      parkStatus: [],
+      config: {
+        // 搜索
+        search_item: [
           {
-            id: 1,
-            ParkingNumber: 'A128',
-            status: '已售',
-            ParkingType: '产权车位',
-            owner: '夏恒灵',
-            userName: '夏恒灵 ',
-            phone: '18965334842'
-          }, {
-            id: 2,
-            ParkingNumber: 'A128',
-            status: '已出租',
-            ParkingType: '临时车位',
-            owner: '张志超',
-            userName: '张志超 ',
-            phone: '13265334841'
-          }, {
-            id: 3,
-            ParkingNumber: 'B038',
-            status: '已售',
-            ParkingType: '产权车位',
-            owner: '吴彦祖',
-            userName: '吴彦祖 ',
-            phone: '18965334242'
-          }, {
-            id: 4,
-            ParkingNumber: 'C223',
-            status: '已售',
-            ParkingType: '产权车位',
-            owner: '李龙',
-            userName: '李龙 ',
-            phone: '18965334042'
+            type: 'Input',
+            label: '车位编号',
+            placeholder: '请输入',
+            prop: 'code'
+          },
+          {
+            type: 'select',
+            label: '状态',
+            placeholder: '请选择',
+            options: [
+            ],
+            prop: 'status'
+          },
+          {
+            type: 'Input',
+            label: '业主',
+            placeholder: '请输入',
+            prop: 'residentName'
           }
-        ]
-      }
+        ],
+        thead: [
+          { label: '序号', type: 'index', width: '80' },
+          { label: '车位编号', prop: 'code', width: 'auto' },
+          {
+            label: '状态', prop: 'status', width: 'auto', type: "function",
+            callback: (row, prop) => {
+              let str = ''
+              this.parkStatus.map(item => {
+                if (row.status === item.showValue) {
+                  str = item.showName
+                }
+              })
+              return str
+            }
+          },
+          {
+            label: '车位类型', prop: 'type', width: 'auto', type: "function",
+            callback: (row, prop) => {
+              let str = ''
+              this.parkType.map(item => {
+                if (row.type === item.showValue) {
+                  str = item.showName
+                }
+              })
+              return str
+            }
+          },
+          { label: '业主', prop: 'residentName', width: 'auto' },
+          { label: '使用人', prop: 'userName', width: 'auto' },
+          { label: '联系方式', prop: 'tel', width: 'auto' },
+        ],
+        url: 'parkList',
+        data: {
+          pageNum: 1,
+          size: 10,
+        },
+
+      },
     }
   },
-  components: {
-    tablePagination,
-    addRevise
+  mounted () {
+    findParkingSpaceType().then(result => {
+      this.parkType = result
+    })
+    findParkingSpaceStatus().then(result => {
+      this.parkStatus = result
+      let arr = result.map(item => ({
+        label: item.showName,
+        value: item.showValue
+      }))
+
+      this.config.search_item[1].options = arr
+    })
   },
   methods: {
-    tableRow (data) {
-      this.table_row = data;
+    revises (data) {
+      console.log(data)
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('只能单条数据修改')
+          return
+        }
+      } else {
+        this.$message.error('请选中需要修改的数据')
+        return
+      }
+      this.drawerTitle = '修改房屋',
+        this.drawer_vrisible = true;
+      let resData = {
+        id: data[0].id
+      }
+      cpmParkingSpaceFindById(resData).then(res => {
+        console.log(res)
+      })
+    },
+    add () {
+      this.drawerTitle = '新增房屋',
+        this.drawer_vrisible = true;
+    },
+    handleClose () {
+      this.drawer_vrisible = false;
+    },
+    tableCheck (arr) {
+      this.table_row = arr
+    },
+    getData () {
+      // 调用子组件的方法
+      this.$refs.table.loadData()
     },
     // 删除
     del (data) {
-      if (JSON.stringify(data) != "{}") {
-        this.dialog_config.title = '删除提示'
-        this.dialog_config.content = '是否确认删除？删除无法撤回！'
+      if (data.length) {
         this.dialog_visible = true
       } else {
-        this.$message.error('请选中需要删除的表格数据');
+        this.$message.error('请选中需要删除的表格数据')
       }
     },
-    // 监听子组件取消事件
+    // 监听删除取消事件
     cancel (data) {
-      this.dialog_visible = false;
+      this.dialog_visible = false
     },
-    // 监听子组件确认事件
+    // 监听删除确认确认事件
     confirm (data) {
-      this.dialog_visible = false;
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      });
-    },
+      let arr = []
+      for (let i = 0; i < this.table_row.length; i++) {
+        arr.push(this.table_row[i].id)
+      }
+      // 调用子组件的方法
+      this.$refs.table.tableDelete(arr)
+      this.dialog_visible = false
+    }
   }
 }
 </script>
-<style scoped>
-.main-titel span {
-  font-size: 16px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
-  padding-left: 21px;
-}
-.content {
-  padding: 20px;
-}
-.content-btn {
-  padding-bottom: 20px;
-}
-.form-box {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-.form-box > .form-input {
-  margin-right: 170px;
-}
-.form-btn {
-  flex: 1;
-}
-.input-box {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-}
-.input-box > div > span {
-  color: #999999;
-  font-size: 14px;
-  padding-right: 10px;
-}
-.content-table {
-  margin-top: 20px;
-  border: 1px solid #f5f5f6;
-}
+<style scoped lang='scss'>
 </style>

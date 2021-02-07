@@ -10,27 +10,32 @@
             <span>基本信息</span>
           </div>
           <div class="">
-            <el-form ref="form" :model="form" label-width="100px">
+            <el-form ref="form"
+                     :model="form"
+                     label-width="100px">
               <el-form-item label="主办方单位">
                 <span style="color:#666666">物业</span>
               </el-form-item>
               <el-form-item label="主办方记录">
                 <div class="content-table">
-                  <el-table
-                    :data="tableData"
-                    style="width: 100%"
-                    highlight-current-row
-                    :header-cell-style="{
+                  <el-table :data="tableData"
+                            style="width: 100%"
+                            highlight-current-row
+                            :header-cell-style="{
                       background: '#F5F5F6',
                       color: '#999999'
-                    }"
-                  >
-                    <el-table-column prop="status" label="序号" width="120">
+                    }">
+                    <el-table-column prop="status"
+                                     label="序号"
+                                     width="120">
                     </el-table-column>
-                    <el-table-column prop="id" label="姓名"> </el-table-column>
-                    <el-table-column prop="phone" label="联系方式">
+                    <el-table-column prop="id"
+                                     label="姓名"> </el-table-column>
+                    <el-table-column prop="phone"
+                                     label="联系方式">
                     </el-table-column>
-                    <el-table-column prop="ParkingType" label="报名时间">
+                    <el-table-column prop="ParkingType"
+                                     label="报名时间">
                     </el-table-column>
                   </el-table>
                 </div>
@@ -53,7 +58,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       checked: true,
       form: {
@@ -107,17 +112,14 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
+    onSubmit () {
       console.log('submit!')
     }
   }
 }
 </script>
 <style scoped>
-.dra-content {
-  height: 100%;
-}
 .el-form-item {
-  width: 100%;
+    width: 100%;
 }
 </style>

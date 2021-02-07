@@ -9,93 +9,78 @@
           <div class="content-titel">
             <span>基本信息</span>
           </div>
-          <form-datechildren
-            :formItem="form_item"
-            ref="formData"
-          ></form-datechildren>
+          <form-datechildren :formItem="form_item"
+                             ref="formData"></form-datechildren>
           <div class="dra-content2">
             <div class="content-titel2">
-              <el-button class="init-text" type="text">添加成员</el-button>
+              <el-button class="init-text"
+                         type="text">添加成员</el-button>
             </div>
             <div class="dra-table">
               <div class="content-table">
-                <el-table
-                  :data="tableData"
-                  style="width: 100%"
-                  highlight-current-row
-                  :header-cell-style="{
+                <el-table :data="tableData"
+                          style="width: 100%"
+                          highlight-current-row
+                          :header-cell-style="{
                     background: '#F5F5F6',
                     color: '#999999'
-                  }"
-                >
-                  <el-table-column prop="id" label="序号" width="70">
+                  }">
+                  <el-table-column prop="id"
+                                   label="序号"
+                                   width="70">
                   </el-table-column>
                   <el-table-column label="姓名">
                     <template>
-                      <el-input
-                        size="small"
-                        v-model="input"
-                        placeholder="请输入内容"
-                      ></el-input>
+                      <el-input size="small"
+                                v-model="input"
+                                placeholder="请输入内容"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="手机号">
                     <template>
-                      <el-input
-                        size="small"
-                        v-model="input"
-                        placeholder="请输入内容"
-                      ></el-input>
+                      <el-input size="small"
+                                v-model="input"
+                                placeholder="请输入内容"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="身份">
                     <template>
-                      <el-select
-                        v-model="value"
-                        placeholder="请选择"
-                        size="small"
-                      >
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        >
+                      <el-select v-model="value"
+                                 placeholder="请选择"
+                                 size="small">
+                        <el-option v-for="item in options"
+                                   :key="item.value"
+                                   :label="item.label"
+                                   :value="item.value">
                         </el-option>
                       </el-select>
                     </template>
                   </el-table-column>
                   <el-table-column label="证件类型">
-                    <el-select
-                      v-model="value"
-                      placeholder="请选择"
-                      size="small"
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
+                    <el-select v-model="value"
+                               placeholder="请选择"
+                               size="small">
+                      <el-option v-for="item in options"
+                                 :key="item.value"
+                                 :label="item.label"
+                                 :value="item.value">
                       </el-option>
                     </el-select>
                   </el-table-column>
-                  <el-table-column label="证件号码" width="180" prop="input">
+                  <el-table-column label="证件号码"
+                                   width="180"
+                                   prop="input">
                     <template>
                       <div style="display:flex;align-items: center;">
                         <div>
-                          <el-input
-                            size="small"
-                            v-model="input"
-                            placeholder="请输入内容"
-                          ></el-input>
+                          <el-input size="small"
+                                    v-model="input"
+                                    placeholder="请输入内容"></el-input>
                         </div>
                         <div>
-                          <el-button
-                            type="text"
-                            icon="el-icon-delete"
-                            style="color:#444444;font-size:20px"
-                          ></el-button>
+                          <el-button type="text"
+                                     icon="el-icon-delete"
+                                     style="color:#444444;font-size:20px"></el-button>
                         </div>
                       </div>
                     </template>
@@ -108,7 +93,8 @@
       </div>
       <div class="dra-footer">
         <div class="dra-footer-content">
-          <button class="dra-submit el-icon-circle-check" @click="onSubmit">
+          <button class="dra-submit el-icon-circle-check"
+                  @click="onSubmit">
             <span>提交</span>
           </button>
           <button class="dra-cancel"><span>取消</span></button>
@@ -120,7 +106,7 @@
 <script>
 import formDatechildren from '@/components/form/formDatechildren'
 export default {
-  data() {
+  data () {
     return {
       input: '',
       form_item: [
@@ -209,7 +195,7 @@ export default {
     formDatechildren
   },
   methods: {
-    onSubmit() {
+    onSubmit () {
       // console.log(this.$refs.header.formData)
       console.log('submit!')
     }
@@ -218,8 +204,8 @@ export default {
 </script>
 <style scoped>
 .content-titel2 {
-  margin: 0px 0px 20px 30px;
-  padding-top: 30px;
-  border-top: 1px solid #e8e8e8;
+    margin: 0px 0px 20px 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e8e8e8;
 }
 </style>

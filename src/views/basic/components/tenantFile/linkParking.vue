@@ -11,43 +11,16 @@
             <span>基本信息</span>
           </div>
           <div class="">
-            <el-form ref="form" label-position="right" :model="form" label-width="100px">
-              <div class="form-box">
-                <div class="form-box">
-                  <div class="form-item">
-                    <el-form-item label="姓名">
-                      <span>王康康</span>
-                    </el-form-item>
-                  </div>
-                  <div class="form-item">
-                    <el-form-item label="手机号">
-                      <span>1582314345</span>
-                    </el-form-item>
-                  </div>
-                  <div class="form-item">
-                    <el-form-item label="身份证">
-                      <span>21312454359283</span>
-                    </el-form-item>
-                  </div>
-                  <div class="form-item" style="width:100%">
-                    <el-form-item label="车位1">
-                      <div style="display:flex">
-                        <el-select v-model="value" placeholder="A103" size="small">
-                          <el-option>
-                          </el-option>
-                        </el-select>
-                      </div>
-                    </el-form-item>
-                  </div>
-                </div>
-              </div>
-            </el-form>
+            <form-datechildren :formItem="form_item"
+                               ref="formData">
+
+            </form-datechildren>
           </div>
         </div>
       </div>
       <div class="dra-footer">
         <div class="dra-footer-content">
-          <button  class="dra-submit el-icon-circle-check"><span>提交</span></button>
+          <button class="dra-submit el-icon-circle-check"><span>提交</span></button>
           <button class="dra-cancel"><span>取消</span></button>
         </div>
       </div>
@@ -56,41 +29,53 @@
 </template>
 
 <script>
+import formDatechildren from '@/components/form/formDatechildren'
+
 export default {
+  components: {
+    formDatechildren
+  },
   data () {
     return {
       input: '',
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      },
-      {
-        value: '选项2',
-        label: '双皮奶'
-      },
-      {
-        value: '选项3',
-        label: '蚵仔煎'
-      },
-      {
-        value: '选项4',
-        label: '龙须面'
-      },
-      {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value: ''
+      options: [],
+      form_item: [
+        {
+          type: 'span',
+          label: '姓名',
+          value: '高伟伟',
+          prop: 'f4',
+          width: '50%'
+        },
+        {
+          type: 'span',
+          label: '手机号',
+          value: '15857314365',
+          prop: 'f5',
+          width: '50%'
+        },
+        {
+          type: 'select',
+          label: '车位',
+          placeholder: 'A103',
+          prop: 'status',
+          options: [
+            {
+              value: '1',
+              label: 'A104'
+            },
+            {
+              value: '2',
+              label: 'A103'
+            },
+            {
+              value: '3',
+              label: 'B100'
+            }
+          ]
+        }
+
+      ],
     }
   },
   methods: {
@@ -101,9 +86,9 @@ export default {
 }
 </script>
 <style scoped>
-.el-form-item span{
-  color: #666666;
-  font-weight: 400;
-  font-size: 14px;
+.el-form-item span {
+    color: #666666;
+    font-weight: 400;
+    font-size: 14px;
 }
 </style>

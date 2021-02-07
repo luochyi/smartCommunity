@@ -1,58 +1,71 @@
 <style scoped>
 .tips {
-  margin: 20px;
-  height: 38px;
-  line-height: 38px;
-  background: #fafafa;
-  border-radius: 4px;
-  opacity: 0.8;
-  border: 1px solid #e8e8e8;
+    margin: 20px;
+    height: 38px;
+    line-height: 38px;
+    background: #fafafa;
+    border-radius: 4px;
+    opacity: 0.8;
+    border: 1px solid #e8e8e8;
 }
 </style>
 <template>
-  <div class="main-content">
-    <div class="main-titel">
-      <span>新增供应商</span>
-    </div>
-    <div class="content">
-      <div class="content-btn">
-        <el-button class="init-button"
-                   icon="el-icon-plus">新增供应商</el-button>
-      </div>
-      <!-- 查询重制 -->
-      <div class="">
-        <input-form :formItem="input_form"
-                    :btnWidth="'20%'"> </input-form>
-        <!-- 头部输入框 -->
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow="tableRow">
-            <template v-slot:table5="slotData">
-              <div>
-                <el-button class="init-text"
-                           type="text">{{
+  <div>
+    <div v-if="chargnCom">
+      <div class="main-content">
+        <div class="main-titel">
+          <span>新增供应商</span>
+        </div>
+        <div class="content">
+          <div class="content-btn">
+            <el-button class="init-button"
+                       icon="el-icon-plus"
+                       @click="chargnCom = false">新增供应商</el-button>
+          </div>
+          <!-- 查询重制 -->
+          <div class="">
+            <input-form :formItem="input_form"
+                        :btnWidth="'20%'"> </input-form>
+            <!-- 头部输入框 -->
+            <div class="content-table">
+              <tableData :config="table_config"
+                         @clickrow="tableRow">
+                <template v-slot:table5="slotData">
+                  <div>
+                    <el-button class="init-text"
+                               type="text">{{
                   slotData.data.table5
                 }}</el-button>
+                  </div>
+                </template>
+              </tableData>
+              <div class="table-footer">
+                <button>查看</button>
+                <button>编辑</button>
+                <button>删除</button>
               </div>
-            </template>
-          </tableData>
-          <div class="table-footer">
-            <button>查看</button>
-            <button>编辑</button>
-            <button>删除</button>
+            </div>
+            <table-pagination :pageSize="10"
+                              :totalNumber="100"></table-pagination>
           </div>
         </div>
-        <table-pagination :pageSize="10"
-                          :totalNumber="100"></table-pagination>
       </div>
     </div>
+    <div v-else>
+      <add @cancel='cancel'></add>
+    </div>
   </div>
+
 </template>
 <script>
-// conveniencePhone
+import add from '@/views/commodity/components/supplierManagement/add.vue'
 export default {
+  components: {
+    add,
+  },
   data () {
     return {
+      chargnCom: true,
       // 选中表格数据
       table_row: {},
       // 搜索重置数据
@@ -61,15 +74,15 @@ export default {
           type: 'Input',
           label: '供应商名称',
           placeholder: '请输入',
-          prop: 'userName'
+          prop: 'userName',
         },
         {
           type: 'select',
           label: '审核状态',
           placeholder: '请选择',
           prop: 'phone',
-          options: []
-        }
+          options: [],
+        },
       ],
       // 表格数据
       table_config: {
@@ -83,12 +96,12 @@ export default {
             prop: 'table5',
             width: '120',
             type: 'slot',
-            slotName: 'table5'
+            slotName: 'table5',
           },
           { label: '创建时间', prop: 'table6', width: '180' },
           { label: '审核时间', prop: 'table7', width: '180' },
           { label: '审核状态', prop: 'table8', width: '100' },
-          { label: '账号状态', prop: 'table9', width: '100' }
+          { label: '账号状态', prop: 'table9', width: '100' },
         ],
         table_data: [
           {
@@ -100,7 +113,7 @@ export default {
             table6: '2020-08-20 09:00',
             table7: '',
             table8: '待审核',
-            table9: '使用中'
+            table9: '使用中',
           },
           {
             table1: '2',
@@ -111,7 +124,7 @@ export default {
             table6: '2020-08-20 09:00',
             table7: '',
             table8: '审核通过',
-            table9: '待使用'
+            table9: '待使用',
           },
           {
             table1: '3',
@@ -122,7 +135,7 @@ export default {
             table6: '2020-08-20 09:00',
             table7: '',
             table8: '审核通过',
-            table9: '待使用'
+            table9: '待使用',
           },
           {
             table1: '4',
@@ -133,7 +146,7 @@ export default {
             table6: '2020-08-20 09:00',
             table7: '',
             table8: '待审核',
-            table9: '使用中'
+            table9: '使用中',
           },
           {
             table1: '5',
@@ -144,7 +157,7 @@ export default {
             table6: '2020-08-20 09:00',
             table7: '',
             table8: '待审核',
-            table9: '使用中'
+            table9: '使用中',
           },
           {
             table1: '6',
@@ -155,18 +168,21 @@ export default {
             table6: '2020-08-20 09:00',
             table7: '',
             table8: '待审核',
-            table9: '使用中'
-          }
-        ]
-      }
+            table9: '使用中',
+          },
+        ],
+      },
     }
   },
-
   methods: {
     // table选中行
     tableRow (data) {
       this.table_row = data
-    }
-  }
+    },
+    // chargnComc
+    cancel () {
+      this.chargnCom = true
+    },
+  },
 }
 </script>

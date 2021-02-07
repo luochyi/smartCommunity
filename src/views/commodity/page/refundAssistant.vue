@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="main-content">
+    <div v-if="change"
+         class="main-content">
       <div class="main-titel">
         <span>极速退款助手</span>
       </div>
@@ -55,144 +56,151 @@
             </div>
           </div>
           <div>
-            <div class="footer_btn">
+            <div class="footer_btn"
+                 @click="change = false">
               <span>马上开启</span>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div v-else>
+      <refund></refund>
+    </div>
   </div>
 </template>
 <script>
+import refund from '../components/refundAssistant'
+import formDatechildren from '@/components/form/formDatechildren'
 export default {
-  data () {
-    return {
-      itme1_img: require('@/assets/images/commodity/refundAssistant/item1.png'),
-      itme2_img: require('@/assets/images/commodity/refundAssistant/item2.png'),
-      itme3_img: require('@/assets/images/commodity/refundAssistant/item3.png')
-    }
-  },
-  methods: {
-
-  }
+    data() {
+        return {
+            change: true,
+            itme1_img: require('@/assets/images/commodity/refundAssistant/item1.png'),
+            itme2_img: require('@/assets/images/commodity/refundAssistant/item2.png'),
+            itme3_img: require('@/assets/images/commodity/refundAssistant/item3.png'),
+        }
+    },
+    components: {
+        refund,
+    },
+    methods: {},
 }
 </script>
 
 <style scoped>
 .content_box {
-  height: 772px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    height: 772px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .box {
-  width: 100%;
-  height: 648px;
+    width: 100%;
+    height: 648px;
 }
 .box_titel {
-  width: 100%;
-  text-align: center;
+    width: 100%;
+    text-align: center;
 }
 .box_titel span {
-  position: relative;
-  font-size: 18px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
+    position: relative;
+    font-size: 18px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
 }
 .box_titel span::after {
-  content: '';
-  display: block;
-  position: absolute;
-  border-radius: 50%;
-  border: 2px solid #fb4702;
-  top: 0px;
-  right: -20px;
-  width: 8px;
-  height: 8px
-  ;
+    content: '';
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid #fb4702;
+    top: 0px;
+    right: -20px;
+    width: 8px;
+    height: 8px;
 }
 .box_itme {
-  margin: 60px 0px 112px 0px;
-  display: flex;
-  justify-content: center;
+    margin: 60px 0px 112px 0px;
+    display: flex;
+    justify-content: center;
 }
 .item {
-  padding: 20px;
-  box-sizing: border-box;
-  line-height: 30px;
-  width: 376px;
-  height: 128px;
-  margin-right: 56px;
-  background: #ffffff;
-  box-shadow: 0px 2px 16px 6px rgba(124, 124, 124, 0.1);
-  border-radius: 2px;
+    padding: 20px;
+    box-sizing: border-box;
+    line-height: 30px;
+    width: 376px;
+    height: 128px;
+    margin-right: 56px;
+    background: #ffffff;
+    box-shadow: 0px 2px 16px 6px rgba(124, 124, 124, 0.1);
+    border-radius: 2px;
 }
 .item p {
-  font-size: 16px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
 }
 .item span {
-  font-size: 14px;
-  font-family: PingFangSC-Regular, PingFang SC;
-  font-weight: 400;
-  color: #666666;
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #666666;
 }
 .box_item1 {
-  margin-top: 69px;
-  display: flex;
-  justify-content: center;
+    margin-top: 69px;
+    display: flex;
+    justify-content: center;
 }
 .item1 {
-  margin-right: 100px;
-  display: flex;
-  align-items: center;
+    margin-right: 100px;
+    display: flex;
+    align-items: center;
 }
 .item1 .item1_img {
-  margin-right: 20px;
-  width: 76px;
-  height: 76px;
+    margin-right: 20px;
+    width: 76px;
+    height: 76px;
 }
 .item1 .item1_img img {
-  width: 100%;
+    width: 100%;
 }
 .item1_txt {
-  text-align: center;
-  height: 76px;
-  line-height: 30px;
+    text-align: center;
+    height: 76px;
+    line-height: 30px;
 }
 .item1_txt p {
-  font-size: 16px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
 }
 .item1_txt span {
-  font-size: 14px;
-  font-family: PingFangSC-Regular, PingFang SC;
-  font-weight: 400;
-  color: #666666;
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #666666;
 }
 .footer_btn {
-  cursor: pointer;
-  width: 216px;
-  text-align: center;
-  line-height: 40px;
-  height: 40px;
-  background: #fb4702;
-  border-radius: 4px;
-  margin: 112px auto;
+    cursor: pointer;
+    width: 216px;
+    text-align: center;
+    line-height: 40px;
+    height: 40px;
+    background: #fb4702;
+    border-radius: 4px;
+    margin: 112px auto;
 }
 .footer_btn:hover {
-  opacity: 0.8;
+    opacity: 0.8;
 }
 .footer_btn span {
-  font-size: 16px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #ffffff;
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #ffffff;
 }
 </style>

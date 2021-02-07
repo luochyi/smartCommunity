@@ -1,12 +1,12 @@
 <template>
   <div class="main-content">
     <div class="main-titel">
-      <span>车辆档案 </span>
+      <span>车辆档案</span>
     </div>
     <div class="content">
       <div class="content-btn">
         <el-button class="init-button"
-                   @click="reviseDrawer = true"
+                   @click="add()"
                    icon="el-icon-plus">新增车辆</el-button>
         <el-button type="init-button2"
                    icon="el-icon-folder-add"
@@ -14,30 +14,71 @@
         <el-button class="init-text"
                    type="text">模板下载</el-button>
       </div>
-      <!-- 查询重制 -->
-      <div class="">
-        <input-form :formItem="form_item"
-                    :btnWidth="'20%'"> </input-form>
-
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow='tableRow'></tableData>
+      <VueTable ref="table"
+                :config='config'
+                @tableCheck="tableCheck">
+        <template slot="footer">
           <div class="table-footer">
-            <button @click="reviseDrawer = true">修改</button>
+            <button @click="revises(table_row)">修改</button>
             <button @click="del(table_row)">删除</button>
-            <!-- 添加 -->
-            <el-drawer title="我是标题"
-                       :visible.sync="reviseDrawer"
-                       size="56.26%"
-                       :with-header="false">
-              <add-revise></add-revise>
-            </el-drawer>
           </div>
-        </div>
-        <table-pagination></table-pagination>
-      </div>
+        </template>
+      </VueTable>
     </div>
-    <!-- 删除提示弹窗-->
+    <Drawer :drawerTitle="drawerTitle"
+            @drawerClose="drawerClose"
+            :drawerVrisible='drawer_vrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="childFrom"
+                     @ruleSubmit='ruleSubmit'
+                     :formObj='addEidtForm'>
+              <template v-slot:hours>
+                <el-select v-model="buildValue"
+                           filterable
+                           style="width:30%;margin-right:16px"
+                           placeholder="幢">
+                  <el-option v-for="item in buildOptions"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+                <el-select v-model="unitValue"
+                           filterable
+                           style="width:30%;margin-right:16px"
+                           placeholder="单元">
+                  <el-option v-for="item in unitOptions"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+                <el-select v-model="hoursValue"
+                           filterable
+                           style="width:30%"
+                           placeholder="房间号">
+                  <el-option v-for="item in hoursOptions"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+              </template>
+
+            </VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="drawerClose"><span>取消</span></button>
+      </div>
+    </Drawer>
     <Dialog :dialogVisible='dialog_visible'
             :dialog_config='dialog_config'
             @cancel='cancel'
@@ -45,252 +86,305 @@
     </Dialog>
   </div>
 </template>
+
 <script>
-import tablePagination from '@/components/tablePagination'
-import addRevise from '@/views/basic/components/vehicleFile/addRevise'
+import { userCarFindById, cpmBuildingUnitFindAll, findByBuildingUnitId, findByBuildingId, findUserCarStatus, userCarInsert } from '@/api/basic'
+
 export default {
   data () {
     return {
+      // 楼栋
+      buildValue: null,
+      buildOptions: [],
+      // 单元
+      unitValue: null,
+      unitOptions: [],
+      // 房屋
+      hoursValue: null,
+      hoursOptions: [],
+      loading: false,
+      // 业主
+      userName: "",
+      // 抽屉标题
+      drawerTitle: '',
+      // 是否通过校验
+      // 抽屉显示隐藏
+      drawer_vrisible: false,
       // 控制dialog显示隐藏
       dialog_visible: false,
+      table_row: [],
+      // 弹窗提示
       dialog_config: {
-        title: '',
-        content: ''
+        title: '删除提示',
+        content: '是否确认删除？删除无法撤回！'
       },
-      // 选中表格数据
-      table_row: {},
-      form_item: [
-        {
-          type: 'Input',
-          label: '车牌号',
-          placeholder: '请输入内容',
-          prop: 'p1'
+      addEidtForm: {
+        ruleForm: {
+          code: null,
+          no: null,
+          owner: null,
+          tel: null,
+          idType: null,
+          idNumber: null,
+          status: null,
         },
-        {
-          type: 'Input',
-          label: '所属人手机号',
-          placeholder: '请输入内容',
-          prop: 'p2'
-        },
-        {
-          type: 'Input',
-          label: '车位号',
-          placeholder: '请输入内容',
-          prop: 'p3'
-        }
-      ],
-      reviseDrawer: false,
-      table_config: {
-        thead: [
-          { label: '序号', prop: 'table1', width: 'auto' },
-          { label: '车牌号', prop: 'table2', width: 'auto' },
-          { label: '姓名', prop: 'table3', width: 'auto' },
-          { label: '手机号', prop: 'table4', width: 'auto' },
-          { label: '状态', prop: 'table5', width: 'auto' },
-          { label: '剩余时间', prop: 'table6', width: 'auto' },
-          { label: '车位号', prop: 'table7', width: 'auto' },
-          { label: '房屋信息', prop: 'table8', width: 'auto' },
-          { label: '证件类型', prop: 'table9', width: 'auto' },
-          { label: '证件号码', prop: 'table10', width: '180' },
+        form_item: [
+          {
+            type: 'Input',
+            label: '车牌号',
+            placeholder: '请输入车牌号',
+            width: '50%',
+            prop: 'code'
+          },
+          {
+            type: 'Input',
+            label: '车位号',
+            placeholder: '请输入车位号',
+            width: '50%',
+            prop: 'no'
+          },
+          {
+            type: 'Input',
+            label: '所属人',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'owner'
+          },
+          {
+            type: 'Input',
+            label: '手机号',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'tel'
+          },
+          {
+            type: 'Select',
+            label: '证件类型',
+            placeholder: '请输入',
+            options: [
+              { value: 1, label: '身份证' },
+              { value: 2, label: '营业执照' }
+            ],
+            width: '50%',
+            prop: 'idType'
+          },
+          {
+            type: 'Input',
+            label: '证件号码	',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'idNumber'
+          },
+          {
+            type: 'Select',
+            label: '状态',
+            placeholder: '请输入',
+            options: [],
+            width: '50%',
+            prop: 'status'
+          },
+          {
+            type: 'Slot',
+            label: '房屋信息',
+            placeholder: '请输入',
+            width: '70%',
+            slotName: 'hours',
+            prop: 'hours'
+          },
         ],
-        table_data: [{
-          table1: "1",
-          table2: "浙A062U2",
-          table3: "夏衡龄",
-          table4: "18965334842",
-          table5: "包年",
-          table6: "剩余120天",
-          table7: "A128",
-          table8: "1-1-1101",
-          table9: "身份证",
-          table10: "33020319901011386"
+        rules: {
+          code: [
+            {
+              required: true,
+              message: '请输入车牌号',
+              trigger: 'blur'
+            }
+          ],
+          no: [
+            { required: true, message: '请输入车位号', trigger: 'blur' }
+          ]
         },
-        {
-          table1: "2",
-          table2: "浙BPQ377",
-          table3: "何佃霁",
-          table4: "13457102069",
-          table5: "包年",
-          table6: "剩余77天",
-          table7: "A118",
-          table8: "1-1-1101",
-          table9: "身份证",
-          table10: "330203199010112386"
+      },
+      config: {
+        // 搜索
+        search_item: [
+          {
+            type: 'Input',
+            label: '所属手机号',
+            placeholder: '请输入所属手机号',
+            prop: 'tel'
+          },
+          {
+            type: 'Input',
+            label: '车牌号',
+            placeholder: '请输入车牌号',
+            prop: 'code'
+          },
+          {
+            type: 'Input',
+            label: '车位号',
+            placeholder: '请输入车位号',
+            prop: 'parkingSpaceCode'
+          }
+        ],
+        thead: [
+          { label: '序号', type: 'index', width: '80' },
+          { label: '车牌号', prop: 'code', width: 'auto' },
+          { label: '姓名', prop: 'owner', width: 'auto' },
+          { label: '手机号', prop: 'tel', width: 'auto' },
+          { label: '状态', prop: 'status', width: 'auto' },
+          { label: '剩余时间', prop: 'effectiveTimeEnd', width: 'auto' },
+          { label: '车位号', prop: 'parkingSpaceCode', width: 'auto' },
+          { label: '房屋信息', prop: 'roomName', width: 'auto' },
+          { label: '证件类型', prop: 'idType', width: 'auto' },
+          { label: '证件号码', prop: 'idNumber', width: 'auto' },
+        ],
+        url: 'vehicleList',
+        data: {
+          pageNum: 1,
+          size: 10,
         },
-        {
-          table1: "3",
-          table2: "浙B78V3Q",
-          table3: "江湘儿",
-          table4: "15524680851",
-          table5: "包年",
-          table6: "剩余77天",
-          table7: "A118",
-          table8: "1-1-1101",
-          table9: "身份证",
-          table10: "330203199010112386"
-        },
-        {
-          table1: "4",
-          table2: "浙B78V3Q",
-          table3: "丁珊珊",
-          table4: "13457102018",
-          table5: "包年",
-          table6: "剩余27天",
-          table7: "A118",
-          table8: "1-1-1101",
-          table9: "身份证",
-          table10: "330203199010112386"
-        },
-        {
-          table1: "5",
-          table2: "浙B78VEX",
-          table3: "李燕",
-          table4: "13457102029",
-          table5: "包年",
-          table6: "剩余67天",
-          table7: "B238",
-          table8: "3-1-103",
-          table9: "身份证",
-          table10: "330203199010112386"
-        },
-        {
-          table1: "6",
-          table2: "浙BS32Q",
-          table3: "张宇",
-          table4: "18965334842",
-          table5: "包年",
-          table6: "剩余17天",
-          table7: "A108",
-          table8: "1-2-1101",
-          table9: "身份证",
-          table10: "330203199010112386"
-        },
-        {
-          table1: "7",
-          table2: "浙BEV35",
-          table3: "张龙",
-          table4: "13421320691",
-          table5: "包年",
-          table6: "剩余88天",
-          table7: "A231",
-          table8: "1-1-234",
-          table9: "身份证",
-          table10: "330203199010112386"
-        },
-        {
-          table1: "8",
-          table2: "浙B78V3Q",
-          table3: "吴磊",
-          table4: "13457102069",
-          table5: "包年",
-          table6: "剩余67天",
-          table7: "A341",
-          table8: "2-21-3401",
-          table9: "身份证",
-          table10: "330203199010112386"
-        },
-        {
-          table1: "9",
-          table2: "浙B78V3Q",
-          table3: "刘丽",
-          table4: "13457100239",
-          table5: "包年",
-          table6: "剩余77天",
-          table7: "A118",
-          table8: "1-1-1101",
-          table9: "身份证",
-          table10: "330203199010112386"
-        },
-        {
-          table1: "10",
-          table2: "浙B78V3Q",
-          table3: "何佃霁",
-          table4: "13457102069",
-          table5: "包年",
-          table6: "剩余77天",
-          table7: "A118",
-          table8: "1-1-1101",
-          table9: "身份证",
-          table10: "330203199010112386"
-        }
-        ]
 
-      }
-
+      },
+      options: [],
+      buildingUnitEstateId: null,
     }
   },
-  components: {
-    tablePagination,
-    addRevise
+  mounted () {
+    // 弹窗内下拉框
+    cpmBuildingUnitFindAll().then(res => {
+      this.buildOptions = res
+    })
+    findUserCarStatus().then(res => {
+      console.log(res)
+      let arr = res.map(item => ({
+        label: item.showName,
+        value: item.showValue
+      }))
+      console.log(arr)
+      this.addEidtForm.form_item[6].options = arr
+    })
   },
   methods: {
-    tableRow (data) {
-      this.table_row = data;
+    onSubmit () {
+      let resData = {
+        buildingUnitEstateId: 57,
+        code: this.addEidtForm.ruleForm.code,
+        // no: this.addEidtForm.ruleForm.no,
+        type: 1,
+        owner: this.userName,
+        tel: this.addEidtForm.ruleForm.tel,
+        idType: this.addEidtForm.ruleForm.idType,
+        idNumber: this.addEidtForm.ruleForm.idNumber,
+        status: this.addEidtForm.ruleForm.status,
+        parkingSpaceId: 7
+      }
+      userCarInsert(resData).then(res => {
+        console.log(res)
+      })
+      // userCarFindById
+    },
+    ruleSubmit () { },
+    // 弹窗关闭
+    drawerClose () {
+      this.drawer_vrisible = false
+    },
+    revises (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('只能单条数据修改')
+          return
+        }
+      } else {
+        this.$message.error('请选中需要修改的数据')
+        return
+      }
+      this.drawerTitle = '修改车辆',
+        this.drawer_vrisible = true;
+      let resData = {
+        id: data[0].id
+      }
+      userCarFindById(resData).then(res => {
+        console.log(res)
+      })
+    },
+    add () {
+      this.drawerTitle = '新增车辆',
+        this.drawer_vrisible = true;
+    },
+    handleClose () {
+      this.drawer_vrisible = false;
+    },
+    tableCheck (arr) {
+      console.log(arr)
+      this.table_row = arr
+    },
+    getData () {
+      // 调用子组件的方法
+      this.$refs.table.loadData()
     },
     // 删除
     del (data) {
-      if (JSON.stringify(data) != "{}") {
-        this.dialog_config.title = '删除提示'
-        this.dialog_config.content = '是否确认删除？删除无法撤回！'
+      if (data.length) {
         this.dialog_visible = true
       } else {
-        this.$message.error('请选中需要删除的表格数据');
+        this.$message.error('请选中需要删除的表格数据')
       }
     },
-    // 监听子组件取消事件
+    // 监听删除取消事件
     cancel (data) {
-      this.dialog_visible = false;
+      this.dialog_visible = false
     },
-    // 监听子组件确认事件
+    // 监听删除确认确认事件
     confirm (data) {
-      this.dialog_visible = false;
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      });
-    }
+      let arr = []
+      for (let i = 0; i < this.table_row.length; i++) {
+        arr.push(this.table_row[i].id)
+      }
+      // 调用子组件的方法
+      this.$refs.table.tableDelete(arr)
+      this.dialog_visible = false
+    },
+    // 单元楼栋
+    unitData (value) {
+      let resData = {
+        id: value
+      }
+      findByBuildingId(resData).then(res => {
+        // 给单元号赋值
+        this.unitOptions = res
+      })
+    },
+    hoursData (value) {
+      let resData = {
+        id: value
+      }
+      findByBuildingUnitId(resData).then(res => {
+        console.log(res)
+        this.hoursOptions = res
+      })
+    },
+  },
+  watch: {
+    'buildValue': {
+      handler (newValue) {
+        this.unitData(newValue)
+        this.unitValue = null;
+      },
+      deep: true
+    },
+    "unitValue": {
+      handler (newValue) {
+        this.hoursData(newValue)
+        this.hoursValue = null;
+      },
+      deep: true
+    },
+    //     buildValue
+    // unitValue
+    // hoursValue
   }
 }
 </script>
-<style scoped>
-.main-titel span {
-  font-size: 16px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
-  padding-left: 21px;
-}
-.content {
-  padding: 20px;
-}
-.content-btn {
-  padding-bottom: 20px;
-}
-.form-box {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-.form-box > .form-input {
-  margin-right: 170px;
-}
-.form-btn {
-  flex: 1;
-}
-.input-box {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-}
-.input-box > div > span {
-  color: #999999;
-  font-size: 14px;
-  padding-right: 10px;
-}
-.content-table {
-  margin-top: 20px;
-  border: 1px solid #f5f5f6;
-}
+<style scoped lang='scss'>
 </style>

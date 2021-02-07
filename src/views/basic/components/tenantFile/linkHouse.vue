@@ -3,7 +3,7 @@
   <div>
     <div class="drawer-box">
       <div class="dra-header">
-        <span>关联车位</span>
+        <span>关联房屋</span>
       </div>
       <div class="dra-body">
         <div class="dra-content">
@@ -11,59 +11,50 @@
             <span>基本信息</span>
           </div>
           <div class="">
-            <el-form ref="form" label-position="right" :model="form" label-width="100px">
-              <div class="form-box">
-                <div class="form-box">
-                  <div class="form-item">
-                    <el-form-item label="姓名">
-                      <span>王康康</span>
-                    </el-form-item>
-                  </div>
-                  <div class="form-item">
-                    <el-form-item label="手机号">
-                      <span>1582314345</span>
-                    </el-form-item>
-                  </div>
-                  <div class="form-item" style="width:100%">
-                  <el-form-item :label="'房屋信息'">
-                    <div style="display:flex">
-                      <!-- :prop="'domains.' + index + '.value'" -->
-                      <el-select v-model="value" placeholder="幢" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="单元" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                      <el-select v-model="value" placeholder="房间号" size="small" style="max-width:108px;margin-right:10px">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                    </div>
-                  </el-form-item>
-                </div>
-                </div>
-              </div>
-            </el-form>
+            <form-datechildren :formItem="form_item"
+                               ref="formData">
+              <template v-slot:f7>
+                <el-select v-model="form_item.f7"
+                           size="small"
+                           style="width:108px;margin-right:10px"
+                           placeholder="幢">
+                  <el-option v-for="item in options"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value"
+                             :disabled="item.disabled">
+                  </el-option>
+                </el-select>
+                <el-select v-model="form_item.f7"
+                           size="small"
+                           style="width:108px;margin-right:10px"
+                           placeholder="单元号">
+                  <el-option v-for="item in options"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value"
+                             :disabled="item.disabled">
+                  </el-option>
+                </el-select>
+                <el-select v-model="form_item.f7"
+                           size="small"
+                           style="width:108px;margin-right:10px"
+                           placeholder="房间号">
+                  <el-option v-for="item in options"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value"
+                             :disabled="item.disabled">
+                  </el-option>
+                </el-select>
+              </template>
+            </form-datechildren>
           </div>
         </div>
       </div>
       <div class="dra-footer">
         <div class="dra-footer-content">
-          <button  class="dra-submit el-icon-circle-check"><span>提交</span></button>
+          <button class="dra-submit el-icon-circle-check"><span>提交</span></button>
           <button class="dra-cancel"><span>取消</span></button>
         </div>
       </div>
@@ -72,40 +63,40 @@
 </template>
 
 <script>
+import formDatechildren from '@/components/form/formDatechildren'
 export default {
+  components: {
+    formDatechildren
+  },
   data () {
     return {
       input: '',
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      },
-      {
-        value: '选项2',
-        label: '双皮奶'
-      },
-      {
-        value: '选项3',
-        label: '蚵仔煎'
-      },
-      {
-        value: '选项4',
-        label: '龙须面'
-      },
-      {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
+
+      form_item: [
+        {
+          type: 'span',
+          label: '姓名',
+          value: '高伟伟',
+          prop: 'f4',
+          width: '50%'
+        },
+        {
+          type: 'span',
+          label: '手机号',
+          value: '15857314365',
+          prop: 'f5',
+          width: '50%'
+        },
+        {
+          type: 'Slot',
+          label: '房屋信息',
+          prop: 'f7',
+          slotName: 'f7',
+          width: '100%'
+        },
+      ],
+
       value: ''
     }
   },
@@ -117,9 +108,9 @@ export default {
 }
 </script>
 <style scoped>
-.el-form-item span{
-  color: #666666;
-  font-weight: 400;
-  font-size: 14px;
+.el-form-item span {
+    color: #666666;
+    font-weight: 400;
+    font-size: 14px;
 }
 </style>

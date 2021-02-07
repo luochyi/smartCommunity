@@ -30,12 +30,14 @@
       <div class="box_footer">
         <div class="box_footer_content">
           <div class="content-btn">
-            <button class="dra-cancel">
-              <span>发布</span>
-            </button>
-            <el-button class="dra-cancel">保存</el-button>
             <el-button class="init-button"
-                       style="margin-right:10px">取消</el-button>
+                       @click="handleClose">发布</el-button>
+            <el-button class="dra-cancel"
+                       style="margin-right:10px">保存</el-button>
+            <button class="dra-cancel"
+                    @click="handleClose">
+              <span>取消</span>
+            </button>
 
           </div>
         </div>
@@ -50,98 +52,98 @@ import PriceInventory from './PriceInventory.vue'
 import Service from './Service.vue'
 
 export default {
-    components: {
-        production,
-        Graphic,
-        PriceInventory,
-        Service,
-    },
-    data() {
-        return {
-            activeName: 'first',
-            ruleForm: {
-                name1: '',
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                resource1: '',
-                desc: '',
-            },
-            rules: {
-                name: [
-                    {
-                        required: true,
-                        message: '请输入商品标题',
-                        trigger: 'blur',
-                    },
-                    {
-                        min: 0,
-                        max: 30,
-                        message: '长度在 0 到 30 个字符',
-                        trigger: 'blur',
-                    },
-                ],
-                region: [
-                    {
-                        required: true,
-                        message: '请选择活动区域',
-                        trigger: 'change',
-                    },
-                ],
-                date1: [
-                    {
-                        type: 'date',
-                        required: true,
-                        message: '请选择日期',
-                        trigger: 'change',
-                    },
-                ],
-                date2: [
-                    {
-                        type: 'date',
-                        required: true,
-                        message: '请选择时间',
-                        trigger: 'change',
-                    },
-                ],
-                type: [
-                    {
-                        type: 'array',
-                        required: true,
-                        message: '请至少选择一个活动性质',
-                        trigger: 'change',
-                    },
-                ],
-                resource: [
-                    {
-                        required: true,
-                        message: '请选择活动资源',
-                        trigger: 'change',
-                    },
-                ],
-                desc: [
-                    {
-                        required: true,
-                        message: '请填写活动形式',
-                        trigger: 'blur',
-                    },
-                ],
-            },
-        }
-    },
+  components: {
+    production,
+    Graphic,
+    PriceInventory,
+    Service,
+  },
+  data () {
+    return {
+      activeName: 'first',
+      ruleForm: {
+        name1: '',
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        resource1: '',
+        desc: '',
+      },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '请输入商品标题',
+            trigger: 'blur',
+          },
+          {
+            min: 0,
+            max: 30,
+            message: '长度在 0 到 30 个字符',
+            trigger: 'blur',
+          },
+        ],
+        region: [
+          {
+            required: true,
+            message: '请选择活动区域',
+            trigger: 'change',
+          },
+        ],
+        date1: [
+          {
+            type: 'date',
+            required: true,
+            message: '请选择日期',
+            trigger: 'change',
+          },
+        ],
+        date2: [
+          {
+            type: 'date',
+            required: true,
+            message: '请选择时间',
+            trigger: 'change',
+          },
+        ],
+        type: [
+          {
+            type: 'array',
+            required: true,
+            message: '请至少选择一个活动性质',
+            trigger: 'change',
+          },
+        ],
+        resource: [
+          {
+            required: true,
+            message: '请选择活动资源',
+            trigger: 'change',
+          },
+        ],
+        desc: [
+          {
+            required: true,
+            message: '请填写活动形式',
+            trigger: 'blur',
+          },
+        ],
+      },
+    }
+  },
 
-    methods: {
-        handleClose() {
-            console.log(1)
-            this.$emit('handleClose', false)
-        },
-        handleClick() {},
-        cancel() {},
+  methods: {
+    handleClose () {
+      console.log(1)
+      this.$emit('handleClose', false)
     },
+    handleClick () { },
+    cancel () { },
+  },
 }
 </script>
 <style scoped>

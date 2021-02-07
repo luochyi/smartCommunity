@@ -66,16 +66,19 @@ export default {
       this.editor.txt.html('')
     },
     seteditor () {
-      // http://192.168.2.125:8080/admin/storage/create
+      let mytoken = sessionStorage.getItem(
+        'X-Admin-Token'
+      )
       this.editor = new E(this.$refs.toolbar, this.$refs.editor)
       this.editor.customConfig.uploadImgShowBase64 = false // base 64 存储图片
-      this.editor.customConfig.uploadImgServer = ' actionImgUrl()' // 配置服务器端地址
-      this.editor.customConfig.uploadImgHeaders = {} // 自定义 header
-      this.editor.customConfig.uploadFileName = 'img[]' // 后端接受上传文件的参数名
+      this.editor.customConfig.uploadImgServer = 'http://192.168.2.201:8804/IntelligentCommunity/manage/upload/uploadVoteTitle' // 配置服务器端地址
+      this.editor.customConfig.uploadImgHeaders = {
+        'X-Admin-Token': mytoken
+      } // 自定义 header
+      this.editor.customConfig.uploadFileName = 'file' // 后端接受上传文件的参数名
       this.editor.customConfig.uploadImgMaxSize = 2 * 1024 * 1024 // 将图片大小限制为 2M
       this.editor.customConfig.uploadImgMaxLength = 6 // 限制一次最多上传 3 张图片
       this.editor.customConfig.uploadImgTimeout = 3 * 60 * 1000 // 设置超时时间
-
       // 配置菜单
       this.editor.customConfig.menus = [
         'head', // 标题
@@ -107,6 +110,7 @@ export default {
           // 图片上传错误的回调
         },
         customInsert: (insertImg, result, editor) => {
+          console.log(result, editor)
           // 图片上传成功，插入图片的回调
           // result为上传图片成功的时候返回的数据，这里我打印了一下发现后台返回的是data：[{url:"路径的形式"},...]
           // console.log(result.data[0].url)
@@ -134,16 +138,16 @@ export default {
 </script>
 <style>
 .editor {
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  z-index: 0;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 0;
 }
 .toolbar {
-  border: 1px solid #ccc;
+    border: 1px solid #ccc;
 }
 .text {
-  border: 1px solid #ccc;
-  height: 164px;
+    border: 1px solid #ccc;
+    height: 164px;
 }
 </style>

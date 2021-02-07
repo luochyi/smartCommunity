@@ -1,12 +1,12 @@
 <style scoped>
 .tips {
-  margin: 20px;
-  height: 38px;
-  line-height: 38px;
-  background: #fafafa;
-  border-radius: 4px;
-  opacity: 0.8;
-  border: 1px solid #e8e8e8;
+    margin: 20px;
+    height: 38px;
+    line-height: 38px;
+    background: #fafafa;
+    border-radius: 4px;
+    opacity: 0.8;
+    border: 1px solid #e8e8e8;
 }
 </style>
 <template>
@@ -124,7 +124,6 @@ export default {
             width: '180',
 
           },
-          { label: '操作', prop: 'table9', width: '180' }
 
           // 申请时间
         ],
