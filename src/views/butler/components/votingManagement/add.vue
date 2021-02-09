@@ -7,78 +7,77 @@
         <span slot="title">基本信息</span>
         <VueForm ref="childFroms"
                  :formObj='votingFrom'>
-          <!-- fileUrls -->
+
           <template slot='fileUrls'>
-            <el-upload class="upload-demo"
-                       action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
-                       :on-preview="handlePreview"
-                       :on-remove="handleRemove"
-                       :on-success="handleAvatarSuccess"
-                       :before-remove="beforeRemove"
-                       multiple
-                       :limit="1"
-                       :on-exceed="handleExceed"
-                       :file-list="fileList">
-              <el-button size="small"
-                         type="primary">点击上传</el-button>
-              <div slot="tip"
-                   class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
+            <template>
+              <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+                         :on-success="voteImgeSuccess"
+                         :show-file-list="false"
+                         :before-upload="beforeAvatarUpload">
+                <div class='sys-image'
+                     style='width:104px; height:104px'>
+                  <div v-if="!fileUrls">
+                    <i class="el-icon-plus"></i>
+                    <p>上传照片</p>
+                  </div>
+                  <el-image v-else
+                            :src="`http://test.akuhotel.com:8804/static/temp/${fileUrls}`"
+                            style="width: 104px; height: 104px"></el-image>
+                </div>
+              </el-upload>
+            </template>
           </template>
           <template slot='sysVoteCandidateList'>
-            <el-checkbox-group v-model="checkList">
-              <el-checkbox label="名称"></el-checkbox>
-              <el-checkbox label="电话"></el-checkbox>
-              <el-checkbox label="图片"></el-checkbox>
-            </el-checkbox-group>
+            <el-checkbox v-model="imageShow"
+                         label="图片"></el-checkbox>
+            <el-checkbox v-model="telShow"
+                         label="电话"></el-checkbox>
+            <el-checkbox v-model="nameShow"
+                         label="名称"></el-checkbox>
             <div class="sysVote-box">
-              <div class="sys-box">
-                <div class="sys-title"> <span>选项1</span></div>
+              <div class="sys-box"
+                   v-for="(item,index) in VotingUserList"
+                   :key="index">
+                <div class="sys-title">
+                  <span>选项{{index + 1}}</span>
+                  <span v-if='VotingUserList.length === index + 1'
+                        style="color: #FB4702;"
+                        @click="addVotingUser">添加选项</span>
+                  <span v-else
+                        style="color: #FB4702;"
+                        @click='delVotingUser(item)'>删除</span>
+                </div>
                 <div class="sys-item">
-                  <div class='sys-image'>
-                    <!-- <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
-                               :class="uploadDisabled"
-                               list-type="picture-card"
-                               :limit="3"
-                               :on-success="handleAvatarSuccess"
-                               :on-preview="handlePreview"
-                               :on-remove="handleRemove">
-                      <i class="el-icon-plus"></i>
-                    </el-upload> -->
-
-                  </div>
+                  <template v-if="imageShow">
+                    <template>
+                      <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+                                 :on-success="(res, file) => handleAvatarSuccess(index, res, file)"
+                                 :show-file-list="false"
+                                 :before-upload="beforeAvatarUpload">
+                        <div class='sys-image'>
+                          <div v-if="!item.fileUrls[0]">
+                            <i class="el-icon-plus"></i>
+                            <p>上传照片</p>
+                          </div>
+                          <el-image v-else
+                                    :src="`http://test.akuhotel.com:8804/static/temp/${item.fileUrls[0]}`"
+                                    style="width: 80px; height: 80px"></el-image>
+                        </div>
+                      </el-upload>
+                    </template>
+                  </template>
                   <div class='sys-input'>
-                    <el-input v-model="input"
+                    <el-input v-model="item.name"
+                              v-if="nameShow"
                               placeholder="名称"></el-input>
-                    <el-input v-model="input"
+                    <el-input v-model="item.tel"
+                              v-if="telShow"
                               placeholder="电话"></el-input>
                   </div>
                 </div>
               </div>
-              <div class="sys-box">
-
-                <div class="sys-item">
-                  <div class='sys-image'>
-
-                  </div>
-                  <div class='sys-input'>
-
-                  </div>
-                </div>
-              </div>
             </div>
-
-            <!-- <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
-                       :class="uploadDisabled"
-                       list-type="picture-card"
-                       :limit="3"
-                       :on-success="handleAvatarSuccess"
-                       :on-preview="handlePreview"
-                       :on-remove="handleRemove">
-              <i class="el-icon-plus"></i>
-            </el-upload> -->
           </template>
-          <!-- sysVoteCandidateList -->
         </VueForm>
       </FromCard>
       <div slot="footer">
@@ -106,13 +105,10 @@ export default {
   },
   data () {
     return {
-      checkList: ['名称', '电话', '图片'],
-      uploadDisabled: '',
-      input: null,
-      loading: false,
-      options: [],
       drawer_vrisible: false,
       bool: false,
+      // 投票上传图片路径
+      fileUrls: '',
       votingFrom: {
         ruleForm: {
           title: null,
@@ -120,7 +116,7 @@ export default {
           endDate: null,
           type: null,
           content: null,
-          fileUrls: null,
+          fileUrls: [],
           sysVoteCandidateList: [],
         },
         form_item: [
@@ -181,6 +177,17 @@ export default {
         ],
         rules: { title: [{ required: true, message: '请填写投票标题', trigger: 'blur' }] }
       },
+      VotingUserList: [
+        {
+          fileUrls: [''],
+          name: '',
+          tel: '',
+        }
+      ],
+      // checkboox 控制显示 默认全显示
+      imageShow: true,
+      nameShow: true,
+      telShow: true,
       importHeaders: {
         'X-Admin-Token': sessionStorage.getItem(
           'X-Admin-Token'
@@ -188,58 +195,80 @@ export default {
       },
       fileList: [
       ],
-      froms: [],
       imageUrl: null
     }
   },
-  mounted () {
-  },
   methods: {
-    handleRemove (file, fileList) {
-      console.log(fileList);
+    // 提交
+    onSubmit () {
+      this.votingFrom.ruleForm.sysVoteCandidateList = this.VotingUserList
+      this.votingFrom.ruleForm.fileUrls[0] = this.fileUrls
+      console.log(this.votingFrom.ruleForm)
+      // return
+      // let resData = {
+      //   title: null,
+      //   fileUrls: null,
+      //   content: null,
+      //   beginDate: null,
+      //   endDate: null,
+      //   type: null,
+      //   sysVoteCandidateList: null,
+      //   isRelease: null,
+      // }
+      voteInsert(this.votingFrom.ruleForm).then(res => {
+        console.log(res)
+      })
     },
-    handleAvatarSuccess (res, file) {
-      console.log(file)
-      if (res.length > 0) {
-        this.uploadDisabled = 'disabled'
+    // 添加候选人
+    addVotingUser () {
+      this.VotingUserList.push({
+        fileUrls: [''],
+        name: '',
+        tel: '',
+      })
+    },
+    // 删除候选人
+    delVotingUser (item) {
+      let index = this.VotingUserList.indexOf(item)
+      if (index !== -1) {
+        this.VotingUserList.splice(index, 1)
       }
     },
-    handlePreview (file) {
-      console.log(file);
+    // 候选人文件上传之前
+    beforeAvatarUpload (file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/png'
+      const isPNG = file.type === 'image/jpeg'
+      if (!isJPG && !isPNG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return (isJPG || isPNG) && isLt2M;
     },
-    handleExceed (files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    // 候选人文件上传成功
+    handleAvatarSuccess (index, res, file) {
+      console.log('handleAvatarSuccess')
+      // this.VotingUserList[index].fileUrls[0] = res.url
+      this.VotingUserList[index].fileUrls.splice(0, 1, res.url)
+      // this.VotingUserList[index].fileUrls.unshift(res.url)
+      console.log(this.VotingUserList)
+
     },
-    beforeRemove (file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
+    voteImgeSuccess (res, file) {
+      this.fileUrls = res.url
+      console.log(res)
     },
     drawerClose () {
       this.drawer_vrisible = false;
-      this.froms = []
       this.$refs.childFroms.reset()
       this.$emit('handleClose', 'Close')
     },
     ruleSubmit (val) {
       this.bool = val;
     },
-    // 提交
-    onSubmit () {
-      let resData = {
-        title: null,
-        fileUrls: null,
-        content: null,
-        beginDate: null,
-        endDate: null,
-        type: null,
-        sysVoteCandidateList: null,
-        isRelease: null,
-      }
-      voteInsert(resData).then(res => {
-        console.log(res)
-      })
-    },
-    addForms () {
-    }
+
   },
   watch: {
     drawerVrisible: {
@@ -250,13 +279,12 @@ export default {
   }
 }
 </script>
-
 <style scoped lang='scss'>
 .sysVote-box {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    // justify-content: space-between;
     .sys-box {
         width: 340px;
         height: 130px;
@@ -266,6 +294,9 @@ export default {
         border-radius: 4px;
         padding: 12px;
         .sys-title {
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
             margin-bottom: 12px;
             span {
                 font-size: 14px;
@@ -276,15 +307,8 @@ export default {
         }
         .sys-item {
             display: flex;
-            justify-content: space-between;
-            .sys-image {
-                width: 80px;
-                height: 80px;
-                background: rgba(0, 0, 0, 0.04);
-                border-radius: 2px;
-                border: 1px solid rgba(0, 0, 0, 0.15);
-                margin-right: 12px;
-            }
+            align-content: space-between;
+            height: 80px;
             .sys-input {
                 flex: 1;
                 display: flex;
@@ -293,6 +317,19 @@ export default {
             }
         }
     }
+}
+.sys-image {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 2px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    margin-right: 12px;
 }
 </style>
 

@@ -75,6 +75,15 @@ export function voteListDetailCandidate(data) {
         params: data
     })
 }
+// /vote/findById
+// 投票管理：根据投票主键id查询投票信息（修改页面）
+export function voteFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/vote/findById',
+        params: data
+    })
+}
 // /vote/insert
 export function voteInsert(data) {
     return service.request({

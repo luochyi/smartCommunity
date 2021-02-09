@@ -63,7 +63,7 @@
 import addEidt from '@/views/butler/components/votingManagement/add.vue'
 import detailsVrisible from '@/views/butler/components/votingManagement/details.vue'
 import detailsDetails from '@/views/butler/components/votingManagement/details/index.vue'
-import { voteCountVoteExpectedStart } from '@/api/butler'
+import { voteCountVoteExpectedStart, voteFindById } from '@/api/butler'
 export default {
   components: {
     addEidt,
@@ -88,7 +88,7 @@ export default {
           { label: '投票开始时间', prop: 'beginDate', width: 'auto' },
           { label: '投票结束时间', prop: 'endDate', width: 'auto' },
           { label: '活动状态', prop: 'status', width: 'auto' },
-          { label: '备注', prop: 'voteResult', width: 'auto' },
+          { label: '投票结果', prop: 'voteResult', width: 'auto' },
         ],
         url: 'voteList',
         table_data: [],
@@ -173,8 +173,21 @@ export default {
       this.details_details = false;
     },
     // 编辑
-    editor () {
-
+    editor (data) {
+      if (data.length > 1) {
+        this.$message.error('只能查看一条数据的详情');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      let resData = {
+        id: data[0].id,
+      }
+      voteFindById(resData).then(result => {
+        console.log(result)
+      })
     }
 
   },
