@@ -85,7 +85,7 @@ export default {
           { label: '活动开始时间', prop: 'activityStartTime', width: '180' },
           { label: '活动结束时间', prop: 'activityEndTime', width: '180' },
           { label: '状态', prop: 'status', width: 'auto' },
-          { label: '报名人数', prop: 'registrationNumber	', width: ' 180' },
+          { label: '报名人数', prop: 'registrationNumber', width: ' 180' },
           { label: '收费标准', prop: 'participantsNumber', width: '120' },
           { label: '退费', prop: 'refund', width: '120' },
           { label: '创建人', prop: 'createName', width: '100' },

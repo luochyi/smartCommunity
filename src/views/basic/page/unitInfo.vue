@@ -40,12 +40,6 @@
                 @click="drawerClose"><span>取消</span></button>
       </div>
     </Drawer>
-    <!-- 删除提示弹窗-->
-    <Dialog :dialogVisible='dialog_visible'
-            :dialog_config='dialog_config'
-            @cancel='cancel'
-            @confirm='confirm'>
-    </Dialog>
   </div>
 </template>
 <script>
@@ -61,13 +55,7 @@ export default {
       drawer_vrisible: false,
       // 控制弹窗为添加或修改  默认为true 添加
       drawerControl: true,
-      // 控制dialog显示隐藏
-      dialog_visible: false,
-      // 弹窗提示
-      dialog_config: {
-        title: '删除提示',
-        content: '是否确认删除？删除无法撤回！'
-      },
+
       // 表格配置
       config: {
         thead: [
@@ -103,7 +91,7 @@ export default {
             prop: 'buildingName'
           },
           {
-            type: 'Input',
+            type: 'Int',
             label: '单元(号)',
             placeholder: '请输入',
             prop: 'no'
@@ -284,25 +272,22 @@ export default {
     // 删除
     del (data) {
       if (data.length) {
-        this.dialog_visible = true
+        let arr = []
+        for (let i = 0; i < this.table_row.length; i++) {
+          arr.push(this.table_row[i].id)
+        }
+        this.$confirm('是否确认删除？删除不可恢复', '删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          this.$refs.table.tableDelete(arr)
+        }).catch(action => { });
       } else {
-        this.$message.error('请选中需要删除的表格数据')
+        this.$message.error('请选中需要删除的数据');
       }
     },
-    // 监听删除取消事件
-    cancel (data) {
-      this.dialog_visible = false
-    },
-    // 监听删除确认确认事件
-    confirm (data) {
-      let arr = []
-      for (let i = 0; i < this.table_row.length; i++) {
-        arr.push(this.table_row[i].id)
-      }
-      // 调用子组件的方法
-      this.$refs.table.tableDelete(arr)
-      this.dialog_visible = false
-    }
   }
 }
 </script>

@@ -23,11 +23,6 @@
     <addEidt :drawerTitle="drawerTitle"
              @handleClose="handleClose"
              :drawerVrisible='drawer_vrisible'></addEidt>
-    <Dialog :dialogVisible='dialog_visible'
-            :dialog_config='dialog_config'
-            @cancel='cancel'
-            @confirm='confirm'>
-    </Dialog>
   </div>
 </template>
 <script>
@@ -44,24 +39,8 @@ export default {
       // 是否通过校验
       // 抽屉显示隐藏
       drawer_vrisible: false,
-      // 控制dialog显示隐藏
-      dialog_visible: false,
       table_row: [],
-      // 弹窗提示
-      dialog_config: {
-        title: '删除提示',
-        content: '是否确认删除？删除无法撤回！'
-      },
       config: {
-        /*
-        1	pageNum	当前页	是	[int]		
-2	size	每页记录数	是	[int]		
-3	roomName	房屋信息		[string]		
-4	status	房屋状态		[int]		
-5	userResidentName	业主		[string]		
-6	userResidentTel	手机号		[string]	
-        */
-        // 搜索
         search_item: [
           {
             type: 'Input',
@@ -160,25 +139,22 @@ export default {
     // 删除
     del (data) {
       if (data.length) {
-        this.dialog_visible = true
+        let arr = []
+        for (let i = 0; i < this.table_row.length; i++) {
+          arr.push(this.table_row[i].id)
+        }
+        this.$confirm('是否确认删除？删除不可恢复', '删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          this.$refs.table.tableDelete(arr)
+        }).catch(action => { });
       } else {
-        this.$message.error('请选中需要删除的表格数据')
+        this.$message.error('请选中需要删除的数据');
       }
     },
-    // 监听删除取消事件
-    cancel (data) {
-      this.dialog_visible = false
-    },
-    // 监听删除确认确认事件
-    confirm (data) {
-      let arr = []
-      for (let i = 0; i < this.table_row.length; i++) {
-        arr.push(this.table_row[i].id)
-      }
-      // 调用子组件的方法
-      this.$refs.table.tableDelete(arr)
-      this.dialog_visible = false
-    }
   }
 }
 </script>

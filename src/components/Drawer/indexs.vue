@@ -54,6 +54,7 @@ export default {
 
 <style lang="scss">
 .drawers_box {
+    position: relative;
     .el-drawer__header {
         padding: 0 20px;
         margin: 0;
@@ -79,6 +80,9 @@ export default {
         padding-bottom: 60px;
     }
     .dra-footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
         height: 81px;
         line-height: 81px;
         padding: 0 20px;

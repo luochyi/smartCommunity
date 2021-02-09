@@ -25,8 +25,61 @@
                    class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
           </template>
-        </VueForm>
+          <template slot='sysVoteCandidateList'>
+            <el-checkbox-group v-model="checkList">
+              <el-checkbox label="名称"></el-checkbox>
+              <el-checkbox label="电话"></el-checkbox>
+              <el-checkbox label="图片"></el-checkbox>
+            </el-checkbox-group>
+            <div class="sysVote-box">
+              <div class="sys-box">
+                <div class="sys-title"> <span>选项1</span></div>
+                <div class="sys-item">
+                  <div class='sys-image'>
+                    <!-- <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+                               :class="uploadDisabled"
+                               list-type="picture-card"
+                               :limit="3"
+                               :on-success="handleAvatarSuccess"
+                               :on-preview="handlePreview"
+                               :on-remove="handleRemove">
+                      <i class="el-icon-plus"></i>
+                    </el-upload> -->
 
+                  </div>
+                  <div class='sys-input'>
+                    <el-input v-model="input"
+                              placeholder="名称"></el-input>
+                    <el-input v-model="input"
+                              placeholder="电话"></el-input>
+                  </div>
+                </div>
+              </div>
+              <div class="sys-box">
+
+                <div class="sys-item">
+                  <div class='sys-image'>
+
+                  </div>
+                  <div class='sys-input'>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+                       :class="uploadDisabled"
+                       list-type="picture-card"
+                       :limit="3"
+                       :on-success="handleAvatarSuccess"
+                       :on-preview="handlePreview"
+                       :on-remove="handleRemove">
+              <i class="el-icon-plus"></i>
+            </el-upload> -->
+          </template>
+          <!-- sysVoteCandidateList -->
+        </VueForm>
       </FromCard>
       <div slot="footer">
         <button class="btn-orange"
@@ -39,6 +92,7 @@
 </template>
 
 <script>
+import { voteInsert } from '@/api/butler'
 export default {
   props: {
     drawerVrisible: {
@@ -52,6 +106,9 @@ export default {
   },
   data () {
     return {
+      checkList: ['名称', '电话', '图片'],
+      uploadDisabled: '',
+      input: null,
       loading: false,
       options: [],
       drawer_vrisible: false,
@@ -59,8 +116,12 @@ export default {
       votingFrom: {
         ruleForm: {
           title: null,
-          status: null,
+          beginDate: null,
+          endDate: null,
           type: null,
+          content: null,
+          fileUrls: null,
+          sysVoteCandidateList: [],
         },
         form_item: [
           {
@@ -109,6 +170,13 @@ export default {
             width: '100%',
             prop: 'fileUrls',
             slotName: 'fileUrls'
+          }, {
+            type: 'Slot',
+            label: '投票选项',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'sysVoteCandidateList',
+            slotName: 'sysVoteCandidateList'
           },
         ],
         rules: { title: [{ required: true, message: '请填写投票标题', trigger: 'blur' }] }
@@ -131,7 +199,10 @@ export default {
       console.log(fileList);
     },
     handleAvatarSuccess (res, file) {
-      console.log(res)
+      console.log(file)
+      if (res.length > 0) {
+        this.uploadDisabled = 'disabled'
+      }
     },
     handlePreview (file) {
       console.log(file);
@@ -153,7 +224,19 @@ export default {
     },
     // 提交
     onSubmit () {
-
+      let resData = {
+        title: null,
+        fileUrls: null,
+        content: null,
+        beginDate: null,
+        endDate: null,
+        type: null,
+        sysVoteCandidateList: null,
+        isRelease: null,
+      }
+      voteInsert(resData).then(res => {
+        console.log(res)
+      })
     },
     addForms () {
     }
@@ -169,5 +252,47 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+.sysVote-box {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    // justify-content: space-between;
+    .sys-box {
+        width: 340px;
+        height: 130px;
+        margin-right: 50px;
+        margin-bottom: 30px;
+        background: #f9f9f9;
+        border-radius: 4px;
+        padding: 12px;
+        .sys-title {
+            margin-bottom: 12px;
+            span {
+                font-size: 14px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #333333;
+            }
+        }
+        .sys-item {
+            display: flex;
+            justify-content: space-between;
+            .sys-image {
+                width: 80px;
+                height: 80px;
+                background: rgba(0, 0, 0, 0.04);
+                border-radius: 2px;
+                border: 1px solid rgba(0, 0, 0, 0.15);
+                margin-right: 12px;
+            }
+            .sys-input {
+                flex: 1;
+                display: flex;
+                flex-wrap: wrap;
+                align-content: space-between;
+            }
+        }
+    }
+}
 </style>
 

@@ -28,10 +28,17 @@
       <VueTable ref="table"
                 :config='config'
                 @tableCheck="tableCheck">
+        <template v-slot:score="slotData">
+          <div>
+            <el-rate :value="slotData.data.score/2"
+                     :colors="colors"
+                     disabled></el-rate>
+          </div>
+        </template>
         <template slot="footer">
           <div class="table-footer">
-            <button @click="drawer_details= true">详情</button>
-            <button @click="drawer_details= true">回复</button>
+            <button @click="details(table_row)">详情</button>
+            <button @click="details(table_row)">回复</button>
             <button @click="del(table_row)">删除</button>
           </div>
         </template>
@@ -39,27 +46,19 @@
     </div>
     <!-- 详情 -->
     <drawerDetails :drawerVrisible='drawer_details'
+                   :suggestId='suggestId'
                    @handleClose='getClose'></drawerDetails>
   </div>
 </template>
 
 <script>
-
-import drawerDetails from '@/views/butler/components/suggestConsultation/details.vue'
-
-
+import drawerDetails from '@/views/butler/components/complainPraise/details.vue'
 export default {
   data () {
     return {
-      // 控制dialog显示隐藏
-      dialog_visible: false,
-      // 传入dialog的参数
-      dialog_config: {
-        title: '',
-        content: ''
-      },
       table_row: [],
-      // drawerDetails
+      colors: ['#FB4702', '#FB4702', '#FB4702'],
+      suggestId: null,
       drawer_details: false,
       config: {
         thead: [
@@ -73,6 +72,8 @@ export default {
             label: '星级',
             prop: 'score',
             width: '180',
+            type: 'slot',
+            slotName: 'score',
           },
           { label: '最后一次回复/提问时间', prop: 'lastFeedBackDate', width: '280' },
         ],
@@ -136,12 +137,28 @@ export default {
   },
   components: {
     drawerDetails,
-
   },
   methods: {
-
     tableCheck (arr) {
       this.table_row = arr
+    },
+    details (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message({
+            message: '只能操作单个数据',
+            type: 'error'
+          })
+          return
+        }
+        this.suggestId = data[0].id
+        this.drawer_details = true
+      } else {
+        this.$message({
+          message: '请选择需要操作的数据',
+          type: 'error'
+        })
+      }
     },
     // 删除
     del (data) {
@@ -162,10 +179,10 @@ export default {
         this.$message.error('请选中需要删除的数据');
       }
     },
-
     // 关闭抽屉
     getClose (data) {
       this.drawer_details = false;
+      this.suggestId = null
     },
   }
 }

@@ -98,7 +98,7 @@ export default {
             type: 'Select',
             label: '楼栋',
             placeholder: '请输入',
-            options: [  ],
+            options: [],
             width: '50%',
             prop: 'buildingId'
           },
@@ -199,7 +199,6 @@ export default {
           }
         }
       }
-
       let requestData = {
         estate: {
           buildingUnitId: this.fromjson.ruleForm.buildingUnitId,
@@ -211,13 +210,15 @@ export default {
         },
         residentList: resList
       }
-
       console.log(requestData)
       houseManagementInsert(requestData).then(res => {
         if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
           this.drawerClose()
         }
-        console.log(res)
       })
     },
     del (item) {

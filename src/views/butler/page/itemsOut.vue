@@ -53,10 +53,10 @@
           </template>
           <template slot="footer">
             <div class="table-footer">
-              <button>编辑</button>
+              <!-- <button>编辑</button> -->
               <button @click="del(table_row)">删除</button>
-              <button>详情</button>
-              <button>驳回申请</button>
+              <!-- <button>详情</button>
+              <button>驳回申请</button> -->
             </div>
           </template>
         </VueTable>

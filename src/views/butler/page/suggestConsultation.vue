@@ -39,10 +39,17 @@
                          name="2"></el-tab-pane>
           </el-tabs>
         </template>
+        <template v-slot:score="slotData">
+          <div>
+            <el-rate :value="slotData.data.score/2"
+                     :colors="colors"
+                     disabled></el-rate>
+          </div>
+        </template>
         <template slot="footer">
           <div class="table-footer">
-            <button @click="drawer_details= true">详情</button>
-            <button @click="drawer_details= true">回复</button>
+            <button @click="details(table_row)">详情</button>
+            <button @click="details(table_row)">回复</button>
             <button @click="del(table_row)">删除</button>
           </div>
         </template>
@@ -50,6 +57,7 @@
     </div>
     <!-- 详情 -->
     <drawerDetails :drawerVrisible='drawer_details'
+                   :suggestId='suggestId'
                    @handleClose='getClose'></drawerDetails>
   </div>
 </template>
@@ -57,13 +65,13 @@
 <script>
 import { adviceCountConsultNew, adviceCountAdviceNew } from '@/api/butler'
 import drawerDetails from '@/views/butler/components/suggestConsultation/details.vue'
-
-
 export default {
   data () {
     return {
       activeName: 0,
       table_row: [],
+      colors: ['#FB4702', '#FB4702', '#FB4702'],
+
       // drawerDetails
       drawer_details: false,
       config: {
@@ -78,6 +86,8 @@ export default {
             label: '星级',
             prop: 'score',
             width: '180',
+            type: 'slot',
+            slotName: 'score',
           },
           { label: '最后一次回复/提问时间', prop: 'lastFeedBackDate', width: '280' },
         ],
@@ -104,7 +114,6 @@ export default {
             options: [
               { value: 1, label: '有反馈信息' },
               { value: 2, label: '无反馈信息' },
-
             ]
           },
           {
@@ -113,12 +122,18 @@ export default {
             placeholder: '请选择',
             prop: 'releaseName',
           },
-          // {
-          //   type: 'Input',
-          //   label: '评分',
-          //   placeholder: '单元/楼栋/房号',
-          //   prop: 'score',
-          // },
+          {
+            type: 'select',
+            label: '评分',
+            placeholder: '评分',
+            prop: 'score',
+            options: [
+              { value: 1, label: '差评' },
+              { value: 2, label: '中评' },
+              { value: 3, label: '好评' },
+
+            ]
+          },
         ],
         data: {
           pageNum: 1,
@@ -129,6 +144,7 @@ export default {
       countConsultNew: null,
       // 建议条数
       countAdviceNew: null,
+      suggestId: null,
     }
   },
   components: {
@@ -138,6 +154,7 @@ export default {
     this.getTipsData()
   },
   methods: {
+
     //  查询今日咨询条数
     getTipsData () {
       // 今日发起装修
@@ -185,9 +202,29 @@ export default {
         this.$message.error('请选中需要删除的数据');
       }
     },
+    details (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message({
+            message: '只能操作单个数据',
+            type: 'error'
+          })
+          return
+        }
+        this.suggestId = data[0].id
+        this.drawer_details = true
+      } else {
+        this.$message({
+          message: '请选择需要操作的数据',
+          type: 'error'
+        })
+      }
+    },
+    // suggestId
     // 关闭抽屉
     getClose (data) {
       this.drawer_details = false;
+      this.suggestId = null
     },
   }
 }

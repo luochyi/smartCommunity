@@ -200,3 +200,38 @@
   }
        */
 }
+.el-drawer__header {
+    padding: 0 20px;
+    margin: 0;
+    height: 81px;
+    line-height: 81px;
+    span {
+        font-size: 16px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+    }
+}
+:focus {
+    outline: 0;
+}
+.sys-image {
+}
+
+// .el-upload--picture-card {
+//     width: 80px;
+//     height: 80px;
+//     background: rgba(0, 0, 0, 0.04);
+//     border-radius: 2px;
+//     border: 1px solid rgba(0, 0, 0, 0.15);
+// }
+// .el-drawer__body {
+//     background: #e8ebf2;
+//     overflow-y: auto;
+//     padding-bottom: 81px;
+// }
+// .footer {
+//     height: 81px;
+//     line-height: 81px;
+//     padding: 0 20px;
+// }

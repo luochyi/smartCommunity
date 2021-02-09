@@ -75,6 +75,47 @@ export function voteListDetailCandidate(data) {
         params: data
     })
 }
+// /vote/insert
+export function voteInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/vote/insert',
+        data: data
+    })
+}
+// 根据咨询建议主键id查询咨询建议详情
+export function adviceFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/advice/findById',
+        params: data
+    })
+}
+// /complaintPraise/findById
+export function complaintPraiseFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/complaintPraise/findById',
+        params: data
+    })
+}
+// /complaintPraise/insertDetail
+// 投诉表扬：回复投诉表扬（添加反馈信息）[已替换违禁关键字]
+export function complaintPraiseInsertDetail(data) {
+    return service.request({
+        method: 'POST',
+        url: '/complaintPraise/insertDetail',
+        data: data
+    })
+}
+// 咨询建议：回复咨询建议（添加反馈信息）[已替换违禁关键字]
+export function adviceInsertDetail(data) {
+    return service.request({
+        method: 'POST',
+        url: '/advice/insertDetail',
+        data: data
+    })
+}
 //  查询今日咨询条数
 export function adviceCountConsultNew(data) {
     return service.request({
@@ -93,11 +134,35 @@ export function adviceCountAdviceNew(data) {
 }
 // 访客管理：批量作废访客信息
 export function visitorsCancel(data) {
-  return service.request({
-      method: 'POST',
-      url: '/visitors/cancel',
-      data: data
-  })
+    return service.request({
+        method: 'POST',
+        url: '/visitors/cancel',
+        data: data
+    })
+}
+// 访客管理：更新访客管理信息
+export function visitorsUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/visitors/update',
+        data: data
+    })
+}
+// 访客管理：根据访客管理信息主键id查询访客出入记录
+export function visitorsListDetail(data) {
+    return service.request({
+        method: 'GET',
+        url: '/visitors/listDetail',
+        params: data
+    })
+}
+// 访客管理：根据访客管理主键id查询访客管理信息
+export function visitorsFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/visitors/findById',
+        params: data
+    })
 }
 // 查询物品照片
 export function userArticleOutFindGoodsImgById(data) {
@@ -122,6 +187,7 @@ export function workOrderTypeFindById(data) {
         params: data
     })
 }
+
 // 根据工单大类主键id查询工单类型明细信息
 export function workOrderTypeList(data) {
     return service.request({

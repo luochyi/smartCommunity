@@ -341,9 +341,9 @@
 /* 底部 */
 .dra-footer {
     width: 100%;
-    position: absolute;
+    /* position: absolute; */
     background: #ffffff;
-    bottom: 0;
+    /* bottom: 0; */
 }
 /* 底部内容 */
 .dra-footer-content {

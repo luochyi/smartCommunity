@@ -35,6 +35,10 @@ Vue.component('VueTable', VueTable)
 Vue.component('searchForm', searchForm)
 Vue.component('table-pagination', tablePagination)
 // table-pagination
+Vue.prototype.$baseUrl =
+    'http://test.akuhotel.com:8804/IntelligentCommunity/manage/'
+Vue.prototype.$ImgUrl = 'http://test.akuhotel.com:8804/static/	'
+
 Vue.config.productionTip = false
 
 new Vue({

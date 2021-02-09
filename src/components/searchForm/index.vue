@@ -19,6 +19,12 @@
                         :disabled="item.disabled"
                         :style="{ width: item.inputWidth }">
               </el-input>
+              <el-input v-else-if="item.type === 'Int'"
+                        oninput="value=value.replace(/[^\d]/g,'')"
+                        v-model.trim="form[item.prop]"
+                        :placeholder="item.placeholder"
+                        :disabled="item.disabled"
+                        :style="{ width: item.inputWidth }"></el-input>
               <!-- <el-date-picker v-else-if="item.type === 'startEndDate'"
                               v-model="form[item.prop]"
                               format="yyyy 年 MM 月 dd 日"

@@ -12,7 +12,7 @@
 <template>
   <div class="main-content">
     <div class="main-titel">
-      <span> </span>
+      <span>投票管理</span>
     </div>
     <div class="tips">
       <p>

@@ -22,8 +22,9 @@
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
-              <button @click="edit_vrisible= true">编辑</button>
-              <button @click="recordVrisible= true">出入记录</button>
+              <!-- visitorsListDetail -->
+              <button @click="edit(table_row)">编辑</button>
+              <button @click="record(table_row)">出入记录</button>
               <button @click="toVoid(table_row)">作废</button>
             </div>
           </template>
@@ -47,35 +48,36 @@
                     @click="drawerClose"><span>取消</span></button>
           </div>
         </Drawer>
+
+        <Drawer drawerTitle="出入记录"
+                @drawerClose="drawerClose"
+                :drawerVrisible='recordVrisible'>
+          <div style="padding:30px">
+            <FromCard>
+              <template slot="title">出入记录</template>
+              <template>
+                <div style='margin:0 auto'>
+                  <tableData :config="recordConfig"></tableData>
+                </div>
+              </template>
+            </FromCard>
+          </div>
+          <div slot="footer">
+            <button class="btn-orange"
+                    @click="recordVrisible = false"><span>关闭</span></button>
+          </div>
+        </Drawer>
         <!-- 出入记录 -->
-        <record :drawerVrisible='recordVrisible'
-                @handleClose='getClose'></record>
-        <!-- 作废 提示弹窗-->
-        <!-- <Dialog :dialogVisible='dialog_visible'
-                :dialog_config='dialog_config'
-                @cancel='cancel'
-                @confirm='confirm'>
-        </Dialog> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { visitorsCancel } from '@/api/butler'
-import record from '@/views/butler/components/visitorManagement/record.vue'
-// import Dialog from '@/components/dialog/Dialog.vue'
-
+import { visitorsCancel, visitorsFindById, visitorsUpdate, visitorsListDetail } from '@/api/butler'
 export default {
   data () {
     return {
-      // 控制dialog显示隐藏
-      dialog_visible: false,
-      // 传入dialog的参数
-      dialog_config: {
-        title: '删除提示',
-        content: '该活动已经开始投票，不可删除！'
-      },
       edit_vrisible: false,
       recordVrisible: false,
       // 选中表格数据
@@ -195,27 +197,18 @@ export default {
       // 添加抽屉数据
       reviseForm: {
         ruleForm: {
+          roomName: null,
           name: null,
           status: null,
           tel: null,
           weight: null,
           type: null,
-        },
-        rules: {
-          buildingUnitEstateId: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          name: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          sex: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          isDrive: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          carNum: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          expectedVisitDate: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          effectiveTime: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          visitDate: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          departureTime: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
-          visitorStatus: [{ required: true, message: '请填写楼栋名称', trigger: 'blur' }],
+          departureTime: null,
+          visitDate: null,
         },
         form_item: [
           {
-            type: 'Input', label: '来访房屋', placeholder: '请输入', width: '100%', prop: 'buildingUnitEstateId'
+            type: 'Input', label: '来访房屋', placeholder: '请输入', width: '100%', prop: 'roomName', disabled: true
           },
           {
             type: 'Int',
@@ -288,33 +281,112 @@ export default {
             label: '访客状态',
             placeholder: '请输入访客状态',
             options: [
-              { value: '1', label: '未到' },
-              { value: '2', label: '已到' },
-              { value: '3', label: '已过期' },
-              { value: '4', label: '作废' }
+              { value: 1, label: '未到' },
+              { value: 2, label: '已到' },
+              { value: 3, label: '已过期' },
+              { value: 4, label: '作废' }
             ],
             width: '50%',
             prop: 'visitorStatus'
           },
-          // expectedVisitDate
-          // Slot
-
         ]
       },
+      recordConfig: {
+        thead: [
+          { label: '序号', type: 'index', width: '110' },
+          { label: '进入时间', prop: 'departureTime', width: 'auto' },
+          { label: '出去时间', prop: 'visitTime', width: ' auto' },
+        ],
+        checkbox: false,
+        table_data: []
+      }
     }
   },
-  components: {
-    record
-  },
+
   methods: {
     tableCheck (arr) {
       this.table_row = arr
     },
     onSubmit () {
+      let resData = {
+        id: this.table_row[0].id,
+        name: this.reviseForm.ruleForm.name,
+        sex: this.reviseForm.ruleForm.sex,
+        isDrive: this.reviseForm.ruleForm.isDrive,
+        carNum: this.reviseForm.ruleForm.carNum,
+        expectedVisitDate: this.reviseForm.ruleForm.expectedVisitDate,
+        visitDate: this.reviseForm.ruleForm.visitDate,
+        departureTime: this.reviseForm.ruleForm.departureTime,
+        effectiveTime: this.reviseForm.ruleForm.effectiveTime,
+        visitorStatus: this.reviseForm.ruleForm.visitorStatus,
+      }
+      visitorsUpdate(resData).then(result => {
+        if (result.status) {
+          this.$message({
+            message: result.message,
+            type: 'success'
+          })
+        }
 
+      })
+    },
+    record (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message({
+            message: '不能批量查看',
+            type: 'error'
+          })
+          return
+        }
+        let resData = {
+          id: data[0].id
+        }
+        visitorsListDetail(resData).then(result => {
+          if (result) {
+            this.recordVrisible = true
+            this.recordConfig.table_data = result.voUserVisitorsDetailList
+          }
+          console.log(result)
+        })
+      } else {
+        this.$message({
+          message: '请选择需要查看的数据',
+          type: 'error'
+        })
+      }
+    },
+    // 编辑
+    edit (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message({
+            message: '不能批量编辑',
+            type: 'error'
+          })
+          return
+        }
+        let resData = {
+          id: data[0].id
+        }
+        visitorsFindById(resData).then(result => {
+          if (result) {
+            this.reviseForm.ruleForm = result
+            this.edit_vrisible = true
+          }
+          console.log(result)
+        })
+      } else {
+        this.$message({
+          message: '请选择需要编辑的数据',
+          type: 'error'
+        })
+      }
     },
     drawerClose () {
       this.edit_vrisible = false
+      this.recordVrisible = false;
+
     },
     // 作废
     toVoid (data) {

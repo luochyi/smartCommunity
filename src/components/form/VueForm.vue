@@ -30,7 +30,7 @@
                      :label="selectItem.label"></el-option>
         </el-select>
         <el-date-picker v-else-if="item.type === 'DateTime'"
-                        value-format="yyyy/MM/dd HH:mm:ss"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         type="datetime"
                         v-model="configObj.ruleForm[item.prop]"
                         :disabled="item.disabled"

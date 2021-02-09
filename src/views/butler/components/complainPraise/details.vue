@@ -18,8 +18,8 @@
                        size="small">
                 <el-form-item label="类型"
                               style="width:100%">
-                  <span v-if="detailData.type ===1 ">咨询</span>
-                  <span v-if="detailData.type ===2 ">建议</span>
+                  <span v-if="detailData.type ===3">投诉</span>
+                  <span v-if="detailData.type ===4">表扬</span>
                 </el-form-item>
                 <el-form-item label="照片"
                               v-if="detailData.imgUrl!==null"
@@ -90,7 +90,7 @@
   </div>
 </template>
 <script>
-import { adviceFindById, adviceInsertDetail } from '@/api/butler'
+import { complaintPraiseFindById, complaintPraiseInsertDetail } from '@/api/butler'
 export default {
   props: {
     drawerVrisible: {
@@ -109,13 +109,12 @@ export default {
     return {
       detailData: {
         id: 1,
-        type: 1,
-        score: 6,
-        imgUrl: [],
+        type: null,
+        score: null,
+        imgUrl: null,
         voUserAdviceDetailList: [],
       },
       isVisibleDrawe: false,
-
       content: '',
       colors: ['#FB4702', '#FB4702', '#FB4702'],
       rate: 5,
@@ -147,7 +146,7 @@ export default {
         createUserType: 3,
       }
       console.log(resData)
-      adviceInsertDetail(resData).then(result => {
+      complaintPraiseInsertDetail(resData).then(result => {
         console.log(result)
         if (result.status) {
           this.$message({
@@ -168,7 +167,7 @@ export default {
         let resData = {
           id: id
         }
-        adviceFindById(resData).then(res => {
+        complaintPraiseFindById(resData).then(res => {
           console.log(res)
           this.detailData = res.voFindByIdAdvice
           this.detailData.voUserAdviceDetailList = res.voFindByIdAdvice.voUserAdviceDetailList ? res.voFindByIdAdvice.voUserAdviceDetailList : []
