@@ -9,24 +9,18 @@
                  :formObj='fromjson'>
         </VueForm>
       </FromCard>
-      <div style="margin:30px"
-           v-for="(item,index) in froms"
-           :key="item.key">
+      <div style="margin:30px">
         <FromCard>
-          <span slot="title">业主关联 {{index+1}}</span>
-          <span slot="btn">
-            <el-button type="text"
-                       @click='del(item)'><span style="color:#fb4702">删除</span></el-button>
-          </span>
+          <span slot="title">业主关联</span>
+
           <div class="">
             <VueForm ref="childFrom"
                      @ruleSubmit='ruleSubmit'
-                     :formObj='item.addForm'>
-              <template v-slot:residentId>
-                <!--   @change='change(froms[index].addForm.ruleForm.residentId)' -->
-                <el-select v-model="froms[index].addForm.ruleForm.residentId"
+                     :formObj='addForm'>
+              <template v-slot:name>
+                <el-select v-model="addForm.ruleForm.name"
                            :remote-method='remoteMethod'
-                           @change='(value) => change(froms[index].addForm.ruleForm.residentId,index,value)'
+                           @change='change'
                            @focus='sefocus'
                            :loading="loading"
                            remote
@@ -44,10 +38,6 @@
           </div>
         </FromCard>
       </div>
-      <div style="display:flex;justify-content: center;">
-        <el-button @click="addForms()"
-                   type="text"><span style="color:#fb4702">添加</span></el-button>
-      </div>
       <div slot="footer">
         <button class="btn-orange"
                 @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
@@ -60,7 +50,7 @@
 
 <script>
 
-import { userResident, findParkingSpaceStatus, findParkingSpaceType, cpmParkingSpaceInsert, Login } from '@/api/basic'
+import { userResident, userResidentFindByIdOne, findParkingSpaceStatus, findParkingSpaceType, cpmParkingSpaceInsert, cpmParkingSpaceFindById, cpmParkingSpaceUpdate } from '@/api/basic'
 export default {
   props: {
     drawerVrisible: {
@@ -77,6 +67,7 @@ export default {
       loading: false,
       options: [],
       drawer_vrisible: false,
+      editId: null,
       bool: false,
       fromjson: {
         ruleForm: {
@@ -111,14 +102,56 @@ export default {
           }
         ]
       },
-      froms: [],
+      addForm: {
+        ruleForm: {
+          tel: null,
+          name: null,
+          idType: null,
+          idNumber: null,
+          residentId: null,
+        },
+        form_item: [
+          {
+            type: 'Slot',
+            label: '业主姓名',
+            placeholder: '请输入',
+            width: '50%',
+            slotName: 'name',
+            prop: 'name'
+          },
+          {
+            type: 'Input',
+            label: '联系方式',
+            placeholder: '请输入',
+            width: '50%',
+            disabled: true,
+            prop: 'tel'
+          },
+          {
+            type: 'Select',
+            label: '证件类型',
+            placeholder: '请输入',
+            disabled: true,
+            options: [
+              { value: 1, label: '身份证' },
+              { value: 2, label: '营业执照' },
+            ],
+            width: '50%',
+            prop: 'idType'
+          },
+          {
+            type: 'Input',
+            label: '证件号码',
+            placeholder: '请输入',
+            disabled: true,
+            width: '50%',
+            prop: 'idNumber'
+          }
+        ]
+      },
     }
   },
   mounted () {
-    Login().then((res) => {
-      console.log(res)
-      sessionStorage.setItem('X-Admin-Token', res.token)
-    })
     // 弹窗内下拉框
     findParkingSpaceStatus().then(res => {
       let arr = res.map(item => ({
@@ -160,108 +193,98 @@ export default {
       this.loading = true
       userResident(reeData).then(res => {
         this.options = res.tableList
+        let obj = {
+          id: 0,
+          idNumber: "",
+          idType: '',
+          name: "（空）",
+          tel: "",
+        }
+        this.options.unshift(obj)
         this.loading = false
-        console.log(res)
+        console.log(this.options)
       })
     },
-    change (id, index, value) {
+    change (value) {
+      console.log(value)
       this.options.map(item => {
         if (item.id === value) {
-          this.froms[index].addForm.ruleForm.tel = item.tel
-          this.froms[index].addForm.ruleForm.idType = item.idType
-          this.froms[index].addForm.ruleForm.idNumber = item.idNumber
+          this.addForm.ruleForm.tel = item.tel
+          this.addForm.ruleForm.idType = item.idType
+          this.addForm.ruleForm.idNumber = item.idNumber
+          this.addForm.ruleForm.residentId = value
         }
       })
-
     },
     drawerClose () {
       this.drawer_vrisible = false;
-      this.froms = []
+      this.editId = null;
       this.$refs.childFroms.reset()
+      this.$refs.childFrom.reset()
       this.$emit('handleClose', 'Close')
+    },
+    // 修改
+    edit (id) {
+      let findData = {
+        id: id
+      }
+      this.editId = id
+      cpmParkingSpaceFindById(findData).then(res => {
+        this.fromjson.ruleForm.code = res.code
+        this.fromjson.ruleForm.status = res.status
+        this.fromjson.ruleForm.type = res.type
+        let userData = {
+          id: res.residentId
+        }
+        userResidentFindByIdOne(userData).then(result => {
+          this.addForm.ruleForm.idNumber = result.userResident.idNumber
+          this.addForm.ruleForm.name = result.userResident.name
+          this.addForm.ruleForm.tel = result.userResident.tel
+          this.addForm.ruleForm.idType = result.userResident.idType
+          this.addForm.ruleForm.residentId = res.residentId
+        })
+      })
+      this.editBool = true;
+      this.drawer_vrisible = true;
     },
     ruleSubmit (val) {
       this.bool = val;
     },
     // 提交
     onSubmit () {
-      // 检查form表单校验
-      let resList = []
-      this.froms.map(item => {
-        resList.push(item.addForm.ruleForm.residentId)
-      })
       let requestData = {
         code: this.fromjson.ruleForm.code,
         status: this.fromjson.ruleForm.status,
         type: this.fromjson.ruleForm.type,
-        residentId: resList[0],
+        residentId: this.addForm.ruleForm.residentId,
       }
-      console.log(requestData)
-      cpmParkingSpaceInsert(requestData).then(res => {
-        if (res.status) {
-          this.drawerClose()
-        }
-        console.log(res)
-      })
-    },
-    del (item) {
-      console.log(item)
-      let index = this.froms.indexOf(item)
-      if (index !== -1) {
-        this.froms.splice(index, 1)
+      //  editId true 修改 否则添加
+      if (this.editId) {
+        requestData.id = this.editId;
+        cpmParkingSpaceUpdate(requestData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$emit('addEidtSuccess')
+            this.drawerClose()
+          }
+          console.log(res)
+        })
+      } else {
+        cpmParkingSpaceInsert(requestData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$emit('addEidtSuccess')
+            this.drawerClose()
+          }
+          console.log(res)
+        })
       }
-    },
-    addForms () {
-      let that = this
-      this.froms.push({
-        addForm: {
-          ruleForm: {
-            tel: null,
-            name: null,
-            idType: null,
-            idNumber: null,
-          },
-          form_item: [
-            {
-              type: 'Slot',
-              label: '业主姓名',
-              placeholder: '请输入',
-              width: '50%',
-              slotName: 'residentId',
-              prop: 'residentId'
-            },
-            {
-              type: 'Input',
-              label: '联系方式',
-              placeholder: '请输入',
-              width: '50%',
-              disabled: true,
-              prop: 'tel'
-            },
-            {
-              type: 'Select',
-              label: '证件类型',
-              placeholder: '请输入',
-              disabled: true,
-              options: [
-                { value: 1, label: '身份证' },
-                { value: 2, label: '营业执照' },
-              ],
-              width: '50%',
-              prop: 'idType'
-            },
-            {
-              type: 'Input',
-              label: '证件号码',
-              placeholder: '请输入',
-              disabled: true,
-              width: '50%',
-              prop: 'idNumber'
-            }
-          ]
-        },
-        key: Date.now()
-      })
     }
   },
   watch: {

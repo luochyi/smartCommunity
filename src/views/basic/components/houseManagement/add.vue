@@ -52,13 +52,14 @@
       <div slot="footer">
         <button class="btn-orange"
                 @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
-        <button class="btn-gray"><span>取消</span></button>
+        <button class="btn-gray"
+                @click="drawerClose"><span>取消</span></button>
       </div>
     </Drawer>
   </div>
 </template>
 <script>
-import { houseManagementInsert, cpmBuildingUnitFindAll, findByBuildingId } from '@/api/basic'
+import { houseManagementInsert, cpmBuildingUnitFindAll, cpmBuildingUnitEstateFindById, findByBuildingId } from '@/api/basic'
 export default {
   props: {
     drawerVrisible: {
@@ -220,6 +221,17 @@ export default {
           this.drawerClose()
         }
       })
+    },
+    // 修改用户
+    edit (id) {
+      let findData = {
+        id: id
+      }
+      cpmBuildingUnitEstateFindById(findData).then(res => {
+        console.log(res)
+        console.log(res.userResidentList)
+      })
+      this.drawer_vrisible = true;
     },
     del (item) {
       console.log(item)

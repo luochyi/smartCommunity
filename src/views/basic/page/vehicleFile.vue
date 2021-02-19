@@ -67,7 +67,6 @@
                   </el-option>
                 </el-select>
               </template>
-
             </VueForm>
           </template>
         </FromCard>
@@ -232,7 +231,6 @@ export default {
           pageNum: 1,
           size: 10,
         },
-
       },
       options: [],
       buildingUnitEstateId: null,
@@ -265,12 +263,11 @@ export default {
         idType: this.addEidtForm.ruleForm.idType,
         idNumber: this.addEidtForm.ruleForm.idNumber,
         status: this.addEidtForm.ruleForm.status,
-        parkingSpaceId: 7
+        parkingSpaceId: 1
       }
       userCarInsert(resData).then(res => {
         console.log(res)
       })
-      // userCarFindById
     },
     ruleSubmit () { },
     // 弹窗关闭
@@ -365,9 +362,6 @@ export default {
       },
       deep: true
     },
-    //     buildValue
-    // unitValue
-    // hoursValue
   }
 }
 </script>

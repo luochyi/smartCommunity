@@ -26,6 +26,8 @@
       </VueTable>
     </div>
     <addEidt :drawerTitle="drawerTitle"
+             ref="addEidt"
+             @addEidtSuccess='addEidtSuccess'
              @handleClose="handleClose"
              :drawerVrisible='drawer_vrisible'></addEidt>
   </div>
@@ -121,7 +123,6 @@ export default {
         label: item.showName,
         value: item.showValue
       }))
-
       this.config.search_item[1].options = arr
     })
   },
@@ -138,16 +139,14 @@ export default {
         return
       }
       this.drawerTitle = '修改房屋',
-        this.drawer_vrisible = true;
-      let resData = {
-        id: data[0].id
-      }
-      cpmParkingSpaceFindById(resData).then(res => {
-        console.log(res)
-      })
+        this.$refs.addEidt.edit(data[0].id)
+
+    },
+    addEidtSuccess () {
+      this.$refs.table.loadData()
     },
     add () {
-      this.drawerTitle = '新增房屋',
+      this.drawerTitle = '新增车辆',
         this.drawer_vrisible = true;
     },
     handleClose () {
@@ -156,10 +155,10 @@ export default {
     tableCheck (arr) {
       this.table_row = arr
     },
-    getData () {
-      // 调用子组件的方法
-      this.$refs.table.loadData()
-    },
+    // getData () {
+    //   // 调用子组件的方法
+    //   this.$refs.table.loadData()
+    // },
     // 删除
     del (data) {
       if (data.length) {

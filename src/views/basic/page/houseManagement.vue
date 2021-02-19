@@ -21,12 +21,13 @@
       </VueTable>
     </div>
     <addEidt :drawerTitle="drawerTitle"
+             ref="addEidt"
              @handleClose="handleClose"
              :drawerVrisible='drawer_vrisible'></addEidt>
   </div>
 </template>
 <script>
-import { Login, cpmBuildingUnitEstateFindById } from '@/api/basic'
+import { cpmBuildingUnitEstateFindById } from '@/api/basic'
 import addEidt from '../components/houseManagement/add.vue'
 export default {
   components: {
@@ -95,20 +96,8 @@ export default {
       },
     }
   },
-  mounted () {
-    Login().then((res) => {
-      console.log(res)
-      sessionStorage.setItem('X-Admin-Token', res.token)
-    })
-  },
   methods: {
     revises (data) {
-      let findData = {
-        id: data[0].id
-      }
-      cpmBuildingUnitEstateFindById(findData).then(res => {
-        console.log(res)
-      })
       if (data.length) {
         if (data.length > 1) {
           this.$message.error('只能单条数据修改')
@@ -118,8 +107,9 @@ export default {
         this.$message.error('请选中需要修改的数据')
         return
       }
-      this.drawerTitle = '修改房屋',
-        this.drawer_vrisible = true;
+
+      this.$refs.addEidt.edit(data[0].id)
+      this.drawerTitle = '修改房屋'
     },
     add () {
       this.drawerTitle = '新增房屋',

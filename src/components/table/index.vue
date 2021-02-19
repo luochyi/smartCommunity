@@ -123,7 +123,6 @@ export default {
       // 配置完成后开始读取接口数据
       this.loadData()
     },
-
     sortChage (column) {
       console.log(column)
 
@@ -215,7 +214,6 @@ export default {
             this.loading_table = false
           })
       }
-
     }
   },
   watch: {
