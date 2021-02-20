@@ -20,6 +20,10 @@ const requestUrl = {
 
     voteList: '/vote/list',
     voteListDelete: '/vote/falseDelete',
+    voteListDetailList: '/vote/listDetailCandidate',
+    voteListVotePersonnel: '/vote/listVotePersonnel',
+
+    // /vote/listVotePersonnel
     conveniencePhoneList: '/conveniencePhone/list',
     conveniencePhoneListDelete: 'conveniencePhone/delete',
     adviceList: '/advice/list',
@@ -56,8 +60,8 @@ const requestUrl = {
     announcementManagementList: '/announcementManagement/list',
     notificationManagementList: '/notificationManagement/list',
     activityManagementList: '/activityManagement/list',
-    sponsorManagementList: '/sponsorManagement/list',
-    voteList: '/vote/list'
+    sponsorManagementList: '/sponsorManagement/list'
+
     // List Delete
 }
 export default requestUrl

@@ -8,14 +8,15 @@
       </div>
       <div class="pagination-item">
         <div class="block">
+          <!--  :page-sizes="[1, 10, 50, 100]"
+                         layout="sizes,prev, pager, next,slot" -->
           <el-pagination @current-change="handleCurrentChange"
                          @size-change="handleSizeChange"
                          :page-size="limit"
                          background
                          :pager-count="9"
                          :current-page="currentPage"
-                         :page-sizes="[1, 10, 50, 100]"
-                         layout="sizes,prev, pager, next,slot"
+                         layout="prev, pager, next,slot"
                          :total="totalNumber">
             <div class="page-slot">
               <span>向第</span>

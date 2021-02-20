@@ -45,6 +45,7 @@
       </div>
     </div>
     <addEidt :drawerTitle="addEidtDrawerTitle"
+             @submitSuccess='submitSuccess'
              @handleClose="addEidtHandleClose"
              :drawerVrisible='addEidt_vrisible'></addEidt>
     <!-- 详情 -->
@@ -54,6 +55,8 @@
                      @details_obj="details_obj"></detailsVrisible>
     <!-- 详情详情 -->
     <detailsDetails :drawerVrisible='details_details'
+                    :voteId="detailsDetailsId"
+                    :detailsData='detailsDetailsData'
                     @handleClose='getClose'
                     @goBack='goBack'></detailsDetails>
   </div>
@@ -73,6 +76,8 @@ export default {
   data () {
     return {
       detailId: null,
+      detailsDetailsId: null,
+      detailsDetailsData: null,
       addEidtDrawerTitle: '新增活动',
       // 详情
       details_vrisible: false,
@@ -114,9 +119,15 @@ export default {
         this.count = result.count
       })
     },
+    // 添加成功
+    submitSuccess () {
+      this.$refs.table.loadData()
+    },
+    // 添加
     addvoting () {
       this.addEidt_vrisible = true;
     },
+    // 添加关闭
     addEidtHandleClose () {
       this.addEidt_vrisible = false;
     },
@@ -165,7 +176,9 @@ export default {
     details_obj (data) {
       this.details_vrisible = false;
       this.details_details = true;
-      // console.log(data + '222')
+      this.detailsDetailsId = data.id;
+      this.detailsDetailsData = data
+      console.log(data)
     },
     //  详情抽屉 详情 返回
     goBack () {

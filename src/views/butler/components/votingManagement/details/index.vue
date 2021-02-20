@@ -1,142 +1,118 @@
 <template>
 
   <div>
-    <el-drawer title="我是标题"
-               :visible.sync="isVisibleDrawe"
-               size="58%"
-               :before-close="handleClose"
-               :with-header="false">
-      <div class="drawer-box">
-        <div class="dra-header">
-          <span>投票详情</span>
-        </div>
-        <div class="dra-body">
-          <div class="dra-content">
-            <div class="content-titel">
-              <span>活动信息</span>
-            </div>
-            <div class="">
-              <!-- from 表单 -->
-              <form-datechildren :formItem="form_item"
-                                 :rulesItem="rules_item"
-                                 ref="formData">
-              </form-datechildren>
-              <div style="padding:20px">
-                <!-- 表格 -->
-                <tableData :config="table_config">
-                  <template slot="button"
-                            slot-scope="slotData">
-                    <el-button type="text"
-                               class="init-text"
-                               v-model="slotData.data.button"
-                               @click="details(slotData.data)">详情</el-button>
-                  </template>
-                </tableData>
-                <!-- 页码 -->
-                <table-pagination :pageSize='10'
-                                  :totalNumber='30'>
-                </table-pagination>
+    <Drawer drawerTitle="投票详情"
+            :drawerVrisible="isVisibleDrawe"
+            size="58%"
+            @drawerClose="handleClose">
+      <FromCard style="margin:30px">
+        <span slot="title">基本信息</span>
+        <VueForm ref="childFroms"
+                 :formObj='formData'>
+        </VueForm>
+        <div style="padding:20px">
+          <!-- 表格 -->
+          <VueTable ref="table"
+                    :config='config'>
+            <template v-slot:handle="slotData">
+              <div>
+                <el-button class="init-text"
+                           @click="details(slotData.data.id)"
+                           type="text">
+                  <span>详情</span>
+                </el-button>
               </div>
-            </div>
-          </div>
+            </template>
+          </VueTable>
         </div>
-        <div class="dra-footer">
-          <div class="dra-footer-content">
-            <button class="dra-cancel"
-                    @click="goBack()"><span>返回</span></button>
-          </div>
-        </div>
+      </FromCard>
+      <div slot="footer">
+        <button class="btn-gray"
+                @click="goBack"><span>返回</span></button>
       </div>
-    </el-drawer>
-
+    </Drawer>
   </div>
 </template>
-
 <script>
-// /Users/apple/Desktop/smartCommunity/basic-admin/src/components/form/formDate.vue
-import formDatechildren from '@/components/form/formDatechildren'
-
+import { voteFindDetailById } from '@/api/butler'
 export default {
   props: {
     drawerVrisible: {
       type: Boolean,
       default: false
+    },
+    voteId: {
+      type: Number,
+      default: () => 0
+    },
+    detailsData: {
+      type: Object,
+      default: () => { }
     }
-  },
-  components: {
-    formDatechildren
   },
   data () {
     return {
       isVisibleDrawe: false,
-      form_item: [
-        {
-          type: 'span',
-          value: '赛龙舟节目最美龙舟评选',
-          label: '投票标题',
-          prop: 'userNam2e',
-          // disabled: 1
+      formData: {
+        ruleForm: {
+          title: null,
+          beginDate: null,
+          content: null,
+          endDate: null,
+          imgUrls: null,
+          type: null,
         },
-        {
-          type: 'span',
-          value: '请大家踊跃参加，选举出2020年最美龙舟队',
-          label: '投票内容',
-          prop: 'content',
-          width: '100%'
-        }
-        // imagePreview
-      ],
-      rules_item: {
-        userNam2e: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+        form_item: [
+          {
+            type: 'span',
+            width: '100%',
+            label: '投票标题',
+            prop: 'title',
+          },
+          {
+            type: 'span',
+            width: '100%',
+            label: '投票内容',
+            prop: 'content',
+          }
         ],
-        content: [
-          { required: true, message: '', trigger: 'blur' }
-        ]
-        // date userNam2e
+        rules: {
+          content: [{ required: true },],
+          title: [
+            { required: true, message: '', trigger: 'blur' }
+          ]
+        },
       },
-      table_config: {
+      config: {
+        checkbox: false,
         thead: [
-          { label: '序号', prop: 'table1', width: 'auto' },
-          { label: '选项名', prop: 'table2', width: 'auto' },
-          { label: '票数', prop: 'table3', width: 'auto' },
-          {
-            label: '操作', prop: 'table4', width: 'auto'
-          },
+          { label: '序号', type: 'index', width: '80' },
+          { label: '选项名', prop: 'name', width: 'auto' },
+          { label: '票数', prop: 'total', width: 'auto' },
+          { label: '操作', type: 'slot', prop: 'handle', slotName: 'handle', width: 'auto' },
         ],
-        table_data: [
-          {
-            table1: '12幢1023',
-            table2: '曾号',
-            table3: '1884567790',
-            table4: '2020-06-23 12:00',
-          },
-          {
-            table1: '13幢1223',
-            table2: '曾号',
-            table3: '1884567792',
-            table4: '2020-06-23 12:00',
-          }, {
-            table1: '1幢123',
-            table2: '陈美',
-            table3: '1884567790',
-            table4: '2020-06-23 12:00',
-          }, {
-            table1: '10幢1023',
-            table2: '李佳',
-            table3: '1184527790',
-            table4: '2020-06-23 12:00',
-          },
-
-        ]
-      }
-
+        url: 'voteListVotePersonnel',
+        table_data: [],
+        search_item: [],
+        data: {
+          pageNum: 1,
+          size: 5,
+          id: 1
+        },
+      },
     }
   },
-  mounted () {
-  },
   methods: {
-
+    // 提交
+    onSubmit () {
+      this.isVisibleDrawe = false
+      this.$emit('handleClose', "onSubmit")
+    },
+    details (obj) {
+      this.$emit('details_obj', obj)
+    },
+    // 重置
+    // 取消关闭esc
     handleClose () {
       this.$emit('handleClose', "Close")
     },
@@ -149,18 +125,25 @@ export default {
     drawerVrisible: {
       handler (newValue) {
         this.isVisibleDrawe = newValue
-        console.log(newValue)
       },
       immediate: true
+    },
+    voteId: {
+      handler (newValue) {
+
+        this.config.data.id = newValue
+      },
+      immediate: true
+    },
+    detailsData: {
+      handler (newValue) {
+        this.formData.ruleForm.title = newValue.title
+        this.formData.ruleForm.content = newValue.content
+      },
+      deep: true
     },
 
   }
 }
 </script>
-<style scoped>
-.content-titel2 {
-  margin: 0px 0px 20px 30px;
-  padding-top: 30px;
-  border-top: 1px solid #e8e8e8;
-}
-</style>
+

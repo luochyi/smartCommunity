@@ -4,42 +4,43 @@
     <Drawer drawerTitle="投票详情"
             :drawerVrisible="isVisibleDrawe"
             size="58%"
-            :before-close="handleClose">
+            @drawerClose="handleClose">
       <FromCard style="margin:30px">
         <span slot="title">基本信息</span>
         <VueForm ref="childFroms"
                  :formObj='formData'>
+          <template slot='imgUrls'>
+            <el-image style="width: 100px; height: 100px"
+                      :src="url"
+                      :preview-src-list="srcList">
+            </el-image>
+          </template>
         </VueForm>
         <div style="padding:20px">
           <!-- 表格 -->
-          <!-- <tableData :config="table_config">
-            <template slot="button"
-                      slot-scope="slotData">
-              <el-button type="text"
-                         class="init-text"
-                         v-model="slotData.data.button"
-                         @click="details(slotData.data)">详情</el-button>
-            </template>
-          </tableData> -->
           <VueTable ref="table"
                     :config='config'>
-
+            <template v-slot:handle="slotData">
+              <div>
+                <el-button class="init-text"
+                           @click="details(slotData.data)"
+                           type="text">
+                  <span>详情</span>
+                </el-button>
+              </div>
+            </template>
           </VueTable>
         </div>
       </FromCard>
       <div slot="footer">
-        <button class="btn-orange"
-                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
         <button class="btn-gray"
-                @click="handleClose"><span>取消</span></button>
+                @click="handleClose"><span>关闭</span></button>
       </div>
     </Drawer>
-
   </div>
 </template>
-
 <script>
-import { voteFindDetailById, voteListVotePersonnel, voteListDetailCandidate } from '@/api/butler'
+import { voteFindDetailById } from '@/api/butler'
 export default {
   props: {
     drawerVrisible: {
@@ -53,17 +54,21 @@ export default {
   },
   data () {
     return {
+      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      srcList: [
+        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
+        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
+      ],
       drawer: false,
       isVisibleDrawe: false,
       formData: {
         ruleForm: {
-          title: '123123',
+          title: null,
           beginDate: null,
           content: null,
           endDate: null,
           imgUrls: null,
           type: null,
-
         },
         form_item: [
           {
@@ -92,10 +97,12 @@ export default {
             prop: 'type',
           },
           {
-            type: 'imagePreview',
+            type: 'Slot',
             width: '50%',
-            label: '公开人群',
+            label: '图片查看',
             prop: 'imgUrls',
+            slotName: 'imgUrls',
+
             width: '100%'
           }
           ,
@@ -110,13 +117,13 @@ export default {
         rules: {
           content: [{ required: true },],
           beginDate: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { required: true, message: '', trigger: 'blur' },
           ],
           endDate: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { required: true, message: '', trigger: 'blur' },
           ],
           imgUrls: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { required: true, message: '', trigger: 'blur' },
           ],
           type: [
             { required: true, message: '', trigger: 'blur' }
@@ -124,62 +131,24 @@ export default {
           title: [
             { required: true, message: '', trigger: 'blur' }
           ]
-          // date userNam2e
         },
       },
       details_voteId: null,
-      table_config: {
-        thead: [
-          { label: '序号', prop: 'table1', width: 'auto' },
-          { label: '选项名', prop: 'table2', width: 'auto' },
-          { label: '票数', prop: 'table3', width: 'auto' },
-          {
-            label: '操作', prop: 'button', width: 'auto', type: "slot",
-            slotName: "button",
-          },
-        ],
-        table_data: [
-          {
-            table1: '1',
-            table2: '紫薯龙舟队',
-            table3: '20',
-            button: '详情',
-          },
-          {
-            table1: '2',
-            table2: '龙舟队',
-            table3: '22',
-            button: '详情',
-          }, {
-            table1: '3',
-            table2: '端午龙舟队',
-            table3: '50',
-            table4: '详情',
-          }, {
-            table1: '4',
-            table2: '衬衣龙舟队',
-            table3: '20',
-            button: '详情',
-          },
-
-        ]
-      },
       config: {
         checkbox: false,
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '投票标题', prop: 'title', width: 'auto' },
-          { label: '投票开始时间', prop: 'beginDate', width: 'auto' },
-          { label: '投票结束时间', prop: 'endDate', width: 'auto' },
-          { label: '活动状态', prop: 'status', width: 'auto' },
-          { label: '备注', prop: 'voteResult', width: 'auto' },
+          { label: '选项名', prop: 'name', width: 'auto' },
+          { label: '票数', prop: 'total', width: 'auto' },
+          { label: '操作', type: 'slot', prop: 'handle', slotName: 'handle', width: 'auto' },
         ],
-        url: 'voteList',
+        url: 'voteListDetailList',
         table_data: [],
         search_item: [],
         data: {
           pageNum: 1,
-          size: 3,
+          size: 5,
+          id: 1
         },
       },
     }
@@ -190,8 +159,10 @@ export default {
       this.isVisibleDrawe = false
       this.$emit('handleClose', "onSubmit")
     },
-    details (obj) {
-      this.$emit('details_obj', obj)
+    details (data) {
+      data.title = this.formData.ruleForm.title
+      data.content = this.formData.ruleForm.content
+      this.$emit('details_obj', data)
     },
     getData () {
       if (!this.isVisibleDrawe || !this.details_voteId) {
@@ -200,17 +171,24 @@ export default {
       let resData = {
         id: this.details_voteId
       }
+      // 修改表格Id
+      this.config.data.id = this.details_voteId
       voteFindDetailById(resData).then(res => {
-        // console.log(res)
+        this.formData.ruleForm.title = res.voFindDetailByIdVote.title
+        this.formData.ruleForm.beginDate = res.voFindDetailByIdVote.beginDate
+        this.formData.ruleForm.content = res.voFindDetailByIdVote.content
+        this.formData.ruleForm.endDate = res.voFindDetailByIdVote.endDate
+        this.formData.ruleForm.imgUrls = res.voFindDetailByIdVote.imgUrls[0]
+        this.formData.ruleForm.type = res.voFindDetailByIdVote.type
       })
-      let resDataD = {
-        pageNum: 1,
-        size: 10,
-        id: this.details_voteId
-      }
-      voteListDetailCandidate(resDataD).then(res => {
-        console.log(res)
-      })
+      // let resDataD = {
+      //   pageNum: 1,
+      //   size: 10,
+      //   id: this.details_voteId
+      // }
+      // voteListDetailCandidate(resDataD).then(res => {
+      //   console.log(res)
+      // })
     },
     // 重置
     // 取消关闭esc

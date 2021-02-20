@@ -96,19 +96,19 @@ export default {
   methods: {
     // 重置
     reset () {
-      console.log(this.configObj.ruleForm)
+
       this.$refs['ruleForm'].resetFields()
     },
     submitForm () {
-      console.log(this.configObj.ruleForm)
+      // console.log(this.configObj.ruleForm)
       this.$refs['ruleForm'].validate((valid) => {
         this.$emit('ruleSubmit', valid)
         if (valid) {
+          this.$emit('ruleSuccess', valid)
           return true
         } else {
           return false;
         }
-
       });
     },
     initConfig () {

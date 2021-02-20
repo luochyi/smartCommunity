@@ -5,7 +5,8 @@
             :drawerVrisible='drawer_vrisible'>
       <FromCard style="margin:30px">
         <span slot="title">基本信息</span>
-        <VueForm ref="childFroms"
+        <VueForm ref="vueForm"
+                 @ruleSuccess='ruleSuccess'
                  :formObj='votingFrom'>
 
           <template slot='fileUrls'>
@@ -32,8 +33,8 @@
                          label="图片"></el-checkbox>
             <el-checkbox v-model="telShow"
                          label="电话"></el-checkbox>
-            <el-checkbox v-model="nameShow"
-                         label="名称"></el-checkbox>
+            <!-- <el-checkbox v-model="nameShow"
+                         label="名称"></el-checkbox> -->
             <div class="sysVote-box">
               <div class="sys-box"
                    v-for="(item,index) in VotingUserList"
@@ -68,7 +69,6 @@
                   </template>
                   <div class='sys-input'>
                     <el-input v-model="item.name"
-                              v-if="nameShow"
                               placeholder="名称"></el-input>
                     <el-input v-model="item.tel"
                               v-if="telShow"
@@ -106,8 +106,7 @@ export default {
   data () {
     return {
       drawer_vrisible: false,
-      bool: false,
-      // 投票上传图片路径
+      // 投票上传图片路径显示
       fileUrls: '',
       votingFrom: {
         ruleForm: {
@@ -175,56 +174,78 @@ export default {
             slotName: 'sysVoteCandidateList'
           },
         ],
-        rules: { title: [{ required: true, message: '请填写投票标题', trigger: 'blur' }] }
+        rules: {
+          title: [{ required: true, message: '请填写投票标题', trigger: 'blur' }],
+          beginDate: [{ required: true, message: '请选择投票起始时间', trigger: 'change' }],
+          endDate: [{ required: true, message: '请选择投票结束时间', trigger: 'change' }],
+          type: [{ required: true, message: '请选择公开人群', trigger: 'change' }],
+          content: [{ required: true, message: '请填写投票内容', trigger: 'blur' }],
+          fileUrls: [{ required: true, message: '请上传图片', trigger: 'change' }]
+        }
       },
+      // 投票候选人列表
       VotingUserList: [
         {
-          fileUrls: [''],
-          name: '',
-          tel: '',
+          fileUrls: [],
+          name: null,
+          tel: null,
         }
       ],
       // checkboox 控制显示 默认全显示
       imageShow: true,
-      nameShow: true,
+      // nameShow: true,  改为必填
       telShow: true,
       importHeaders: {
         'X-Admin-Token': sessionStorage.getItem(
           'X-Admin-Token'
         )
       },
-      fileList: [
-      ],
       imageUrl: null
     }
   },
+  computed: {
+
+  },
   methods: {
-    // 提交
-    onSubmit () {
+    // 图片上传成功
+    voteImgeSuccess (res, file) {
+      this.fileUrls = res.url
+      this.votingFrom.ruleForm.fileUrls[0] = res.url
+    },
+    // vueForm 验证通过提交服务器
+    ruleSuccess (val) {
       this.votingFrom.ruleForm.sysVoteCandidateList = this.VotingUserList
-      this.votingFrom.ruleForm.fileUrls[0] = this.fileUrls
-      console.log(this.votingFrom.ruleForm)
-      // return
-      // let resData = {
-      //   title: null,
-      //   fileUrls: null,
-      //   content: null,
-      //   beginDate: null,
-      //   endDate: null,
-      //   type: null,
-      //   sysVoteCandidateList: null,
-      //   isRelease: null,
-      // }
+      // 名称必填
+      let nameArr = this.VotingUserList.filter(item => item.name === null)
+      if (nameArr.length > 0) {
+        this.$message({
+          message: '请填写候选人名称必填',
+          type: 'error'
+        })
+        return
+      }
       voteInsert(this.votingFrom.ruleForm).then(res => {
-        console.log(res)
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.$emit('submitSuccess')
+          this.drawerClose()
+        }
       })
+    },
+    // 提交调用子组件校验方法
+    onSubmit () {
+
+      this.$refs.vueForm.submitForm()
     },
     // 添加候选人
     addVotingUser () {
       this.VotingUserList.push({
-        fileUrls: [''],
-        name: '',
-        tel: '',
+        fileUrls: [],
+        name: null,
+        tel: null,
       })
     },
     // 删除候选人
@@ -249,33 +270,52 @@ export default {
     },
     // 候选人文件上传成功
     handleAvatarSuccess (index, res, file) {
-      console.log('handleAvatarSuccess')
-      // this.VotingUserList[index].fileUrls[0] = res.url
       this.VotingUserList[index].fileUrls.splice(0, 1, res.url)
-      // this.VotingUserList[index].fileUrls.unshift(res.url)
-      console.log(this.VotingUserList)
-
-    },
-    voteImgeSuccess (res, file) {
-      this.fileUrls = res.url
-      console.log(res)
     },
     drawerClose () {
       this.drawer_vrisible = false;
-      this.$refs.childFroms.reset()
+      // 投票候选人列表重置
+      this.VotingUserList.slice(0, 1)
+      this.VotingUserList[0].fileUrls = []
+      this.VotingUserList[0].name = null
+      this.VotingUserList[0].tel = null
+      // 清空vueFrom 图片上传
+      this.fileUrls = null
+      this.$refs.vueForm.reset()
       this.$emit('handleClose', 'Close')
     },
-    ruleSubmit (val) {
-      this.bool = val;
-    },
-
   },
   watch: {
     drawerVrisible: {
       handler (newValue) {
         this.drawer_vrisible = newValue
       }
+    },
+    // checkBoox 控制投票候选人列表内容是否有值
+    // 候选人图片
+    imageShow: {
+      handler (newValue) {
+        this.VotingUserList.map(item => {
+          item.fileUrls = []
+        })
+      }
+    },
+    // 候选人电话
+    telShow: {
+      handler (newValue) {
+        this.VotingUserList.map(item => {
+          item.tel = null
+        })
+      }
     }
+    // 候选人名称
+    // nameShow: {
+    //   handler (newValue) {
+    //     this.VotingUserList.map(item => {
+    //       item.name = null
+    //     })
+    //   }
+    // },
   }
 }
 </script>
