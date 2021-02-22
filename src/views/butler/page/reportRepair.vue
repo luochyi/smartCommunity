@@ -28,7 +28,7 @@
       <div class="content-btn">
         <el-button class="init-button"
                    icon="el-icon-plus"
-                   @click="addVrisible=true">新增报修</el-button>
+                   @click="add()">新增报修</el-button>
       </div>
       <div class="">
         <VueTable ref="table"
@@ -60,25 +60,35 @@
           <template slot="footer">
             <div class="table-footer">
               <button>详情</button>
-              <button>编辑</button>
+              <button @click='edit(table_row)'>编辑</button>
               <button>派工</button>
               <button>回访</button>
               <button>作废</button>
-
               <button @click="del(table_row)">删除</button>
             </div>
           </template>
         </VueTable>
       </div>
+      <!--        @submitSuccess='submitSuccess'
+               @handleClose="addEidtHandleClose" -->
+      <addEidt :drawerTitle="addEidtDrawerTitle"
+               ref="addEdit"
+               @submitSuccess='submitSuccess'
+               @handleClose="addEidtHandleClose"
+               :drawerVrisible='addEidt_vrisible'></addEidt>
     </div>
 
   </div>
 </template>
 
 <script>
+import addEidt from '@/views/butler/components/reportRepair/addEidt'
+
 export default {
   data () {
     return {
+      addEidtDrawerTitle: '',
+      addEidt_vrisible: false,
       // 选中表格数据
       table_row: [],
       config: {
@@ -151,7 +161,33 @@ export default {
     }
 
   },
+  components: {
+    addEidt
+  },
   methods: {
+    // 编辑
+    edit (data) {
+      if (data.length > 1) {
+        this.$message.error('只能查看一条数据的详情');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      this.addEidt_vrisible = true;
+      this.$refs.addEdit.edit(data[0].id)
+
+    },
+    // 新增
+    add () {
+      this.addEidt_vrisible = true
+      this.addEidtDrawerTitle = '新增保修'
+    },
+    addEidtHandleClose () {
+      this.addEidt_vrisible = false
+
+    },
     handleClick (tab, event) {
       let status = null
       if (this.activeName != 0) {
@@ -187,6 +223,10 @@ export default {
       } else {
         this.$message.error('请选中需要删除的数据');
       }
+    },
+    // 添加修改成功
+    submitSuccess () {
+      this.$refs.table.loadData()
     },
   },
 }

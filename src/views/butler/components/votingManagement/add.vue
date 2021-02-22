@@ -21,9 +21,17 @@
                     <i class="el-icon-plus"></i>
                     <p>上传照片</p>
                   </div>
-                  <el-image v-else
-                            :src="`http://test.akuhotel.com:8804/static/temp/${fileUrls}`"
-                            style="width: 104px; height: 104px"></el-image>
+                  <template v-else>
+                    <!-- 临时地址 新增状态 -->
+                    <el-image v-if="!editBool"
+                              :src="`http://test.akuhotel.com:8804/static/temp/${fileUrls}`"
+                              style="width: 104px; height: 104px"></el-image>
+                    <!-- 非临时地址  编辑状态-->
+                    <el-image v-else
+                              :src="`http://test.akuhotel.com:8804/static/${fileUrls}`"
+                              style="width: 104px; height: 104px"></el-image>
+                  </template>
+
                 </div>
               </el-upload>
             </template>
@@ -33,8 +41,6 @@
                          label="图片"></el-checkbox>
             <el-checkbox v-model="telShow"
                          label="电话"></el-checkbox>
-            <!-- <el-checkbox v-model="nameShow"
-                         label="名称"></el-checkbox> -->
             <div class="sysVote-box">
               <div class="sys-box"
                    v-for="(item,index) in VotingUserList"
@@ -60,9 +66,16 @@
                             <i class="el-icon-plus"></i>
                             <p>上传照片</p>
                           </div>
-                          <el-image v-else
-                                    :src="`http://test.akuhotel.com:8804/static/temp/${item.fileUrls[0]}`"
-                                    style="width: 80px; height: 80px"></el-image>
+                          <template v-else>
+                            <!-- 临时地址 -->
+                            <el-image v-if="item.temporary"
+                                      :src="`http://test.akuhotel.com:8804/static/temp/${item.fileUrls[0]}`"
+                                      style="width: 80px; height: 80px"></el-image>
+                            <!-- 非临时地址 -->
+                            <el-image v-else
+                                      :src="`http://test.akuhotel.com:8804/static/${item.fileUrls[0]}`"
+                                      style="width: 80px; height: 80px"></el-image>
+                          </template>
                         </div>
                       </el-upload>
                     </template>
@@ -89,9 +102,8 @@
     </Drawer>
   </div>
 </template>
-
 <script>
-import { voteInsert } from '@/api/butler'
+import { voteInsert, voteFindById, voteUpdate } from '@/api/butler'
 export default {
   props: {
     drawerVrisible: {
@@ -106,6 +118,8 @@ export default {
   data () {
     return {
       drawer_vrisible: false,
+      editBool: false, //是否为编辑状态 默认用服务器临时地址
+      editid: 0,
       // 投票上传图片路径显示
       fileUrls: '',
       votingFrom: {
@@ -187,6 +201,7 @@ export default {
       VotingUserList: [
         {
           fileUrls: [],
+          temporary: true, //默认用服务器临时地址
           name: null,
           tel: null,
         }
@@ -204,17 +219,16 @@ export default {
     }
   },
   computed: {
-
   },
   methods: {
     // 图片上传成功
     voteImgeSuccess (res, file) {
       this.fileUrls = res.url
       this.votingFrom.ruleForm.fileUrls[0] = res.url
+      this.editBool = false
     },
     // vueForm 验证通过提交服务器
     ruleSuccess (val) {
-      this.votingFrom.ruleForm.sysVoteCandidateList = this.VotingUserList
       // 名称必填
       let nameArr = this.VotingUserList.filter(item => item.name === null)
       if (nameArr.length > 0) {
@@ -224,29 +238,100 @@ export default {
         })
         return
       }
-      voteInsert(this.votingFrom.ruleForm).then(res => {
-        if (res.status) {
-          this.$message({
-            message: res.message,
-            type: 'success'
-          })
-          this.$emit('submitSuccess')
-          this.drawerClose()
+      if (!this.editBool) {
+        let resData = {
+          title: this.votingFrom.ruleForm.title,
+          beginDate: this.votingFrom.ruleForm.beginDate,
+          endDate: this.votingFrom.ruleForm.endDate,
+          type: this.votingFrom.ruleForm.type,
+          content: this.votingFrom.ruleForm.content,
+          fileUrls: this.votingFrom.ruleForm.fileUrls,
+          sysVoteCandidateList: this.VotingUserList
         }
-      })
+        voteInsert(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$emit('submitSuccess')
+            this.drawerClose()
+          }
+        })
+      } else {
+        let resData = {
+          id: this.editid,
+          title: this.votingFrom.ruleForm.title,
+          beginDate: this.votingFrom.ruleForm.beginDate,
+          endDate: this.votingFrom.ruleForm.endDate,
+          type: this.votingFrom.ruleForm.type,
+          content: this.votingFrom.ruleForm.content,
+          fileUrls: this.votingFrom.ruleForm.fileUrls,
+          sysVoteCandidateList: this.VotingUserList
+        }
+        voteUpdate(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$emit('submitSuccess')
+            this.drawerClose()
+          }
+        })
+      }
     },
     // 提交调用子组件校验方法
     onSubmit () {
-
       this.$refs.vueForm.submitForm()
+    },
+    // 编辑
+    edit (id) {
+      let resData = {
+        id: id,
+      }
+
+      voteFindById(resData).then(result => {
+        this.editBool = true
+        this.editid = result.voFindByIdVote.id
+        // 基本信息赋值
+        this.fileUrls = result.voFindByIdVote.imgUrls[0].url
+        this.votingFrom.ruleForm.fileUrls[0] = this.fileUrls
+        this.votingFrom.ruleForm.beginDate = result.voFindByIdVote.beginDate
+        this.votingFrom.ruleForm.endDate = result.voFindByIdVote.endDate
+        this.votingFrom.ruleForm.content = result.voFindByIdVote.content
+        this.votingFrom.ruleForm.type = result.voFindByIdVote.type
+        this.votingFrom.ruleForm.status = result.voFindByIdVote.status
+        this.votingFrom.ruleForm.title = result.voFindByIdVote.title
+        // 将候选人列表赋值
+        for (let i = 0; i < result.voFindByIdVote.voFindByIdVoteCandidateList.length; i++) {
+          if (i < result.voFindByIdVote.voFindByIdVoteCandidateList.length - 1) {
+            this.addVotingUser()
+          }
+          //  编辑状态时此切换为非临时地址  当用户重新上传时 对应项修改为临时地址  handleAvatarSuccess
+          this.VotingUserList[i].temporary = false
+          this.VotingUserList[i].name = result.voFindByIdVote.voFindByIdVoteCandidateList[i].name
+          this.VotingUserList[i].tel = result.voFindByIdVote.voFindByIdVoteCandidateList[i].tel
+          if (result.voFindByIdVote.voFindByIdVoteCandidateList[i].imgUrls[0]) {
+            this.VotingUserList[i].fileUrls[0] = result.voFindByIdVote.voFindByIdVoteCandidateList[i].imgUrls[0].url
+          }
+        }
+      })
     },
     // 添加候选人
     addVotingUser () {
       this.VotingUserList.push({
         fileUrls: [],
+        temporary: true,  //默认是临时地址
         name: null,
         tel: null,
       })
+    },
+    // 候选人文件上传成功
+    handleAvatarSuccess (index, res, file) {
+      this.VotingUserList[index].fileUrls.splice(0, 1, res.url)
+      this.VotingUserList[index].temporary = true
+      console.log(this.VotingUserList)
     },
     // 删除候选人
     delVotingUser (item) {
@@ -268,14 +353,17 @@ export default {
       }
       return (isJPG || isPNG) && isLt2M;
     },
-    // 候选人文件上传成功
-    handleAvatarSuccess (index, res, file) {
-      this.VotingUserList[index].fileUrls.splice(0, 1, res.url)
-    },
+
     drawerClose () {
+
       this.drawer_vrisible = false;
+      this.editBool = false;  //控制是否为编辑状态
+      this.editid = 0       //编辑状态的主键ID
+      // checkboox 重置
+      this.imageShow = true
+      this.telShow = true
       // 投票候选人列表重置
-      this.VotingUserList.slice(0, 1)
+      this.VotingUserList.splice(1, this.VotingUserList.length)
       this.VotingUserList[0].fileUrls = []
       this.VotingUserList[0].name = null
       this.VotingUserList[0].tel = null

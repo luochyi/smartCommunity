@@ -84,7 +84,8 @@ export function voteFindById(data) {
         params: data
     })
 }
-// /vote/insert
+// /vote/insert /vote/update
+// 投票管理新增
 export function voteInsert(data) {
     return service.request({
         method: 'POST',
@@ -92,6 +93,23 @@ export function voteInsert(data) {
         data: data
     })
 }
+// 投票管理修改
+export function voteUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/vote/update',
+        data: data
+    })
+}
+// 投票管理：根据投票管理主键id批量发布投票信息
+export function voteRelease(data) {
+    return service.request({
+        method: 'POST',
+        url: '/vote/release',
+        data: data
+    })
+}
+
 // 根据咨询建议主键id查询咨询建议详情
 export function adviceFindById(data) {
     return service.request({
@@ -180,6 +198,22 @@ export function userArticleOutFindGoodsImgById(data) {
         url: '/userArticleOut/findGoodsImgById',
         params: data
     })
+}
+// 报事报修：添加报事报修信息
+export function reportRepairInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/reportRepair/insert',
+        data: data
+    })
+}
+// 报事报修：根据报事报修主键id 查询报事报修信息
+export function reportRepairFindById(data) {
+  return service.request({
+      method: 'GET',
+      url: '/reportRepair/findById',
+      params: data
+  })
 }
 // 工单设置
 export function workOrderType(data) {

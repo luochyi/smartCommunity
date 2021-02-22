@@ -34,10 +34,10 @@
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
-              <button @click="editor(table_row)">编辑</button>
+              <button @click="edit(table_row)">编辑</button>
               <button @click="del(table_row)">删除</button>
               <button @click="voteDetails(table_row)">详情</button>
-              <button>发布</button>
+              <button @click="release(table_row)">发布</button>
               <!-- <button @click="del(table_row)">删除</button> -->
             </div>
           </template>
@@ -45,6 +45,7 @@
       </div>
     </div>
     <addEidt :drawerTitle="addEidtDrawerTitle"
+             ref="addEdit"
              @submitSuccess='submitSuccess'
              @handleClose="addEidtHandleClose"
              :drawerVrisible='addEidt_vrisible'></addEidt>
@@ -66,7 +67,7 @@
 import addEidt from '@/views/butler/components/votingManagement/add.vue'
 import detailsVrisible from '@/views/butler/components/votingManagement/details.vue'
 import detailsDetails from '@/views/butler/components/votingManagement/details/index.vue'
-import { voteCountVoteExpectedStart, voteFindById } from '@/api/butler'
+import { voteCountVoteExpectedStart, voteFindById, voteRelease } from '@/api/butler'
 export default {
   components: {
     addEidt,
@@ -113,21 +114,23 @@ export default {
     this.getTipsData()
   },
   methods: {
+    // 即将开始投票活动
     getTipsData () {
       voteCountVoteExpectedStart().then(result => {
         // 投票数量
         this.count = result.count
       })
     },
-    // 添加成功
+    // 添加修改成功
     submitSuccess () {
       this.$refs.table.loadData()
+      this.getTipsData()
     },
     // 添加
     addvoting () {
       this.addEidt_vrisible = true;
     },
-    // 添加关闭
+    // 添加修改关闭
     addEidtHandleClose () {
       this.addEidt_vrisible = false;
     },
@@ -186,7 +189,7 @@ export default {
       this.details_details = false;
     },
     // 编辑
-    editor (data) {
+    edit (data) {
       if (data.length > 1) {
         this.$message.error('只能查看一条数据的详情');
         return
@@ -195,13 +198,40 @@ export default {
         this.$message.error('请选择');
         return
       }
-      let resData = {
-        id: data[0].id,
+      this.$refs.addEdit.edit(data[0].id)
+      this.addEidt_vrisible = true;
+    },
+    // 发布
+    release (data) {
+      if (data.length) {
+        let arr = []
+        for (let i = 0; i < this.table_row.length; i++) {
+          arr.push(this.table_row[i].id)
+        }
+        this.$confirm('是否确认发布', '批量发布', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          let resData = {
+            ids: arr
+          }
+          voteRelease(resData).then(result => {
+            if (result.status) {
+              this.$message({
+                message: result.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+            }
+          })
+        }).catch(action => { });
+      } else {
+        this.$message.error('请选中需要发布的数据');
       }
-      voteFindById(resData).then(result => {
-        console.log(result)
-      })
-    }
+
+    },
   },
 }
 </script>

@@ -211,7 +211,7 @@ export default {
             type: 'Input', label: '来访房屋', placeholder: '请输入', width: '100%', prop: 'roomName', disabled: true
           },
           {
-            type: 'Int',
+            type: 'Input',
             label: '访客姓名',
             placeholder: '请输入',
             width: '50%',
@@ -307,6 +307,7 @@ export default {
     tableCheck (arr) {
       this.table_row = arr
     },
+    // 编辑提交
     onSubmit () {
       let resData = {
         id: this.table_row[0].id,
@@ -326,10 +327,13 @@ export default {
             message: result.message,
             type: 'success'
           })
+          this.$refs.table.loadData()
+          this.edit_vrisible = false
         }
 
       })
     },
+    // 出入记录
     record (data) {
       if (data.length) {
         if (data.length > 1) {
@@ -370,9 +374,12 @@ export default {
           id: data[0].id
         }
         visitorsFindById(resData).then(result => {
+
+
           if (result) {
             this.reviseForm.ruleForm = result
             this.edit_vrisible = true
+
           }
           console.log(result)
         })
