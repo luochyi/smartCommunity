@@ -177,7 +177,6 @@ export default {
       }
       this.addEidt_vrisible = true;
       this.$refs.addEdit.edit(data[0].id)
-
     },
     // 新增
     add () {
@@ -186,7 +185,6 @@ export default {
     },
     addEidtHandleClose () {
       this.addEidt_vrisible = false
-
     },
     handleClick (tab, event) {
       let status = null

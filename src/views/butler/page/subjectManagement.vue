@@ -15,20 +15,13 @@
       <span>主题明细管理</span>
     </div>
     <div class="content">
-      <div class="content-btn">
-        <el-button class="init-button"
-                   icon="el-icon-plus"
-                   @click="addVrisible=true">新增话题</el-button>
-      </div>
       <div class="">
         <VueTable ref="table"
                   :config='config'
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
-              <button>编辑</button>
-              <button>审查</button>
-              <!-- <button>删除</button> -->
+              <button @click="recovery(table_row)">恢复</button>
               <button @click="del(table_row)">删除</button>
             </div>
           </template>
@@ -39,10 +32,10 @@
   </div>
 </template>
 <script>
+import { gambitThemeRecovery } from '@/api/butler'
 export default {
   data () {
     return {
-
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
@@ -142,6 +135,36 @@ export default {
     tableCheck (arr) {
       this.table_row = arr
 
+    },
+    // 恢复
+    recovery (data) {
+      if (data.length) {
+        let arr = []
+        for (let i = 0; i < this.table_row.length; i++) {
+          arr.push(this.table_row[i].id)
+        }
+        let resData = {
+          ids: arr
+        }
+        this.$confirm('是否批量恢复主题明细？', '恢复', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          gambitThemeRecovery(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+            }
+          })
+        }).catch(action => { });
+      } else {
+        this.$message.error('请选中需要删除的数据');
+      }
     },
     // 删除
     del (data) {

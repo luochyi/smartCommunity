@@ -209,17 +209,73 @@ export function reportRepairInsert(data) {
 }
 // 报事报修：根据报事报修主键id 查询报事报修信息
 export function reportRepairFindById(data) {
-  return service.request({
-      method: 'GET',
-      url: '/reportRepair/findById',
-      params: data
-  })
+    return service.request({
+        method: 'GET',
+        url: '/reportRepair/findById',
+        params: data
+    })
+}
+// 社区话题管理：添加话题信息(物业后台添加)
+export function gambitInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/gambit/insert',
+        data: data
+    })
+}
+// 社区话题管理：修改话题信息(物业后台修改)
+export function gambitUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/gambit/update',
+        data: data
+    })
+}
+// 社区话题管理
+export function gambitFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/gambit/findById',
+        params: data
+    })
+}
+// 主题明细管理：批量恢复主题明细信息
+export function gambitThemeRecovery(data) {
+    return service.request({
+        method: 'POST',
+        url: '/gambitTheme/recovery',
+        data: data
+    })
 }
 // 工单设置
 export function workOrderType(data) {
     return service.request({
         method: 'GET',
         url: '/workOrderType/list',
+        params: data
+    })
+}
+// 工单管理-工单设置：修改工单大类信息
+export function workOrderTypeUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/workOrderType/update',
+        data: data
+    })
+}
+// 工单管理-工单设置：添加工单大类信息
+export function workOrderTypeInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/workOrderType/insert',
+        data: data
+    })
+}
+// 工单管理-工单设置：删除工单大类信息
+export function workOrderTypeDelete(data) {
+    return service.request({
+        method: 'GET',
+        url: '/workOrderType/delete',
         params: data
     })
 }

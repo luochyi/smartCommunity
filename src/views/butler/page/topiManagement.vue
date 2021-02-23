@@ -18,41 +18,38 @@
       <div class="content-btn">
         <el-button class="init-button"
                    icon="el-icon-plus"
-                   @click="addVrisible=true">新增话题</el-button>
+                   @click="addEidt_vrisible=true">新增话题</el-button>
       </div>
+
       <div class="">
         <VueTable ref="table"
                   :config='config'
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
-              <button>编辑</button>
-              <button>审查</button>
-              <!-- <button>删除</button> -->
+              <button @click="edit(table_row)">编辑</button>
               <button @click="del(table_row)">删除</button>
             </div>
           </template>
         </VueTable>
       </div>
     </div>
-    <!-- 删除提示弹窗-->
-    <Dialog :dialogVisible='dialog_visible'
-            :dialog_config='dialog_config'
-            @cancel='cancel'
-            @confirm='confirm'>
-    </Dialog>
+    <addEidt :drawerTitle="addEidtDrawerTitle"
+             ref="addEdit"
+             @submitSuccess='submitSuccess'
+             @handleClose="addEidtHandleClose"
+             :drawerVrisible='addEidt_vrisible'></addEidt>
   </div>
 </template>
 
 <script>
+import addEidt from '@/views/butler/components/topiManagement/addEidt'
+
 export default {
   data () {
     return {
-      dialog_visible: false,
-      dialog_config: {
-        title: '',
-        content: '',
-      },
+      addEidtDrawerTitle: '新增话题',
+      addEidt_vrisible: false,
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
@@ -123,36 +120,54 @@ export default {
       }
     }
   },
+  components: {
+    addEidt
+  },
   methods: {
     tableCheck (arr) {
       this.table_row = arr
-
+    },
+    // 添加修改关闭
+    addEidtHandleClose () {
+      this.addEidt_vrisible = false
+    },
+    // 添加修改成功
+    submitSuccess () {
+      this.$refs.table.loadData()
+    },
+    // 编辑
+    edit (data) {
+      if (data.length > 1) {
+        this.$message.error('只能查看一条数据的详情');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      this.addEidt_vrisible = true;
+      this.$refs.addEdit.edit(data[0].id)
     },
     // 删除
     del (data) {
-      console.log(data)
       if (data.length) {
-        this.dialog_config.title = '删除提示'
-        this.dialog_config.content = '是否确认删除？删除无法撤回！'
-        this.dialog_visible = true
+        let arr = []
+        for (let i = 0; i < this.table_row.length; i++) {
+          arr.push(this.table_row[i].id)
+        }
+        this.$confirm('是否确认删除？删除不可恢复', '删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          this.$refs.table.tableDelete(arr)
+        }).catch(action => { });
       } else {
-        this.$message.error('请选中需要删除的表格数据')
+        this.$message.error('请选中需要删除的数据');
       }
     },
-    // 监听子组件取消事件
-    cancel (data) {
-      this.dialog_visible = false
-    },
-    // 监听删除确认确认事件
-    confirm (data) {
-      let arr = []
-      for (let i = 0; i < this.table_row.length; i++) {
-        arr.push(this.table_row[i].id)
-      }
-      // 调用子组件的方法
-      this.$refs.table.tableDelete(arr)
-      this.dialog_visible = false
-    }
+
   },
 }
 </script>
