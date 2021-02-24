@@ -5,8 +5,7 @@
     </div>
     <div class="content">
       <div class="">
-        <el-tabs v-model="activeName"
-                 @tab-click="orderHandle">
+        <el-tabs v-model="activeName">
           <el-tab-pane label="工单类型管理"
                        name="1">
             <div class="row_nav">
@@ -44,7 +43,7 @@
                            @click.stop="editType(index)"></i>
                         <el-tooltip class="item"
                                     effect="dark"
-                                    :content="item.name"
+                                    :content="item.remake?item.remake:item.name"
                                     placement="right">
                           <i class="el-icon-warning-outline"></i>
                         </el-tooltip>
@@ -66,8 +65,8 @@
                              @clickrow='tableTypeRow'>
                   </tableData>
                   <div class="table-footer">
-                    <button>编辑</button>
-                    <button @click="orderTypeDetailDel(table_row)">删除</button>
+                    <button @click="orderTypeEidt(orderTypeCheckData)">编辑</button>
+                    <button @click="orderTypeDetailDel(orderTypeCheckData)">删除</button>
                   </div>
                 </div>
               </div>
@@ -78,14 +77,15 @@
             <div class="right_nav">
               <div class="content-btn">
                 <el-button class="init-button"
-                           icon="el-icon-plus">新增工单类型</el-button>
+                           icon="el-icon-plus"
+                           @click="orderTimeAdd">新增工单时限</el-button>
               </div>
-              <VueTable ref="table"
+              <VueTable ref="orderTimeTable"
                         :config="orderTimeTable"
                         @tableCheck='orderTimeCheck'>
                 <template slot="footer">
                   <div class="table-footer">
-                    <button>编辑</button>
+                    <button @click='orderTimeEidt(orderTimeCheckData)'>编辑</button>
                     <button @click="orderTimeDel(orderTimeCheckData)"> 删除</button>
                   </div>
                 </template>
@@ -95,27 +95,6 @@
         </el-tabs>
       </div>
     </div>
-    <!-- 工单时限增加修改 -->
-    <Drawer :drawerTitle="orderTimeTitle"
-            @drawerClose="orderTimeClose"
-            :drawerVrisible='orderTime_vrisible'>
-      <div style="padding:30px">
-        <FromCard>
-          <template slot="title">基本信息</template>
-          <template>
-            <VueForm ref="orderTimeVueForm"
-                     @ruleSuccess='orderTimeRuleSubmit'
-                     :formObj='orderTimeForm'></VueForm>
-          </template>
-        </FromCard>
-      </div>
-      <div slot="footer">
-        <button class="btn-orange"
-                @click="orderTimeSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
-        <button class="btn-gray"
-                @click="orderTimeClose"><span>取消</span></button>
-      </div>
-    </Drawer>
     <!-- 工单类型明细增加修改 -->
     <Drawer :drawerTitle="orderDetailTitle"
             @drawerClose="orderDetailClose"
@@ -124,7 +103,7 @@
         <FromCard>
           <template slot="title">基本信息</template>
           <template>
-            <VueForm ref="orderTimeVueForm"
+            <VueForm ref="orderDetailVueForm"
                      @ruleSuccess='orderDetailRuleSubmit'
                      :formObj='orderDetailForm'></VueForm>
           </template>
@@ -137,11 +116,44 @@
                 @click="orderDetailClose"><span>取消</span></button>
       </div>
     </Drawer>
+    <!-- 工单时限增加修改 -->
+    <Drawer :drawerTitle="orderTimeTitle"
+            @drawerClose="orderTimeClose"
+            :drawerVrisible='orderTime_vrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="orderTimeVueForm"
+                     @ruleSuccess='orderTimeRuleSubmit'
+                     :formObj='orderTimeForm'>
+              <template slot='timeLimit'>
+                <el-input placeholder="请选择工单大类"
+                          style="width:240px"
+                          size="small"
+                          v-model.number="orderTimeForm.ruleForm.timeLimit">
+                  <span slot="suffix">小时</span>
+                </el-input>
+              </template>
+            </VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="orderTimeSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="orderTimeClose"><span>取消</span></button>
+      </div>
+    </Drawer>
   </div>
 </template>
 
 <script>
-import { workOrderType, workOrderTypeList, workOrderTypeUpdate, workOrderTypeInsert, workOrderTypeDelete } from '@/api/butler'
+import {
+  workOrderType, workOrderTypeList, workOrderTypeUpdate, workOrderTypeFindById, workOrderTypeDetailUpdate,
+  workOrderTypeInsert, workOrderTypeDelete, workOrderTypeDetailDelete, workOrderTypeDetailInsert, workOrderTimeLimitInsert, workOrderTimeLimitFindById, workOrderTimeLimitUpdate
+} from '@/api/butler'
 export default {
   data () {
     return {
@@ -151,43 +163,40 @@ export default {
       orderTimeForm: {
         ruleForm: {
           name: null,
-          workOrderTypeId: null
+          timeLimit: null,
+          remake: null,
         },
-        rules: {
-          code: [
-            {
-              required: true,
-              message: '工单大类',
-              trigger: 'blur'
-            }
-          ],
-          no: [
-            { required: true, message: '请填写楼栋编号', trigger: 'blur' }
-          ],
-          name: [
-            {
-              required: true,
-              message: '请填写楼栋名称',
-              trigger: 'blur'
-            }
-          ]
-        },
+
         form_item: [
           {
-            type: 's',
-            label: '工单大类',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'no'
-          },
-          {
             type: 'Input',
-            label: '工单类型名称',
+            label: '名称',
             placeholder: '请输入',
             width: '100%',
             prop: 'name'
+          },
+          {
+            type: 'Slot',
+            label: '工单处理时限',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'timeLimit',
+            slotName: 'timeLimit'
+          },
+          {
+            type: 'textarea',
+            label: '备注',
+            placeholder: '请输入备注信息',
+            width: '100%',
+            rows: 5,
+            prop: 'remake'
           }
-        ]
+        ],
+        rules: {
+          name: [{ required: true, message: '请填写工单名称', trigger: 'blur' }],
+          timeLimit: [{ required: true, message: '请输入工单处理时限', trigger: 'blur' },
+          { type: 'number', message: '年工单处理时限必须为数字值' }]
+        }
       },
       // 工单类型明细title Drawer显示隐藏
       orderDetailTitle: '新增工单类型',
@@ -198,32 +207,15 @@ export default {
           name: null,
           workOrderTypeId: null
         },
-        rules: {
-          code: [
-            {
-              required: true,
-              message: '工单大类',
-              trigger: 'blur'
-            }
-          ],
-          no: [
-            { required: true, message: '请填写楼栋编号', trigger: 'blur' }
-          ],
-          name: [
-            {
-              required: true,
-              message: '请填写楼栋名称',
-              trigger: 'blur'
-            }
-          ]
-        },
         form_item: [
           {
-            type: 's',
+            type: 'Select',
             label: '工单大类',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'no'
+            placeholder: '请选择',
+            disabled: true,
+            options: [],
+            width: '50%',
+            prop: 'workOrderTypeId'
           },
           {
             type: 'Input',
@@ -232,13 +224,19 @@ export default {
             width: '100%',
             prop: 'name'
           }
-        ]
+        ],
+        rules: {
+          name: [{ required: true, message: '请填写工单名称', trigger: 'blur' }],
+          workOrderTypeId: [{ required: true, message: '请选择工单大类', trigger: 'change' }]
+        }
       },
-      // 选中表格数据
-      table_row: {},
+      orderDetailEidtId: 0,
+      // 工单明细表格数据
+      orderTypeCheckData: [],
+      // 工单类型明细
       orderTpeData: {
         thead: [
-          { label: '编号', prop: 'id', width: 'auto' },
+          { label: '序号', type: 'index', width: '80' },
           { label: '名称', prop: 'name', width: 'auto' },
         ],
         table_data: [
@@ -253,10 +251,11 @@ export default {
       // 工单时限
       orderTimeTable: {
         thead: [
-          { label: '编号', prop: 'id', width: 'auto' },
+          // { label: '编号', prop: 'id', width: 'auto' },
+          { label: '序号', type: 'index', width: '80' },
           { label: '名称', prop: 'name', width: 'auto' },
-          { label: '处理时限（小时）', prop: 'remake', width: 'auto' },
-          { label: '备注', prop: 'timeLimit', width: 'auto' },
+          { label: '处理时限（小时）', prop: 'timeLimit', width: 'auto' },
+          { label: '备注', prop: 'remake', width: 'auto' },
         ],
         table_data: [
         ],
@@ -266,6 +265,7 @@ export default {
           size: 10
         },
       },
+      orderTimeEidtId: 0,
       // 工单时限选中数据
       orderTimeCheckData: [],
       // tab切换 工单大类切换
@@ -274,6 +274,8 @@ export default {
   },
   mounted () {
     this.getType()
+    //给工单类型明细匹配值 
+    this.getOrderTypeData()
   },
   directives: {
     // 注册一个局部的自定义指令 v-focus
@@ -286,28 +288,190 @@ export default {
     }
   },
   methods: {
+    //给工单类型明细匹配值 
+    getOrderTypeData () {
+      workOrderType().then(res => {
+        let arr = res.map(item => ({
+          label: item.name,
+          value: item.id
+        }))
+        this.orderDetailForm.form_item[0].options = arr
+      })
+    },
     // 工单明细添加
     orderTypeDetailAdd () {
+      this.orderDetail_vrisible = true
+      this.orderDetailForm.ruleForm.workOrderTypeId = this.typeList[this.typeActive].id
+    },
+    // 工单明细选中
+    tableTypeRow (data) {
+      this.orderTypeCheckData = data;
+    },
+    // 工单明细修改
+    orderTypeEidt (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('不能批量编辑');
+          return
+        }
+        let resData = {
+          id: data[0].id
+        }
+        workOrderTypeFindById(resData).then(result => {
+          if (result) {
+            this.orderDetailEidtId = result.id
+            this.orderDetailForm.ruleForm.name = result.name
+            this.orderDetailForm.ruleForm.workOrderTypeId = this.typeList[this.typeActive].id
+            this.orderDetail_vrisible = true
+          }
+          console.log(result)
+        })
+      } else {
+        this.$message.error('请选择需要编辑的数据');
+      }
     },
     // 工单明细删除
-    orderTypeDetailDel () {
+    orderTypeDetailDel (data) {
+      if (data.length) {
+        let arr = []
+        for (let i = 0; i < this.orderTypeCheckData.length; i++) {
+          arr.push(this.orderTypeCheckData[i].id)
+        }
+        this.$confirm('是否确认删除？删除不可恢复', '删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          let resData = {
+            ids: arr
+          }
+          workOrderTypeDetailDelete(resData).then(result => {
+            this.$message({
+              type: 'success',
+              message: result.message
+            });
+            this.getType()
+            this.typeActive = 0
+            this.orderDetailClose()
+          })
+
+        }).catch(action => { });
+      } else {
+        this.$message.error('请选中需要删除的数据');
+      }
     },
     // 工单明细提交
     orderDetailSubmit () {
+      this.$refs.orderDetailVueForm.submitForm()
     },
-    // 工单明细提交
+    // 工单明细验证通过提交
     orderDetailRuleSubmit () {
+      if (!this.orderDetailEidtId) {
+        let resData = {
+          name: this.orderDetailForm.ruleForm.name,
+          workOrderTypeId: this.orderDetailForm.ruleForm.workOrderTypeId
+        }
+        workOrderTypeDetailInsert(resData).then(res => {
+          this.$message({
+            type: 'success',
+            message: res.message
+          });
+          this.getType()
+
+          this.orderDetailClose()
+        })
+      } else {
+        let resData = {
+          id: this.orderDetailEidtId,
+          name: this.orderDetailForm.ruleForm.name
+        }
+        workOrderTypeDetailUpdate(resData).then(res => {
+          this.$message({
+            type: 'success',
+            message: res.message
+          });
+          this.getType()
+          this.orderDetailClose()
+        })
+      }
+
     },
     // 工单明细弹窗关闭
     orderDetailClose () {
+      this.$refs.orderDetailVueForm.reset()
+      this.orderDetailEidtId = 0
+      this.orderDetail_vrisible = false
+    },
+    // 工单时限添加
+    orderTimeAdd () {
+      this.orderTime_vrisible = true
+    },
+    // 工单时限编辑
+    orderTimeEidt (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('不能批量编辑');
+          return
+        }
+        let resData = {
+          id: data[0].id
+        }
+        workOrderTimeLimitFindById(resData).then(result => {
+          if (result) {
+            this.orderTimeEidtId = result.id
+            this.orderTimeForm.ruleForm.name = result.name
+            this.orderTimeForm.ruleForm.timeLimit = result.timeLimit
+            this.orderTimeForm.ruleForm.remake = result.remake
+            this.orderTime_vrisible = true
+          }
+        })
+      } else {
+        this.$message.error('请选择需要编辑的数据');
+      }
     },
     // 工单时限提交
     orderTimeSubmit () {
+      this.$refs.orderTimeVueForm.submitForm()
     },
     // 工单时限验证通过提交
     orderTimeRuleSubmit () {
+      let resData = {
+        name: this.orderTimeForm.ruleForm.name,
+        timeLimit: this.orderTimeForm.ruleForm.timeLimit,
+        remake: this.orderTimeForm.ruleForm.remake,
+      }
+      // id等于0 添加否则修改
+      if (!this.orderTimeEidtId) {
+        workOrderTimeLimitInsert(resData).then(result => {
+          this.$message({
+            type: 'success',
+            message: result.message
+          });
+          this.orderTimeClose()
+          this.$refs.orderTimeTable.loadData()
+        })
+      } else {
+        resData.id = this.orderTimeEidtId
+        console.log(resData)
+        workOrderTimeLimitUpdate(resData).then(result => {
+          if (result.status) {
+            this.$message({
+              type: 'success',
+              message: result.message
+            });
+          }
+
+          this.orderTimeClose()
+          this.$refs.orderTimeTable.loadData()
+        })
+      }
+
     },
     orderTimeClose () {
+      this.orderTime_vrisible = false
+      this.orderTimeEidtId = 0
+      this.$refs.orderTimeVueForm.reset()
     },
     // 初始化数据 侧边栏
     getType () {
@@ -316,7 +480,7 @@ export default {
         this.typeList.map(item => {
           this.$set(item, "editBool", false)
         })
-        this.TypeList(res[0].id)
+        this.TypeList(this.typeList[this.typeActive].id)
       })
     },
     // 工单大类添加
@@ -335,6 +499,7 @@ export default {
             message: result.message
           });
           this.getType()
+          this.getOrderTypeData()
           this.typeActive = 0
         })
 
@@ -407,14 +572,6 @@ export default {
       this.typeActive = index
       this.TypeList(id)
     },
-
-    orderHandle () {
-    },
-    onSubmit () {
-    },
-    tableTypeRow (data) {
-      this.table_row = data;
-    },
     // 工单时限多选
     orderTimeCheck (data) {
       this.orderTimeCheckData = data
@@ -423,8 +580,8 @@ export default {
     orderTimeDel (data) {
       if (data.length) {
         let arr = []
-        for (let i = 0; i < this.table_row.length; i++) {
-          arr.push(this.table_row[i].id)
+        for (let i = 0; i < this.orderTimeCheckData.length; i++) {
+          arr.push(this.orderTimeCheckData[i].id)
         }
         this.$confirm('是否确认删除？删除不可恢复', '删除', {
           confirmButtonText: '确定',
@@ -432,7 +589,7 @@ export default {
           confirmButtonClass: 'confirmButton',
           cancelButtonClass: 'cancelButton'
         }).then(() => {
-          this.$refs.table.tableDelete(arr)
+          this.$refs.orderTimeTable.tableDelete(arr)
         }).catch(action => { });
       } else {
         this.$message.error('请选中需要删除的数据');
@@ -441,7 +598,6 @@ export default {
   }
 }
 </script>
-
 <style scoped lang="scss">
 .main-content {
     min-height: calc(100vh - 160px);

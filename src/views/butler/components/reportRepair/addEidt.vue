@@ -255,7 +255,6 @@ export default {
       let resData = {
         id: id,
       }
-
       reportRepairFindById(resData).then(result => {
         console.log(result)
       })

@@ -31,7 +31,6 @@
                               :src="`http://test.akuhotel.com:8804/static/${fileUrls}`"
                               style="width: 104px; height: 104px"></el-image>
                   </template>
-
                 </div>
               </el-upload>
             </template>

@@ -7,7 +7,8 @@
     <div class="content">
       <div class="content-btn">
         <el-button class="init-button"
-                   icon="el-icon-plus">新增成员</el-button>
+                   icon="el-icon-plus"
+                   @click="addOwnersCommittee">新增成员</el-button>
       </div>
       <!-- 查询重制 -->
       <div class="">
@@ -16,22 +17,73 @@
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
-              <button>编辑</button>
+              <button @click='edit(table_row)'>编辑</button>
               <button @click="del(table_row)">删除</button>
 
             </div>
           </template>
         </VueTable>
       </div>
-
     </div>
+    <!--业委会增加修改 -->
+    <Drawer :drawerTitle="ownersCommitteeTitle"
+            @drawerClose="ownersCommitteeClose"
+            :drawerVrisible='ownersCommittee_vrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="ownersCommitteeVueForm"
+                     @ruleSuccess='ownersCommitteeRuleSubmit'
+                     :formObj='ownersCommitteeForm'>
+              <template slot='fileUrls'>
+                <template>
+                  <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+                             :on-success="ownersImgeSuccess"
+                             :show-file-list="false"
+                             :before-upload="beforeAvatarUpload">
+                    <div class='sys-image'
+                         style='width:104px; height:104px'>
+                      <div v-if="!fileUrls">
+                        <i class="el-icon-plus"></i>
+                        <p>上传照片</p>
+                      </div>
+                      <template v-else>
+                        <!-- 临时地址 新增状态 -->
+                        <el-image v-if="!editBool"
+                                  :src="`http://test.akuhotel.com:8804/static/temp/${fileUrls}`"
+                                  style="width: 104px; height: 104px"></el-image>
+                        <!-- 非临时地址  编辑状态-->
+                        <el-image v-else
+                                  :src="`http://test.akuhotel.com:8804/static/${fileUrls}`"
+                                  style="width: 104px; height: 104px"></el-image>
+                      </template>
+                    </div>
+                  </el-upload>
+                </template>
+              </template>
+            </VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="ownersCommitteeSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="ownersCommitteeClose"><span>取消</span></button>
+      </div>
+    </Drawer>
   </div>
 </template>
 
 <script>
+import { ownersCommitteeInsert, ownersCommitteeUpdate, ownersCommitteeFindById } from '@/api/butler'
 export default {
   data () {
     return {
+      // 业委会标题 业委会显示隐藏
+      ownersCommitteeTitle: '',
+      ownersCommittee_vrisible: false,
       // 选中表格数据
       table_row: [],
       config: {
@@ -107,16 +159,108 @@ export default {
           size: 10
         },
       },
-
+      fileUrls: '',
+      ownersCommitteeForm: {
+        ruleForm: {
+          residentId: null,
+          positionId: null,
+          age: null,
+          educationId: null,
+          estateId: null,
+          profession: null,
+          fileUrls: null,
+          // sex: null,
+          fileUrls: []
+        },
+        form_item: [
+          { type: 'Input', label: '姓名', placeholder: '请输入姓名', width: '50%', prop: 'residentId' },
+          { type: 'Select', label: '职位', placeholder: '请选择职位', options: [], width: '50%', prop: 'positionId' },
+          // { type: 'Select', label: '性别', placeholder: '请选择性别', options: [], width: '50%', prop: 'sex' },
+          { type: 'Input', label: '年龄', placeholder: '请输入年龄', width: '50%', prop: 'age' },
+          { type: 'Select', label: '学历', placeholder: '请选择学历', options: [], width: '50%', prop: 'educationId' },
+          { type: 'Input', label: '房屋信息', placeholder: '请输入房屋信息', width: '50%', prop: 'estateId' },
+          { type: 'Select', label: '职业', placeholder: '请选择职业', options: [], width: '50%', prop: 'profession' },
+          { type: 'Slot', label: '图片上传', placeholder: '请输入', width: '100%', prop: 'fileUrls', slotName: 'fileUrls' },
+        ],
+        rules: {
+          residentId: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+          positionId: [{ required: true, message: '请选择职位', trigger: 'change' }],
+          sex: [{ required: true, message: '请选择性别', trigger: 'change' }],
+          age: [{ required: true, message: '请输入工单名称', trigger: 'blur' }],
+          educationId: [{ required: true, message: '请选择学历', trigger: 'change' }],
+          estateId: [{ required: true, message: '请输入房屋信息', trigger: 'blur' }],
+          profession: [{ required: true, message: '请选择职业', trigger: 'change' }],
+        }
+      },
     }
   },
   methods: {
     tableCheck (data) {
       this.table_row = data;
     },
-    onSubmit () {
+    // 添加成员 弹窗显示
+    addOwnersCommittee () {
+      this.ownersCommitteeTitle = ' 添加成员'
+      this.ownersCommittee_vrisible = true;
     },
-    // 提醒
+    // 图片上传成功
+    ownersImgeSuccess (res, file) {
+      this.fileUrls = res.url
+      this.ownersCommitteeForm.ruleForm.fileUrls[0] = res.url
+      // this.editBool = false
+    },
+    // 图片上传之前
+    beforeAvatarUpload (file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/png'
+      const isPNG = file.type === 'image/jpeg'
+      if (!isJPG && !isPNG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return (isJPG || isPNG) && isLt2M;
+    },
+    // 修改 弹窗显示
+    edit (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('不能批量编辑');
+          return
+        }
+        this.ownersCommitteeTitle = ' 修改成员'
+        this.ownersCommittee_vrisible = true;
+        let resData = {
+          id: data[0].id
+        }
+        // ownersCommitteeUpdate(resData).then(result => {
+        //   console.log(result)
+        // })
+        ownersCommitteeFindById(resData).then(result => {
+          console.log(result)
+        })
+      } else {
+        this.$message.error('请选择需要编辑的数据');
+      }
+
+    },
+    //  弹窗关闭显示
+    ownersCommitteeClose () {
+      this.ownersCommittee_vrisible = false;
+      this.$refs.ownersCommitteeVueForm.reset()
+    },
+    // 添加修改弹窗提交验证通过
+    ownersCommitteeRuleSubmit () {
+      ownersCommitteeInsert().then(result => {
+        console.log(result)
+      })
+    },
+    // 添加修改弹窗提交
+    ownersCommitteeSubmit () {
+      this.$refs.ownersCommitteeVueForm.submitForm()
+    },
+    // 删除
     del (data) {
       let arr = []
       for (let i = 0; i < this.table_row.length; i++) {
@@ -128,10 +272,7 @@ export default {
       }
       this.$confirm('是否删除？删除不可找回', '删除', {
         confirmButtonText: '确定',
-        // showCancelButton: false
         cancelButtonText: '取消',
-        // confirmButtonClass: 'confirmButton',
-        // cancelButtonClass: 'cancelButton'
       }).then(() => {
         this.$refs.table.tableDelete(arr)
       }).catch(action => { });
@@ -139,3 +280,18 @@ export default {
   }
 }
 </script>
+<style>
+.sys-image {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 2px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    margin-right: 12px;
+}
+</style>

@@ -279,6 +279,55 @@ export function workOrderTypeDelete(data) {
         params: data
     })
 }
+// 工单管理-工单设置：添加工单类型明细信息
+export function workOrderTypeDetailInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/workOrderTypeDetail/insert',
+        data: data
+    })
+}
+// 工单管理-工单设置：添加工单时限信息
+export function workOrderTimeLimitInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/workOrderTimeLimit/insert',
+        data: data
+    })
+}
+// 工单管理-工单设置：删除工单类型明细
+export function workOrderTypeDetailDelete(data) {
+    return service.request({
+        method: 'POST',
+        url: '/workOrderTypeDetail/delete',
+        data: data
+    })
+}
+// 工单管理-工单设置：根据工单时限主键id查询工单时限信息
+export function workOrderTimeLimitFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/workOrderTimeLimit/findById',
+        params: data
+    })
+}
+// 工单管理-工单设置：更新工单时限信息
+export function workOrderTimeLimitUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/workOrderTimeLimit/update',
+        data: data
+    })
+}
+// 工单管理-工单设置：更新工单类型明细信息
+export function workOrderTypeDetailUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/workOrderTypeDetail/update',
+        data: data
+    })
+}
+// 工单管理-工单设置：根据工单类型明细主键id查询工单类型明细信息
 export function workOrderTypeFindById(data) {
     return service.request({
         method: 'GET',
@@ -300,6 +349,38 @@ export function workOrderTimeLimitList(data) {
     return service.request({
         method: 'GET',
         url: '/workOrderTimeLimit/list',
+        params: data
+    })
+}
+// 借还管理：提醒(管理员发送)
+export function borrowRemind(data) {
+    return service.request({
+        method: 'POST',
+        url: '/borrow/remind',
+        data: data
+    })
+}
+// 业委会管理：添加业委会信息
+export function ownersCommitteeInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/ownersCommittee/insert',
+        data: data
+    })
+}
+//业委会管理：更新业委会信息
+export function ownersCommitteeUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/ownersCommittee/update',
+        data: data
+    })
+}
+// 业委会管理：根据业委会主键id查询业委会信息
+export function ownersCommitteeFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/ownersCommittee/findById',
         params: data
     })
 }

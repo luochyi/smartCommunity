@@ -20,6 +20,23 @@
                            name="2"></el-tab-pane>
             </el-tabs>
           </template>
+          <template v-slot:remake="slotData">
+            <div>
+              <el-tooltip v-if="slotData.data.remake"
+                          class="item"
+                          effect="dark"
+                          :content="slotData.data.remake"
+                          placement="bottom-end">
+                <el-button class=" init-text"
+                           type="text">
+                  <span class="el-icon-warning-outline"
+                        style="font-size:24px"></span>
+                </el-button>
+              </el-tooltip>
+              <span v-else>-</span>
+
+            </div>
+          </template>
           <template slot="footer">
             <div class="table-footer">
               <button @click="msg(table_row)">提醒</button>
@@ -32,13 +49,13 @@
 </template>
 
 <script>
+import { borrowRemind } from '@/api/butler'
 export default {
   data () {
     return {
       // 选中表格数据
       table_row: [],
       activeName: '0',
-      value1: 3.7,
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
@@ -51,8 +68,7 @@ export default {
           { label: '出借时长', prop: 'borrowDate', width: '180' },
           { label: '状态', prop: 'status', width: 'auto' },
           { label: '物品状态', prop: 'borrowStatus', width: 'auto' },
-          { label: '备注', prop: 'remake', width: 'auto' },
-          // { label: '备注', prop: 'table25', width: '100', type: 'tooltip' }
+          { label: '备注', prop: 'remake', width: 'auto', type: 'slot', slotName: 'remake' }
         ],
         table_data: [],
         url: 'borrowList',
@@ -97,6 +113,7 @@ export default {
     }
   },
   methods: {
+    // tab切换
     handleClick (tab, event) {
       let status = null
       if (this.activeName != 0) {
@@ -114,11 +131,16 @@ export default {
     tableCheck (data) {
       this.table_row = data;
     },
-    onSubmit () {
-      console.log('submit!')
-    },
     // 提醒
     msg (data) {
+      // if (data.length) {
+      //   if (data.length > 1) {
+      //     this.$message.error('用户数量不能多个提醒');
+      //   }
+      // } else {
+      //   this.$message.error('请选中需要提醒的用户');
+
+      // }
       let arr = []
       for (let i = 0; i < this.table_row.length; i++) {
         arr.push(this.table_row[i].id)
