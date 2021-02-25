@@ -77,7 +77,7 @@
   </div>
 </template>
 <script>
-import { chargesTemplateList, chargesTemplateDetailList } from '@/api/charge'
+import { chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateInsert } from '@/api/charge'
 import drawer from '@/components/Drawer/drawer.vue'
 export default {
   data () {
@@ -190,12 +190,11 @@ export default {
   methods: {
     editType (index) {
       this.$set(this.costList[index], "editBool", true)
-
     },
     handleClick (row) {
       console.log(row)
     },
-    // 工单大类修改 input获取焦点时 获取name  
+    // 工单大类修改 input获取焦点时 获取name
     editInputFocus (e, name) {
       this.typeListName = name
     },
@@ -206,19 +205,20 @@ export default {
       if (this.typeListName === name) {
         return
       }
-      // 内容为空  重新给当前输入赋旧值 
+      // 内容为空  重新给当前输入赋旧值
       if (name === '') {
         this.costList[index].name = this.typeListName
         this.$message.error('内容不能为空');
         return
       }
-      // let resData = {
-      //   id: id,
-      //   name: name,
-      // }
-      // workOrderTypeUpdate(resData).then(result => {
-      //   console.log(result)
-      // })
+      let resData = {
+        id: id,
+        name: name,
+      }
+      chargesTemplateUpdate(resData).then(result => {
+        console.log(result)
+
+      })
     },
     // tab 侧边栏切换
     tableChange (index, ulId) {
@@ -243,11 +243,22 @@ export default {
         // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
         // inputErrorMessage: '邮箱格式不正确'
       }).then(({ value }) => {
+        if (!value) {
+          return
+        }
+        let resData = {
+          name: value
+        }
+        chargesTemplateInsert(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              type: 'success',
+              message: res.message
+            });
+          }
+        })
         this.drawer_vrisible = true
-        this.$message({
-          type: 'success',
-          message: '你的费用版本是: ' + value
-        });
+
       }).catch(() => {
         this.$message({
           type: 'info',

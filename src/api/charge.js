@@ -16,3 +16,19 @@ export function chargesTemplateDetailList(data) {
         params: data
     })
 }
+// 收费标准管理：更新物业收费标准模版信息
+export function chargesTemplateUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/chargesTemplate/update',
+        data: data
+    })
+}
+// 收费标准管理：添加物业收费标准模版
+export function chargesTemplateInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/chargesTemplate/insert',
+        data: data
+    })
+}

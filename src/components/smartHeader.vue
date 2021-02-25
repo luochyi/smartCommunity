@@ -37,13 +37,13 @@
         <router-view></router-view>
       </el-container>
       <div class='control'>
-        <div class='control_box'
+        <!-- <div class='control_box'
              style="pointer-events: none;">
           <span>信息服务平台</span>
         </div>
         <div class='control_box'>
           <span>物业系统</span>
-        </div>
+        </div> -->
         <div class='control_box'
              @click="complex">
           <span>综合服务平台</span>
