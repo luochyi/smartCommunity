@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import { buildingInsert, Login, buildingUpdate } from '@/api/basic'
+import { buildingInsert, buildingUpdate } from '@/api/basic'
 export default {
   data () {
     return {
@@ -135,12 +135,6 @@ export default {
         ]
       },
     }
-  },
-  mounted () {
-    Login().then((res) => {
-      console.log(res)
-      sessionStorage.setItem('X-Admin-Token', res.token)
-    })
   },
   methods: {
     /**

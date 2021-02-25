@@ -30,6 +30,8 @@
   </div>
 </template>
 <script>
+import { Login } from '@/api/basic'
+
 export default {
   data () {
     return {
@@ -359,7 +361,10 @@ export default {
     }
   },
   mounted () {
-
+    Login().then((res) => {
+      console.log(res)
+      sessionStorage.setItem('X-Admin-Token', res.token)
+    })
   },
   methods: {
 

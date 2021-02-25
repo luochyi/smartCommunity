@@ -62,6 +62,25 @@
                   </el-upload>
                 </template>
               </template>
+              <!-- editId?'true':'false' -->
+              <template v-slot:residentId>
+                <el-select v-model="ownersCommitteeForm.ruleForm.residentId"
+                           :disabled="editId?true:false"
+                           :remote-method='remoteMethod'
+                           @change='change'
+                           @focus='focus'
+                           :loading="loading"
+                           remote
+                           style="width:240px"
+                           filterable
+                           placeholder="请选择">
+                  <el-option v-for="item in options"
+                             :key="item.id"
+                             :label="item.name"
+                             :value="item.id">
+                  </el-option>
+                </el-select>
+              </template>
             </VueForm>
           </template>
         </FromCard>
@@ -78,12 +97,17 @@
 
 <script>
 import { ownersCommitteeInsert, ownersCommitteeUpdate, ownersCommitteeFindById } from '@/api/butler'
+import { userResident } from '@/api/basic'
 export default {
   data () {
     return {
+      options: [],
+      loading: false,
       // 业委会标题 业委会显示隐藏
       ownersCommitteeTitle: '',
       ownersCommittee_vrisible: false,
+      editBool: false,
+      editId: 0,
       // 选中表格数据
       table_row: [],
       config: {
@@ -168,19 +192,38 @@ export default {
           educationId: null,
           estateId: null,
           profession: null,
-          fileUrls: null,
+
           // sex: null,
           fileUrls: []
         },
         form_item: [
-          { type: 'Input', label: '姓名', placeholder: '请输入姓名', width: '50%', prop: 'residentId' },
-          { type: 'Select', label: '职位', placeholder: '请选择职位', options: [], width: '50%', prop: 'positionId' },
+          { type: 'Slot', label: '姓名', placeholder: '请输入姓名', width: '50%', prop: 'residentId', slotName: 'residentId' },
+          {
+            type: 'Select', label: '职位', placeholder: '请选择职位', width: '50%', prop: 'positionId',
+            options: [
+              { value: 1, label: '业委会主任' },
+              { value: 2, label: '业委会副主任' },
+              { value: 3, label: '业委会委员' }
+            ]
+          },
           // { type: 'Select', label: '性别', placeholder: '请选择性别', options: [], width: '50%', prop: 'sex' },
-          { type: 'Input', label: '年龄', placeholder: '请输入年龄', width: '50%', prop: 'age' },
-          { type: 'Select', label: '学历', placeholder: '请选择学历', options: [], width: '50%', prop: 'educationId' },
+          {
+            type: 'Input', label: '年龄', placeholder: '请输入年龄', width: '50%', prop: 'age',
+          },
+          {
+            type: 'Select', label: '学历', placeholder: '请选择学历', width: '50%', prop: 'educationId',
+            options: [
+              { value: 1, label: '专科' },
+              { value: 2, label: '本科' },
+              { value: 3, label: '硕士' },
+              { value: 4, label: '博士' }
+            ]
+          },
           { type: 'Input', label: '房屋信息', placeholder: '请输入房屋信息', width: '50%', prop: 'estateId' },
-          { type: 'Select', label: '职业', placeholder: '请选择职业', options: [], width: '50%', prop: 'profession' },
-          { type: 'Slot', label: '图片上传', placeholder: '请输入', width: '100%', prop: 'fileUrls', slotName: 'fileUrls' },
+          {
+            type: 'Input', label: '职业', placeholder: '请输入职业', width: '50%', prop: 'profession'
+          },
+          { type: 'Slot', label: '图片上传', width: '100%', prop: 'fileUrls', slotName: 'fileUrls' },
         ],
         rules: {
           residentId: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
@@ -189,12 +232,41 @@ export default {
           age: [{ required: true, message: '请输入工单名称', trigger: 'blur' }],
           educationId: [{ required: true, message: '请选择学历', trigger: 'change' }],
           estateId: [{ required: true, message: '请输入房屋信息', trigger: 'blur' }],
-          profession: [{ required: true, message: '请选择职业', trigger: 'change' }],
+          profession: [{ required: true, message: '请选择职业', trigger: 'blur' }],
+          fileUrls: [{ required: true, message: '请上传图片', trigger: 'change' }],
         }
       },
     }
   },
   methods: {
+    // 添加业主
+    remoteMethod (val) {
+      let reeData = {
+        pageNum: 1,
+        size: 20,
+        name: val
+      }
+      this.loading = true
+      userResident(reeData).then(res => {
+        this.options = res.tableList
+        this.loading = false
+      })
+    },
+    focus () {
+      let reeData = {
+        pageNum: 1,
+        size: 20
+      }
+      this.loading = true
+      userResident(reeData).then(res => {
+        this.options = res.tableList
+        this.loading = false
+        console.log(this.options)
+      })
+    },
+    change (value) {
+      console.log(value)
+    },
     tableCheck (data) {
       this.table_row = data;
     },
@@ -207,7 +279,7 @@ export default {
     ownersImgeSuccess (res, file) {
       this.fileUrls = res.url
       this.ownersCommitteeForm.ruleForm.fileUrls[0] = res.url
-      // this.editBool = false
+      this.editBool = false
     },
     // 图片上传之前
     beforeAvatarUpload (file) {
@@ -234,11 +306,17 @@ export default {
         let resData = {
           id: data[0].id
         }
-        // ownersCommitteeUpdate(resData).then(result => {
-        //   console.log(result)
-        // })
         ownersCommitteeFindById(resData).then(result => {
-          console.log(result)
+          this.editBool = true;
+          this.editId = result.id
+          this.ownersCommitteeForm.ruleForm.residentId = result.name
+          this.ownersCommitteeForm.ruleForm.positionId = result.positionId
+          this.ownersCommitteeForm.ruleForm.age = result.age
+          this.ownersCommitteeForm.ruleForm.educationId = result.educationId
+          this.ownersCommitteeForm.ruleForm.estateId = result.estateId
+          this.ownersCommitteeForm.ruleForm.profession = result.profession
+          this.ownersCommitteeForm.ruleForm.fileUrls[0] = result.imgUrls[0].url
+          this.fileUrls = result.imgUrls[0].url
         })
       } else {
         this.$message.error('请选择需要编辑的数据');
@@ -248,13 +326,55 @@ export default {
     //  弹窗关闭显示
     ownersCommitteeClose () {
       this.ownersCommittee_vrisible = false;
+      this.fileUrls = ''
+      this.editId = 0
       this.$refs.ownersCommitteeVueForm.reset()
     },
     // 添加修改弹窗提交验证通过
     ownersCommitteeRuleSubmit () {
-      ownersCommitteeInsert().then(result => {
-        console.log(result)
-      })
+
+      if (!this.editId) {
+        let resData = {
+          residentId: this.ownersCommitteeForm.ruleForm.residentId,
+          positionId: this.ownersCommitteeForm.ruleForm.positionId,
+          age: this.ownersCommitteeForm.ruleForm.age,
+          educationId: this.ownersCommitteeForm.ruleForm.educationId,
+          estateId: this.ownersCommitteeForm.ruleForm.estateId,
+          profession: this.ownersCommitteeForm.ruleForm.profession,
+          fileUrls: this.ownersCommitteeForm.ruleForm.fileUrls,
+        }
+        console.log(resData)
+        ownersCommitteeInsert(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.ownersCommitteeClose()
+            this.$refs.table.loadData()
+          }
+        })
+      } else {
+        let resData = {
+          id: this.editId,
+          positionId: this.ownersCommitteeForm.ruleForm.positionId,
+          age: this.ownersCommitteeForm.ruleForm.age,
+          educationId: this.ownersCommitteeForm.ruleForm.educationId,
+          estateId: this.ownersCommitteeForm.ruleForm.estateId,
+          profession: this.ownersCommitteeForm.ruleForm.profession,
+          fileUrls: this.ownersCommitteeForm.ruleForm.fileUrls,
+        }
+        ownersCommitteeUpdate(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$refs.table.loadData()
+            this.ownersCommitteeClose()
+          }
+        })
+      }
     },
     // 添加修改弹窗提交
     ownersCommitteeSubmit () {

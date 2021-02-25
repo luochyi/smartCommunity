@@ -6,7 +6,7 @@ import './assets/css/reset.css'
 import './assets/css/global.css'
 import './plugins/element.js'
 import './assets/css/style.scss'
-// import inputForm from '@/components/input/from.vue'
+
 // 上 同
 import searchForm from '@/components/searchForm/index.vue'
 // 分页
@@ -30,8 +30,10 @@ Vue.component('Drawer', Drawer)
 // tableData
 Vue.component('tableData', tableData)
 Vue.component('VueTable', VueTable)
+// 后期删掉
+import inputForm from '@/components/input/from.vue'
+Vue.component('input-form', inputForm)
 
-// Vue.component('input-form', inputForm)
 Vue.component('searchForm', searchForm)
 Vue.component('table-pagination', tablePagination)
 // table-pagination
