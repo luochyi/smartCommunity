@@ -32,3 +32,44 @@ export function chargesTemplateInsert(data) {
         data: data
     })
 }
+// 收费标准管理：批量删除物业收费标准模版
+export function chargesTemplateDelete(data) {
+    return service.request({
+        method: 'POST',
+        url: '/chargesTemplate/delete',
+        data: data
+    })
+}
+// 收费标准管理：添加物业收费标准明细信息
+export function chargesTemplateDetailInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/chargesTemplateDetail/insert',
+        data: data
+    })
+}
+//收费标准管理：根据物业收费标准明细主键id 查询物业收费标准明细信息
+export function chargesTemplateDetailFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/chargesTemplateDetail/findById',
+        params: data
+    })
+}
+
+//收费标准管理：更新物业收费标准明细信息
+export function chargesTemplateDetailUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/chargesTemplateDetail/update',
+        data: data
+    })
+}
+// 收费标准管理：批量删除物业收费标准明细信息
+export function chargesTemplateDetailDelete(data) {
+    return service.request({
+        method: 'POST',
+        url: '/chargesTemplateDetail/delete',
+        data: data
+    })
+}

@@ -58,6 +58,7 @@ const requestUrl = {
     workOrderCostList: '/workOrderCost/list',
     expenseBillList: '/expenseBill/list',
     announcementManagementList: '/announcementManagement/list',
+    announcementManagementListDelete: '/announcementManagement/delete',
     notificationManagementList: '/notificationManagement/list',
     activityManagementList: '/activityManagement/list',
     sponsorManagementList: '/sponsorManagement/list'

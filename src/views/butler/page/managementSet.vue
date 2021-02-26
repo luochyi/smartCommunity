@@ -244,7 +244,7 @@ export default {
         loading: true,
       },
       // 类型管理 - 分类
-      // 在修改工单大类获取焦点时记录记录工单大类名称 
+      // 在修改工单大类获取焦点时记录记录工单大类名称
       typeListName: '',
       typeList: [],
       typeActive: 0,
@@ -274,7 +274,7 @@ export default {
   },
   mounted () {
     this.getType()
-    //给工单类型明细匹配值 
+    //给工单类型明细匹配值
     this.getOrderTypeData()
   },
   directives: {
@@ -288,7 +288,7 @@ export default {
     }
   },
   methods: {
-    //给工单类型明细匹配值 
+    //给工单类型明细匹配值
     getOrderTypeData () {
       workOrderType().then(res => {
         let arr = res.map(item => ({
@@ -505,7 +505,7 @@ export default {
 
       }).catch(() => { });
     },
-    // 工单大类删除 
+    // 工单大类删除
     typeListDelete () {
       this.$confirm('是否确认删除工单大类？删除不可恢复', '工单大类删除', {
         confirmButtonText: '确定',
@@ -517,12 +517,15 @@ export default {
           id: this.typeList[this.typeActive].id
         }
         workOrderTypeDelete(resData).then(result => {
-          this.$message({
-            type: 'success',
-            message: result.message
-          });
-          this.getType()
-          this.typeActive = 0
+          if (result.status) {
+            this.$message({
+              type: 'success',
+              message: result.message
+            });
+            this.getType()
+            this.typeActive = 0
+          }
+
         })
       }).catch(action => { });
 
@@ -538,7 +541,7 @@ export default {
       if (this.typeListName === name) {
         return
       }
-      // 内容为空  重新给当前输入赋旧值 
+      // 内容为空  重新给当前输入赋旧值
       if (name === '') {
         this.typeList[index].name = this.typeListName
         this.$message.error('内容不能为空');
@@ -553,7 +556,7 @@ export default {
         console.log(result)
       })
     },
-    // 工单大类修改 input获取焦点时 获取name  
+    // 工单大类修改 input获取焦点时 获取name
     editInputFocus (e, name) {
       this.typeListName = name
     },

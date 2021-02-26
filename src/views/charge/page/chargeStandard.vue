@@ -11,15 +11,14 @@
           </div>
           <div class="left_icon">
             <span @click="addCost"> <i class="el-icon-plus"></i></span>
-            <span> <i class="el-icon-delete"></i></span>
+            <span @click="deleteCost"> <i class="el-icon-delete"></i></span>
           </div>
         </div>
         <ul>
           <li :class="costActive===index?'active':''"
               v-for="(item,index) in costList"
-              @click="tableChange(index,item.id)"
+              @click="tableChange(index,item.id,item.name)"
               :key='item.id'>
-            <!-- <span>{{item.name}}</span> -->
             <el-input v-model="item.name"
                       @blur='(e) => editInputBlur(e,item.name,item.id,index)'
                       @focus='(e) => editInputFocus(e,item.name)'
@@ -52,8 +51,10 @@
                       prefix-icon="el-icon-search"
                       v-model="input2">
             </el-input>
-            <el-button class="init-button">添加费用</el-button>
-            <el-button class="init-button">编辑费用</el-button>
+            <el-button class="init-button"
+                       @click="add()">添加费用</el-button>
+            <el-button class="init-button"
+                       @click="edit(table_row)">编辑费用</el-button>
             <el-button class="init-button"
                        @click="del(table_row)">删除费用</el-button>
             <el-button class="init-button">导出Excel</el-button>
@@ -69,35 +70,65 @@
           </tableData>
         </div>
       </div>
-      <!-- 添加 -->
-      <drawer :drawerVrisible="drawer_vrisible"
-              @handleClose="getClose"
-              :drawer_config="drawer_config"></drawer>
+      <!-- 费用明细增加修改 -->
+      <Drawer :drawerTitle="costTitle"
+              @drawerClose="costClose"
+              :drawerVrisible='cost_vrisible'>
+        <div style="padding:30px">
+          <FromCard>
+            <template slot="title">基本信息</template>
+            <template>
+              <VueForm ref="costVueForm"
+                       @ruleSuccess='costRuleSubmit'
+                       :formObj='costForm'></VueForm>
+            </template>
+          </FromCard>
+        </div>
+        <div slot="footer">
+          <button class="btn-orange"
+                  @click="costSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+          <button class="btn-gray"
+                  @click="costClose"><span>取消</span></button>
+        </div>
+      </Drawer>
     </div>
   </div>
 </template>
 <script>
-import { chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateInsert } from '@/api/charge'
-import drawer from '@/components/Drawer/drawer.vue'
+import {
+  chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete,
+  chargesTemplateDetailInsert, chargesTemplateDetailUpdate, chargesTemplateInsert, chargesTemplateDelete, chargesTemplateDetailFindById
+} from '@/api/charge'
 export default {
   data () {
     return {
       // 添加点击确认后弹出抽屉
-      drawer_vrisible: false,
+      cost_vrisible: false,
+      costTitle: '新增费用项目',
+      // 侧边栏费用版本
       costList: [],
+      // 获得焦点后 记录当前值  修改时值不变不请求服务器
       typeListName: '',
+      // 侧边栏当前选择
       costActive: 0,
-      drawer_config: {
-        drawer_vrisible: false,
-        head_title: '访客编辑',
-        content_title: '访客信息',
+      // 费用明细修改添加
+      costForm: {
         ruleForm: {
-          name: '',
-          jj: '',
-          danwei: '',
-          guding: '',
+          typeName: null,
+          name: null,
+          unitPrice: null,
+          type: null,
+          otherFee: null,
         },
         form_item: [
+          {
+            type: 'Input',
+            label: '费用版本',
+            placeholder: '请输入',
+            disabled: true,
+            width: '100%',
+            prop: 'typeName',
+          },
           {
             type: 'Input',
             label: '费用项目名称',
@@ -106,18 +137,17 @@ export default {
             prop: 'name',
           },
           {
-            type: 'textarea',
-            label: '计价公式/单价',
+            type: 'Input',
+            label: '单价',
             placeholder: '请输入',
-            rows: 6,
             width: '100%',
-            prop: 'jj',
+            prop: 'unitPrice',
           },
           {
             type: 'Select',
             label: '单位',
             placeholder: '请选择单位',
-            prop: 'danwei',
+            prop: 'type',
             width: '100%',
             options: [
               { label: '宁波电台', value: '1' },
@@ -128,14 +158,21 @@ export default {
             type: 'Input',
             label: '固定费用',
             placeholder: '请输入',
-            prop: 'guding',
+            prop: 'otherFee',
             width: '100%',
           },
         ],
+        rules: {
+          typeName: [{ required: true }],
+          name: [{ required: true, message: '请输入费用项目名称', trigger: 'blur' }],
+          unitPrice: [{ required: true, message: '请输入单价', trigger: 'blur' }],
+          type: [{ required: true, message: '请选择单位', trigger: 'change' }],
+          // otherFee: [{ required: true, message: '请输入固定费用', trigger: 'blur' }]
+        }
       },
       value: true,
       input2: '',
-      // 工单类型明细
+      // 费用明细
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
@@ -149,19 +186,7 @@ export default {
         ],
         loading: true,
       },
-      // config: {
-      //   thead: [
-      //     { label: '序号', type: 'index', width: '80' },
-      //     { label: '费用名称', prop: 'name', width: 'auto' },
-      //     { label: '计费单价/单位', prop: 'unitPrice', width: 'auto' },
-      //     { label: '附加/固定费用', prop: 'otherFee', width: 'auto' },
-      //     { label: '创建人', prop: 'createName', width: 'auto' },
-      //     { label: '更新日期', prop: 'modifyDate', width: 'auto' },
-      //   ],
-      //   url: 'chargesTemplateDetailList',
-      //   table_data: [],
-      //   data: { pageNum: 1, size: 10, chargesTemplateId: null },
-      // },
+      // 费用明细选中数据
       table_row: [],
     }
   },
@@ -175,30 +200,30 @@ export default {
       }
     }
   },
-  components: {
-    drawer,
-  },
   mounted () {
-    chargesTemplateList().then(res => {
-      this.costList = res
-      this.costList.map(item => {
-        this.$set(item, "editBool", false)
-      })
-      this.GetTableData(res[0].id)
-    })
+    this.getCostType()
   },
   methods: {
+    // 费用版本名称
+    getCostType () {
+      chargesTemplateList().then(res => {
+        this.costList = res
+        this.costList.map(item => {
+          this.$set(item, "editBool", false)
+        })
+        // 费用版本名称对于明细
+        this.GetTableData(this.costList[this.costActive].id)
+      })
+    },
+    // 费用版本input显示隐藏
     editType (index) {
       this.$set(this.costList[index], "editBool", true)
     },
-    handleClick (row) {
-      console.log(row)
-    },
-    // 工单大类修改 input获取焦点时 获取name
+    // 费用版本 input获取焦点时 获取name
     editInputFocus (e, name) {
       this.typeListName = name
     },
-    // 工单大类修改 input 失去焦点焦点时 修改名称
+    // 费用版本修改 input 失去焦点焦点时 修改名称
     editInputBlur (e, name, id, index) {
       this.$set(this.costList[index], "editBool", false)
       // 在修改时新值和旧值相同不请求后台
@@ -217,14 +242,14 @@ export default {
       }
       chargesTemplateUpdate(resData).then(result => {
         console.log(result)
-
       })
     },
-    // tab 侧边栏切换
-    tableChange (index, ulId) {
+    // tab 费用版本 侧边栏切换
+    tableChange (index, ulId, name) {
       this.costActive = index
       this.GetTableData(ulId)
     },
+    // 获得版本对应费用明细
     GetTableData (id) {
       let resData = {
         pageNum: 1,
@@ -236,12 +261,35 @@ export default {
         this.config.loading = false
       })
     },
+    // 删除费用版本名称
+    deleteCost () {
+      this.$confirm('是否确认删除费用版本？删除不可恢复', '费用版本删除', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        confirmButtonClass: 'confirmButton',
+        cancelButtonClass: 'cancelButton'
+      }).then(() => {
+        let resData = {
+          ids: [this.costList[this.costActive].id]
+        }
+        console.log(resData)
+        chargesTemplateDelete(resData).then(result => {
+          if (result.status) {
+            this.$message({
+              type: 'success',
+              message: result.message
+            });
+            this.costActive = 0
+            this.getCostType()
+          }
+        })
+      }).catch(action => { });
+    },
+    // 添加费用版本名称
     addCost () {
       this.$prompt('请输入费用版本名称', '添加费用版本', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-        // inputErrorMessage: '邮箱格式不正确'
       }).then(({ value }) => {
         if (!value) {
           return
@@ -255,9 +303,10 @@ export default {
               type: 'success',
               message: res.message
             });
+            this.getCostType()
           }
         })
-        this.drawer_vrisible = true
+        // this.drawer_vrisible = true
 
       }).catch(() => {
         this.$message({
@@ -265,6 +314,80 @@ export default {
           message: '取消输入'
         });
       });
+    },
+    // 添加费用明细
+    add () {
+      this.cost_vrisible = true;
+      this.costForm.ruleForm.typeName = this.costList[this.costActive].name
+      console.log(this.costForm.ruleForm)
+    },
+    // 修改费用明细
+    edit (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('不能批量编辑');
+          return
+        }
+        let resData = {
+          id: data[0].id
+        }
+        chargesTemplateDetailFindById(resData).then(result => {
+          this.costForm.ruleForm.typeName = this.costList[this.costActive].name
+          this.costEditId = result.id
+          this.costForm.ruleForm.name = result.name
+          this.costForm.ruleForm.otherFee = result.otherFee
+          this.costForm.ruleForm.type = result.type
+          this.costForm.ruleForm.unitPrice = result.unitPrice
+          this.cost_vrisible = true;
+
+        })
+      } else {
+        this.$message.error('请选择需要编辑的数据');
+      }
+
+    },
+    // 添加修改费用明细验证通过
+    costRuleSubmit () {
+      let resData = {
+        chargesTemplateId: this.costList[this.costActive].id,
+        name: this.costForm.ruleForm.name,
+        unitPrice: parseInt(this.costForm.ruleForm.unitPrice),
+        type: parseInt(this.costForm.ruleForm.type),
+        otherFee: parseInt(this.costForm.ruleForm.otherFee)
+      }
+      // id等于0 添加否则修改
+      if (!this.costEditId) {
+        chargesTemplateDetailInsert(resData).then(result => {
+          this.$message({
+            type: 'success',
+            message: result.message
+          });
+          this.costClose();
+          this.GetTableData(this.costList[this.costActive].id)
+        })
+      } else {
+        resData.id = this.costEditId
+        chargesTemplateDetailUpdate(resData).then(result => {
+          if (result.status) {
+            this.$message({
+              type: 'success',
+              message: result.message
+            });
+          }
+          this.costClose();
+          this.GetTableData(this.costList[this.costActive].id)
+        })
+      }
+
+    },
+    // 添加修改费用明细提交验证
+    costSubmit () {
+      this.$refs.costVueForm.submitForm()
+    },
+    // 添加修改费用明细关闭
+    costClose () {
+      this.cost_vrisible = false;
+      this.$refs.costVueForm.reset()
     },
     // 删除
     del (data) {
@@ -279,15 +402,21 @@ export default {
           confirmButtonClass: 'confirmButton',
           cancelButtonClass: 'cancelButton'
         }).then(() => {
+          let resData = {
+            ids: arr
+          }
+          chargesTemplateDetailDelete(resData).then((res) => {
+            if (!res.status) return
+            this.$message({
+              type: 'success',
+              message: res.message
+            });
+            this.GetTableData(this.costList[this.costActive].id)
+          })
         }).catch(action => { });
       } else {
         this.$message.error('请选中需要删除的数据');
       }
-    },
-    // 关闭抽屉
-    getClose (data) {
-      this.drawer_vrisible = false
-      console.log(data + '投票管理父组件')
     },
     tableCheck (arr) {
       this.table_row = arr
