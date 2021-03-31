@@ -15,8 +15,9 @@
                          :page-size="limit"
                          background
                          :pager-count="9"
+                         :page-sizes="[1, 10, 50, 100]"
                          :current-page="currentPage"
-                         layout="prev, pager, next,slot"
+                         layout="sizes,prev, pager, next,slot"
                          :total="totalNumber">
             <div class="page-slot">
               <span>向第</span>

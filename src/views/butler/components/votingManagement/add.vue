@@ -8,7 +8,6 @@
         <VueForm ref="vueForm"
                  @ruleSuccess='ruleSuccess'
                  :formObj='votingFrom'>
-
           <template slot='fileUrls'>
             <template>
               <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
@@ -23,12 +22,12 @@
                   </div>
                   <template v-else>
                     <!-- 临时地址 新增状态 -->
-                    <el-image v-if="!editBool"
-                              :src="`http://test.akuhotel.com:8804/static/temp/${fileUrls}`"
+                    <el-image v-if="!editBoolImage"
+                              :src="`${$ImgUrl}/temp/${fileUrls}`"
                               style="width: 104px; height: 104px"></el-image>
                     <!-- 非临时地址  编辑状态-->
                     <el-image v-else
-                              :src="`http://test.akuhotel.com:8804/static/${fileUrls}`"
+                              :src="`${$ImgUrl}${fileUrls}`"
                               style="width: 104px; height: 104px"></el-image>
                   </template>
                 </div>
@@ -56,11 +55,12 @@
                 <div class="sys-item">
                   <template v-if="imageShow">
                     <template>
-                      <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+                      <el-upload :action="`${$baseUrl}upload/uploadVoteTitle`"
                                  :on-success="(res, file) => handleAvatarSuccess(index, res, file)"
                                  :show-file-list="false"
                                  :before-upload="beforeAvatarUpload">
                         <div class='sys-image'>
+
                           <div v-if="!item.fileUrls[0]">
                             <i class="el-icon-plus"></i>
                             <p>上传照片</p>
@@ -68,11 +68,11 @@
                           <template v-else>
                             <!-- 临时地址 -->
                             <el-image v-if="item.temporary"
-                                      :src="`http://test.akuhotel.com:8804/static/temp/${item.fileUrls[0]}`"
+                                      :src="`${$ImgUrl}temp/${item.fileUrls[0]}`"
                                       style="width: 80px; height: 80px"></el-image>
                             <!-- 非临时地址 -->
                             <el-image v-else
-                                      :src="`http://test.akuhotel.com:8804/static/${item.fileUrls[0]}`"
+                                      :src="`${$ImgUrl}${item.fileUrls[0]}`"
                                       style="width: 80px; height: 80px"></el-image>
                           </template>
                         </div>
@@ -116,8 +116,10 @@ export default {
   },
   data () {
     return {
+
       drawer_vrisible: false,
       editBool: false, //是否为编辑状态 默认用服务器临时地址
+      editBoolImage: false,
       editid: 0,
       // 投票上传图片路径显示
       fileUrls: '',
@@ -217,14 +219,12 @@ export default {
       imageUrl: null
     }
   },
-  computed: {
-  },
   methods: {
     // 图片上传成功
     voteImgeSuccess (res, file) {
       this.fileUrls = res.url
       this.votingFrom.ruleForm.fileUrls[0] = res.url
-      this.editBool = false
+      this.editBoolImage = false
     },
     // vueForm 验证通过提交服务器
     ruleSuccess (val) {
@@ -289,9 +289,10 @@ export default {
       let resData = {
         id: id,
       }
-
+      this.editBool = true
+      this.editBoolImage = true
       voteFindById(resData).then(result => {
-        this.editBool = true
+
         this.editid = result.voFindByIdVote.id
         // 基本信息赋值
         this.fileUrls = result.voFindByIdVote.imgUrls[0].url

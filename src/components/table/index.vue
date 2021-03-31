@@ -108,9 +108,6 @@ export default {
       },
     }
   },
-  mounted () {
-    this.loadData()
-  },
   methods: {
     // 配置相关参数
     initConfig () {
@@ -138,11 +135,10 @@ export default {
         url: this.table_config.url,
         data: this.table_config.data,
       }
-      console.log(requestData)
       this.loading_table = true
       GetTableData(requestData)
         .then((response) => {
-          console.log(response)
+          console.log(response.tableList)
           // 判断数据是否存在
           if (response) {
             this.table_data = response.tableList
@@ -222,7 +218,7 @@ export default {
         this.initConfig()
       },
       immediate: true,
-      deep: true,
+      deep: true
     },
   },
 }

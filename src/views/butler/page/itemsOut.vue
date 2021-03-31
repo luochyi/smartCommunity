@@ -42,13 +42,16 @@
                            name="3"></el-tab-pane>
             </el-tabs>
           </template>
-          <template v-slot:itemPhoto="slotData">
-            <div>
+          <template v-slot:goodsImgUrls="slotData">
+            <div v-if="slotData.data.goodsImgUrls.length">
               <el-button class="init-text"
                          type="text"
-                         @click="getPhotoView(slotData.data.id)">
+                         @click="getPhotoView(slotData.data.goodsImgUrls)">
                 <span>查看</span>
               </el-button>
+            </div>
+            <div v-else>
+              -
             </div>
           </template>
           <template slot="footer">
@@ -86,10 +89,10 @@ export default {
           { label: '物品名称', prop: 'name', width: '180' },
           {
             label: '物品照片',
-            prop: 'itemPhoto',
+            prop: 'goodsImgUrls',
             width: '180',
             type: 'slot',
-            slotName: 'itemPhoto',
+            slotName: 'goodsImgUrls',
           },
           { label: '申请人', prop: 'applicantName', width: '180' },
           { label: '联系方式', prop: 'applicantTel', width: '180' },
@@ -196,15 +199,15 @@ export default {
     this.getTipsData()
   },
   methods: {
-    getPhotoView (id) {
-      // this.photos_Visible = true
-      let resData = {
-        id: id,
-      }
-      userArticleOutFindGoodsImgById(resData).then(result => {
-        console.log(result)
-        this.goodsImgsList = result.resourcesImgList
-      })
+    getPhotoView (item) {
+      this.photos_Visible = true
+      // let resData = {
+      //   id: id,
+      // }
+      // userArticleOutFindGoodsImgById(resData).then(result => {
+      //   console.log(result)
+      this.goodsImgsList = item
+      // })
     },
     getclose () {
       this.photos_Visible = false

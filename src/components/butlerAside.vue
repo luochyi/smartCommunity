@@ -70,14 +70,14 @@ export default {
           iconisactive: require('@/assets/images/butler/icon_service01_sel.png'),
           isChildren: 0
         },
-        {
-          // Decoration management
-          path: '/butler/decorationManagement',
-          label: '装修管理',
-          iconurl: require('@/assets/images/butler/icon_service02_nor.png'),
-          iconisactive: require('@/assets/images/butler/icon_service02_sel.png'),
-          isChildren: 0
-        },
+        // {
+        //   // Decoration management
+        //   path: '/butler/decorationManagement',
+        //   label: '装修管理',
+        //   iconurl: require('@/assets/images/butler/icon_service02_nor.png'),
+        //   iconisactive: require('@/assets/images/butler/icon_service02_sel.png'),
+        //   isChildren: 0
+        // },
         {
           // Voting management
           path: '/butler/votingManagement',
@@ -226,55 +226,55 @@ export default {
 
 <style scoped>
 .el-container {
-  width: 100vw;
-  height: 100%;
-  overflow: hidden;
+    width: 100vw;
+    height: 100%;
+    overflow: hidden;
 }
 
 .el-aside {
-  background-color: #2b2c4b;
-  color: #333;
-  padding-bottom: 150px;
-  text-align: left;
-  overflow-x: hidden;
+    background-color: #2b2c4b;
+    color: #333;
+    padding-bottom: 150px;
+    text-align: left;
+    overflow-x: hidden;
 }
 /*  */
 .el-menu-item-group .el-menu-item {
-  padding-left: 58px !important;
+    padding-left: 58px !important;
 }
 .el-aside .el-menu {
-  background-color: #2b2c4b;
+    background-color: #2b2c4b;
 }
 .el-menu {
-  border-right: none;
+    border-right: none;
 }
 .el-main {
-  background-color: #e8ebf2;
-  width: 100%;
-  color: #333;
+    background-color: #e8ebf2;
+    width: 100%;
+    color: #333;
 }
 .el-aside .el-menu-item.is-active {
-  color: white !important;
-  background: linear-gradient(90deg, #fe822f 0%, #e2495f 100%);
+    color: white !important;
+    background: linear-gradient(90deg, #fe822f 0%, #e2495f 100%);
 }
 .asideMenu {
-  width: 100%;
-  line-height: 50px;
-  height: 50px;
-  text-align: right;
-  color: #d8d8d8;
+    width: 100%;
+    line-height: 50px;
+    height: 50px;
+    text-align: right;
+    color: #d8d8d8;
 }
 .asideMenu [class^='el-icon-'] {
-  margin-right: 20px;
-  text-align: center;
-  font-size: 28px;
-  vertical-align: middle;
+    margin-right: 20px;
+    text-align: center;
+    font-size: 28px;
+    vertical-align: middle;
 }
 .icon_img {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  margin-right: 14px;
-  padding-left: 10px;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 14px;
+    padding-left: 10px;
 }
 </style>

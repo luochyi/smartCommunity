@@ -111,7 +111,7 @@ export default {
         id: 1,
         type: 1,
         score: 6,
-        imgUrl: [],
+        imgUrl: [{ url: '' }],
         voUserAdviceDetailList: [],
       },
       isVisibleDrawe: false,

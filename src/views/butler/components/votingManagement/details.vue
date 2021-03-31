@@ -10,10 +10,12 @@
         <VueForm ref="childFroms"
                  :formObj='formData'>
           <template slot='imgUrls'>
-            <el-image style="width: 100px; height: 100px"
-                      :src="url"
-                      :preview-src-list="srcList">
-            </el-image>
+            <div class='demo-image__preview'>
+              <el-image style="width: 100px; height: 100px"
+                        :src="url"
+                        :preview-src-list="srcList">
+              </el-image>
+            </div>
           </template>
         </VueForm>
         <div style="padding:20px">
@@ -50,15 +52,12 @@ export default {
     voteId: {
       type: Number,
       default: () => 0
-    },
+    }
   },
   data () {
     return {
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ],
+      url: '',
+      srcList: ['https://dss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1999921673,816131569&fm=26&gp=0.jpg'],
       drawer: false,
       isVisibleDrawe: false,
       formData: {
@@ -178,8 +177,11 @@ export default {
         this.formData.ruleForm.beginDate = res.voFindDetailByIdVote.beginDate
         this.formData.ruleForm.content = res.voFindDetailByIdVote.content
         this.formData.ruleForm.endDate = res.voFindDetailByIdVote.endDate
-        this.formData.ruleForm.imgUrls = res.voFindDetailByIdVote.imgUrls[0]
+        // this.formData.ruleForm.imgUrls = res.voFindDetailByIdVote.imgUrls[0]
+        this.url = this.$ImgUrl + res.voFindDetailByIdVote.imgUrls[0].url
+        this.srcList[0] = this.$ImgUrl + res.voFindDetailByIdVote.imgUrls[0].url
         this.formData.ruleForm.type = res.voFindDetailByIdVote.type
+
       })
       // let resDataD = {
       //   pageNum: 1,
@@ -216,3 +218,5 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+</style>

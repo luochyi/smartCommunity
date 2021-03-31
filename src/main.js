@@ -36,11 +36,11 @@ Vue.component('input-form', inputForm)
 
 Vue.component('searchForm', searchForm)
 Vue.component('table-pagination', tablePagination)
-// table-pagination
-Vue.prototype.$baseUrl =
-    'http://test.akuhotel.com:8804/IntelligentCommunity/manage/'
-Vue.prototype.$ImgUrl = 'http://test.akuhotel.com:8804/static/	'
 
+// table-pagination
+
+Vue.prototype.$baseUrl = process.env.VUE_APP_API
+Vue.prototype.$ImgUrl = process.env.VUE_APP_Image_API
 Vue.config.productionTip = false
 
 new Vue({

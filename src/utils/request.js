@@ -15,7 +15,6 @@ service.interceptors.request.use(
         config.headers['X-Admin-Token'] = sessionStorage.getItem(
             'X-Admin-Token'
         )
-
         // Access-Control-Allow-Origin: *
         return config
     },
