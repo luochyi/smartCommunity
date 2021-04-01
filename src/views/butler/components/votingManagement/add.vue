@@ -23,7 +23,7 @@
                   <template v-else>
                     <!-- 临时地址 新增状态 -->
                     <el-image v-if="!editBoolImage"
-                              :src="`${$ImgUrl}/temp/${fileUrls}`"
+                              :src="`${$ImgUrl}/temp${fileUrls}`"
                               style="width: 104px; height: 104px"></el-image>
                     <!-- 非临时地址  编辑状态-->
                     <el-image v-else
@@ -68,7 +68,7 @@
                           <template v-else>
                             <!-- 临时地址 -->
                             <el-image v-if="item.temporary"
-                                      :src="`${$ImgUrl}temp/${item.fileUrls[0]}`"
+                                      :src="`${$ImgUrl}/temp${item.fileUrls[0]}`"
                                       style="width: 80px; height: 80px"></el-image>
                             <!-- 非临时地址 -->
                             <el-image v-else

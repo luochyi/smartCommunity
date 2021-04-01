@@ -166,6 +166,21 @@ export const cpmBuildingUnitEstateFindById = data => {
         params: data
     })
 }
+export const userResidentFindAllBySearch = data => {
+    return service.request({
+        method: 'GET',
+        url: '/userResident/findAllBySearch',
+        params: data
+    })
+}
+//  根据名字模糊查询查询业主的id和name及房产相关信息
+export const userResidentFindResidentNameBySearch = data => {
+    return service.request({
+        method: 'GET',
+        url: '/userResident/findResidentNameBySearch',
+        params: data
+    })
+}
 // 查询车位类型
 export const findParkingSpaceType = data => {
     return service.request({
@@ -208,11 +223,11 @@ export const cpmParkingSpaceList = data => {
 }
 // 修改车位信息
 export const cpmParkingSpaceUpdate = data => {
-  return service.request({
-      method: 'POST',
-      url: '/cpmParkingSpace/update',
-      data: data
-  })
+    return service.request({
+        method: 'POST',
+        url: '/cpmParkingSpace/update',
+        data: data
+    })
 }
 // 根据业主主键id查询业主信息（及其关联的房屋信息和车位信息）
 export const userResidentFindById = data => {
@@ -224,11 +239,11 @@ export const userResidentFindById = data => {
 }
 // 根据业主主键id查询业主信息
 export const userResidentFindByIdOne = data => {
-  return service.request({
-      method: 'GET',
-      url: '/userResident/findByIdOne',
-      params: data
-  })
+    return service.request({
+        method: 'GET',
+        url: '/userResident/findByIdOne',
+        params: data
+    })
 }
 // 根据业主主键id 查询业主及其房产信息
 export const userResidentFindEstateById = data => {

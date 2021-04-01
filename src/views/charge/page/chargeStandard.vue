@@ -81,6 +81,7 @@
               <VueForm ref="costVueForm"
                        @ruleSuccess='costRuleSubmit'
                        :formObj='costForm'></VueForm>
+
             </template>
           </FromCard>
         </div>
@@ -96,7 +97,7 @@
 </template>
 <script>
 import {
-  chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete,
+  chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete, userResidentFindAllBySearch,
   chargesTemplateDetailInsert, chargesTemplateDetailUpdate, chargesTemplateInsert, chargesTemplateDelete, chargesTemplateDetailFindById
 } from '@/api/charge'
 export default {

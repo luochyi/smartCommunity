@@ -38,7 +38,7 @@
                      :formObj='ownersCommitteeForm'>
               <template slot='fileUrls'>
                 <template>
-                  <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+                  <el-upload :action="`${$baseUrl}upload/uploadOwnersCommittee`"
                              :on-success="ownersImgeSuccess"
                              :show-file-list="false"
                              :before-upload="beforeAvatarUpload">
@@ -51,11 +51,11 @@
                       <template v-else>
                         <!-- 临时地址 新增状态 -->
                         <el-image v-if="!editBool"
-                                  :src="`http://test.akuhotel.com:8804/static/temp/${fileUrls}`"
+                                  :src="`${$ImgUrl}/temp${fileUrls}`"
                                   style="width: 104px; height: 104px"></el-image>
                         <!-- 非临时地址  编辑状态-->
                         <el-image v-else
-                                  :src="`http://test.akuhotel.com:8804/static/${fileUrls}`"
+                                  :src="`${$ImgUrl}${fileUrls}`"
                                   style="width: 104px; height: 104px"></el-image>
                       </template>
                     </div>
@@ -67,7 +67,6 @@
                 <el-select v-model="ownersCommitteeForm.ruleForm.residentId"
                            :disabled="editId?true:false"
                            :remote-method='remoteMethod'
-                           @change='change'
                            @focus='focus'
                            :loading="loading"
                            remote
@@ -81,6 +80,7 @@
                   </el-option>
                 </el-select>
               </template>
+
             </VueForm>
           </template>
         </FromCard>
@@ -97,7 +97,7 @@
 
 <script>
 import { ownersCommitteeInsert, ownersCommitteeUpdate, ownersCommitteeFindById } from '@/api/butler'
-import { userResident } from '@/api/basic'
+import { userResident, userResidentFindResidentNameBySearch } from '@/api/basic'
 export default {
   data () {
     return {
@@ -107,6 +107,8 @@ export default {
       ownersCommitteeTitle: '',
       ownersCommittee_vrisible: false,
       editBool: false,
+      estateOption: [],
+      estateLoading: false,
       editId: 0,
       // 选中表格数据
       table_row: [],
@@ -247,9 +249,9 @@ export default {
         name: val
       }
       this.loading = true
-      userResident(reeData).then(res => {
-        this.options = res.tableList
-        this.loading = false
+      userResidentFindResidentNameBySearch(reeData).then(res => {
+        this.estateOption = res.tableList
+        this.estateLoading = false
       })
     },
     focus () {
@@ -258,10 +260,10 @@ export default {
         size: 20
       }
       this.loading = true
-      userResident(reeData).then(res => {
+      userResidentFindResidentNameBySearch(reeData).then(res => {
         this.options = res.tableList
         this.loading = false
-        console.log(this.options)
+        console.log(res)
       })
     },
     change (value) {
@@ -307,6 +309,7 @@ export default {
           id: data[0].id
         }
         ownersCommitteeFindById(resData).then(result => {
+          console.log(result)
           this.editBool = true;
           this.editId = result.id
           this.ownersCommitteeForm.ruleForm.residentId = result.name

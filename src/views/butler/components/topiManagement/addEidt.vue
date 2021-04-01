@@ -10,7 +10,7 @@
                  :formObj='topiManagementFrom'>
           <template slot='fileUrls'>
             <template>
-              <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+              <el-upload :action="`${$baseUrl}upload/uploadGambit`"
                          :on-success="uploadImgeSuccess"
                          :show-file-list="false"
                          :before-upload="beforeAvatarUpload">
@@ -20,9 +20,18 @@
                     <i class="el-icon-plus"></i>
                     <p>上传照片</p>
                   </div>
-                  <el-image v-else
-                            :src="`http://test.akuhotel.com:8804/static/temp/${fileUrls}`"
-                            style="width: 104px; height: 104px"></el-image>
+
+                  <div v-else>
+                    <!-- editid -->
+                    <el-image v-if="!editBool"
+                              :src="`${$ImgUrl}/temp${fileUrls}`"
+                              style="width: 104px; height: 104px"></el-image>
+                    <el-image v-else
+                              :src="`${$ImgUrl}${fileUrls}`"
+                              style="width: 104px; height: 104px"></el-image>
+
+                  </div>
+
                 </div>
               </el-upload>
             </template>
@@ -176,8 +185,10 @@ export default {
   methods: {
     // 图片上传成功
     uploadImgeSuccess (res, file) {
+      console.log(res)
       this.fileUrls = res.url
       this.topiManagementFrom.ruleForm.fileUrls[0] = res.url
+      this.editBool = false
     },
     // vueForm 验证通过提交服务器
     ruleSuccess (val) {
@@ -234,6 +245,7 @@ export default {
       gambitFindById(resData).then(result => {
         console.log(result)
         this.editId = result.id
+        this.editBool = true
         this.topiManagementFrom.ruleForm.title = result.title
         this.topiManagementFrom.ruleForm.fileUrls[0] = result.imgUrls[0].url
         this.fileUrls = result.imgUrls[0].url
@@ -263,6 +275,8 @@ export default {
       this.drawer_vrisible = false;
       this.editid = 0
       this.$refs.vueForm.reset()
+      this.fileUrls = ''
+
       this.$emit('handleClose', 'Close')
     },
   },

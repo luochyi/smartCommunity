@@ -16,18 +16,18 @@
           </template>
           <template slot='fileUrls'>
             <template>
-              <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+              <el-upload :action="`${$baseUrl}upload/uploadRepair`"
                          :on-success="voteImgeSuccess"
                          :show-file-list="false"
                          :before-upload="beforeAvatarUpload">
                 <div class='sys-image'
                      style='width:104px; height:104px'>
-                  <div v-if="!fileUrls">
+                  <div v-if="!reportRepairFrom.ruleForm.fileUrls">
                     <i class="el-icon-plus"></i>
                     <p>上传照片</p>
                   </div>
                   <el-image v-else
-                            :src="`http://test.akuhotel.com:8804/static/temp/${fileUrls}`"
+                            :src="`${$ImgUrl}temp/${reportRepairFrom.ruleForm.fileUrls}`"
                             style="width: 104px; height: 104px"></el-image>
                 </div>
               </el-upload>
@@ -45,9 +45,9 @@
                        filterable
                        placeholder="请选择">
               <el-option v-for="item in options"
-                         :key="item.id"
-                         :label="item.name"
-                         :value="item.id">
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
               </el-option>
             </el-select>
           </template>
@@ -64,7 +64,7 @@
 </template>
 <script>
 import { reportRepairInsert, reportRepairFindById } from '@/api/butler'
-import { userResident } from '@/api/basic'
+import { userResidentFindAllBySearch } from '@/api/basic'
 
 export default {
   props: {
@@ -190,7 +190,7 @@ export default {
         name: val
       }
       this.loading = true
-      userResident(reeData).then(res => {
+      userResidentFindAllBySearch(reeData).then(res => {
         this.options = res.tableList
         this.loading = false
       })
@@ -201,7 +201,7 @@ export default {
         size: 20
       }
       this.loading = true
-      userResident(reeData).then(res => {
+      userResidentFindAllBySearch(reeData).then(res => {
         this.options = res.tableList
         // let obj = {
         //   id: 0,
@@ -257,7 +257,14 @@ export default {
       }
       reportRepairFindById(resData).then(result => {
         console.log(result)
+        this.reportRepairFrom.ruleForm.type = result.type + ''
+        this.reportRepairFrom.ruleForm.fileUrls = this.$imgUrl + result.imgUrls[0].url
+        this.reportRepairFrom.ruleForm.reportDetail = result.reportDetail
+        this.reportRepairFrom.ruleForm.repairman = result.repairman
+        this.reportRepairFrom.ruleForm.tel = result.tel
+        this.reportRepairFrom.ruleForm.repairDate = result.repairDate
       })
+      console.log(this.reportRepairFrom.ruleForm)
     },
     // 候选人文件上传之前
     beforeAvatarUpload (file) {
@@ -275,6 +282,8 @@ export default {
     drawerClose () {
       this.drawer_vrisible = false;
       this.$refs.vueForm.reset()
+
+      this.reportRepairFrom.ruleForm.fileUrls = []
       this.$emit('handleClose', 'Close')
     },
   },
