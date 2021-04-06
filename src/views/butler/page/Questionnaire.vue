@@ -10,61 +10,58 @@
 }
 </style>
 <template>
-  <div class="main-content">
-    <div class="main-titel">
-      <span>问卷调查</span>
-    </div>
-    <div class="tips">
-      <p>
-        <span class="el-icon-warning-outline"
-              style="margin:0 12px"></span>
-        温馨提示：今日新增保修
-        <span style="color:rgba(251, 71, 2, 1)">13</span>
-        条
-      </p>
-    </div>
-    <div class="content">
-      <div class="content-btn">
-        <el-button class="init-button"
-                   icon="el-icon-plus"
-                   @click="addVrisible=true">新增报修</el-button>
+  <div>
+    <div v-if="!addShow"
+         class="main-content">
+      <div class="main-titel">
+        <span>问卷调查</span>
       </div>
-      <div class="">
-        <VueTable ref="table"
-                  :config='config'
-                  @tableCheck="tableCheck">
-          <template slot="footer">
-            <div class="table-footer">
-              <button>详情</button>
-              <button>编辑</button>
-              <button>派工</button>
-              <button>回访</button>
-              <button>作废</button>
-              <button @click="del(table_row)">删除</button>
-            </div>
-          </template>
-        </VueTable>
+      <div class="tips">
+        <p>
+          <span class="el-icon-warning-outline"
+                style="margin:0 12px"></span>
+          温馨提示：今日新增保修
+          <span style="color:rgba(251, 71, 2, 1)">13</span>
+          条
+        </p>
+      </div>
+      <div class="content">
+        <div class="content-btn">
+          <el-button class="init-button"
+                     icon="el-icon-plus"
+                     @click="addShow=true">新增问卷调查</el-button>
+        </div>
+        <div class="">
+          <VueTable ref="table"
+                    :config='config'
+                    @tableCheck="tableCheck">
+            <template slot="footer">
+              <div class="table-footer">
+                <button>详情</button>
+                <button>编辑</button>
+                <button>派工</button>
+                <button>回访</button>
+                <button>作废</button>
+                <button @click="del(table_row)">删除</button>
+              </div>
+            </template>
+          </VueTable>
+        </div>
       </div>
     </div>
-    <!-- 删除提示弹窗-->
-    <Dialog :dialogVisible='dialog_visible'
-            :dialog_config='dialog_config'
-            @cancel='cancel'
-            @confirm='confirm'>
-    </Dialog>
+    <div v-else>
+      <addEidt @cancel='addEidtCancel'></addEidt>
+    </div>
   </div>
 </template>
 
 <script>
+// import add 
+import addEidt from '@/views/butler/components/Questionnaire/add.vue'
 export default {
   data () {
     return {
-      // 控制dialog显示隐藏
-      dialog_visible: false,
-      dialog_config: {
-        title: '',
-        content: '',
-      },
+      addShow: false,
       // 选中表格数据
       table_row: [],
       config: {
@@ -119,35 +116,34 @@ export default {
     }
 
   },
+  components: {
+    addEidt
+  },
   methods: {
     tableCheck (arr) {
       this.table_row = arr
 
     },
+    addEidtCancel () {
+      this.addShow = false;
+
+    },
     // 删除
     del (data) {
-      console.log(data)
-      if (data.length) {
-        this.dialog_config.title = '删除提示'
-        this.dialog_config.content = '是否确认删除？删除无法撤回！'
-        this.dialog_visible = true
-      } else {
-        this.$message.error('请选中需要删除的表格数据')
-      }
-    },
-    // 监听子组件取消事件
-    cancel (data) {
-      this.dialog_visible = false
-    },
-    // 监听删除确认确认事件
-    confirm (data) {
       let arr = []
       for (let i = 0; i < this.table_row.length; i++) {
         arr.push(this.table_row[i].id)
       }
-      // 调用子组件的方法
-      this.$refs.table.tableDelete(arr)
-      this.dialog_visible = false
+      if (!arr.length) {
+        this.$message.error('请选中需要删除的表格数据')
+        return
+      }
+      this.$confirm('是否删除？删除不可找回', '删除', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(() => {
+        this.$refs.table.tableDelete(arr)
+      }).catch(action => { });
     }
   },
 }

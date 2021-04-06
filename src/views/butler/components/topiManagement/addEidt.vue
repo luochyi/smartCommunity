@@ -144,7 +144,7 @@ export default {
           },
           {
             type: 'textarea',
-            label: '报修详情',
+            label: '话题内容',
             placeholder: '请输入',
             width: '100%',
             rows: 5,

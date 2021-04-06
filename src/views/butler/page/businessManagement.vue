@@ -73,10 +73,10 @@
                            style="width:240px"
                            filterable
                            placeholder="请选择">
-                  <el-option v-for="item in options"
-                             :key="item.id"
-                             :label="item.name"
-                             :value="item.id">
+                  <el-option v-for="(item,index) in options"
+                             :key="index"
+                             :label="item.label"
+                             :value="item.value">
                   </el-option>
                 </el-select>
               </template>
@@ -107,8 +107,6 @@ export default {
       ownersCommitteeTitle: '',
       ownersCommittee_vrisible: false,
       editBool: false,
-      estateOption: [],
-      estateLoading: false,
       editId: 0,
       // 选中表格数据
       table_row: [],
@@ -171,7 +169,8 @@ export default {
             type: 'Input',
             label: '房屋信息',
             placeholder: '请输入',
-            prop: 'roomName'
+            prop: 'roomName',
+
           },
           {
             type: 'Input',
@@ -194,7 +193,6 @@ export default {
           educationId: null,
           estateId: null,
           profession: null,
-
           // sex: null,
           fileUrls: []
         },
@@ -221,14 +219,14 @@ export default {
               { value: 4, label: '博士' }
             ]
           },
-          { type: 'Input', label: '房屋信息', placeholder: '请输入房屋信息', width: '50%', prop: 'estateId' },
+          { type: 'Input', label: '房屋信息', placeholder: '请输入房屋信息', width: '50%', prop: 'estateId', disabled: true },
           {
             type: 'Input', label: '职业', placeholder: '请输入职业', width: '50%', prop: 'profession'
           },
           { type: 'Slot', label: '图片上传', width: '100%', prop: 'fileUrls', slotName: 'fileUrls' },
         ],
         rules: {
-          residentId: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+          residentId: [{ required: true, message: '请输入姓名', trigger: 'change' }],
           positionId: [{ required: true, message: '请选择职位', trigger: 'change' }],
           sex: [{ required: true, message: '请选择性别', trigger: 'change' }],
           age: [{ required: true, message: '请输入工单名称', trigger: 'blur' }],
@@ -250,8 +248,8 @@ export default {
       }
       this.loading = true
       userResidentFindResidentNameBySearch(reeData).then(res => {
-        this.estateOption = res.tableList
-        this.estateLoading = false
+        this.options = res.tableList
+        this.loading = false
       })
     },
     focus () {
