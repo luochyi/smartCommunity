@@ -37,12 +37,11 @@
                     @tableCheck="tableCheck">
             <template slot="footer">
               <div class="table-footer">
-                <button>详情</button>
+                <button>预览</button>
                 <button @click='eidt'>编辑</button>
-                <button>派工</button>
-                <button>回访</button>
-                <button>作废</button>
+                <button>分析报表</button>
                 <button @click="del(table_row)">删除</button>
+                <!-- <button>打印</button> -->
               </div>
             </template>
           </VueTable>

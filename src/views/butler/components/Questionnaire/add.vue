@@ -1,7 +1,6 @@
 
 <template>
-  <div class="main-content"
-       v-if="show">
+  <div class="main-content">
     <div class="main-titel">
       <span>新增问卷调查</span>
     </div>
@@ -174,10 +173,17 @@
                          :on-success="handleAvatarSuccess"
                          :before-upload="beforeAvatarUpload">
 
-                <el-image v-if="imageUrl"
-                          :src="`${$ImgUrl}/temp${imageUrl}`"
-                          fit="cover"
-                          class="upload-box"></el-image>
+                <div v-if="imageUrl">
+                  <el-image v-if="editId"
+                            :src="`${$ImgUrl}/${imageUrl}`"
+                            fit="cover"
+                            class="upload-box"></el-image>
+                  <el-image v-else
+                            :src="`${$ImgUrl}/temp${imageUrl}`"
+                            fit="cover"
+                            class="upload-box"></el-image>
+                </div>
+                <!-- imgBool -->
                 <div class="upload-box"
                      v-else>
                   <div>
@@ -234,7 +240,7 @@ import { questionnaireInsert, questionnaireUpdate, questionnaireFindById } from 
 export default {
   data () {
     return {
-      show: true,
+
       // 问卷标题
       title: null,
       input: null,
@@ -249,6 +255,7 @@ export default {
       ],//题目选项列表
       editBool: false,
       editIndex: 0,
+      editId: 0,
       topic: null, //题目
       // 答题类型（1.单选，2.多选，3.下拉单选，4.判断题，5.开放题
       type: 0,
@@ -297,17 +304,30 @@ export default {
         endDate: this.endDate,
         sysQuestionnaireTopicList: this.subjectList,
         files: [this.imageUrl],
+        isRelease: 1
       }
       console.log(resData)
-      questionnaireInsert(resData).then(res => {
-        if (res.status) {
+      if (!this.editId) {
+        questionnaireInsert(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.cancel()
+          }
+        })
+      } else {
+        resData.id = this.editId
+        questionnaireUpdate(resData).then(res => {
           this.$message({
             message: res.message,
             type: 'success'
           })
           this.cancel()
-        }
-      })
+        })
+      }
+
     },
     edit (id) {
       questionnaireFindById({ id: id }).then(res => {
@@ -316,21 +336,32 @@ export default {
         this.description = res.sysQuestionnaire.description
         this.startDate = res.sysQuestionnaire.beginDate
         this.endDate = res.sysQuestionnaire.endDate
-        this.subjectList = res.sysQuestionnaire.voFindByIdTopicList
-        this.imageUrl = ''
-        //  title: this.title,
-        // description: this.description,
-        // answerType: 1,
-        // beginDate: this.startDate,
-        // endDate: this.endDate,
-        // sysQuestionnaireTopicList: this.subjectList,
-        // file: [this.imageUrl],
+        res.sysQuestionnaire.voFindByIdTopicList.map((item, index) => {
+          this.subjectList.push({
+            type: item.type,
+            topic: item.topic,
+            sysQuestionnaireChoiceList: item.voFindByIdChoiceList
+          })
+        })
+        if (res.sysQuestionnaire.voResourcesImgList.length) {
+          this.imageUrl = res.sysQuestionnaire.voResourcesImgList[0].url
+        } else {
+          this.imageUrl = ''
+
+        }
+
+        this.editId = id
       })
-      // questionnaireInsert(id).then(res => {
-      //   console.log(res)
-      // })
     },
     cancel () {
+      this.title = null
+      this.description = null
+      this.startDate = null
+      this.endDate = null
+      this.subjectList = []
+      this.cardShow = false
+      this.imageUrl = ''
+      this.editId = 0
       // 取消
       this.$emit('cancel')
     },
