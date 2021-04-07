@@ -11,7 +11,7 @@
 </style>
 <template>
   <div>
-    <div v-if="!addShow"
+    <div v-show="!addShow"
          class="main-content">
       <div class="main-titel">
         <span>问卷调查</span>
@@ -38,7 +38,7 @@
             <template slot="footer">
               <div class="table-footer">
                 <button>详情</button>
-                <button>编辑</button>
+                <button @click='eidt'>编辑</button>
                 <button>派工</button>
                 <button>回访</button>
                 <button>作废</button>
@@ -49,8 +49,9 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <addEidt @cancel='addEidtCancel'></addEidt>
+    <div v-show="addShow">
+      <addEidt @cancel='addEidtCancel'
+               ref="addEidt"></addEidt>
     </div>
   </div>
 </template>
@@ -58,6 +59,7 @@
 <script>
 // import add 
 import addEidt from '@/views/butler/components/Questionnaire/add.vue'
+import { questionnaireInsert, questionnaireFindById } from '@/api/butler.js'
 export default {
   data () {
     return {
@@ -112,9 +114,7 @@ export default {
           size: 10
         },
       },
-
     }
-
   },
   components: {
     addEidt
@@ -122,11 +122,18 @@ export default {
   methods: {
     tableCheck (arr) {
       this.table_row = arr
+    },
+    eidt () {
+      this.$refs.addEidt.edit(this.table_row[0].id)
+      this.addShow = true;
 
+      // console.log( ))
+      // questionnaireFindById({ id: this.table_row[0].id }).then(result => {
+      //   console.log(result)
+      // })
     },
     addEidtCancel () {
       this.addShow = false;
-
     },
     // 删除
     del (data) {

@@ -27,7 +27,7 @@
                     <p>上传照片</p>
                   </div>
                   <el-image v-else
-                            :src="`${$ImgUrl}temp/${reportRepairFrom.ruleForm.fileUrls}`"
+                            :src="`${$ImgUrl}/temp/${reportRepairFrom.ruleForm.fileUrls}`"
                             style="width: 104px; height: 104px"></el-image>
                 </div>
               </el-upload>

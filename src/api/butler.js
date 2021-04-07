@@ -215,6 +215,30 @@ export function reportRepairFindById(data) {
         params: data
     })
 }
+// 问卷调查：添加问卷调查表信息【照片未测】
+export function questionnaireInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/questionnaire/insert',
+        data: data
+    })
+}
+//问卷调查：根据问卷调查主键ID查询问卷调查信息
+export function questionnaireFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/questionnaire/findById',
+        params: data
+    })
+}
+// 问卷调查：修改问卷
+export function questionnaireUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/questionnaire/update',
+        data: data
+    })
+}
 // 社区话题管理：添加话题信息(物业后台添加)
 export function gambitInsert(data) {
     return service.request({
