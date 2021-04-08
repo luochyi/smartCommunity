@@ -22,12 +22,12 @@
                          :before-upload="beforeAvatarUpload">
                 <div class='sys-image'
                      style='width:104px; height:104px'>
-                  <div v-if="!reportRepairFrom.ruleForm.fileUrls">
+                  <div v-if="!fileUrls">
                     <i class="el-icon-plus"></i>
                     <p>上传照片</p>
                   </div>
                   <el-image v-else
-                            :src="`${$ImgUrl}/temp/${reportRepairFrom.ruleForm.fileUrls}`"
+                            :src="`${$ImgUrl}/temp${fileUrls}`"
                             style="width: 104px; height: 104px"></el-image>
                 </div>
               </el-upload>
@@ -221,7 +221,7 @@ export default {
     // 图片上传成功
     voteImgeSuccess (res, file) {
       this.fileUrls = res.url
-
+      // this.$set(this.reportRepairFrom.ruleForm.fileUrls)
       this.reportRepairFrom.ruleForm.fileUrls[0] = res.url
     },
     // vueForm 验证通过提交服务器
@@ -259,6 +259,8 @@ export default {
         console.log(result)
         this.reportRepairFrom.ruleForm.type = result.type + ''
         this.reportRepairFrom.ruleForm.fileUrls = this.$imgUrl + result.imgUrls[0].url
+        this.fileUrls = this.$imgUrl + result.imgUrls[0].url
+
         this.reportRepairFrom.ruleForm.reportDetail = result.reportDetail
         this.reportRepairFrom.ruleForm.repairman = result.repairman
         this.reportRepairFrom.ruleForm.tel = result.tel

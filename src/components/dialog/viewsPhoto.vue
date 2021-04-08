@@ -7,18 +7,22 @@
                width="58%">
       <div class="imglist">
         <div class="imgitem">
-          <img :src="imgstart"
-               alt="" />
+          <!-- <img :src="imgstart"
+               alt="" /> -->
+          <el-image :src="imgstart"
+                    style="width: 100%; height: 100%"></el-image>
         </div>
         <div class="imgfooter">
           <span>{{ number }}/{{ imgtotal }}</span>
         </div>
         <div class="imgleft"
+             v-if="imglist.length > 1"
              @click="imgleft()">
           <img :src="leftImg"
                alt="" />
         </div>
         <div class="imgright"
+             v-if="imglist.length > 1"
              @click="imgright()">
           <img :src="rightImg"
                alt="" />
@@ -35,20 +39,14 @@ export default {
       type: Boolean,
       default: false
     },
-    imglist: {
+    goodsImgsList: {
       type: Array,
-      default: () => [
-        'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1906469856,4113625838&fm=26&gp=0.jpg',
-        'https://dss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3892521478,1695688217&fm=26&gp=0.jpg',
-        'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2534506313,1688529724&fm=26&gp=0.jpg',
-        'https://dss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=151472226,3497652000&fm=26&gp=0.jpg',
-        'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1689053532,4230915864&fm=26&gp=0.jpg',
-        'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2534506313,1688529724&fm=26&gp=0.jpg'
-      ],
+      default: () => [],
     }
   },
   data () {
     return {
+      imglist: [],
       leftImg: require('../../../src/assets/images/leftImg.png'),
       rightImg: require('../../../src/assets/images/rightImg.png'),
       dialogVisible: false,
@@ -87,12 +85,31 @@ export default {
     close () {
       // console.log('关闭触发' + this.dialogVisible)
       this.$emit('closeViews')
-    }
+    },
+    getImageList (newValue) {
+      let list = []
+      let url = ''
+      newValue.map(item => {
+        url = this.$ImgUrl + item.url
+        list.push(url)
+        url = ''
+      })
+      this.imglist = list
+      console.log(list)
+    },
   },
   watch: {
     isVisible: {
       handler (newValue) {
         this.dialogVisible = this.isVisible
+      },
+      immediate: true
+    },
+    goodsImgsList: {
+      handler (newValue) {
+        if (newValue.length) {
+          this.getImageList(newValue)
+        }
       },
       immediate: true
     }
@@ -101,7 +118,7 @@ export default {
 </script>
 
 <style scoped>
-.imgbtn {
+/* .imgbtn {
     cursor: pointer;
     width: 100px;
     height: 40px;
@@ -113,16 +130,18 @@ export default {
 
 .imgbtn:hover {
     opacity: 1;
-}
+} */
 .imgitem {
+    width: 100%;
+    height: 665px;
     font-style: 0;
 }
-.imgitem img {
+/* .imgitem img {
     width: 100%;
     height: 100%;
     font-size: 0;
     z-index: 10;
-}
+} */
 .imglist {
     position: relative;
 }

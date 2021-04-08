@@ -38,8 +38,8 @@
             <template slot="footer">
               <div class="table-footer">
                 <button>预览</button>
-                <button @click='eidt'>编辑</button>
-                <button>分析报表</button>
+                <button @click='eidt(table_row)'>编辑</button>
+                <button @click='reReportAnalysis(table_row)'>分析报表</button>
                 <button @click="del(table_row)">删除</button>
                 <!-- <button>打印</button> -->
               </div>
@@ -48,9 +48,15 @@
         </div>
       </div>
     </div>
+    <Report drawerTitle="分析报表"
+            ref="Report"
+            @handleClose="ReportHandleClose"
+            :drawerVrisible='Report_vrisible'></Report>
     <div v-show="addShow">
       <addEidt @cancel='addEidtCancel'
+               @submitSuccess='addEidtSubmitSuccess'
                ref="addEidt"></addEidt>
+
     </div>
   </div>
 </template>
@@ -58,11 +64,15 @@
 <script>
 // import add 
 import addEidt from '@/views/butler/components/Questionnaire/add.vue'
-import { questionnaireInsert, questionnaireFindById } from '@/api/butler.js'
+import Report from '@/views/butler/components/Questionnaire/Report'
+
+import { questionnaireReportAnalysis } from '@/api/butler.js'
 export default {
   data () {
     return {
       addShow: false,
+      Report_vrisible: false,
+      ReportDrawerTitle: '',
       // 选中表格数据
       table_row: [],
       config: {
@@ -116,23 +126,51 @@ export default {
     }
   },
   components: {
-    addEidt
+    addEidt,
+    Report
   },
   methods: {
     tableCheck (arr) {
       this.table_row = arr
     },
-    eidt () {
-      this.$refs.addEidt.edit(this.table_row[0].id)
-      this.addShow = true;
+    eidt (data) {
+      if (data.length > 1) {
+        this.$message.error('只能查看一条数据的详情');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
 
-      // console.log( ))
-      // questionnaireFindById({ id: this.table_row[0].id }).then(result => {
-      //   console.log(result)
-      // })
+      this.$refs.addEidt.edit(data[0].id)
+      this.addShow = true;
+    },
+    reReportAnalysis (data) {
+      if (data.length > 1) {
+        this.$message.error('只能查看一条数据');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+
+      this.$refs.Report.getData(data[0].id)
+      this.Report_vrisible = true
+    },
+    ReportHandleClose () {
+      this.Report_vrisible = false
     },
     addEidtCancel () {
       this.addShow = false;
+    },
+    addEidtSubmitSuccess () {
+      this.getData()
+    },
+    getData () {
+      // 调用子组件的方法
+      this.$refs.table.loadData()
     },
     // 删除
     del (data) {

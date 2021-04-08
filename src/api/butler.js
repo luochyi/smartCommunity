@@ -239,6 +239,15 @@ export function questionnaireUpdate(data) {
         data: data
     })
 }
+//问卷调查：问卷调查报表分析
+export function questionnaireReportAnalysis(data) {
+  return service.request({
+      method: 'GET',
+      url: '/questionnaire/reportAnalysis',
+      params: data
+  })
+}
+
 // 社区话题管理：添加话题信息(物业后台添加)
 export function gambitInsert(data) {
     return service.request({

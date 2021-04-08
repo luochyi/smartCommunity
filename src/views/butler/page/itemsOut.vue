@@ -66,6 +66,7 @@
       </div>
     </div>
     <views-photo :isVisible="photos_Visible"
+                 :goodsImgsList="goodsImgsList"
                  @closeViews="getclose"></views-photo>
   </div>
 </template>
@@ -75,6 +76,7 @@ import { userArticleOutCountArticleOutNow, userArticleOutCountPerformed, userArt
 export default {
   data () {
     return {
+
       photos_Visible: false,
       goodsImgsList: [],
       // 选中表格数据

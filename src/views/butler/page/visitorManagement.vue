@@ -194,7 +194,7 @@ export default {
           size: 10
         },
       },
-      // 添加抽屉数据
+      // 修改抽屉数据
       reviseForm: {
         ruleForm: {
           roomName: null,
@@ -374,14 +374,19 @@ export default {
           id: data[0].id
         }
         visitorsFindById(resData).then(result => {
-
-
           if (result) {
-            this.reviseForm.ruleForm = result
+            console.log(result)
+            this.reviseForm.ruleForm.name = result.name
+            this.reviseForm.ruleForm.sex = result.sex
+            this.reviseForm.ruleForm.isDrive = result.isDrive
+            this.reviseForm.ruleForm.carNum = result.carNum
+            this.reviseForm.ruleForm.expectedVisitDate = result.expectedVisitDate
+            this.reviseForm.ruleForm.visitDate = result.visitDate
+            this.reviseForm.ruleForm.departureTime = result.departureTime
+            this.reviseForm.ruleForm.effectiveTime = result.effectiveTime
+            this.reviseForm.ruleForm.visitorStatus = result.visitorStatus
             this.edit_vrisible = true
-
           }
-          console.log(result)
         })
       } else {
         this.$message({
@@ -393,7 +398,6 @@ export default {
     drawerClose () {
       this.edit_vrisible = false
       this.recordVrisible = false;
-
     },
     // 作废
     toVoid (data) {

@@ -49,7 +49,7 @@ const requestUrl = {
     ownersCommitteeList: '/ownersCommittee/list',
     ownersCommitteeListDelete: '/ownersCommittee/delete',
     voiceHousekeeperList: '/voiceHousekeeper/list',
-
+// /vote/listDetailCandidate
     // /chargesTemplateDetail/list
     chargesTemplateDetailList: '/chargesTemplateDetail/list',
     chargesTemplateDetailListDelete: '/chargesTemplateDetail/list',

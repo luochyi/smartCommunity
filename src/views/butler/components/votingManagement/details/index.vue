@@ -87,11 +87,15 @@ export default {
         checkbox: false,
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '选项名', prop: 'name', width: 'auto' },
-          { label: '票数', prop: 'total', width: 'auto' },
-          { label: '操作', type: 'slot', prop: 'handle', slotName: 'handle', width: 'auto' },
+          { label: '住户房号', prop: 'name', width: 'auto' },
+          { label: '住户姓名', prop: 'total', width: 'auto' },
+          { label: '手机号', prop: 'tel', width: 'auto' },
+          { label: '投票时间', prop: 'time', width: 'auto' },
+
+
+          // { label: '手机号', type: 'slot', prop: 'handle', slotName: 'handle', width: 'auto' },
         ],
-        url: 'voteListVotePersonnel',
+        url: 'voteListDetailList',
         table_data: [],
         search_item: [],
         data: {

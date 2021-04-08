@@ -314,6 +314,7 @@ export default {
               message: res.message,
               type: 'success'
             })
+            this.$emit('submitSuccess')
             this.cancel()
           }
         })
@@ -324,10 +325,10 @@ export default {
             message: res.message,
             type: 'success'
           })
+          this.$emit('submitSuccess')
           this.cancel()
         })
       }
-
     },
     edit (id) {
       questionnaireFindById({ id: id }).then(res => {
