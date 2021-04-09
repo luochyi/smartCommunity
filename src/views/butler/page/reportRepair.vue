@@ -83,7 +83,6 @@
 
 <script>
 import addEidt from '@/views/butler/components/reportRepair/addEidt'
-
 export default {
   data () {
     return {
@@ -159,7 +158,6 @@ export default {
       // tab默认绑定
       activeName: 0,
     }
-
   },
   components: {
     addEidt

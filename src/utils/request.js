@@ -8,6 +8,7 @@ const service = axios.create({
     withCredentials: false,
     timeout: 5000 // 超时
 })
+
 // 添加请求拦截器
 service.interceptors.request.use(
     function(config) {

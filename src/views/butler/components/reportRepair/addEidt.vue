@@ -63,7 +63,7 @@
   </div>
 </template>
 <script>
-import { reportRepairInsert, reportRepairFindById } from '@/api/butler'
+import { reportRepairInsert, reportRepairFindById, reportRepairUpdate } from '@/api/butler'
 import { userResidentFindAllBySearch } from '@/api/basic'
 
 export default {
@@ -83,7 +83,7 @@ export default {
       loading: false,
       drawer_vrisible: false,
       editBool: false, //是否为编辑状态
-      editid: 0,
+      editId: 0,
       // 保修上传图片路径显示
       fileUrls: '',
       reportRepairFrom: {
@@ -180,8 +180,6 @@ export default {
       },
     }
   },
-  computed: {
-  },
   methods: {
     remoteMethod (val) {
       let reeData = {
@@ -203,14 +201,6 @@ export default {
       this.loading = true
       userResidentFindAllBySearch(reeData).then(res => {
         this.options = res.tableList
-        // let obj = {
-        //   id: 0,
-        //   idNumber: "",
-        //   idType: '',
-        //   name: "（空）",
-        //   tel: "",
-        // }
-        // this.options.unshift(obj)
         this.loading = false
         console.log(this.options)
       })
@@ -228,22 +218,41 @@ export default {
     ruleSuccess (val) {
       let resData = {
         type: parseInt(this.reportRepairFrom.ruleForm.type),
-        fileUrls: this.reportRepairFrom.ruleForm.fileUrls,
+        fileUrls: [this.fileUrls],
         reportDetail: this.reportRepairFrom.ruleForm.reportDetail,
         repairman: this.reportRepairFrom.ruleForm.repairman,
         tel: this.reportRepairFrom.ruleForm.tel,
         repairDate: this.reportRepairFrom.ruleForm.repairDate,
+        froms: 1
       }
-      reportRepairInsert(resData).then(res => {
-        if (res.status) {
-          this.$message({
-            message: res.message,
-            type: 'success'
-          })
-          this.$emit('submitSuccess')
-          this.drawerClose()
-        }
-      })
+      // 添加
+      if (!this.editId) {
+        reportRepairInsert(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$emit('submitSuccess')
+            this.drawerClose()
+          }
+        })
+      } else {
+        resData.id = this.editId
+        reportRepairUpdate(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$emit('submitSuccess')
+            this.drawerClose()
+          }
+        })
+      }
+
+      // 修改
+
 
     },
     // 提交调用子组件校验方法
@@ -252,21 +261,22 @@ export default {
     },
     // 编辑
     edit (id) {
+
       let resData = {
         id: id,
       }
+
       reportRepairFindById(resData).then(result => {
         console.log(result)
+        this.editId = result.id
         this.reportRepairFrom.ruleForm.type = result.type + ''
         this.reportRepairFrom.ruleForm.fileUrls = this.$imgUrl + result.imgUrls[0].url
-        this.fileUrls = this.$imgUrl + result.imgUrls[0].url
-
+        this.fileUrls = result.imgUrls[0].url
         this.reportRepairFrom.ruleForm.reportDetail = result.reportDetail
         this.reportRepairFrom.ruleForm.repairman = result.repairman
         this.reportRepairFrom.ruleForm.tel = result.tel
         this.reportRepairFrom.ruleForm.repairDate = result.repairDate
       })
-      console.log(this.reportRepairFrom.ruleForm)
     },
     // 候选人文件上传之前
     beforeAvatarUpload (file) {
@@ -284,7 +294,7 @@ export default {
     drawerClose () {
       this.drawer_vrisible = false;
       this.$refs.vueForm.reset()
-
+      this.editId = 0
       this.reportRepairFrom.ruleForm.fileUrls = []
       this.$emit('handleClose', 'Close')
     },

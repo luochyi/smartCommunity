@@ -207,6 +207,14 @@ export function reportRepairInsert(data) {
         data: data
     })
 }
+//报事报修：修改报事报修信息
+export function reportRepairUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/reportRepair/update',
+        data: data
+    })
+}
 // 报事报修：根据报事报修主键id 查询报事报修信息
 export function reportRepairFindById(data) {
     return service.request({
@@ -241,11 +249,11 @@ export function questionnaireUpdate(data) {
 }
 //问卷调查：问卷调查报表分析
 export function questionnaireReportAnalysis(data) {
-  return service.request({
-      method: 'GET',
-      url: '/questionnaire/reportAnalysis',
-      params: data
-  })
+    return service.request({
+        method: 'GET',
+        url: '/questionnaire/reportAnalysis',
+        params: data
+    })
 }
 
 // 社区话题管理：添加话题信息(物业后台添加)

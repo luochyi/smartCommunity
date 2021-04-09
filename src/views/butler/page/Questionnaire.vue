@@ -168,7 +168,7 @@ export default {
     addEidtSubmitSuccess () {
       this.getData()
     },
-    getData () {
+    getData () { 
       // 调用子组件的方法
       this.$refs.table.loadData()
     },
