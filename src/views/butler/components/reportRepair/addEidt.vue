@@ -10,9 +10,9 @@
                  :formObj='reportRepairFrom'>
           <template slot='type'>
             <el-radio v-model="reportRepairFrom.ruleForm.type"
-                      label="1">部分公开</el-radio>
+                      label="1">户外</el-radio>
             <el-radio v-model="reportRepairFrom.ruleForm.type"
-                      label="2">不公开</el-radio>
+                      label="2">户内</el-radio>
           </template>
           <template slot='fileUrls'>
             <template>
@@ -26,9 +26,16 @@
                     <i class="el-icon-plus"></i>
                     <p>上传照片</p>
                   </div>
-                  <el-image v-else
-                            :src="`${$ImgUrl}/temp${fileUrls}`"
-                            style="width: 104px; height: 104px"></el-image>
+                  <!-- editBool -->
+                  <div v-else>
+                    <el-image v-if="!editBool"
+                              :src="`${$ImgUrl}/temp${fileUrls}`"
+                              style="width: 104px; height: 104px"></el-image>
+                    <el-image v-else
+                              :src="`${$ImgUrl}${fileUrls}`"
+                              style="width: 104px; height: 104px"></el-image>
+                  </div>
+
                 </div>
               </el-upload>
             </template>
@@ -211,6 +218,7 @@ export default {
     // 图片上传成功
     voteImgeSuccess (res, file) {
       this.fileUrls = res.url
+      this.editBool = false
       // this.$set(this.reportRepairFrom.ruleForm.fileUrls)
       this.reportRepairFrom.ruleForm.fileUrls[0] = res.url
     },
@@ -268,9 +276,10 @@ export default {
 
       reportRepairFindById(resData).then(result => {
         console.log(result)
+        this.editBool = true
         this.editId = result.id
         this.reportRepairFrom.ruleForm.type = result.type + ''
-        this.reportRepairFrom.ruleForm.fileUrls = this.$imgUrl + result.imgUrls[0].url
+        this.reportRepairFrom.ruleForm.fileUrls = result.imgUrls[0].url
         this.fileUrls = result.imgUrls[0].url
         this.reportRepairFrom.ruleForm.reportDetail = result.reportDetail
         this.reportRepairFrom.ruleForm.repairman = result.repairman

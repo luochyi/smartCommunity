@@ -191,6 +191,16 @@ export function visitorsFindById(data) {
         params: data
     })
 }
+
+// 报事报修：查询报修详情(报事报修派单界面的报修详情内容，主界面报修详情 请查询 【工单管理：报修工单详情】)
+export function reportRepairFindRepairDetail(data) {
+    return service.request({
+        method: 'GET',
+        url: '/reportRepair/findRepairDetail',
+        params: data
+    })
+}
+
 // 查询物品照片
 export function userArticleOutFindGoodsImgById(data) {
     return service.request({
@@ -207,12 +217,54 @@ export function reportRepairInsert(data) {
         data: data
     })
 }
+// 工单管理：派工
+export function dispatchDispatch(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dispatch/dispatch',
+        data: data
+    })
+}
+// /dispatch/findSysUserLikeActualName
+
 //报事报修：修改报事报修信息
 export function reportRepairUpdate(data) {
     return service.request({
         method: 'POST',
         url: '/reportRepair/update',
         data: data
+    })
+}
+// 工单管理：报修工单详情
+export function repairWorkOrderDetail(data) {
+    return service.request({
+        method: 'GET',
+        url: '/dispatch/repairWorkOrderDetail',
+        params: data
+    })
+}
+//  工单管理：回访
+export function dispatchRevisit(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dispatch/revisit',
+        data: data
+    })
+}
+//  工单管理：作废
+export function dispatchCancel(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dispatch/cancel',
+        data: data
+    })
+}
+//工单管理：根据真实名字模糊查询用户信息（需要有派工权限）
+export function dispatchFindSysUserLikeActualName(data) {
+    return service.request({
+        method: 'GET',
+        url: '/workOrderTypeDetail/list',
+        params: data
     })
 }
 // 报事报修：根据报事报修主键id 查询报事报修信息

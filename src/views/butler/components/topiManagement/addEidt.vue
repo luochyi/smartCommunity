@@ -22,7 +22,6 @@
                   </div>
 
                   <div v-else>
-                    <!-- editid -->
                     <el-image v-if="!editBool"
                               :src="`${$ImgUrl}/temp${fileUrls}`"
                               style="width: 104px; height: 104px"></el-image>
