@@ -263,7 +263,7 @@ export function dispatchCancel(data) {
 export function dispatchFindSysUserLikeActualName(data) {
     return service.request({
         method: 'GET',
-        url: '/workOrderTypeDetail/list',
+        url: '/dispatch/findSysUserLikeActualName',
         params: data
     })
 }
@@ -306,6 +306,14 @@ export function questionnaireReportAnalysis(data) {
         url: '/questionnaire/reportAnalysis',
         params: data
     })
+}
+// 物品管理：根据物品主键id查询物品信息
+export function articleFindById(data) {
+  return service.request({
+      method: 'GET',
+      url: '/article/findById',
+      params: data
+  })
 }
 
 // 社区话题管理：添加话题信息(物业后台添加)

@@ -270,6 +270,7 @@ export default {
     // 编辑
     edit (id) {
 
+      this.addEidt_vrisible = true;
       let resData = {
         id: id,
       }

@@ -35,8 +35,8 @@
             <el-radio v-model="reportRepairFrom.ruleForm.type"
                       label="2">户内</el-radio>
           </template>
-          <template v-slot:repairman>
-            <el-select v-model="reportRepairFrom.ruleForm.repairman"
+          <template v-slot:operator>
+            <el-select v-model="reportRepairFrom.ruleForm.operator"
                        :remote-method='remoteMethod'
                        @change='change'
                        @focus='sefocus'
@@ -64,7 +64,7 @@
   </div>
 </template>
 <script>
-import { reportRepairFindRepairDetail, dispatchDispatch, workOrderTimeLimitList, workOrderTypeList, dispatchFindSysUserLikeActualName } from '@/api/butler'
+import { reportRepairFindRepairDetail, dispatchDispatch, workOrderTimeLimitList, workOrderTypeList, workOrderType, dispatchFindSysUserLikeActualName } from '@/api/butler'
 import { userResidentFindAllBySearch } from '@/api/basic'
 
 export default {
@@ -114,6 +114,8 @@ export default {
       editId: 0,
       // 保修上传图片路径显示
       fileUrls: '',
+      workOrderTypeId: null,
+      dispatchListId: null,
       DispatchFrom: {
         ruleForm: {
           type: null,
@@ -185,12 +187,13 @@ export default {
       },
       reportRepairFrom: {
         ruleForm: {
-          workOrderType: '报修业务',
-          reportDetail: null,
-          repairName: null,
-          tel: null,
-          repairDate: null,
-          repairFrom: 1,
+          workOrderTypeText: null,
+          workOrderTimeLimit: null,
+          workOrderTypeDetail: null,
+          type: null,
+          remake: null,
+          dispatchDate: null,
+          operator: null,
         },
         form_item: [
           {
@@ -198,7 +201,7 @@ export default {
             label: '工单大类',
             placeholder: '请输入',
             width: '50%',
-            prop: 'workOrderType',
+            prop: 'workOrderTypeText',
           },
           {
             type: 'Select',
@@ -228,11 +231,12 @@ export default {
             prop: 'type'
           },
           {
-            type: 'Input',
+            type: 'Slot',
             label: '指派给',
             placeholder: '请输入',
             width: '50%',
-            prop: 'operator'
+            prop: 'operator',
+            slotName: 'operator'
             // options
           },
           {
@@ -250,36 +254,69 @@ export default {
             rows: 5,
             prop: 'remake'
           },
-        ]
+
+        ],
+        rules: {
+          workOrderTypeText: [{ required: true, message: '', trigger: 'blur' }],
+          workOrderTypeDetail: [{ required: true, message: '请选择工单子类', trigger: 'change' }],
+          workOrderTimeLimit: [{ required: true, message: '请选择工单时限', trigger: 'change' }],
+          operator: [{ required: true, message: '请选择指派给', trigger: 'change' }],
+          type: [{ required: true, message: '请选择派工类型', trigger: 'change' }],
+          remake: [{ required: true, message: '请输入派工备注', trigger: 'blur' }],
+          dispatchDate: [{ required: true, message: '请选择预约时间', trigger: 'change' }],
+        }
       },
     }
   },
-  mounted () {
+  created () {
+    console.log(this.reportRepairFrom.ruleForm.workOrderTimeLimit)
+    console.log(this.reportRepairFrom.ruleForm.workOrderTypeDetail)
 
+    let workOrderText = null
+    let workOrderTypeId = null
+    workOrderType().then(res => {
+      this.reportRepairFrom.ruleForm.workOrderTypeText = res[0].name
+      this.workOrderTypeId = res[0].id
+
+    })
+  },
+  mounted () {
+    dispatchFindSysUserLikeActualName({
+      actualName: ''
+    }).then(res => {
+      console.log(res)
+      this.options = res.options
+    })
   },
   methods: {
     remoteMethod (val) {
-      let reeData = {
-        pageNum: 1,
-        size: 20,
-        name: val
-      }
       this.loading = true
-      dispatchFindSysUserLikeActualName(reeData).then(res => {
-        this.options = res.tableList
+
+      dispatchFindSysUserLikeActualName({
+        actualName: val
+      }).then(res => {
         this.loading = false
+        this.options = res.data.map(item => {
+          return {
+            value: item.id,
+            label: item.actualName
+          }
+        })
       })
     },
     sefocus () {
-      let reeData = {
-        pageNum: 1,
-        size: 20
-      }
       this.loading = true
-      dispatchFindSysUserLikeActualName(reeData).then(res => {
-        this.options = res.tableList
+      dispatchFindSysUserLikeActualName({
+        actualName: ''
+      }).then(res => {
+        console.log(res)
         this.loading = false
-        console.log(this.options)
+        this.options = res.data.map(item => {
+          return {
+            value: item.id,
+            label: item.actualName
+          }
+        })
       })
     },
     change (value) {
@@ -287,47 +324,41 @@ export default {
     },
     // vueForm 验证通过提交服务器
     ruleSuccess (val) {
+      let resData = {
+        dispatchListId: this.dispatchListId,
+        workOrderType: this.workOrderTypeId,
+        workOrderTypeDetail: this.reportRepairFrom.ruleForm.workOrderTypeDetail,
+        workOrderTimeLimit: this.reportRepairFrom.ruleForm.workOrderTimeLimit,
+        type: this.reportRepairFrom.ruleForm.type,
+        dispatchDate: this.reportRepairFrom.ruleForm.dispatchDate,
+        operator:this.reportRepairFrom.ruleForm.operator,
+        remake: this.reportRepairFrom.ruleForm.remake,
+      }
+
+      dispatchDispatch(resData).then(res => {
+        console.log(res)
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.$emit('submitSuccess')
+          this.drawerClose()
+        }
+      })
     },
     // 提交调用子组件校验方法
     onSubmit () {
       this.$refs.vueForm.submitForm()
-      /***
-       * 
-       *  dispatchListId  	  派工单id	是	[int]		
-        2	workOrderType	      工单类型（取自工单类型管理）	是	[int]		
-        3	workOrderTypeDetail	        工单类型明细（取自工单类型明细管理）	是	[int]		
-        4	workOrderTimeLimit	        工单时限（取自工单时限管理）	是	[int]		
-        5	type            	    派工类型（1.无偿服务，2.有偿服务）	是	[int]		
-        6	dispatchDate	          派工时间	是	[datetime]		
-        7	operator	          操作人【装修人】（物业表）	是	[int]		
-        8	remake	            派工备注	是	[string]		
-       * **/
-      let resData = {
-        dispatchListId: 33,
-        workOrderType: 1,
-        workOrderTypeDetail: 1,
-        workOrderTimeLimit: 1,
-        type: 1,
-        dispatchDate: this.DispatchFrom.ruleForm.repairDate,
-        operator: 10,
-        remake: '哈哈哈哈',
-      }
-      dispatchDispatch(resData).then(res => {
-        console.log(res)
-      })
     },
     // 详情
     details (id) {
       let resData = {
         id: id,
       }
-
       reportRepairFindRepairDetail(resData).then(result => {
-        console.log(result)
-        // this.DispatchFrom
+        this.dispatchListId = id
         this.DispatchFrom.ruleForm.type = result.type
-        // this.DispatchFrom.ruleForm.fileUrls = result.imgUrls[0].url
-        // this.fileUrls = result.imgUrls[0].url
         this.DispatchFrom.ruleForm.dispatchName = result.dispatchName
         this.DispatchFrom.ruleForm.reportDetail = result.reportDetail
         this.DispatchFrom.ruleForm.repairName = result.repairName
@@ -335,12 +366,9 @@ export default {
         this.DispatchFrom.ruleForm.repairDate = result.repairDate
       })
     },
-
     drawerClose () {
       this.drawer_vrisible = false;
       this.$refs.vueForm.reset()
-      this.editId = 0
-      this.reportRepairFrom.ruleForm.fileUrls = []
       this.$emit('handleClose', 'Close')
     },
   },

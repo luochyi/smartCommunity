@@ -32,6 +32,16 @@
             </span>
           </template>
         </el-table-column>
+        <!--回调-->
+        <el-table-column v-else-if="item.type === 'function'"
+                         :key="item.prop"
+                         :prop="item.prop"
+                         :label="item.label"
+                         :width="item.width">
+          <template slot-scope="scope">
+            <span v-html="item.callback && item.callback(scope.row, item.prop)"></span>
+          </template>
+        </el-table-column>
         <!-- 审批结果 -->
         <el-table-column v-else-if="item.type === 'txtbtn'"
                          :key="item.prop"

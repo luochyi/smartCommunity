@@ -34,38 +34,77 @@
           </template>
           <template slot="footer">
             <div class="table-footer">
-              <button>详情</button>
-              <button>编辑</button>
-              <button>派工</button>
-              <button>回访</button>
-              <button>作废</button>
-
+              <button @click="Dispatch(table_row)">派工</button>
+              <button @click='onVisit(table_row)'>回访</button>
+              <button @click='onCancel(table_row)'>作废</button>
               <button @click="del(table_row)">删除</button>
             </div>
           </template>
         </VueTable>
       </div>
+      <Dispatch drawerTitle="派工"
+                ref="Dispatch"
+                @submitSuccess='DispatchSuccess'
+                @handleClose="DispatchHandleClose"
+                :drawerVrisible='Dispatch_vrisible'></Dispatch>
+      <Drawer drawerTitle="回访"
+              @drawerClose="visitClose"
+              :drawerVrisible='visit_vrisible'>
+        <div style="padding:30px">
+          <FromCard>
+            <template slot="title">基本信息</template>
+            <template>
+              <VueForm ref="visitFrom"
+                       @ruleSuccess='visitRuleSuccess'
+                       :formObj='visitForm'></VueForm>
+            </template>
+          </FromCard>
+        </div>
+        <div slot="footer">
+          <button class="btn-orange"
+                  @click="visitSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+          <button class="btn-gray"
+                  @click="visitClose"><span>取消</span></button>
+        </div>
+      </Drawer>
+
+      <Drawer drawerTitle="作废"
+              @drawerClose="cancelClose"
+              :drawerVrisible='cancel_vrisible'>
+        <div style="padding:30px">
+          <FromCard>
+            <template slot="title">作废原因</template>
+            <template>
+              <VueForm ref="cancelFrom"
+                       @ruleSuccess='cancelRuleSuccess'
+                       :formObj='cancelForm'></VueForm>
+            </template>
+          </FromCard>
+        </div>
+        <div slot="footer">
+          <button class="btn-orange"
+                  @click="cancelSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+          <button class="btn-gray"
+                  @click="cancelClose"><span>取消</span></button>
+        </div>
+      </Drawer>
     </div>
-    <!-- 删除提示弹窗-->
-    <Dialog :dialogVisible='dialog_visible'
-            :dialog_config='dialog_config'
-            @cancel='cancel'
-            @confirm='confirm'>
-    </Dialog>
   </div>
 </template>
 
 <script>
+import Dispatch from '@/views/butler/components/reportRepair/Dispatch'
+import { dispatchRevisit, dispatchCancel } from '@/api/butler'
+
 export default {
   data () {
     return {
       // 控制dialog显示隐藏
-      dialog_visible: false,
-      dialog_config: {
-        title: '',
-        content: '',
-      },
       // 选中表格数据
+      addEidt_vrisible: false,  // 添加修改
+      Dispatch_vrisible: false,  // 派工
+      visit_vrisible: false,  // 回访
+      cancel_vrisible: false,  // 作废
       table_row: [],
       config: {
         thead: [
@@ -118,12 +157,6 @@ export default {
             placeholder: '请选择结束日期',
             prop: 'beginDateEnd'
           },
-          // {
-          //   type: 'Input',
-          //   label: '分配人',
-          //   placeholder: '请输入分配人',
-          //   prop: 'distributor'
-          // },
           {
             type: 'Input',
             label: '维修人',
@@ -136,12 +169,163 @@ export default {
           size: 10
         },
       },
+      // 回访
+      visitForm: {
+        ruleForm: {
+          content: '',
+          revisitDate: null
+        },
+        form_item: [
+          {
+            type: 'DateTime',
+            label: '报修时间',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'revisitDate'
+          }, {
+            type: 'textarea',
+            label: '回访结果',
+            placeholder: '请输入',
+            width: '100%',
+            rows: 5,
+            prop: 'content'
+          }
+        ],
+        rules: {
+          content: [{ required: true, message: '请填写回访结果', trigger: 'blur' }],
+          revisitDate: [{ required: true, message: '请填写回访时间', trigger: 'change' }],
+        }
+      },
+      // 作废
+      cancelForm: {
+        ruleForm: {
+          content: '',
+        },
+        form_item: [
+          {
+            type: 'textarea',
+            label: '作废原因',
+            placeholder: '请输入',
+            width: '100%',
+            rows: 5,
+            prop: 'content'
+          }
+        ],
+        rules: {
+          content: [{ required: true, message: '请填写回访结果', trigger: 'blur' }]
+        }
+      },
       // tab默认绑定
       activeName: 0,
     }
-
+  },
+  components: {
+    Dispatch
   },
   methods: {
+    // 作废
+    onCancel (data) {
+      if (data.length > 1) {
+        this.$message.error('只能操作一条数据');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      this.cancel_vrisible = true;
+    },
+    // 作废关闭
+    cancelClose () {
+      this.cancel_vrisible = false;
+      this.$refs.cancelFrom.reset()
+    },
+    // 作废验证通过提交
+
+    cancelRuleSuccess () {
+      let resData = {
+        id: this.table_row[0].id,
+        content: this.cancelForm.ruleForm.content
+      }
+      dispatchCancel(resData).then(res => {
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.$refs.table.requestData();
+          this.cancelClose()
+
+        }
+      })
+    },
+    // 作废验证 提交验证
+    cancelSubmit () {
+      this.$refs.cancelFrom.submitForm()
+    },
+    // 回访关闭
+    visitClose () {
+      this.visit_vrisible = false;
+      this.$refs.visitFrom.reset()
+    },
+    // 回访验证通过提交
+    visitRuleSuccess () {
+      let resData = {
+        id: this.table_row[0].id,
+        content: this.visitForm.ruleForm.content,
+        revisitDate: this.visitForm.ruleForm.revisitDate
+      }
+      dispatchRevisit(resData).then(res => {
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.$refs.table.requestData();
+          this.visitClose()
+
+        }
+      })
+    },
+    // 回访提交 验证
+    visitSubmit () {
+      this.$refs.visitFrom.submitForm()
+    },
+    // 回访
+    onVisit (data) {
+      if (data.length > 1) {
+        this.$message.error('只能操作一条数据的详情');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      this.visit_vrisible = true;
+    },
+    // 派工
+    Dispatch (data) {
+      if (data.length > 1) {
+        this.$message.error('只能操作一条数据');
+        return
+      }
+      if (data[0].status !== 1) {
+        this.$message.error('只能待分配状态可派工');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      this.Dispatch_vrisible = true;
+      this.$refs.Dispatch.details(data[0].id)
+    },
+    DispatchSuccess () {
+      this.$refs.table.requestData();
+    },
+    DispatchHandleClose () {
+      this.Dispatch_vrisible = false;
+    },
     handleClick (tab, event) {
       let status = null
       if (this.activeName != 0) {
@@ -162,29 +346,24 @@ export default {
     },
     // 删除
     del (data) {
-      console.log(data)
       if (data.length) {
-        this.dialog_config.title = '删除提示'
-        this.dialog_config.content = '是否确认删除？删除无法撤回！'
-        this.dialog_visible = true
+        let arr = []
+        for (let i = 0; i < this.table_row.length; i++) {
+          arr.push(this.table_row[i].id)
+        }
+        this.$confirm('是否确认删除？删除不可恢复', '删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          this.$refs.table.tableDelete(arr)
+        }).catch(action => { });
       } else {
-        this.$message.error('请选中需要删除的表格数据')
+        this.$message.error('请选中需要删除的数据');
       }
     },
-    // 监听子组件取消事件
-    cancel (data) {
-      this.dialog_visible = false
-    },
-    // 监听删除确认确认事件
-    confirm (data) {
-      let arr = []
-      for (let i = 0; i < this.table_row.length; i++) {
-        arr.push(this.table_row[i].id)
-      }
-      // 调用子组件的方法
-      this.$refs.table.tableDelete(arr)
-      this.dialog_visible = false
-    }
+
   },
 }
 </script>
