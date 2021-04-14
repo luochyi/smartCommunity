@@ -16,6 +16,15 @@ export function chargesTemplateDetailList(data) {
         params: data
     })
 }
+
+// 日常缴费：添加缴费信息（带有付款功能）【打印未做】
+export function dailyPaymentInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dailyPayment/insert',
+        data: data
+    })
+}
 // 收费标准管理：更新物业收费标准模版信息
 export function chargesTemplateUpdate(data) {
     return service.request({

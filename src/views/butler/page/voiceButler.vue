@@ -18,12 +18,25 @@
                          name="2"></el-tab-pane>
           </el-tabs>
         </template>
+        <template v-slot:voiceUrl="slotData">
+          <div>
+            <div>
+              <audio controls="controls">
+                <source :src="$ImgUrl + slotData.data.voiceUrl"
+                        type="audio/mp3">
+              </audio>
+            </div>
+          </div>
+        </template>
         <template slot="footer">
           <div class="table-footer">
             <button>添加备注</button>
           </div>
         </template>
       </VueTable>
+      <audio ref='audio'
+             :src="audioUrl"
+             hidden></audio>
     </div>
   </div>
 </template>
@@ -35,13 +48,14 @@ export default {
       activeName: '0',
       // 选中表格数据
       table_row: [],
+      audioUrl: '',
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
           { label: '房屋信息', prop: 'roomName', width: 'auto' },
           { label: '姓名', prop: 'name', width: 'auto' },
           { label: '联系方式', prop: 'tel', width: 'auto' },
-          { label: '语音', prop: 'voiceUrl', width: 'auto' },
+          { label: '语音', prop: 'voiceUrl', width: '500', type: 'slot', slotName: 'voiceUrl' },
           { label: '状态', prop: 'status', width: 'auto' },
           { label: '备注', prop: 'remake', width: 'auto' },
         ],
@@ -75,6 +89,11 @@ export default {
     }
   },
   methods: {
+    handlePlay (url) {
+      // this.audioUrl = this.$ImgUrl + url
+      this.$refs.audio.play()
+      console.log(this.$refs.audio)
+    },
     handleClick (tab, event) {
       let status = null
       if (this.activeName != 0) {

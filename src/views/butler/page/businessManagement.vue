@@ -67,6 +67,7 @@
                 <el-select v-model="ownersCommitteeForm.ruleForm.residentId"
                            :disabled="editId?true:false"
                            :remote-method='remoteMethod'
+                           @change='(value) => change(value,options)'
                            @focus='focus'
                            :loading="loading"
                            remote
@@ -191,7 +192,7 @@ export default {
           positionId: null,
           age: null,
           educationId: null,
-          estateId: null,
+          roomName: null,
           profession: null,
           // sex: null,
           fileUrls: []
@@ -219,7 +220,7 @@ export default {
               { value: 4, label: '博士' }
             ]
           },
-          { type: 'Input', label: '房屋信息', placeholder: '请输入房屋信息', width: '50%', prop: 'estateId', disabled: true },
+          { type: 'Input', label: '房屋信息', placeholder: '请输入房屋信息', width: '50%', prop: 'roomName', disabled: true },
           {
             type: 'Input', label: '职业', placeholder: '请输入职业', width: '50%', prop: 'profession'
           },
@@ -231,15 +232,15 @@ export default {
           sex: [{ required: true, message: '请选择性别', trigger: 'change' }],
           age: [{ required: true, message: '请输入工单名称', trigger: 'blur' }],
           educationId: [{ required: true, message: '请选择学历', trigger: 'change' }],
-          estateId: [{ required: true, message: '请输入房屋信息', trigger: 'blur' }],
+          roomName: [{ required: true, message: '请输入房屋信息', trigger: 'blur' }],
           profession: [{ required: true, message: '请选择职业', trigger: 'blur' }],
           fileUrls: [{ required: true, message: '请上传图片', trigger: 'change' }],
         }
       },
+      ownersObj: {}
     }
   },
   methods: {
-    // 添加业主
     remoteMethod (val) {
       let reeData = {
         pageNum: 1,
@@ -264,16 +265,127 @@ export default {
         console.log(res)
       })
     },
-    change (value) {
-      console.log(value)
+    change (value, options) {
+      let arr2 = options.filter(function (item) {
+        if (item.value === value) {
+          return item;
+        }
+      });
+      this.ownersObj = arr2[0]
+      this.ownersCommitteeForm.ruleForm.roomName = this.ownersObj.roomName
+      console.log(this.ownersObj)
     },
-    tableCheck (data) {
-      this.table_row = data;
+    // 添加修改弹窗提交验证通过
+    ownersCommitteeRuleSubmit () {
+      let resData = {
+        residentId: this.ownersObj.value,
+        positionId: this.ownersCommitteeForm.ruleForm.positionId,
+        age: this.ownersCommitteeForm.ruleForm.age,
+        educationId: this.ownersCommitteeForm.ruleForm.educationId,
+        estateId: this.ownersObj.estateId,
+        profession: this.ownersCommitteeForm.ruleForm.profession,
+        fileUrls: this.ownersCommitteeForm.ruleForm.fileUrls,
+      }
+      if (!this.editId) {
+
+        console.log(resData)
+        ownersCommitteeInsert(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.ownersCommitteeClose()
+            this.$refs.table.loadData()
+          }
+        })
+      } else {
+        resData.id = this.editId
+        ownersCommitteeUpdate(resData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$refs.table.loadData()
+            this.ownersCommitteeClose()
+          }
+        })
+      }
+    },
+    // 添加修改弹窗提交
+    ownersCommitteeSubmit () {
+      this.$refs.ownersCommitteeVueForm.submitForm()
     },
     // 添加成员 弹窗显示
     addOwnersCommittee () {
       this.ownersCommitteeTitle = ' 添加成员'
       this.ownersCommittee_vrisible = true;
+    },
+
+    // 修改 弹窗显示
+    edit (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('不能批量编辑');
+          return
+        }
+        this.ownersCommitteeTitle = ' 修改成员'
+        this.ownersCommittee_vrisible = true;
+        let resData = {
+          id: data[0].id
+        }
+        this.ownersCommitteeForm.ruleForm.residentId = data[0].name
+        this.ownersCommitteeForm.ruleForm.roomName = data[0].roomName
+        this.ownersCommitteeForm.ruleForm.positionId = data[0].positionId
+        this.ownersCommitteeForm.ruleForm.age = data[0].age
+        this.ownersCommitteeForm.ruleForm.educationId = data[0].educationId
+        this.ownersCommitteeForm.ruleForm.profession = data[0].profession
+        this.ownersObj.value = data[0].estateId
+        this.ownersObj.estateId = data[0].estateId
+        ownersCommitteeFindById(resData).then(result => {
+          console.log(result)
+          this.editBool = true;
+          this.editId = result.id
+          this.ownersCommitteeForm.ruleForm.fileUrls[0] = result.imgUrls[0].url
+          this.fileUrls = result.imgUrls[0].url
+        })
+      } else {
+        this.$message.error('请选择需要编辑的数据');
+      }
+    },
+    tableCheck (data) {
+      this.table_row = data;
+    },
+    //  弹窗关闭显示
+    ownersCommitteeClose () {
+      // 初始化数据 重置
+      this.editId = 0
+      this.fileUrls = ''
+      this.ownersObj = {}
+      for (let key in this.ownersCommitteeForm.ruleForm) {
+        this.$set(this.ownersCommitteeForm.ruleForm, key, null)
+      }
+      console.log(this.ownersCommitteeForm.ruleForm)
+      this.$refs.ownersCommitteeVueForm.reset()
+      this.ownersCommittee_vrisible = false
+    },
+    // 删除
+    del (data) {
+      let arr = []
+      for (let i = 0; i < this.table_row.length; i++) {
+        arr.push(this.table_row[i].id)
+      }
+      if (!arr.length) {
+        this.$message.error('请选中需要删除的表格数据')
+        return
+      }
+      this.$confirm('是否删除？删除不可找回', '删除', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(() => {
+        this.$refs.table.tableDelete(arr)
+      }).catch(action => { });
     },
     // 图片上传成功
     ownersImgeSuccess (res, file) {
@@ -293,110 +405,6 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!');
       }
       return (isJPG || isPNG) && isLt2M;
-    },
-    // 修改 弹窗显示
-    edit (data) {
-      if (data.length) {
-        if (data.length > 1) {
-          this.$message.error('不能批量编辑');
-          return
-        }
-        this.ownersCommitteeTitle = ' 修改成员'
-        this.ownersCommittee_vrisible = true;
-        let resData = {
-          id: data[0].id
-        }
-        ownersCommitteeFindById(resData).then(result => {
-          console.log(result)
-          this.editBool = true;
-          this.editId = result.id
-          this.ownersCommitteeForm.ruleForm.residentId = result.name
-          this.ownersCommitteeForm.ruleForm.positionId = result.positionId
-          this.ownersCommitteeForm.ruleForm.age = result.age
-          this.ownersCommitteeForm.ruleForm.educationId = result.educationId
-          this.ownersCommitteeForm.ruleForm.estateId = result.estateId
-          this.ownersCommitteeForm.ruleForm.profession = result.profession
-          this.ownersCommitteeForm.ruleForm.fileUrls[0] = result.imgUrls[0].url
-          this.fileUrls = result.imgUrls[0].url
-        })
-      } else {
-        this.$message.error('请选择需要编辑的数据');
-      }
-
-    },
-    //  弹窗关闭显示
-    ownersCommitteeClose () {
-      this.ownersCommittee_vrisible = false;
-      this.fileUrls = ''
-      this.editId = 0
-      this.$refs.ownersCommitteeVueForm.reset()
-    },
-    // 添加修改弹窗提交验证通过
-    ownersCommitteeRuleSubmit () {
-
-      if (!this.editId) {
-        let resData = {
-          residentId: this.ownersCommitteeForm.ruleForm.residentId,
-          positionId: this.ownersCommitteeForm.ruleForm.positionId,
-          age: this.ownersCommitteeForm.ruleForm.age,
-          educationId: this.ownersCommitteeForm.ruleForm.educationId,
-          estateId: this.ownersCommitteeForm.ruleForm.estateId,
-          profession: this.ownersCommitteeForm.ruleForm.profession,
-          fileUrls: this.ownersCommitteeForm.ruleForm.fileUrls,
-        }
-        console.log(resData)
-        ownersCommitteeInsert(resData).then(res => {
-          if (res.status) {
-            this.$message({
-              message: res.message,
-              type: 'success'
-            })
-            this.ownersCommitteeClose()
-            this.$refs.table.loadData()
-          }
-        })
-      } else {
-        let resData = {
-          id: this.editId,
-          positionId: this.ownersCommitteeForm.ruleForm.positionId,
-          age: this.ownersCommitteeForm.ruleForm.age,
-          educationId: this.ownersCommitteeForm.ruleForm.educationId,
-          estateId: this.ownersCommitteeForm.ruleForm.estateId,
-          profession: this.ownersCommitteeForm.ruleForm.profession,
-          fileUrls: this.ownersCommitteeForm.ruleForm.fileUrls,
-        }
-        ownersCommitteeUpdate(resData).then(res => {
-          if (res.status) {
-            this.$message({
-              message: res.message,
-              type: 'success'
-            })
-            this.$refs.table.loadData()
-            this.ownersCommitteeClose()
-          }
-        })
-      }
-    },
-    // 添加修改弹窗提交
-    ownersCommitteeSubmit () {
-      this.$refs.ownersCommitteeVueForm.submitForm()
-    },
-    // 删除
-    del (data) {
-      let arr = []
-      for (let i = 0; i < this.table_row.length; i++) {
-        arr.push(this.table_row[i].id)
-      }
-      if (!arr.length) {
-        this.$message.error('请选中需要删除的表格数据')
-        return
-      }
-      this.$confirm('是否删除？删除不可找回', '删除', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-      }).then(() => {
-        this.$refs.table.tableDelete(arr)
-      }).catch(action => { });
     },
   }
 }

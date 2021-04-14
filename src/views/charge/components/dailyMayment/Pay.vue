@@ -13,8 +13,12 @@
                   <div class="line"></div><span>收费信息确认</span>
                 </div>
                 <div>
-                  <form-datechildren :formItem="form_item"
-                                     ref="formData"></form-datechildren>
+                  <!-- <VueForm ref="vueForm"
+                           @ruleSuccess='ruleSuccess'
+                           :formObj='costFrom1'>
+                  </VueForm> -->
+                  <!-- <form-datechildren :formItem="form_item"
+                                     ref="formData"></form-datechildren> -->
                 </div>
               </div>
               <div class="item">
@@ -76,6 +80,7 @@
 
 import paymentPreview from "@/components/dialog/Preview.vue"
 import formDatechildren from '@/components/form/formDatechildren'
+import { dailyPaymentInsert } from '@/api/charge'
 export default {
   components: {
     formDatechildren,
@@ -194,6 +199,45 @@ export default {
   },
   methods: {
     cancel () {
+      //       {
+      //     "buildingUnitEstateId":1,
+      //     "chargesTemplateDetailId":1,
+      //     "beginDate":"2020-11-17 16:17:57",
+      //     "endDate":"2020-11-17 16:17:57",
+      //     "unitPrice":1.2,
+      //     "type":1,
+      //     "num":30,
+      //     "dailyPaymentOrder":{
+      //         "code":"eqeqr1231r112",
+      //         "name":"张三",
+      //         "tel":13734657847,
+      //         "payType":3,
+      //         "payPrice":36,
+      //         "remake":"物业直接缴纳",
+      //         "isPrinting":0
+      //     }
+      // }
+      let resData = {
+        "buildingUnitEstateId": 3,
+        "chargesTemplateDetailId": 1,
+        "beginDate": "2020-11-17 16:17:57",
+        "endDate": "2020-11-17 16:17:57",
+        "unitPrice": 1.2,
+        "type": 1,
+        "num": 30,
+        "dailyPaymentOrder": {
+          "code": "asdadsdasda",
+          "name": "王五",
+          "tel": 13734657847,
+          "payType": 3,
+          "payPrice": 36,
+          "remake": "物业直接缴纳",
+          "isPrinting": 0
+        }
+      }
+      // dailyPaymentInsert(resData).then(result => {
+      //   console.log(result)
+      // })
       this.$emit('cancel', '取消')
     },
     dialogPreview () {
@@ -204,50 +248,50 @@ export default {
 </script>
 <style scoped>
 .box {
-  position: relative;
-  height: calc(100vh - 80px);
+    position: relative;
+    height: calc(100vh - 80px);
 }
 .box-body {
-  margin: 20px;
-  margin-bottom: 17px;
-  background: #fff;
-  overflow: auto;
-  height: calc(100vh - 179px);
+    margin: 20px;
+    margin-bottom: 17px;
+    background: #fff;
+    overflow: auto;
+    height: calc(100vh - 179px);
 }
 .item {
-  padding-bottom: 28px;
+    padding-bottom: 28px;
 }
 .title {
-  display: flex;
-  align-items: center;
-  padding-bottom: 26px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 26px;
 }
 .title span {
-  font-size: 16px;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #333333;
-  line-height: 22px;
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 22px;
 }
 .line {
-  display: inline-block;
-  width: 3px;
-  height: 16px;
-  margin-right: 10px;
-  background: rgba(251, 71, 2, 1);
+    display: inline-block;
+    width: 3px;
+    height: 16px;
+    margin-right: 10px;
+    background: rgba(251, 71, 2, 1);
 }
 .box_footer {
-  position: absolute;
-  margin-top: 20px;
-  width: 100%;
-  bottom: 0;
-  height: 81px;
-  background: white;
+    position: absolute;
+    margin-top: 20px;
+    width: 100%;
+    bottom: 0;
+    height: 81px;
+    background: white;
 }
 .box_footer_content {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 </style>

@@ -119,6 +119,7 @@ export default {
           name: null,
           unitPrice: null,
           type: null,
+          marker: null,
           otherFee: null,
         },
         form_item: [
@@ -130,6 +131,22 @@ export default {
             width: '100%',
             prop: 'typeName',
           },
+          // 标记符【费用类型名称】（1.物业管理费，2.维修费（报事报修 唯一）,3.装修押金（装修押金 唯一），4.活动报名费）
+
+          {
+            type: 'Select',
+            label: '费用类型',
+            placeholder: '请输入',
+            options: [
+              { label: '物业管理费', value: 1 },
+              { label: '维修费', value: 2 },
+              { label: '装修押金', value: 3 },
+              { label: '活动报名费', value: 4 },
+            ],
+            width: '100%',
+            prop: 'marker',
+          },
+          // marker
           {
             type: 'Input',
             label: '费用项目名称',
@@ -157,7 +174,7 @@ export default {
           },
           {
             type: 'Input',
-            label: '固定费用',
+            label: '附加费用',
             placeholder: '请输入',
             prop: 'otherFee',
             width: '100%',
@@ -165,7 +182,8 @@ export default {
         ],
         rules: {
           typeName: [{ required: true }],
-          name: [{ required: true, message: '请输入费用项目名称', trigger: 'blur' }],
+          marker: [{ required: true, message: '请输入费用项目名称', trigger: 'blur' }],
+          name: [{ required: true, message: '请选择费用类型', trigger: 'change' }],
           unitPrice: [{ required: true, message: '请输入单价', trigger: 'blur' }],
           type: [{ required: true, message: '请选择单位', trigger: 'change' }],
           // otherFee: [{ required: true, message: '请输入固定费用', trigger: 'blur' }]
@@ -353,8 +371,10 @@ export default {
         chargesTemplateId: this.costList[this.costActive].id,
         name: this.costForm.ruleForm.name,
         unitPrice: parseInt(this.costForm.ruleForm.unitPrice),
+        marker: 1,
         type: parseInt(this.costForm.ruleForm.type),
-        otherFee: parseInt(this.costForm.ruleForm.otherFee)
+        otherFee: parseInt(this.costForm.ruleForm.otherFee),
+        additionalCostList: [{ cost: 1, name: '电器费用' }],
       }
       // id等于0 添加否则修改
       if (!this.costEditId) {
