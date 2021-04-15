@@ -78,7 +78,7 @@ export default {
             type: 'Input',
             label: '联系方式',
             placeholder: '请输入',
-            prop: 'use232rName'
+            prop: 'tel'
           }
         ],
         data: {

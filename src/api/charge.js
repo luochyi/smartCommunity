@@ -17,6 +17,22 @@ export function chargesTemplateDetailList(data) {
     })
 }
 
+// 日常缴费：查询已开启的收费标准明细信息(物业管理费和日常费用)
+export function dailyPaymentFindEnableTempleDetail(data) {
+    return service.request({
+        method: 'GET',
+        url: '/dailyPayment/findEnableTempleDetail',
+        params: data
+    })
+}
+// 收费标准管理：导出EXCEL
+export function chargesTemplateDetailExport(data) {
+    return service.request({
+        method: 'GET',
+        url: '/chargesTemplateDetail/export',
+        params: data
+    })
+}
 // 日常缴费：添加缴费信息（带有付款功能）【打印未做】
 export function dailyPaymentInsert(data) {
     return service.request({
@@ -25,6 +41,15 @@ export function dailyPaymentInsert(data) {
         data: data
     })
 }
+//日常缴费：人工手动推送日常缴费提醒
+export function dailyPaymentPush(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dailyPayment/push',
+        data: data
+    })
+}
+
 // 收费标准管理：更新物业收费标准模版信息
 export function chargesTemplateUpdate(data) {
     return service.request({

@@ -38,9 +38,11 @@
                          :formObj='announceForm'>
                   <template slot='excelFileUrls'>
                     <template>
-                      <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadAnnouncement"
+                      <el-upload :action="`${$baseUrl}upload/uploadAnnouncement`"
                                  :on-success="ImgeSuccess"
                                  :file-list="imglist"
+                                 :on-exceed="handleExceed"
+                                 :limit="1"
                                  accept=".jpg,.png,.JPG,.PNG"
                                  :before-upload="beforeAvatarUpload">
                         <el-button icon="el-icon-edit"
@@ -55,7 +57,7 @@
                   </template>
                   <template slot='fileDocUrl'>
                     <template>
-                      <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadAnnouncementDoc"
+                      <el-upload :action="`${$baseUrl}upload/uploadAnnouncementDoc`"
                                  :on-success="fileSuccess"
                                  :on-remove="wordRemove"
                                  :on-exceed="handleExceed"
@@ -256,11 +258,16 @@ export default {
             slotName: 'fileDocUrl'
           },
           {
-            type: 'Input',
+            type: 'Select',
             label: '状态',
             placeholder: '请输入',
             prop: 'status',
             width: '100%',
+            options: [
+              { label: '未发布', value: 1 },
+              { label: '已发布', value: 2 },
+              { label: '定时发布', value: 3 },
+            ],
           },
           {
             type: 'DateTime',
@@ -291,6 +298,7 @@ export default {
     // 弹窗关闭
     announceClose () {
       this.announce_vrisible = false
+      console.log(this.announceForm.ruleForm)
       this.$refs.announceVueForm.reset()
     },
     // 提交验证通过
@@ -304,9 +312,16 @@ export default {
         status: this.announceForm.ruleForm.status,
         scheduledReleaseTime: this.announceForm.ruleForm.scheduledReleaseTime
       }
-
       announcementManagementInsert(resData).then(res => {
         console.log(res)
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.announceClose()
+          this.$refs.table.loadData()
+        }
       })
     },
     // 提交验证
@@ -418,6 +433,16 @@ export default {
       announcementManagementFindById(resData).then(res => {
         if (res.status) {
           console.log(res.data)
+          const data = res.data
+          this.announceForm.ruleForm.title = data.title
+          this.announceForm.ruleForm.pushObject = data.pushObject
+          this.announceForm.ruleForm.excelFileUrls[0] = data.imgUrls[0].url
+          this.announceForm.ruleForm.content = data.content
+          this.announceForm.ruleForm.fileDocUrl = data.fileDocUrl
+          this.announceForm.ruleForm.status = data.status
+          this.announceForm.ruleForm.scheduledReleaseTime = data.scheduledReleaseTime
+          this.announce_vrisible = true
+
         }
 
       })

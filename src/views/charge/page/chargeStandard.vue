@@ -57,7 +57,8 @@
                        @click="edit(table_row)">编辑费用</el-button>
             <el-button class="init-button"
                        @click="del(table_row)">删除费用</el-button>
-            <el-button class="init-button">导出Excel</el-button>
+            <el-button class="init-button"
+                       @click="exl">导出Excel</el-button>
           </div>
         </div>
         <div class="right_table">
@@ -97,7 +98,7 @@
 </template>
 <script>
 import {
-  chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete, userResidentFindAllBySearch,
+  chargesTemplateDetailExport, chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete, userResidentFindAllBySearch,
   chargesTemplateDetailInsert, chargesTemplateDetailUpdate, chargesTemplateInsert, chargesTemplateDelete, chargesTemplateDetailFindById
 } from '@/api/charge'
 export default {
@@ -142,6 +143,7 @@ export default {
               { label: '维修费', value: 2 },
               { label: '装修押金', value: 3 },
               { label: '活动报名费', value: 4 },
+              { label: '日常费用', value: 5 },
             ],
             width: '100%',
             prop: 'marker',
@@ -223,6 +225,9 @@ export default {
     this.getCostType()
   },
   methods: {
+    exl () {
+      chargesTemplateDetailExport({ chargesTemplateId: this.costList[this.costActive].id })
+    },
     // 费用版本名称
     getCostType () {
       chargesTemplateList().then(res => {

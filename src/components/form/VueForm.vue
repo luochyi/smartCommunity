@@ -96,7 +96,6 @@ export default {
   methods: {
     // 重置
     reset () {
-
       this.$refs['ruleForm'].resetFields()
     },
     submitForm () {

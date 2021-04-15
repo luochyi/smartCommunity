@@ -5,11 +5,6 @@
     </div>
 
     <div class="content">
-      <div class="content-btn">
-        <el-button class="init-button"
-                   icon="el-icon-plus"
-                   @click="drawer_vrisible = true">添加费用</el-button>
-      </div>
       <!-- 查询重制 -->
       <div class="">
         <VueTable ref="table"
@@ -29,161 +24,45 @@
           <template slot="footer">
             <div class="table-footer">
               <button @click="refundVrisible=true">退款</button>
-              <button>修改</button>
+              <!-- <button>修改</button> -->
             </div>
           </template>
         </VueTable>
       </div>
     </div>
-    <!-- 添加费用 -->
-    <drawer :drawerVrisible='drawer_vrisible'
-            :drawerSize="'65%'"
-            @handleClose='getClose'
-            :drawer_config="drawer_config"></drawer>
-    <!-- 退款 -->
-    <Refund :drawerVrisible='refundVrisible'
-            @handleClose='getClose'></Refund>
+    <!-- 新增修改公告 -->
+    <Drawer drawerTitle="退款"
+            @drawerClose="getClose"
+            :drawerVrisible='refundVrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="VueForm"
+                     @ruleSuccess='refundRuleSubmit'
+                     :formObj='refundForm'>
+            </VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <button class="btn-gray"
+                @click="getClose"><span>取消</span></button>
+      </div>
+    </Drawer>
   </div>
 </template>
 
 <script>
-import drawer from '@/components/Drawer/drawer.vue'
-import Refund from '@/views/charge/components/depositManagement/Refund.vue'
 export default {
   data () {
     return {
       activeName: '0',
       // 退款
       refundVrisible: false,
-      // 添加抽屉数据
-      drawer_config: {
-        drawer_vrisible: false,
-        head_title: '添加押金',
-        content_title: '基本信息',
-        ruleForm: {
-          p1: '',
-          p2: '',
-          p3: '',
-          p4: '',
-          p5: '',
-          p6: '',
-          p7: '5000',
-          p8: '',
-          p9: '',
-          p10: '',
-          p11: '',
-          p12: ''
-        },
-        form_item: [
-          {
-            type: "Select",
-            label: "费用项目名",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            options: [],
-            prop: "p1",
-          },
-          {
-            type: "Select",
-            label: "费用类型",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            disabled: true,
-            options: [],
-            prop: "p2",
-          }, {
-            type: "Input",
-            label: "房屋信息",
-            value: '',
-            placeholder: '请输入',
-            width: "50%",
-            prop: "p3",
-          },
-          {
-            type: "Select",
-            label: "来源",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            options: [],
-            prop: "p4",
-          },
-          {
-            type: "Input",
-            label: "押金人姓名",
-            value: '',
-            placeholder: '请输入',
-            width: "50%",
-            prop: "p5",
-          },
-
-          {
-            type: "Input",
-            label: "押金人联系方式 ",
-            value: '',
-            placeholder: '请输入',
-            width: "50%",
-            prop: "p6",
-          },
-          {
-            type: "Select",
-            label: "押金金额",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            disabled: true,
-            options: [],
-            prop: "p7",
-          },
-          {
-            type: "Select",
-            label: "支付方式",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            options: [],
-            prop: "p8",
-          },
-          {
-            type: "date",
-            label: "缴费时间",
-            value: '',
-            placeholder: '请选择时间',
-            width: "100%",
-            options: [],
-            prop: "p9",
-          },
-          {
-            type: "date",
-            label: "装修开始时间",
-            value: '',
-            placeholder: '请选择时间',
-            width: "50%",
-            options: [],
-            prop: "p10",
-          },
-          {
-            type: "date",
-            label: "装修结束时间",
-            value: '',
-            placeholder: '请选择时间',
-            width: "50%",
-            options: [],
-            prop: "p11",
-          },
-          {
-            type: "textarea",
-            label: "备注",
-            placeholder: "请输入",
-            rows: 6,
-            width: "100%",
-            prop: "p12",
-          }
-        ],
-      },
-      drawer_vrisible: false,
+      table_row: [],
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
@@ -277,13 +156,66 @@ export default {
           pageNum: 1,
           size: 10
         },
+      },
+      refundForm: {
+        ruleForm: {
+          depositPrice: null,
+          depositDeduction: null,
+          refundType: null,
+          refundPrice: null,
+        },
+        form_item: [
+          {
+            type: 'Input',
+            label: '押金金额',
+            placeholder: '请输入',
+            width: '50%',
+            disabled: true,
+            prop: 'depositPrice',
+          },
+          // {
+          //   type: 'DateTime',
+          //   label: '退款时间',
+          //   placeholder: '请输入',
+          //   width: '50%',
+          //   prop: 'scheduledReleaseTime'
+          // },
+          {
+            type: 'Input',
+            label: '押金扣除',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'depositDeduction',
+          },
+          {
+            type: 'Select',
+            label: '退款方式',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'refundType',
+            options: [
+              { label: '支付宝', value: 1 },
+              { label: '微信', value: 2 },
+              { label: '现金', value: 3 },
+              { label: 'pos', value: 4 },
+            ],
+          },
+          {
+            type: 'Input',
+            label: '退还金额',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'refundPrice',
+            disabled: true,
+          },
+        ],
+        rules: {
+          depositPrice: [{ required: true, message: '请输入押金金额', trigger: 'blur' }],
+          depositDeduction: [{ required: true, message: '请输入退款时间', trigger: 'change' }],
+          refundType: [{ required: true, message: '请输入押金扣除 ', trigger: 'blur' }],
+        }
       }
     }
-  },
-  components: {
-    drawer,
-    Refund,
-
   },
   methods: {
     handleClick (tab, event) {
@@ -303,9 +235,14 @@ export default {
     tableCheck (data) {
       this.table_row = data;
     },
+    refundSubmit () {
+
+    },
+    onSubmit () {
+      this.$refs.VueForm.submitForm()
+    },
     // 关闭抽屉
     getClose (data) {
-      this.drawer_vrisible = false;
       this.refundVrisible = false;
       console.log(data + "投票管理父组件");
     },

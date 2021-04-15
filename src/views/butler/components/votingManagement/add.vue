@@ -10,7 +10,11 @@
                  :formObj='votingFrom'>
           <template slot='fileUrls'>
             <template>
-              <el-upload action="http://test.akuhotel.com:8804/IntelligentCommunity/manage/upload/uploadVoteTitle"
+              <!-- :action="`${$baseUrl}upload/uploadQuestionnaireCoverPhoto`" -->
+              <el-upload 
+              
+                :action="`${$baseUrl}upload/uploadVoteTitle`" 
+
                          :on-success="voteImgeSuccess"
                          :show-file-list="false"
                          :before-upload="beforeAvatarUpload">
