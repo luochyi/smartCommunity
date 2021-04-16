@@ -6,6 +6,9 @@ import './assets/css/reset.css'
 import './assets/css/global.css'
 import './plugins/element.js'
 import './assets/css/style.scss'
+import JsonExcel from 'vue-json-excel'
+
+Vue.component('downloadExcel', JsonExcel)
 
 // 上 同
 import searchForm from '@/components/searchForm/index.vue'

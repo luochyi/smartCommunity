@@ -6,11 +6,6 @@
           <span>费用账单</span>
         </div>
         <div class="content">
-          <div class="content-btn">
-            <el-button class="init-button"
-                       icon="el-icon-plus"
-                       @click="drawer_vrisible = true">添加费用</el-button>
-          </div>
           <!-- 查询重制 -->
           <div class="">
             <VueTable ref="table"

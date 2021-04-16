@@ -5,11 +5,6 @@
         <span>工单费用</span>
       </div>
       <div class="content">
-        <div class="content-btn">
-          <el-button class="init-button"
-                     icon="el-icon-plus"
-                     @click="drawer_vrisible = true">添加费用</el-button>
-        </div>
         <div class="">
           <VueTable ref="table"
                     :config='config'
@@ -36,11 +31,7 @@
           </VueTable>
         </div>
       </div>
-      <!-- 添加费用 -->
-      <drawer :drawerVrisible='drawer_vrisible'
-              :drawerSize="'65%'"
-              @handleClose='getClose'
-              :drawer_config="drawer_config"></drawer>
+
       <!-- 退款 -->
       <Refund :drawerVrisible='refundVrisible'
               @handleClose='getClose'></Refund>
@@ -54,7 +45,6 @@
 </template>
 
 <script>
-import drawer from '@/components/Drawer/drawer.vue'
 import Refund from '@/views/charge/components/depositManagement/Refund.vue'
 import Pay from '@/views/charge/components/dailyMayment/Pay.vue'
 export default {
@@ -273,7 +263,6 @@ export default {
     }
   },
   components: {
-    drawer,
     Refund,
     Pay
   },

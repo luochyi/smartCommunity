@@ -7,13 +7,25 @@
           <span>日常缴费</span>
         </div>
         <div class="content">
-          <div class="content-btn">
+          <div class="content-btn flex">
             <el-button class="init-button"
                        icon="el-icon-plus"
                        @click="addFee()">添加费用</el-button>
-            <el-button type="init-button2"
-                       icon="el-icon-folder-add"
-                       plain>导出Excel</el-button>
+            <div style="margin-left:16px;">
+              <!--  :before-generate="startDownload"
+                              :before-finish="finishDownload" -->
+              <download-excel class="export-excel-wrapper"
+                              :fetch="fetchData"
+                              :fields="json_fields"
+                              :before-finish="finishDownload"
+                              name="日常缴费.xls">
+                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                <el-button type="init-button2"
+                           icon="el-icon-folder-add"
+                           plain>导出Excel</el-button>
+              </download-excel>
+
+            </div>
           </div>
           <!-- 查询重制 -->
           <div class="">
@@ -66,7 +78,6 @@
                   <template v-slot:buildingUnitEstateId>
                     <el-select v-model="addForm.ruleForm.buildingUnitEstateId"
                                :remote-method='remoteMethod'
-                               @change='(value) => change(value,options)'
                                @focus='focus'
                                :loading="loading"
                                remote
@@ -133,7 +144,8 @@
 
 <script>
 import { dailyPaymentFindEnableTempleDetail, dailyPaymentInsert, dailyPaymentPush } from '@/api/charge'
-import { userResidentFindResidentNameBySearch } from '@/api/basic'
+import { userResidentFindResidentNameBySearch, GetTableData } from '@/api/basic'
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 
 // basic-admin/src/views/charge/components/dailyMayment/add.vue
 // import drawer from '@/components/Drawer/drawer.vue'
@@ -165,6 +177,8 @@ export default {
       add_vrisible: false,
       receiver_vrisible: false,
       loading: true,
+      pageCount: 1,
+      currentPage: 1,
       addForm: {
         ruleForm: {
           buildingUnitEstateId: null,
@@ -296,6 +310,34 @@ export default {
           },
         ],
       },
+      json_fields: {
+        '收费项目名称': 'name',
+        '房屋信息': 'roomName',
+        '计费开始时间': 'beginDate',
+        '计费结束时间': 'endDate',
+        '计费单价/单位': 'unitPrice',
+        '面积/用量/数量': 'num',
+        '费用金额': 'costPrice',
+        '已缴金额': 'paidPrice',
+        '应收金额': 'paidPrice',
+        '待缴金额': 'paymentPrice',
+        '状态': {
+          field: 'status',
+          callback: value => {
+            switch (value) {
+              case 1:
+                return '已缴纳';
+                break;
+              default:
+                return '未缴纳';
+            }
+          }
+        },
+        '创建人': 'createName',
+        '更新时间': 'updateDate',
+
+        '备注': 'remake',
+      },
       activeName: '0',
       config: {
         thead: [
@@ -375,6 +417,35 @@ export default {
     }
   },
   methods: {
+    // Excel导出
+    async fetchData () {
+      let Excel = []
+      let params = {
+        url: 'dailyPaymentList',
+        data: {
+          pageNum: 1,
+          size: 100
+        }
+      }
+      const data = await DownloadExcel(params, this)
+      return data
+    },
+    // Excel进度
+    ExcelLoading (page, pageCount) {
+      const Loading = this.$loading({
+        lock: true,
+        text: `正在导出Excel${page}`,
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      Loading.text = `正在导出Excel  ${page}/${pageCount}`
+      console.log(Loading.text)
+    },
+    // Excel导出结束
+    finishDownload () {
+      const Loading = this.$loading();
+      Loading.close();
+    },
     remoteMethod (val) {
       let reeData = {
         pageNum: 1,
@@ -480,13 +551,13 @@ export default {
     },
     addRuleSuccess () {
       /***
-       * 
-       *  buildingUnitEstateId    :null,      	房产id	是	[int]		
-        2	chargesTemplateDetailId	:null,        费用名称类型(取自 物业收费标准明细表)	是	[int]		
-        3	beginDate	              :null,        计费开始时间	          是	[datetime]		
-        4	endDate	                :null,      计费结束时间	              是	[datetime]		
-        5	unitPrice	              :null,      计费单价	            是	[double]		
-        6	type	                  :null,       计费单位（1.元/月 平方米，2.元/ 立方米，3.元/ 次）	是	[int]		
+       *
+       *  buildingUnitEstateId    :null,      	房产id	是	[int]
+        2	chargesTemplateDetailId	:null,        费用名称类型(取自 物业收费标准明细表)	是	[int]
+        3	beginDate	              :null,        计费开始时间	          是	[datetime]
+        4	endDate	                :null,      计费结束时间	              是	[datetime]
+        5	unitPrice	              :null,      计费单价	            是	[double]
+        6	type	                  :null,       计费单位（1.元/月 平方米，2.元/ 立方米，3.元/ 次）	是	[int]
         7	num:null,
        * */
       let resData = {
@@ -499,6 +570,7 @@ export default {
         num: this.addForm.ruleForm.num,
       }
       dailyPaymentInsert(resData).then(res => {
+        console.log(res)
         if (res.status) {
           this.$message({
             message: res.message,

@@ -57,8 +57,19 @@
                        @click="edit(table_row)">编辑费用</el-button>
             <el-button class="init-button"
                        @click="del(table_row)">删除费用</el-button>
-            <el-button class="init-button"
-                       @click="exl">导出Excel</el-button>
+
+            <div style="margin-left:16px;   display: inline-block;">
+
+              <download-excel class="export-excel-wrapper"
+                              :fetch="fetchData"
+                              :fields="json_fields"
+                              :before-finish="finishDownload"
+                              name="日常缴费.xls">
+                <el-button class="init-button"
+                           size="small">导出Excel</el-button>
+              </download-excel>
+
+            </div>
           </div>
         </div>
         <div class="right_table">
@@ -98,9 +109,11 @@
 </template>
 <script>
 import {
-  chargesTemplateDetailExport, chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete, userResidentFindAllBySearch,
+  chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete, userResidentFindAllBySearch,
   chargesTemplateDetailInsert, chargesTemplateDetailUpdate, chargesTemplateInsert, chargesTemplateDelete, chargesTemplateDetailFindById
 } from '@/api/charge'
+import { DownloadExcel } from '@/plugins/DownloadExcel'
+
 export default {
   data () {
     return {
@@ -207,6 +220,13 @@ export default {
         ],
         loading: true,
       },
+      json_fields: {
+        '费用名称': 'name',
+        '计费单价/单位': 'unitPrice',
+        '附加/固定费用': 'otherFee',
+        '创建人': 'createName',
+        '更新日期': 'modifyDate'
+      },
       // 费用明细选中数据
       table_row: [],
     }
@@ -225,8 +245,35 @@ export default {
     this.getCostType()
   },
   methods: {
-    exl () {
-      chargesTemplateDetailExport({ chargesTemplateId: this.costList[this.costActive].id })
+    // Excel导出
+    async fetchData () {
+      let Excel = []
+      let params = {
+        url: 'chargesTemplateDetailList',
+        data: {
+          pageNum: 1,
+          size: 100,
+          chargesTemplateId: this.costList[this.costActive].id
+        }
+      }
+      const data = await DownloadExcel(params, this)
+      return data
+    },
+    // Excel进度
+    ExcelLoading (page, pageCount) {
+      const Loading = this.$loading({
+        lock: true,
+        text: `正在导出Excel${page}`,
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      Loading.text = `正在导出Excel  ${page}/${pageCount}`
+      console.log(Loading.text)
+    },
+    // Excel导出结束
+    finishDownload () {
+      const Loading = this.$loading();
+      Loading.close();
     },
     // 费用版本名称
     getCostType () {
@@ -280,6 +327,7 @@ export default {
         size: 10,
         chargesTemplateId: id
       }
+
       chargesTemplateDetailList(resData).then(res => {
         this.config.table_data = res.tableList
         this.config.loading = false

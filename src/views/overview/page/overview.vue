@@ -1,5 +1,6 @@
 <template>
   <div class="over-bg">
+
     <div class="overContent">
       <div class="over-box">
         <div class="block">
@@ -358,6 +359,98 @@ export default {
           ],
         }
       ],
+      json_fields: {
+        "序号": "table1",    //常规字段
+        "供应商ID": "table2",    //常规字段
+        "供应商名称": "table3",    //常规字段
+        "联系方式": "table4",    //常规字段
+        "创建时间": "table5",    //常规字段
+        "审核状态": "table6",    //常规字段
+        Telephone: "phone.mobile", //支持嵌套属性
+        "文件夹": {
+          field: "phone.landline",
+          //自定义回调函数
+          callback: value => {
+            return `Landline Phone - ${value}`;
+          }
+        }
+      },
+      json_data: [
+        {
+          table1: '1',
+          table2: '1110',
+          table3: '阿里巴巴集团股份有限公司',
+          table4: '0574-76998577',
+          table5: '查看',
+          table6: '2020-08-20 09:00',
+          table7: '',
+          table8: '待审核',
+          table9: '使用中',
+        },
+        {
+          table1: '2',
+          table2: '1111',
+          table3: '蚂蚁金服集团',
+          table4: '0574-76998587',
+          table5: '查看 ',
+          table6: '2020-08-20 09:00',
+          table7: '',
+          table8: '审核通过',
+          table9: '待使用',
+        },
+        {
+          table1: '3',
+          table2: '1112',
+          table3: '宁波盛世经贸有限公司',
+          table4: '0574-76998577',
+          table5: '查看 ',
+          table6: '2020-08-20 09:00',
+          table7: '',
+          table8: '审核通过',
+          table9: '待使用',
+        },
+        {
+          table1: '4',
+          table2: '1113',
+          table3: '宁波电信分公司',
+          table4: '0574-76998587',
+          table5: '查看 ',
+          table6: '2020-08-20 09:00',
+          table7: '',
+          table8: '待审核',
+          table9: '使用中',
+        },
+        {
+          table1: '5',
+          table2: '1114',
+          table3: '宁波移动公司分公司',
+          table4: '0574-76998577',
+          table5: '查看 ',
+          table6: '2020-08-20 09:00',
+          table7: '',
+          table8: '待审核',
+          table9: '使用中',
+        },
+        {
+          table1: '6',
+          table2: '1115',
+          table3: '宁波外汇通外贸有限公司',
+          table4: '0574-76998577',
+          table5: '查看 ',
+          table6: '2020-08-20 09:00',
+          table7: '',
+          table8: '待审核',
+          table9: '使用中',
+        },
+      ],
+      json_meta: [
+        [
+          {
+            " key ": " charset ",
+            " value ": " utf- 8 "
+          }
+        ]
+      ]
     }
   },
   mounted () {

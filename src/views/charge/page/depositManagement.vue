@@ -23,7 +23,7 @@
           </template>
           <template slot="footer">
             <div class="table-footer">
-              <button @click="refundVrisible=true">退款</button>
+              <button @click="refund(table_row)">退款</button>
               <!-- <button>修改</button> -->
             </div>
           </template>
@@ -52,10 +52,12 @@
                 @click="getClose"><span>取消</span></button>
       </div>
     </Drawer>
+
   </div>
 </template>
 
 <script>
+import { depositManagementRefund } from '@/api/charge'
 export default {
   data () {
     return {
@@ -217,6 +219,7 @@ export default {
       }
     }
   },
+
   methods: {
     handleClick (tab, event) {
       let status = null
@@ -235,16 +238,65 @@ export default {
     tableCheck (data) {
       this.table_row = data;
     },
-    refundSubmit () {
-
+    refundRuleSubmit () {
+      let resData = {
+        decorationId: this.table_row[0].decorationId,
+        depositManagementId: this.table_row[0].id,
+        depositPrice: this.refundForm.ruleForm.depositPrice,
+        depositDeduction: this.refundForm.ruleForm.depositDeduction,
+        refundType: this.refundForm.ruleForm.refundType,
+        refundPrice: this.refundForm.ruleForm.refundPrice,
+      }
+      console.log(resData)
+      depositManagementRefund(resData).then(res => {
+        console.log(res)
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.$refs.table.requestData();
+          this.getClose()
+        }
+      })
+    },
+    // 退款
+    refund (data) {
+      if (data.length > 1) {
+        this.$message.error('只能操作一条数据');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      this.refundVrisible = true;
+      // depositPrice
+      this.refundForm.ruleForm.depositPrice = data[0].depositPrice
     },
     onSubmit () {
       this.$refs.VueForm.submitForm()
     },
     // 关闭抽屉
-    getClose (data) {
+    getClose () {
       this.refundVrisible = false;
-      console.log(data + "投票管理父组件");
+      this.$refs.VueForm.reset()
+
+    },
+  },
+  watch: {
+    // 'refundForm.ruleForm.depositDeduction': {
+    //   handle (newVal) {
+    //     console.log(newVal)
+    //   },
+    //   immediate: true
+    // },
+    'refundForm.ruleForm.depositDeduction': {
+      handler (newVal) {
+        console.log(newVal);
+        this.refundForm.ruleForm.refundPrice = (this.refundForm.ruleForm.depositPrice - newVal).toFixed(2);
+      },
+      immediate: true
     },
   }
 }

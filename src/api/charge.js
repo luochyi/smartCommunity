@@ -49,6 +49,14 @@ export function dailyPaymentPush(data) {
         data: data
     })
 }
+// 押金管理：退押金
+export function depositManagementRefund(data) {
+    return service.request({
+        method: 'POST',
+        url: '/depositManagement/refund',
+        data: data
+    })
+}
 
 // 收费标准管理：更新物业收费标准模版信息
 export function chargesTemplateUpdate(data) {
