@@ -298,7 +298,8 @@ export default {
     // 弹窗关闭
     announceClose () {
       this.announce_vrisible = false
-      console.log(this.announceForm.ruleForm)
+      this.wordList = []
+      this.imglist = []
       this.$refs.announceVueForm.reset()
     },
     // 提交验证通过
@@ -437,10 +438,28 @@ export default {
           this.announceForm.ruleForm.title = data.title
           this.announceForm.ruleForm.pushObject = data.pushObject
           this.announceForm.ruleForm.excelFileUrls[0] = data.imgUrls[0].url
+
           this.announceForm.ruleForm.content = data.content
           this.announceForm.ruleForm.fileDocUrl = data.fileDocUrl
           this.announceForm.ruleForm.status = data.status
           this.announceForm.ruleForm.scheduledReleaseTime = data.scheduledReleaseTime
+          // this.wordList[0].name = data.fileDocUrl
+          // this.wordList[0].url = data.url
+
+          let obj = {
+            name: data.fileDocUrl,
+            url: data.fileDocUrl,
+
+          }
+          this.$set(this.wordList, '0', obj)
+
+          let imgObj = {
+            name: data.imgUrls[0].url,
+            url: data.imgUrls[0].url,
+          }
+          this.$set(this.imglist, '0', imgObj)
+
+
           this.announce_vrisible = true
 
         }

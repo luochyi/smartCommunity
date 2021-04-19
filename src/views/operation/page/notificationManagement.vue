@@ -26,6 +26,7 @@
             </div>
           </template>
         </VueTable>
+
         <!-- 添加 -->
         <el-drawer title="我是标题"
                    :visible.sync="viewsRecords"
@@ -54,6 +55,29 @@
               @cancel='cancel'
               @confirm='confirm'>
       </Dialog>
+
+      <!-- 增加修改 -->
+      <Drawer :drawerTitle="noticeTitle"
+              @drawerClose="noticeClose"
+              :drawerVrisible='notice_vrisible'>
+        <div style="padding:30px">
+          <FromCard>
+            <template slot="title">基本信息</template>
+            <template>
+              <VueForm ref="costVueForm"
+                       @ruleSuccess='noticeRuleSubmit'
+                       :formObj='noticeForm'></VueForm>
+
+            </template>
+          </FromCard>
+        </div>
+        <div slot="footer">
+          <button class="btn-orange"
+                  @click="noticeSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+          <button class="btn-gray"
+                  @click="noticeClose"><span>取消</span></button>
+        </div>
+      </Drawer>
     </div>
   </div>
 </template>
@@ -61,13 +85,12 @@
 import viewsRecords from '@/views/operation/components/notificationManagement/viewsRecords'
 import newNotification from '@/views/operation/components/notificationManagement/newNotification'
 import viewsDetails from '@/views/operation/components/notificationManagement/viewsDetails'
-
-// viewsDetails
-
-// newNotification
 export default {
   data () {
     return {
+      noticeTitle: '',
+      notice_vrisible: false,
+      noticeForm: {},
       // 控制dialog显示隐藏
       dialog_visible: false,
       dialog_config: {
@@ -127,6 +150,15 @@ export default {
   },
   computed: {},
   methods: {
+    noticeRuleSubmit () {
+
+    },
+    noticeSubmit () {
+
+    },
+    noticeClose () {
+
+    },
     tableCheck (data) {
       this.table_row = data;
     },

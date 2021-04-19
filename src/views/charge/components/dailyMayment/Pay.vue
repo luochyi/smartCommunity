@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="box">
-      <div class="box_box">
+      <div class="box_box"
+           v-if="Pay_show">
         <div class="box-body">
           <div class="main-titel">
             <span>缴费</span>
@@ -12,20 +13,73 @@
                 <div class="title">
                   <div class="line"></div><span>收费信息确认</span>
                 </div>
-                <div>
-                  <!-- <VueForm ref="vueForm"
-                           @ruleSuccess='ruleSuccess'
-                           :formObj='costFrom1'>
-                  </VueForm> -->
-                  <!-- <form-datechildren :formItem="form_item"
-                                     ref="formData"></form-datechildren> -->
+                <div class='box-item flex'>
+                  <div class='li flex'>
+                    <div class='label'>
+                      <span>房间号</span>
+                    </div>
+                    <div class="flex">
+                      <el-input disabled
+                                :value='getData.roomName'
+                                style="width: 240px;"
+                                size="small"></el-input>
+                    </div>
+                  </div>
+                  <div class='li flex'>
+                    <div class='label'>
+                      <span>收费总计 </span>
+                    </div>
+                    <div>
+                      <el-input :value='getData.costPrice'
+                                disabled
+                                style="width: 240px;"
+                                size="small"
+                                placeholder="请输入内容"></el-input>
+                    </div>
+                  </div>
+                  <div class='li flex'>
+                    <div class='label'>
+                      <span>缴费人</span>
+                    </div>
+                    <div>
+                      <el-input v-model="name"
+                                style="width: 240px;"
+                                size="small"
+                                placeholder="请输入内容"></el-input>
+                    </div>
+                  </div>
+                  <!-- <div class='li flex'>
+                    <div class='label'>
+                      <span>缴费时间</span>
+                    </div>
+                    <div>
+                      <el-date-picker v-model="createDate"
+                                      value-format="yyyy-MM-dd HH:mm:ss"
+                                      style="width: 240px;"
+                                      type="datetime"
+                                      placeholder="选择日期时间">
+                      </el-date-picker>
+
+                    </div>
+                  </div> -->
+                  <div class='li flex'>
+                    <div class='label'>
+                      <span>联系方式 </span>
+                    </div>
+                    <div>
+                      <el-input v-model="tel"
+                                style="width: 240px;"
+                                size="small"
+                                placeholder="请输入内容"></el-input>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="item">
                 <div class="title">
                   <div class="line"></div><span>收费项目汇总</span>
                 </div>
-                <div>
+                <div class="box-item ">
                   <tableData :config="table_config"></tableData>
                 </div>
               </div>
@@ -33,18 +87,66 @@
                 <div class="title">
                   <div class="line"></div><span>备注</span>
                 </div>
-                <div>
-                  <form-datechildren :formItem="form_item3"
-                                     ref="formData"></form-datechildren>
+                <div class="box-item ">
+                  <div class='li'
+                       style="width:100%">
+                    <div class='label'>
+                      <span>备注 </span>
+                    </div>
+                    <div>
+                      <el-input v-model="remake"
+                                type="textarea"
+                                style="width: 480px;"
+                                :autosize="{ minRows: 4, maxRows: 6}"
+                                placeholder="请输入内容"></el-input>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="item">
                 <div class="title">
                   <div class="line"></div><span>付款</span>
                 </div>
-                <div>
-                  <form-datechildren :formItem="form_item4"
-                                     ref="formData"></form-datechildren>
+                <div class="box-item">
+                  <div class="flex"
+                       style="margin:20px 0">
+                    <div class="label">
+                      <span>付款方式 </span>
+                    </div>
+                    <div>
+                      <el-radio-group v-model="payType">
+                        <el-radio :label="1">支付宝</el-radio>
+                        <el-radio :label="2">微信</el-radio>
+                        <el-radio :label="3">现金</el-radio>
+                        <el-radio :label="4">pos</el-radio>
+
+                      </el-radio-group>
+                    </div>
+                  </div>
+                  <div class="flex"
+                       style="margin:20px 0">
+                    <div class="label">
+                      <span>付款金额 </span>
+                    </div>
+                    <div>
+                      <el-input v-model="payPrice"
+                                style="width: 240px;"
+                                size="small"
+                                placeholder="请输入内容"></el-input>
+                    </div>
+                  </div>
+                  <div class="flex"
+                       style="margin:20px 0">
+                    <div class="label">
+                      <span>支付单号 </span>
+                    </div>
+                    <div>
+                      <el-input v-model="code"
+                                style="width: 240px;"
+                                size="small"
+                                placeholder="请输入内容"></el-input>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -56,7 +158,7 @@
           <div class="content-btn">
             <el-button class="init-button"
                        icon="el-icon-circle-check"
-                       @click="cancel()">确定</el-button>
+                       @click="submit()">确定</el-button>
             <el-button class="init-button"
                        @click="cancel()">确定并打印</el-button>
             <el-button type="init-button2"
@@ -79,185 +181,161 @@
 <script>
 
 import paymentPreview from "@/components/dialog/Preview.vue"
-import formDatechildren from '@/components/form/formDatechildren'
-import { dailyPaymentInsert } from '@/api/charge'
+import { dailyPaymentInsertOrder } from '@/api/charge'
 export default {
   components: {
-    formDatechildren,
     paymentPreview
+  },
+  props: {
+    tableData: {
+      type: Array,
+      default: () => [],
+    },
+    PayShow: {
+      type: Boolean,
+      default: () => false,
+    }
   },
   data () {
     return {
       paymentPreview: false,
+      code: null,
+      name: null,
+      tel: null,
+      payType: 1,
+      payPrice: null,
+      remake: null,
+      isPrinting: null,
+      Pay_show: false,
+      createDate: '',
+      radio: 0,
+      getData: {},
       table_config: {
         thead: [
-          { label: '费用名称', prop: 'table1', width: '110' },
-          { label: '费用类型', prop: 'table2', width: '180' },
-          { label: '计费时间段', prop: 'table3', width: '180' },
-          { label: '计费单价/单位', prop: 'table4', width: '180' },
-          { label: '面积/用量/数量', prop: 'table5', width: '180' },
-          { label: '费用金额', prop: 'table6', width: '180' },
-          { label: '已缴金额', prop: 'table7', width: '180' },
-          { label: '应收金额', prop: 'table8', width: '180' },
+          { label: '费用名称', prop: 'name', width: 'auto' },
+          {
+            label: '计费时间段', prop: 'beginDate', width: '320', type: 'function', callback: (row, prop) => {
+              return row.beginDate + '~' + row.endDate
+            }
+          },
+          {
+            label: '计费单价/单位', prop: 'unitPrice', width: 'auto', type: 'function', callback: (row, prop) => {
+              // 收费类型（1.元/月 平方米，2.元/ 立方米，3.元/ 次）
+              switch (row.type) {
+                case 1:
+                  return row.unitPrice + '元/月'
+                  break;
+                case 2:
+                  return row.unitPrice + '元/ 立方米'
+                  break;
+                case 3:
+                  return row.unitPrice + '元/ 次'
+                  break;
+                default:
+                  break;
+              }
+            }
+          },
+          { label: '面积/用量/数量', prop: 'num', width: 'auto' },
+          { label: '费用金额', prop: 'totalPrice', width: 'auto' },
+          { label: '已缴金额', prop: 'paidPrice', width: 'auto' },
+          { label: '应收金额', prop: 'paymentPrice', width: 'auto' },
         ],
         table_data: [
-          {
-            table1: "2020年物业费",
-            table2: '物业管理费',
-            table3: '2020-08-01 ～ 2021-07-31',
-            table4: '2.9元/月/平方米',
-            table5: '100平方米',
-            table6: '1200',
-            table7: '1000',
-            table8: '200',
-          },
+          // {
+          //   beginDate: "2020-12-17 16:17:57"
+          //   , costPrice: 3200
+          //   , createName: "king"
+          //   , endDate: "2020-12-18 16:18:01"
+          //   , estateNo: 1
+          //   , id: 1
+          //   , name: "2020年物业费"
+          //   , num: 100
+          //   , paidPrice: 3200
+          //   , paymentPrice: 0
+          //   , remake: null
+          //   , roomName: "1-1-101室"
+          //   , roomNumber: "101室"
+          //   , status: 3
+          //   , totalPrice: 3200
+          //   , type: 1
+          //   , unitNo: 1
+          //   , unitPrice: 2.9
+          //   , updateDate: "2020-12-19 16:41:23"
+          // }
         ]
       },
-      form_item: [
-        {
-          type: 'Input',
-          label: '房间号 ',
-          placeholder: '请选择',
-          value: '2-2-1403',
-          prop: 'building ',
-          width: '30%',
-          disabled: true,
-        },
-        {
-          type: 'Input',
-          label: '客户姓名  ',
-          placeholder: '请选择',
-          value: '尹斐斐',
-          prop: 'buildings',
-          width: '30%',
-          disabled: true,
-        },
-        {
-          type: 'Input',
-          label: '缴费人',
-          placeholder: '请选择',
-          value: '卢弦',
-          prop: 'buildinsg ',
-          width: '30%',
-        },
-
-        {
-          type: 'Input',
-          label: '收费总计',
-          placeholder: '请选择',
-          value: '1200',
-          prop: 'i4',
-          width: '30%',
-          disabled: true,
-        },
-        {
-          type: 'Input',
-          label: '缴费时间 ',
-          placeholder: '请选择',
-          value: '2020-09-01',
-          prop: 'i5',
-          width: '30%',
-        },
-        {
-          type: 'Input',
-          label: '联系方式  ',
-          placeholder: '请选择',
-          value: '15825298338',
-          prop: 'i6',
-          width: '30%',
-        },
-      ]
-      ,
-      form_item3: [
-        {
-          type: 'textarea',
-          label: '备注  ',
-          rows: 4,
-          placeholder: '请输入',
-          prop: 'fyje',
-          // width: "100%"
-          width: '50%',
-
-        }
-      ]
-      , form_item4: [
-        {
-          type: 'Input',
-          label: '计费单价/单位 ',
-          placeholder: '请选择',
-          prop: 'building ',
-          width: '100%',
-        }, {
-          type: 'Input',
-          label: '计费单价/单位 ',
-          placeholder: '请选择',
-          prop: 'buildsing ',
-          width: '100%',
-        },
-      ]
     }
   },
   methods: {
     cancel () {
-      //       {
-      //     "buildingUnitEstateId":1,
-      //     "chargesTemplateDetailId":1,
-      //     "beginDate":"2020-11-17 16:17:57",
-      //     "endDate":"2020-11-17 16:17:57",
-      //     "unitPrice":1.2,
-      //     "type":1,
-      //     "num":30,
-      //     "dailyPaymentOrder":{
-      //         "code":"eqeqr1231r112",
-      //         "name":"张三",
-      //         "tel":13734657847,
-      //         "payType":3,
-      //         "payPrice":36,
-      //         "remake":"物业直接缴纳",
-      //         "isPrinting":0
-      //     }
-      // }
+      this.$emit('cancel', '取消')
+    },
+    submit () {
       let resData = {
-        "buildingUnitEstateId": 3,
-        "chargesTemplateDetailId": 1,
-        "beginDate": "2020-11-17 16:17:57",
-        "endDate": "2020-11-17 16:17:57",
-        "unitPrice": 1.2,
-        "type": 1,
-        "num": 30,
-        "dailyPaymentOrder": {
-          "code": "asdadsdasda",
-          "name": "王五",
-          "tel": 13734657847,
-          "payType": 3,
-          "payPrice": 36,
-          "remake": "物业直接缴纳",
-          "isPrinting": 0
+        dailyPaymentId: this.getData.id,
+        dailyPaymentOrder: {
+
+          code: this.code,
+          name: this.name,
+          tel: this.tel,
+          payType: this.payType,
+          payPrice: this.payPrice,
+          // createDate: this.createDate,
+          remake: this.remake,
+          isPrinting: 0,
         }
       }
-      // dailyPaymentInsert(resData).then(result => {
-      //   console.log(result)
-      // })
-      this.$emit('cancel', '取消')
+      dailyPaymentInsertOrder(resData).then(result => {
+        console.log(result)
+        if (result.status) {
+          this.$message({
+            message: result.message,
+            type: 'success'
+          })
+          this.$emit('paySubmit')
+          this.cancel()
+          // this.$refs.table.loadData()
+          // this.receiverClose()
+        }
+      })
     },
     dialogPreview () {
       this.paymentPreview = false;
-    }
+    },
+
+  },
+  watch: {
+    tableData: {
+      handler (newValue) {
+        console.log(newValue)
+        this.table_config.table_data = newValue
+        this.getData = newValue[0]
+
+      }
+    },
+    PayShow: {
+      handler (newValue) {
+        console.log(newValue)
+        this.Pay_show = newValue
+      }
+    },
   }
 }
 </script>
-<style scoped>
+<style scoped lang='scss'>
 .box {
     position: relative;
     height: calc(100vh - 80px);
+    .box-body {
+        margin: 20px;
+        margin-bottom: 17px;
+        background: #fff;
+        overflow: auto;
+        height: calc(100vh - 179px);
+    }
 }
-.box-body {
-    margin: 20px;
-    margin-bottom: 17px;
-    background: #fff;
-    overflow: auto;
-    height: calc(100vh - 179px);
-}
+
 .item {
     padding-bottom: 28px;
 }
@@ -265,21 +343,22 @@ export default {
     display: flex;
     align-items: center;
     padding-bottom: 26px;
+    span {
+        font-size: 16px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+        line-height: 22px;
+    }
+    .line {
+        display: inline-block;
+        width: 3px;
+        height: 16px;
+        margin-right: 10px;
+        background: rgba(251, 71, 2, 1);
+    }
 }
-.title span {
-    font-size: 16px;
-    font-family: PingFangSC-Medium, PingFang SC;
-    font-weight: 500;
-    color: #333333;
-    line-height: 22px;
-}
-.line {
-    display: inline-block;
-    width: 3px;
-    height: 16px;
-    margin-right: 10px;
-    background: rgba(251, 71, 2, 1);
-}
+
 .box_footer {
     position: absolute;
     margin-top: 20px;
@@ -287,11 +366,31 @@ export default {
     bottom: 0;
     height: 81px;
     background: white;
+    .box_footer_content {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
 }
-.box_footer_content {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+
+.box-item {
+    padding: 0 108px;
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    flex-wrap: wrap;
+    .li {
+        width: 33.33%;
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+    }
+    .label {
+        width: 61px;
+        text-align: right;
+        padding-right: 12px;
+    }
 }
 </style>

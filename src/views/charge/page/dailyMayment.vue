@@ -1,7 +1,8 @@
 <template>
   <div>
     <div>
-      <div class="main-content">
+      <div class="main-content"
+           v-show="!Pay_show">
         <!-- 日常缴费组件 -->
         <div class="main-titel">
           <span>日常缴费</span>
@@ -18,7 +19,7 @@
                               :fetch="fetchData"
                               :fields="json_fields"
                               :before-finish="finishDownload"
-                              name="日常缴费.xls">
+                              name="收费标准.xls">
                 <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
                 <el-button type="init-button2"
                            icon="el-icon-folder-add"
@@ -45,99 +46,96 @@
               </template>
               <template slot="footer">
                 <div class="table-footer">
-                  <button @click="Pay()">缴费</button>
+                  <button @click="Pay(table_row)">缴费</button>
                   <button @click="receiver(table_row)">推送提醒</button>
                 </div>
               </template>
             </VueTable>
           </div>
         </div>
-        <Drawer drawerTitle="添加缴费"
-                @drawerClose="addClose"
-                :drawerVrisible='add_vrisible'>
-          <div style="padding:30px">
-            <FromCard>
-              <template slot="title">基本信息</template>
-              <template>
-                <VueForm ref="addFrom"
-                         @ruleSuccess='addRuleSuccess'
-                         :formObj='addForm'>
-                  <template v-slot:chargesTemplateDetailId>
-                    <el-select v-model="addForm.ruleForm.chargesTemplateDetailId"
-                               @change='(value) => feeNameChange(value,feeNameList)'
-                               style="width:240px"
-                               placeholder="请选择">
-                      <el-option v-for="(item,index) in feeNameList"
-                                 :key="index"
-                                 :label="item.label"
-                                 :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </template>
-
-                  <template v-slot:buildingUnitEstateId>
-                    <el-select v-model="addForm.ruleForm.buildingUnitEstateId"
-                               :remote-method='remoteMethod'
-                               @focus='focus'
-                               :loading="loading"
-                               remote
-                               style="width:240px"
-                               filterable
-                               placeholder="请选择">
-                      <el-option v-for="(item,index) in options"
-                                 :key="index"
-                                 :label="item.label"
-                                 :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </template>
-                </VueForm>
-              </template>
-            </FromCard>
-          </div>
-          <div slot="footer">
-            <button class="btn-orange"
-                    @click="addSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
-            <!-- <button class="btn-orange"><span>确认并打印</span></button>
-            <button class="btn-orange"><span>打印预览</span></button> -->
-            <button class="btn-gray"
-                    @click="addClose"><span>取消</span></button>
-          </div>
-        </Drawer>
-        <Drawer drawerTitle="推送提醒"
-                @drawerClose="receiverClose"
-                :drawerVrisible='receiver_vrisible'>
-          <div style="padding:30px">
-            <FromCard>
-              <template slot="title">基本信息</template>
-              <template>
-                <VueForm ref="receiverFrom"
-                         @ruleSuccess='receiverRuleSuccess'
-                         :formObj='receiverForm'>
-                </VueForm>
-              </template>
-            </FromCard>
-          </div>
-          <div slot="footer">
-            <button class="btn-orange"
-                    @click="receiverSubmit()"><span> <i class="el-icon-circle-check"></i>发送</span></button>
-            <button class="btn-gray"
-                    @click="receiverClose"><span>取消</span></button>
-          </div>
-        </Drawer>
-        <!-- 添加费用 -->
-        <!-- <drawer :drawerVrisible='drawer_vrisible'
-                @handleClose='getClose'
-                :drawer_config="drawer_config"></drawer> -->
 
       </div>
       <!-- 添加费用组件 -->
     </div>
-    <!-- <addFee v-if="addFee_show"
-            @cancel="cancel"></addFee>
 
-    <Pay v-if="Pay_show"
-         @cancel="cancel"></Pay> -->
+    <Drawer drawerTitle="添加缴费"
+            @drawerClose="addClose"
+            :drawerVrisible='add_vrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="addFrom"
+                     @ruleSuccess='addRuleSuccess'
+                     :formObj='addForm'>
+              <template v-slot:chargesTemplateDetailId>
+                <el-select v-model="addForm.ruleForm.chargesTemplateDetailId"
+                           @change='(value) => feeNameChange(value,feeNameList)'
+                           style="width:240px"
+                           placeholder="请选择">
+                  <el-option v-for="(item,index) in feeNameList"
+                             :key="index"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+              </template>
+
+              <template v-slot:buildingUnitEstateId>
+                <el-select v-model="addForm.ruleForm.buildingUnitEstateId"
+                           :remote-method='remoteMethod'
+                           @focus='focus'
+                           :loading="loading"
+                           remote
+                           style="width:240px"
+                           filterable
+                           placeholder="请选择">
+                  <el-option v-for="(item,index) in options"
+                             :key="index"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+              </template>
+            </VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="addSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+        <!-- <button class="btn-orange"><span>确认并打印</span></button>
+            <button class="btn-orange"><span>打印预览</span></button> -->
+        <button class="btn-gray"
+                @click="addClose"><span>取消</span></button>
+      </div>
+    </Drawer>
+    <Drawer drawerTitle="推送提醒"
+            @drawerClose="receiverClose"
+            :drawerVrisible='receiver_vrisible'>
+      <div style="padding:30px">
+        <FromCard>
+          <template slot="title">基本信息</template>
+          <template>
+            <VueForm ref="receiverFrom"
+                     @ruleSuccess='receiverRuleSuccess'
+                     :formObj='receiverForm'>
+            </VueForm>
+          </template>
+        </FromCard>
+      </div>
+      <div slot="footer">
+        <button class="btn-orange"
+                @click="receiverSubmit()"><span> <i class="el-icon-circle-check"></i>发送</span></button>
+        <button class="btn-gray"
+                @click="receiverClose"><span>取消</span></button>
+      </div>
+    </Drawer>
+    <Pay v-show="Pay_show"
+         @paySubmit='paySubmit'
+         :PayShow='Pay_show'
+         :tableData='table_row'
+         @cancel="cancel"></Pay>
   </div>
 
 </template>
@@ -150,12 +148,11 @@ import { DownloadExcel } from '@/plugins/DownloadExcel'
 // basic-admin/src/views/charge/components/dailyMayment/add.vue
 // import drawer from '@/components/Drawer/drawer.vue'
 // import addFee from '@/views/charge/components/dailyMayment/addFee.vue'
-// import Pay from '@/views/charge/components/dailyMayment/Pay.vue'
+import Pay from '@/views/charge/components/dailyMayment/Pay.vue'
 export default {
   data () {
     let feeNameList = []
     dailyPaymentFindEnableTempleDetail().then(result => {
-      console.log(result)
       result.data.map(item => {
         feeNameList.push({
           value: item.id,
@@ -166,10 +163,8 @@ export default {
       })
     })
     return {
-      // 切换日常缴费组件和添加费用组件
-      // addFee_show: false,
-      // Pay_show: false,
-      // change: true,
+      // 切换日常缴费组件
+      Pay_show: false,
       feeNameList: feeNameList,
       feeData: {},
       options: [],
@@ -285,31 +280,6 @@ export default {
       },
       // 添加点击确认后弹出抽屉
       // 添加抽屉数据
-      drawer_config: {
-        drawer_vrisible: false,
-        head_title: '访客编辑',
-        content_title: '访客信息',
-        ruleForm: {
-          name: '何晓佳',
-          jj: '',
-        },
-        form_item: [
-          {
-            type: 'span',
-            label: '被推送人姓名',
-            width: '100%',
-            prop: 'name',
-          },
-          {
-            type: 'textarea',
-            label: '推送内容',
-            placeholder: '请输入',
-            rows: 6,
-            width: '100%',
-            prop: 'jj',
-          },
-        ],
-      },
       json_fields: {
         '收费项目名称': 'name',
         '房屋信息': 'roomName',
@@ -346,7 +316,24 @@ export default {
           { label: '房屋信息', prop: 'roomName', width: '180' },
           { label: '计费开始时间', prop: 'beginDate', width: '180' },
           { label: '计费结束时间', prop: 'endDate', width: '180' },
-          { label: '计费单价/单位', prop: 'unitPrice', width: '180' },
+          {
+            label: '计费单价/单位', prop: 'unitPrice', width: '180', type: 'function', callback: (row, prop) => {
+              // 收费类型（1.元/月 平方米，2.元/ 立方米，3.元/ 次）
+              switch (row.type) {
+                case 1:
+                  return row.unitPrice + '元/月'
+                  break;
+                case 2:
+                  return row.unitPrice + '元/ 立方米'
+                  break;
+                case 3:
+                  return row.unitPrice + '元/ 次'
+                  break;
+                default:
+                  break;
+              }
+            }
+          },
           { label: '面积/用量/数量', prop: 'num', width: '180' },
           { label: '费用金额', prop: 'costPrice', width: '180' },
           { label: '已缴金额', prop: 'paidPrice', width: '180' },
@@ -416,6 +403,9 @@ export default {
       },
     }
   },
+  components: {
+    Pay
+  },
   methods: {
     // Excel导出
     async fetchData () {
@@ -445,6 +435,10 @@ export default {
     finishDownload () {
       const Loading = this.$loading();
       Loading.close();
+    },
+    // 缴费成功
+    paySubmit () {
+      this.$refs.table.loadData()
     },
     remoteMethod (val) {
       let reeData = {
@@ -543,11 +537,12 @@ export default {
         case 3:
           str = '元/次'
           break;
+        default:
+          break;
       }
       // data
       this.feeData = data
       this.addForm.ruleForm.unitPrice = data.unitPrice + str
-      console.log(value, options)
     },
     addRuleSuccess () {
       /***
@@ -604,31 +599,34 @@ export default {
     },
     tableCheck (data) {
       this.table_row = data;
-
     },
+    // 添加缴费信息
     addFee () {
       this.add_vrisible = true
     },
-    Pay () {
-      this.change = false
-      this.Pay_show = true
+    // 缴费
+    Pay (data) {
+      if (data.length) {
+        if (data.length > 1) {
+          this.$message.error('不能批量编辑');
+          return
+        }
+        this.Pay_show = true
+      } else {
+        this.$message.error('请选择需要编辑的数据');
+      }
     },
     // 关闭抽屉
     getClose (data) {
       this.drawer_vrisible = false
-      console.log(data + '投票管理父组件')
     },
     cancel (data) {
-      this.addFee_show = false
       this.Pay_show = false
-
-      this.change = true
     },
   },
   watch: {
     'addForm.ruleForm.num': {
       handler (newValue) {
-        console.log(newValue)
         if (newValue && this.feeData.unitPrice) {
           this.addForm.ruleForm.totalPrice = (newValue * this.feeData.unitPrice).toFixed(2)
         }

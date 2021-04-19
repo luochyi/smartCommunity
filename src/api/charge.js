@@ -41,6 +41,14 @@ export function dailyPaymentInsert(data) {
         data: data
     })
 }
+//  日常缴费：缴费（带有付款功能）【打印未做】
+export function dailyPaymentInsertOrder(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dailyPayment/insertOrder',
+        data: data
+    })
+}
 //日常缴费：人工手动推送日常缴费提醒
 export function dailyPaymentPush(data) {
     return service.request({
@@ -55,6 +63,14 @@ export function depositManagementRefund(data) {
         method: 'POST',
         url: '/depositManagement/refund',
         data: data
+    })
+}
+// 收费标准管理：根据物业收费标准模版主键id 启用/禁用 物业收费标准模版
+export function chargesTemplateIsEnable(data) {
+    return service.request({
+        method: 'GET',
+        url: '/chargesTemplate/isEnable',
+        params: data
     })
 }
 

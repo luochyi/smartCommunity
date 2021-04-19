@@ -81,11 +81,11 @@ export default {
               value: '/butler/itemsOut',
               label: '物品出门',
             },
-            {
-              // Decoration management
-              value: '/butler/decorationManagement',
-              label: '装修管理',
-            },
+            // {
+            //   // Decoration management
+            //   value: '/butler/decorationManagement',
+            //   label: '装修管理',
+            // },
             {
               // Voting management
               value: '/butler/votingManagement',
@@ -216,6 +216,7 @@ export default {
             },
             {
               // Voting management
+              label: '投票管理',
               value: '/operation/votingManagement',
             }
           ],

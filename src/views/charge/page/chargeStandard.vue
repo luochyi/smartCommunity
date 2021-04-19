@@ -36,7 +36,8 @@
       <div class="right">
         <div class="right_title">
           <span style="padding-right: 18px">是否启用</span>
-          <el-switch v-model="value"
+          <el-switch :value="IsEnable"
+                     @change='switchChange'
                      active-text="开"
                      inactive-text="关"
                      class="switchStyle"
@@ -109,7 +110,7 @@
 </template>
 <script>
 import {
-  chargesTemplateList, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete, userResidentFindAllBySearch,
+  chargesTemplateList, chargesTemplateIsEnable, chargesTemplateDetailList, chargesTemplateUpdate, chargesTemplateDetailDelete, userResidentFindAllBySearch,
   chargesTemplateDetailInsert, chargesTemplateDetailUpdate, chargesTemplateInsert, chargesTemplateDelete, chargesTemplateDetailFindById
 } from '@/api/charge'
 import { DownloadExcel } from '@/plugins/DownloadExcel'
@@ -176,6 +177,7 @@ export default {
             width: '100%',
             prop: 'unitPrice',
           },
+          // 1.元/月 平方米，2.元/ 立方米，3.元/ 次
           {
             type: 'Select',
             label: '单位',
@@ -183,8 +185,10 @@ export default {
             prop: 'type',
             width: '100%',
             options: [
-              { label: '宁波电台', value: '1' },
-              { label: '三医院', value: '2' },
+              { label: '元/月 平方米', value: 1 },
+              { label: '元/ 立方米', value: 2 },
+              { label: '元/ 次', value: 3 },
+
             ],
           },
           {
@@ -204,7 +208,7 @@ export default {
           // otherFee: [{ required: true, message: '请输入固定费用', trigger: 'blur' }]
         }
       },
-      value: true,
+      IsEnable: false,
       input2: '',
       // 费用明细
       config: {
@@ -275,13 +279,42 @@ export default {
       const Loading = this.$loading();
       Loading.close();
     },
+    // 禁用启用
+    switchChange (e) {
+      this.$confirm('是否确认修改该版本禁启用', '禁启用提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        confirmButtonClass: 'confirmButton',
+        cancelButtonClass: 'cancelButton'
+      }).then(() => {
+
+        chargesTemplateIsEnable({ id: this.costList[this.costActive].id }).then((res) => {
+          console.log(res)
+          if (!res.status) return
+          this.$message({
+            type: 'success',
+            message: res.message
+          });
+          this.IsEnable = !this.IsEnable
+          this.getCostType()
+          // this.GetTableData(this.costList[this.costActive].id)
+        })
+      }).catch(action => { });
+      // costActive
+    },
     // 费用版本名称
     getCostType () {
       chargesTemplateList().then(res => {
+        console.log(res)
         this.costList = res
         this.costList.map(item => {
           this.$set(item, "editBool", false)
         })
+        if (this.costList[this.costActive].status) {
+          this.IsEnable = true
+        } else {
+          this.IsEnable = false
+        }
         // 费用版本名称对于明细
         this.GetTableData(this.costList[this.costActive].id)
       })
@@ -318,7 +351,7 @@ export default {
     // tab 费用版本 侧边栏切换
     tableChange (index, ulId, name) {
       this.costActive = index
-      this.GetTableData(ulId)
+      this.getCostType()
     },
     // 获得版本对应费用明细
     GetTableData (id) {
@@ -404,12 +437,16 @@ export default {
           id: data[0].id
         }
         chargesTemplateDetailFindById(resData).then(result => {
+          console.log(result)
           this.costForm.ruleForm.typeName = this.costList[this.costActive].name
-          this.costEditId = result.id
-          this.costForm.ruleForm.name = result.name
-          this.costForm.ruleForm.otherFee = result.otherFee
-          this.costForm.ruleForm.type = result.type
-          this.costForm.ruleForm.unitPrice = result.unitPrice
+          this.costEditId = result.byId.id
+          this.costForm.ruleForm.marker = result.byId.marker
+
+          // marker
+          this.costForm.ruleForm.name = result.byId.name
+          this.costForm.ruleForm.otherFee = result.byId.otherFee
+          this.costForm.ruleForm.type = result.byId.type
+          this.costForm.ruleForm.unitPrice = result.byId.unitPrice
           this.cost_vrisible = true;
 
         })
@@ -462,6 +499,15 @@ export default {
     costClose () {
       this.cost_vrisible = false;
       this.$refs.costVueForm.reset()
+      this.costForm.ruleForm.typeName = null
+      this.costEditId = null
+      this.costForm.ruleForm.marker = null
+
+      // marker
+      this.costForm.ruleForm.name = null
+      this.costForm.ruleForm.otherFee = null
+      this.costForm.ruleForm.type = null
+      this.costForm.ruleForm.unitPrice = null
     },
     // 删除
     del (data) {
