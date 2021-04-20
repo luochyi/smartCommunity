@@ -49,7 +49,7 @@ const requestUrl = {
     ownersCommitteeList: '/ownersCommittee/list',
     ownersCommitteeListDelete: '/ownersCommittee/delete',
     voiceHousekeeperList: '/voiceHousekeeper/list',
-// /vote/listDetailCandidate
+    // /vote/listDetailCandidate
     // /chargesTemplateDetail/list
     chargesTemplateDetailList: '/chargesTemplateDetail/list',
     chargesTemplateDetailListDelete: '/chargesTemplateDetail/list',
@@ -60,7 +60,9 @@ const requestUrl = {
     announcementManagementList: '/announcementManagement/list',
     announcementManagementListDelete: '/announcementManagement/delete',
     notificationManagementList: '/notificationManagement/list',
+    notificationManagementListDelete: '/notificationManagement/delete',
     activityManagementList: '/activityManagement/list',
+    activityManagementListDelete: '/activityManagement/falseDelete',
     sponsorManagementList: '/sponsorManagement/list'
 
     // List Delete
