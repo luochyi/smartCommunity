@@ -19,14 +19,11 @@ export function Delete(params) {
 }
 
 // 登陆
-export const Login = () => {
+export const Login = (data) => {
     return service.request({
         method: 'post',
         url: '/sysLogin/loginSysUser',
-        data: {
-            userName: 'admin2',
-            pwd: '123456'
-        }
+        data: data
     })
 }
 // 获取楼栋信息

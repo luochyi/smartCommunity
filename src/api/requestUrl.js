@@ -1,4 +1,6 @@
 const requestUrl = {
+    // 综合服务
+
     //基础档案
     buildList: '/cpmBuilding/list',
     buildListDelete: '/cpmBuilding/delete',

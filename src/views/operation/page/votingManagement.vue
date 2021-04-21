@@ -1,198 +1,237 @@
+<style scoped>
+.tips {
+    margin: 20px;
+    height: 38px;
+    line-height: 38px;
+    background: #fafafa;
+    border-radius: 4px;
+    opacity: 0.8;
+    border: 1px solid #e8e8e8;
+}
+</style>
 <template>
   <div class="main-content">
     <div class="main-titel">
       <span>投票管理</span>
     </div>
+    <div class="tips">
+      <p>
+        <span class="el-icon-warning-outline"
+              style="margin:0 12px"></span>
+        温馨提示：有
+        <span style="color:rgba(251, 71, 2, 1)">{{count}}</span>
+        个投票即将开始
+      </p>
+    </div>
     <div class="content">
-      <div class="content-btn">
-        <el-button class="init-button"
-                   @click="addUnit = true"
-                   icon="el-icon-plus">新增投票</el-button>
-      </div>
       <!-- 查询重制 -->
       <div class="">
+        <button class="btn-orange"
+                style="height:32px"
+                @click="addvoting()"><span> <i class="el-icon-plus"></i>新增投票</span></button>
         <VueTable ref="table"
                   :config='config'
                   @tableCheck="tableCheck">
-
           <template slot="footer">
             <div class="table-footer">
-              <button @click="dialogVisible = true">查看</button>
-              <button @click="reviseUnit = true">修改</button>
+              <button @click="edit(table_row)">编辑</button>
               <button @click="del(table_row)">删除</button>
+              <button @click="voteDetails(table_row)">详情</button>
+              <button @click="release(table_row)">发布</button>
+              <!-- <button @click="del(table_row)">删除</button> -->
             </div>
           </template>
         </VueTable>
-        <!-- <input-form :formItem="form_item"
-                    :btnWidth="'20%'"> </input-form>
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow='tableRow'>
-            <template v-slot:table3="slotData">
-              <div>
-                <el-button class="init-text"
-                           type="text">{{
-                  slotData.data.table3
-                }}</el-button>
-              </div>
-            </template>
-          </tableData>
-          <div class="table-footer">
-            <button @click="dialogVisible = true">查看</button>
-            <button @click="reviseUnit = true">修改</button>
-            <button @click="del(table_row)">删除</button>
-          </div>
-        </div>
-        <table-pagination></table-pagination> -->
-        <!-- 添加 -->
-        <el-drawer title="我是标题"
-                   :visible.sync="addUnit"
-                   size="56.26%"
-                   :with-header="false">
-          <add-unit></add-unit>
-        </el-drawer>
-        <!-- 修改 -->
-        <el-drawer title="我是标题"
-                   :visible.sync="reviseUnit"
-                   size="56.26%"
-                   :with-header="false">
-          <revise-unit></revise-unit>
-        </el-drawer>
-
-        <!-- 提示弹窗-->
-        <Dialog :dialogVisible='dialog_visible'
-                :dialog_config='dialog_config'
-                @cancel='cancel'
-                @confirm='confirm'>
-        </Dialog>
       </div>
-
     </div>
+    <addEidt :drawerTitle="addEidtDrawerTitle"
+             ref="addEdit"
+             @submitSuccess='submitSuccess'
+             @handleClose="addEidtHandleClose"
+             :drawerVrisible='addEidt_vrisible'></addEidt>
+    <!-- 详情 -->
+    <detailsVrisible :drawerVrisible='details_vrisible'
+                     @handleClose='getClose'
+                     :voteId="detailId"
+                     @details_obj="details_obj"></detailsVrisible>
+    <!-- 详情详情 -->
+    <detailsDetails :drawerVrisible='details_details'
+                    :voteId="detailsDetailsId"
+                    :detailsData='detailsDetailsData'
+                    @handleClose='getClose'
+                    @goBack='goBack'></detailsDetails>
   </div>
 </template>
+
 <script>
-import addUnit from '@/views/basic/components/unitInfo/addUnit'
-import reviseUnit from '@/views/basic/components/unitInfo/reviseUnit'
+import addEidt from '@/views/butler/components/votingManagement/add.vue'
+import detailsVrisible from '@/views/butler/components/votingManagement/details.vue'
+import detailsDetails from '@/views/butler/components/votingManagement/details/index.vue'
+import { voteCountVoteExpectedStart, voteFindById, voteRelease } from '@/api/butler'
 export default {
+  components: {
+    addEidt,
+    detailsVrisible,
+    detailsDetails,
+  },
   data () {
     return {
-      // 控制dialog显示隐藏
-      dialog_visible: false,
-      dialog_config: {
-        title: '',
-        content: ''
-      },
+      detailId: null,
+      detailsDetailsId: null,
+      detailsDetailsData: null,
+      addEidtDrawerTitle: '新增活动',
+      // 详情
+      details_vrisible: false,
+      // 详情——详情
+      details_details: false,
+      addEidt_vrisible: false,
+      // 选中表格数据
       table_row: [],
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
           { label: '投票标题', prop: 'title', width: 'auto' },
-          {
-            label: '候选人', prop: 'votePersonnelNum', width: 'atuo',// type: 'slot',slotName: 'table3'
-          },
-          { label: '投票开始时间', prop: 'beginDate', width: 'atuo' },
-          { label: '投票结束时间', prop: 'endDate', width: 'atuo' },
-          { label: '投票状态', prop: 'status', width: 'atuo' },
-          { label: '投票结果', prop: 'voteResult', width: 'atuo' },
-          // {
-          //   label: '是否有效', prop: 'table8', width: 'atuo',
-          // },
+          { label: '投票开始时间', prop: 'beginDate', width: 'auto' },
+          { label: '投票结束时间', prop: 'endDate', width: 'auto' },
+          { label: '活动状态', prop: 'status', width: 'auto' },
+          { label: '投票结果', prop: 'voteResult', width: 'auto' },
         ],
-        table_data: [],
         url: 'voteList',
-        search_item: [
-          {
-            type: 'Input',
-            label: '投票标题',
-            placeholder: '请输入',
-            prop: 'title'
-          },
-          {
-            type: 'startDate',
-            label: '投票开始时间',
-            placeholder: "请选择开始时间",
-            prop: 'beginDate'
-          },
-          {
-            type: 'endDate',
-            label: '投票结束时间',
-            placeholder: '请选择结束时间',
-            prop: 'endDate'
-          },
-          {
-            type: 'select',
-            label: '投票状态',
-            value: '',
-            options: [
-              { label: '未开始', value: '1' },
-              { label: '进行中', value: '2' },
-              { label: '已结束', value: '3' },
-            ],
-            placeholder: '请选择推送状态',
-            prop: 'status'
-          }
-        ],
+        table_data: [],
+        search_item: [],
         data: {
           pageNum: 1,
-          size: 10
+          size: 10,
         },
       },
-      // 添加
-      addUnit: false,
-      reviseUnit: false,
-      dialogVisible: false,
+      // tab默认绑定
+      activeName: 0,
+      // 投票数量
+      count: null
     }
   },
-  components: {
-
-    addUnit,
-    reviseUnit
+  mounted () {
+    this.getTipsData()
   },
-  computed: {},
   methods: {
-    tableCheck () {
-      this.table_row = data;
+    // 即将开始投票活动
+    getTipsData () {
+      voteCountVoteExpectedStart().then(result => {
+        // 投票数量
+        this.count = result.count
+      })
+    },
+    // 添加修改成功
+    submitSuccess () {
+      this.$refs.table.loadData()
+      this.getTipsData()
+    },
+    // 添加
+    addvoting () {
+      this.addEidt_vrisible = true;
+    },
+    // 添加修改关闭
+    addEidtHandleClose () {
+      this.addEidt_vrisible = false;
+    },
+    // 表格选中
+    tableCheck (arr) {
+      this.table_row = arr
+    },
+    voteDetails (data) {
+      if (data.length > 1) {
+        this.$message.error('只能查看一条数据的详情');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      this.detailId = this.table_row[0].id
+      this.details_vrisible = true
     },
     // 删除
     del (data) {
-      if (JSON.stringify(data) != "{}") {
-        this.dialog_config.title = '删除提示'
-        this.dialog_config.content = '是否确认删除？删除无法撤回！'
-        this.dialog_visible = true
+      if (data.length) {
+        let arr = []
+        for (let i = 0; i < this.table_row.length; i++) {
+          arr.push(this.table_row[i].id)
+        }
+        this.$confirm('是否确认删除？删除不可恢复', '删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          this.$refs.table.tableDelete(arr)
+        }).catch(action => { });
       } else {
-        this.$message.error('请选中需要删除的表格数据');
+        this.$message.error('请选中需要删除的数据');
       }
+    },
+    // 关闭抽屉
+    getClose (data) {
+      this.drawer_vrisible = false;
+      this.details_vrisible = false;
+      this.details_details = false;
+    },
+    // 详情抽屉 详情
+    details_obj (data) {
+      this.details_vrisible = false;
+      this.details_details = true;
+      this.detailsDetailsId = data.id;
+      this.detailsDetailsData = data
+      console.log(data)
+    },
+    //  详情抽屉 详情 返回
+    goBack () {
+      this.details_vrisible = true;
+      this.details_details = false;
+    },
+    // 编辑
+    edit (data) {
+      if (data.length > 1) {
+        this.$message.error('只能查看一条数据的详情');
+        return
+      }
+      if (!data.length) {
+        this.$message.error('请选择');
+        return
+      }
+      this.$refs.addEdit.edit(data[0].id)
+      this.addEidt_vrisible = true;
     },
     // 发布
     release (data) {
-      if (JSON.stringify(data) != "{}") {
-        this.dialog_config.title = '发布'
-        this.dialog_config.content = '确定现在发布？'
-        this.dialog_visible = true
+      if (data.length) {
+        let arr = []
+        for (let i = 0; i < this.table_row.length; i++) {
+          arr.push(this.table_row[i].id)
+        }
+        this.$confirm('是否确认发布', '批量发布', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          confirmButtonClass: 'confirmButton',
+          cancelButtonClass: 'cancelButton'
+        }).then(() => {
+          let resData = {
+            ids: arr
+          }
+          voteRelease(resData).then(result => {
+            if (result.status) {
+              this.$message({
+                message: result.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+            }
+          })
+        }).catch(action => { });
       } else {
-        this.$message.error('请选中需要删除的表格数据');
+        this.$message.error('请选中需要发布的数据');
       }
+
     },
-    // 监听子组件取消事件
-    cancel (data) {
-      this.dialog_visible = false;
-    },
-    // 监听子组件确认事件
-    confirm (data) {
-      this.dialog_visible = false;
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      });
-    },
-    tableRow (data) {
-      this.table_row = data;
-    },
-    submitForm (formName) { },
-    resetForm (formName) { },
-    handleClick (tab, event) {
-      console.log(tab, event)
-    }
-  }
+  },
 }
 </script>

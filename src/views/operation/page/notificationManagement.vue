@@ -8,9 +8,6 @@
         <el-button class="init-button"
                    icon="el-icon-plus"
                    @click="add()">新增公告</el-button>
-        <el-button type="init-button2"
-                   @click="viewsRecords = true"
-                   plain>查看发送记录</el-button>
       </div>
       <div class="">
         <VueTable ref="table"
@@ -18,30 +15,13 @@
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
-              <button @click="viewsDetails = true">详情</button>
+
               <button @click='edit(table_row)'>修改</button>
-              <button>推送</button>
-              <button @click="newNotification = true">发送短信</button>
               <button @click='del(table_row)'>删除</button>
             </div>
           </template>
         </VueTable>
 
-        <!-- 添加 -->
-        <el-drawer title="我是标题"
-                   :visible.sync="viewsRecords"
-                   size="56.26%"
-                   :with-header="false">
-          <views-records></views-records>
-        </el-drawer>
-
-        <!-- 详情 -->
-        <el-drawer title="我是标题"
-                   :visible.sync="viewsDetails"
-                   size="56.26%"
-                   :with-header="false">
-          <views-details></views-details>
-        </el-drawer>
       </div>
       <!-- 增加修改 -->
       <Drawer :drawerTitle="addEidtTitle"
@@ -112,8 +92,6 @@
   </div>
 </template>
 <script>
-import viewsRecords from '@/views/operation/components/notificationManagement/viewsRecords'
-import viewsDetails from '@/views/operation/components/notificationManagement/viewsDetails'
 import { cpmBuildingUnitFindAll } from '@/api/basic'
 import { notificationManagementInsert, notificationManagementFindById, notificationManagementUpdate } from '@/api/operation'
 
@@ -226,11 +204,6 @@ export default {
           size: 10
         }
       },
-      // 添加
-      viewsDetails: false,
-      viewsRecords: false,
-      newNotification: false,
-
     }
   },
   created () {
@@ -238,10 +211,7 @@ export default {
       this.options = res
     })
   },
-  components: {
-    viewsRecords,
-    viewsDetails
-  },
+
   computed: {},
   methods: {
     add () {
@@ -353,16 +323,7 @@ export default {
       this.table_row = data;
     },
 
-    // 发布
-    release (data) {
-      // if (JSON.stringify(data) != "{}") {
-      //   this.dialog_config.title = '发布'
-      //   this.dialog_config.content = '确定现在发布？'
-      //   this.dialog_visible = true
-      // } else {
-      //   this.$message.error('请选中需要删除的表格数据');
-      // }
-    },
+
     // 删除
     del (data) {
       if (data.length) {
@@ -382,8 +343,6 @@ export default {
         this.$message.error('请选中需要删除的数据');
       }
     },
-    submitForm (formName) { },
-    resetForm (formName) { }
   },
   watch: {
     'addEidtForm.ruleForm.pushStatus': {

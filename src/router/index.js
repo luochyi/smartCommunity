@@ -3,13 +3,58 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
+    // {
+    //     path: '/',
+    //     // 路由重定向
+    //     redirect: '/overview',
+    //     component: resolve =>
+    //         require(['@/views/overview/page/overview'], resolve)
+    // },
     {
-        path: '/',
-        // 路由重定向
-        redirect: '/overview',
-        component: resolve =>
-            require(['@/views/overview/page/overview'], resolve)
+        path: '/company',
+        redirect: '/company/companyInfo'
     },
+    {
+        path: '/Login',
+        name: 'Login',
+        component: resolve => require(['@/views/Login'], resolve)
+    },
+    {
+        path: '/company',
+        component: resolve =>
+            require(['@/components/comprehensiveHeader'], resolve),
+        children: [
+            {
+                path: '/company',
+                component: resolve =>
+                    require(['@/components/comprehensiveAside'], resolve),
+                children: [
+                    {
+                        path: '/company/companyInfo',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/companyInfo'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/orgManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/orgManagement'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/personnelManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/personnelManagement'
+                            ], resolve)
+                    }
+                ]
+            }
+        ]
+    },
+
     {
         // 概览
         path: '/overview',

@@ -10,6 +10,7 @@
           <!-- <img :src="imgstart"
                alt="" /> -->
           <el-image :src="imgstart"
+                    fit="cover"
                     style="width: 100%; height: 100%"></el-image>
         </div>
         <div class="imgfooter">
