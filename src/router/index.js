@@ -3,13 +3,11 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-    // {
-    //     path: '/',
-    //     // 路由重定向
-    //     redirect: '/overview',
-    //     component: resolve =>
-    //         require(['@/views/overview/page/overview'], resolve)
-    // },
+    {
+        path: '/',
+        // 路由重定向
+        redirect: '/Login'
+    },
     {
         path: '/company',
         redirect: '/company/companyInfo'

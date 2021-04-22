@@ -32,7 +32,14 @@ export function sysUserList(data) {
         params: data
     })
 }
-
+// 人员管理：根据主键id查询人员信息
+export function sysUserFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysUser/findById',
+        params: data
+    })
+}
 // // 日常缴费：添加缴费信息（带有付款功能）【打印未做】
 // export function dailyPaymentInsert(data) {
 //     return service.request({

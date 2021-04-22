@@ -8,6 +8,7 @@ const service = axios.create({
     withCredentials: false,
     timeout: 5000 // 超时
 })
+// axios
 
 // 添加请求拦截器
 service.interceptors.request.use(
@@ -28,6 +29,16 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     function(response) {
         const data = response.data
+        // 未登录或登录失效
+        if (data == '{message=未登录, status=-1000}') {
+            // ElementUI.Message.error('未登录')
+            alert('未登录')
+            setTimeout(() => {
+                window.location.href = '/'
+            }, 1000)
+
+            return response
+        }
         if (data.status != true && data.status != null) {
             ElementUI.Message.error(data.message)
             return data

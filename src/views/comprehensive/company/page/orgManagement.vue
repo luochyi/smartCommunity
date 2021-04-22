@@ -10,33 +10,13 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="组织架构管理"
                        name="first">
-            <el-form :inline="true"
-                     label-width="80px"
-                     size="mini"
-                     class="demo-form-inline">
-              <el-form-item label="部门名称">
-                <el-input v-model="name"
-                          placeholder="请输入"
-                          style="width:240px"></el-input>
-              </el-form-item>
-              <el-form-item label="状态">
-                <el-select v-model="status"
-                           placeholder="请选择"
-                           style="width:240px;margin-right:120px;">
-                  <el-option label="正常"
-                             :value="1"></el-option>
-                  <el-option label="异常"
-                             :value="2"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary"
-                           @click="search">查询</el-button>
-                <el-button>重置</el-button>
-              </el-form-item>
-            </el-form>
+            <el-input v-model.trim="search"
+                      size='small'
+                      placeholder="请输入搜索内容"
+                      style="width:240px;margin:10px 0"></el-input>
             <div>
-              <el-table :data="tableData"
+              <!--   :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" -->
+              <el-table :data="ftable"
                         style="width: 100%;margin-bottom: 20px;"
                         row-key="id"
                         border
@@ -122,6 +102,29 @@
             <template>
               <VueForm ref="addEidtVueForm"
                        :formObj='addEidtForm'>
+                <!-- parentList -->
+                <template slot='parentId'>
+                  <div v-if='parentList.length'>
+                    <el-select v-model="addEidtForm.ruleForm.parentId"
+                               style="width:240px"
+                               placeholder="请选择">
+                      <el-option v-for="item in parentList"
+                                 :key="item.id"
+                                 :label="item.name"
+                                 :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </div>
+                  <!-- 没有上级部门 -->
+                  <div v-else>
+                    <el-input placeholder="请输入内容"
+                              :value="falseParentName"
+                              style="width:240px"
+                              :disabled="true">
+                    </el-input>
+                  </div>
+
+                </template>
                 <template slot='sort'>
                   <div>
                     <el-input-number v-model="addEidtForm.ruleForm.sort"
@@ -129,7 +132,6 @@
                                      :min="1"
                                      :max="10"></el-input-number>
                   </div>
-
                 </template>
                 <template v-slot:leadingId>
                   <el-select v-model="addEidtForm.ruleForm.leadingId"
@@ -141,7 +143,7 @@
                              style="width:240px"
                              filterable
                              placeholder="请选择">
-                    <el-option v-for="item in options"
+                    <el-option v-for="item in userOptions"
                                :key="item.id"
                                :label="item.actualName"
                                :value="item.id">
@@ -170,11 +172,11 @@ export default {
     return {
       addEidt_vrisible: false,
       activeName: 'first',
-      name: null,
-      status: null,
-      eidtId: null,
-      loading: false,
-      tableData: [],
+      search: null, //搜索
+      eidtId: null,  //修改id
+      loading: false,  //加载动画
+      tableData: [],   //表格数据
+      parentList: [],   //上级部门列表
       addEidtForm: {
         ruleForm: {
           name: null,
@@ -187,12 +189,12 @@ export default {
         },
         form_item: [
           {
-            type: 'Select',
+            type: 'Slot',
             label: '上级部门',
             width: '50%',
             placeholder: '请选择',
             prop: 'parentId',
-            options: []
+            slotName: 'parentId'
           },
           {
             type: 'Input',
@@ -249,17 +251,14 @@ export default {
           }
         ]
       },
-      options: []
+      userOptions: [],    //负责人列表
+      falseParentName: null,  //无上级部门 时显示内容
+      ftable: null,
     }
   },
   created () {
     this.getData()
   },
-  // components: {
-  //   structureMannagenment,
-  //   organizationChart,
-  // },
-
   methods: {
     // 负责人赛选
     remoteMethod (val) {
@@ -295,10 +294,13 @@ export default {
         }
       })
     },
-    // 
+    // 编辑
     edit (row) {
       // if(row.parentId)
-      console.log(row)
+      // console.log(row)
+
+      // 没有父级部门
+      this.falseParentName = row.name
       sysOrganizationFindById({ id: row.id }).then(res => {
         this.eidtId = res.id
         this.addEidtForm.ruleForm.name = res.name
@@ -308,6 +310,7 @@ export default {
         this.addEidtForm.ruleForm.remake = res.remake
         this.addEidtForm.ruleForm.categoryId = res.categoryId
         this.addEidtForm.ruleForm.leadingTel = res.leadingTel
+        this.parentList = res.parentList ? res.parentList : []
         this.getUserList(res.actualName)
         this.addEidt_vrisible = true
       })
@@ -315,8 +318,9 @@ export default {
     // 表格数据
     getData () {
       sysOrganizationList().then(res => {
-        console.log(res)
         this.tableData = res
+        this.ftable = res
+        console.log('-')
       })
     },
     // 负责人查询
@@ -327,13 +331,45 @@ export default {
         actualName: name
       }
       sysUserList(resData).then(res => {
-        this.options = res.tableList
+        this.userOptions = res.tableList
       })
     },
-    // 查询
-    search () {
-      this.tableData = this.tableData.filter(data => (!this.name || !this.status) || data.name.toLowerCase().includes(this.name.toLowerCase()))
-      console.log(this.tableData)
+    //  树形表格过滤
+    handleTreeData (treeData, searchValue) {
+      if (!treeData || treeData.length === 0) {
+        return []
+      }
+      const array = []
+      for (let i = 0; i < treeData.length; i += 1) {
+        let match = false
+        for (let pro in treeData[i]) {
+          if (typeof treeData[i][pro] === 'string') {
+            match = treeData[i][pro].includes(searchValue)
+            if (match) break
+          }
+        }
+        if (this.handleTreeData(treeData[i].organizationList, searchValue).length > 0 || match) {
+          array.push({
+            ...treeData[i],
+            organizationList: this.handleTreeData(treeData[i].organizationList, searchValue),
+          })
+        }
+      }
+      return array
+    },
+    treeTable () {
+      var searchValue = this.search
+      let treeData = this.tableData
+      let handleTreeData = this.handleTreeData(treeData, searchValue)
+      return handleTreeData
+    },
+  },
+  watch: {
+    search: {
+      handler (value) {
+        this.ftable = this.treeTable()
+      },
+      immediate: true,
     },
   },
 }

@@ -9,17 +9,18 @@
            style="display:flex">
         <div class="orgLeft">
           <div class="org-search">
-            <el-input size="mini"
-                      placeholder="请输入内容"
-                      @change='searchchange'
-                      suffix-icon="el-icon-search "> </el-input>
+            <el-input placeholder="请输入内容"
+                      v-model="filterText">
+            </el-input>
           </div>
-          <el-tree size='small'
+          <el-tree class="filter-tree"
                    :data="organizationData"
-                   default-expand-all
                    :props="defaultProps"
                    @node-click="organizationChange"
-                   ref="tree"></el-tree>
+                   default-expand-all
+                   :filter-node-method="filterNode"
+                   ref="tree">
+          </el-tree>
         </div>
         <div class="orgRight content">
           <div class="org-box">
@@ -51,7 +52,6 @@
                          type="primary">新建规则</el-button>
             </div>
           </div>
-
           <el-table :data="tableData"
                     style="width: 100%;margin-bottom: 20px;"
                     row-key="id"
@@ -60,21 +60,18 @@
                     default-expand-all
                     :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
                     :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-            <el-table-column prop="table1"
+            <el-table-column prop="nickName"
                              label="昵称（系统名）"
-                             width="120"></el-table-column>
-            <el-table-column prop="table2"
+                             width="180"></el-table-column>
+            <el-table-column prop="tel"
                              label="电话">
             </el-table-column>
-            <el-table-column prop="table3"
+            <el-table-column prop="roleName"
                              label="主要负责人">
             </el-table-column>
-            <el-table-column prop="table4"
+            <el-table-column prop="positionName"
                              label="职位"> </el-table-column>
-            <el-table-column prop="table5"
-                             label="人数"
-                             width='60'> </el-table-column>
-            <el-table-column prop="table6"
+            <el-table-column prop="status"
                              label="状态">
               <template>
                 <div class="status_box">
@@ -84,11 +81,10 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="table7"
+            <el-table-column prop="remake"
                              label="备注"
-                             width='60'></el-table-column>
-            <el-table-column prop="table8"
-                             width="250"
+                             width='180'></el-table-column>
+            <el-table-column width="250"
                              label="操作">
               <template slot-scope="scope">
                 <el-button @click="editLogin(scope.row)"
@@ -106,8 +102,9 @@
               </template>
             </el-table-column>
           </el-table>
+
           <!-- 页码 -->
-          <template>
+          <!-- <template>
             <div class="pagination-box">
               <div class="pagination-item">
                 <p>当前1-3，共3条 <span>每页显示10条</span></p>
@@ -125,14 +122,8 @@
                 </div>
               </div>
             </div>
-          </template>
+          </template> -->
         </div>
-        <el-drawer title="我是标题"
-                   size='52%'
-                   :visible.sync="drawer"
-                   :with-header="false">
-          <new-rule></new-rule>
-        </el-drawer>
         <!--重置密码-->
         <el-dialog title="重置密码"
                    width="480px"
@@ -200,118 +191,19 @@
 </template>
 <script>
 // import newRule from '@/views/company/components/personnelManagement/newRule.vue'
-import { sysOrganizationList } from '@/api/company'
-
+import { sysOrganizationList, sysUserFindById, sysUserList } from '@/api/company'
 export default {
   data () {
     return {
+      filterText: '',
       drawer: false, //抽屉控制
       Password: '', //密码
       prohibitLogin: false, //禁止登陆
       resetPassword: false, //重置密码
       Deactivate: false, //停用
       // 表格数据
-      tableData: [
-        {
-          id: 1,
-          table1: '汤飞刚',
-          table2: '13607932583',
-          table3: '房屋管理维修部',
-          table4: '电工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-        {
-          id: 2,
-          table1: '鲁星',
-          table2: '13607932233',
-          table3: '房屋管理维修部',
-          table4: '电工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-        {
-          id: 3,
-          table1: '王伟',
-          table2: '15407932583',
-          table3: '房屋管理维修部',
-          table4: '电工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-        {
-          id: 4,
-          table1: '刘星',
-          table2: '13607932583',
-          table3: '房屋管理维修部',
-          table4: '木工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-        {
-          id: 5,
-          table1: '李燕',
-          table2: '15707932513',
-          table3: '房屋管理维修部',
-          table4: '电工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-        {
-          id: 7,
-          table1: '张勇',
-          table2: '18107932523',
-          table3: '房屋管理维修部',
-          table4: '电工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-        {
-          id: 8,
-          table1: '王平',
-          table2: '13207922583',
-          table3: '房屋管理维修部',
-          table4: '电工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-        {
-          id: 9,
-          table1: '刘学',
-          table2: '13607233584',
-          table3: '房屋管理维修部',
-          table4: '水泥工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-        {
-          id: 10,
-          table1: '王鑫',
-          table2: '17607932583',
-          table3: '房屋管理维修部',
-          table4: '木工',
-          table5: '-',
-          table6: '正常',
-          table7: '—',
-          table8: '编辑',
-        },
-      ],
+      tableData: [],
+      // 组织结构
       organizationData: [],
       defaultProps: {
         children: 'organizationList',
@@ -319,6 +211,11 @@ export default {
       },
       select: '',
       cities: [],
+      currentPage: 1,
+      limit: 10,
+      organizationId: null,
+      nickName: null,
+      status: null,
     }
   },
   // components: {
@@ -326,13 +223,36 @@ export default {
   // },
   created () {
     this.getData()
+    this.getTableData()
   },
   methods: {
     // 组织点击
     organizationChange (data) {
       console.log(data)
+      this.organizationId = data.id
+      this.getTableData()
     },
     // 表格数据
+    getTableData () {
+      let resData = {
+        pageNum: this.currentPage,
+        size: this.limit,
+        organizationId: this.organizationId,
+        nickName: this.nickName,
+        status: this.status,
+      }
+      sysUserList(resData).then(result => {
+        console.log(result)
+        this.tableData = result.tableList
+      })
+    },
+    // 树形结构过滤
+    filterNode (value, data) {
+      console.log(value)
+      if (!value) return true;
+      return data.name.indexOf(value) !== -1;
+    },
+    // 人员管理结构
     getData () {
       sysOrganizationList().then(res => {
         console.log(res)
@@ -354,6 +274,13 @@ export default {
       console.log(`当前页: ${val}`)
     },
   },
+  watch: {
+    // 树形结构过滤
+    filterText (val) {
+      this.$refs.tree.filter(val);
+    }
+  },
+
 }
 </script>
 <style scoped lang='scss'>

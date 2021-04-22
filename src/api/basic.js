@@ -1,5 +1,6 @@
 import service from '../utils/request'
 import requestUrl from './requestUrl'
+// /IntelligentCommunity/app/share/visitorApplication/findAll
 
 // 获取table表格
 export function GetTableData(params) {
@@ -19,7 +20,7 @@ export function Delete(params) {
 }
 
 // 登陆
-export const Login = (data) => {
+export const Login = data => {
     return service.request({
         method: 'post',
         url: '/sysLogin/loginSysUser',
