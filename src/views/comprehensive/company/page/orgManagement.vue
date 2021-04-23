@@ -15,7 +15,6 @@
                       placeholder="请输入搜索内容"
                       style="width:240px;margin:10px 0"></el-input>
             <div>
-              <!--   :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" -->
               <el-table :data="ftable"
                         style="width: 100%;margin-bottom: 20px;"
                         row-key="id"
@@ -27,7 +26,6 @@
                                  width="296"
                                  label="组织机构层级"></el-table-column>
                 <el-table-column label="分类">
-
                   <template slot-scope="scope">
                     <div>
                       <div v-if="scope.row.categoryId ===1">

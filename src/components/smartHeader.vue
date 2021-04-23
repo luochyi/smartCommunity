@@ -37,15 +37,8 @@
         <router-view></router-view>
       </el-container>
       <div class='control'>
-        <!-- <div class='control_box'
-             style="pointer-events: none;">
-          <span>信息服务平台</span>
-        </div>
-        <div class='control_box'>
-          <span>物业系统</span>
-        </div> -->
         <div class='control_box'
-             @click="complex">
+             @click="toAdmin">
           <span>综合服务平台</span>
         </div>
       </div>
@@ -117,15 +110,14 @@ export default {
         this.activeIndex = this.$route.path
       }
     },
+    toAdmin () {
+      this.$router.push('/company')
+    },
   },
   watch: {
-    // '$route': 'getPath',
     $route: {
       handler: function (val, oldVal) {
         this.getPath()
-        // console.log('-----------watch')
-        // this.activeIndex = val.matched[0].path
-        // console.log(val.matched[0].path)
       },
       // 深度观察监听
       deep: true,
@@ -150,8 +142,8 @@ export default {
 .control {
     cursor: pointer;
     width: 20px;
-    height: 90px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 40px;
     background: rgba(0, 0, 0, 0.4);
     border-radius: 100px 0px 0px 100px;
     bottom: 20%;

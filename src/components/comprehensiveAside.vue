@@ -93,14 +93,13 @@ export default {
           isChildren: 0
 
         },
-        {
-          path: '/company/dataAuthority',
-          label: '数据权限管理',
-          iconurl: require('@/assets/images/company/icon_comprehensive04_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive04_sel.png'),
-          isChildren: 0
-
-        },
+        // {
+        //   path: '/company/dataAuthority',
+        //   label: '数据权限管理',
+        //   iconurl: require('@/assets/images/company/icon_comprehensive04_nor.png'),
+        //   iconisactive: require('@/assets/images/company/icon_comprehensive04_sel.png'),
+        //   isChildren: 0
+        // },
       ],
       // asideMenu: [
       //   {

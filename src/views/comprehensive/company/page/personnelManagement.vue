@@ -15,6 +15,8 @@
           </div>
           <el-tree class="filter-tree"
                    :data="organizationData"
+                   :expand-on-click-node='false'
+                   :highlight-current="true"
                    :props="defaultProps"
                    @node-click="organizationChange"
                    default-expand-all
@@ -23,15 +25,25 @@
           </el-tree>
         </div>
         <div class="orgRight content">
-          <div class="org-box">
-            <div class="permission-input">
-              <template>
-                <span>请选择部门：</span>
-                <el-select v-model="select"
+          <div class="flex  justify-between"
+               style="padding-bottom:20px">
+            <div class='flex align-center justify-between'
+                 style="flex:5">
+              <div>
+                <span>员工名称：</span>
+                <el-input placeholder="请输入内容"
+                          size="small"
+                          style="width:240px"
+                          v-model="nickName">
+                </el-input>
+              </div>
+              <div>
+                <span>状态：</span>
+                <el-select v-model="status"
                            size="mini"
                            placeholder="请选择"
                            style="width:240px">
-                  <el-option v-for="item in cities"
+                  <el-option v-for="item in statusOptions"
                              :key="item.value"
                              :label="item.label"
                              :value="item.value">
@@ -39,17 +51,19 @@
                     <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
                   </el-option>
                 </el-select>
-              </template>
+              </div>
             </div>
-            <div class="permission-btn">
+            <div class='flex align-center justify-center'
+                 style="flex:2;">
               <el-button size="small"
                          type="primary">查询</el-button>
               <el-button size="small">重置</el-button>
+
             </div>
             <div>
               <el-button size="small"
                          @click="drawer = true"
-                         type="primary">新建规则</el-button>
+                         type="primary">新建员工</el-button>
             </div>
           </div>
           <el-table :data="tableData"
@@ -72,6 +86,7 @@
             <el-table-column prop="positionName"
                              label="职位"> </el-table-column>
             <el-table-column prop="status"
+                             width="120"
                              label="状态">
               <template>
                 <div class="status_box">
@@ -196,7 +211,6 @@ export default {
   data () {
     return {
       filterText: '',
-      drawer: false, //抽屉控制
       Password: '', //密码
       prohibitLogin: false, //禁止登陆
       resetPassword: false, //重置密码
@@ -209,13 +223,12 @@ export default {
         children: 'organizationList',
         label: 'name',
       },
-      select: '',
-      cities: [],
       currentPage: 1,
       limit: 10,
       organizationId: null,
       nickName: null,
       status: null,
+      statusOptions: []
     }
   },
   // components: {
@@ -311,11 +324,11 @@ export default {
     overflow: auto;
     border: 1px solid #cfd0dd;
 }
-.org-box {
-    box-sizing: content-box;
-    display: flex;
-    padding: 20px;
-}
+// .org-box {
+//     box-sizing: content-box;
+//     display: flex;
+//     padding: 20px;
+// }
 .permission-input {
     width: 486px;
     margin-right: 88px;

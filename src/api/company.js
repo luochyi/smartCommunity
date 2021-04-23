@@ -40,6 +40,15 @@ export function sysUserFindById(data) {
         params: data
     })
 }
+// /functionAuthority/roleList
+export function functionAuthorityRoleList(data) {
+  return service.request({
+      method: 'GET',
+      url: '/functionAuthority/roleList',
+      params: data
+  })
+}
+
 // // 日常缴费：添加缴费信息（带有付款功能）【打印未做】
 // export function dailyPaymentInsert(data) {
 //     return service.request({

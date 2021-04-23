@@ -1,18 +1,20 @@
 <template>
   <div>
-    <div class="myContent">
-      <div class='myContentTitle'>
-        <span>人员管理</span>
+    <div class="main-content comprehensive">
+      <div class="main-titel"
+           style="border-bottom:none;">
+        <span>功能权限管理</span>
       </div>
       <div class="asideSj-tab">
         <el-tabs v-model="activeName">
           <el-tab-pane label="人员角色分配"
-                       name="first">
-            <role-assignments></role-assignments>
+                       name="1">
+
+            <role-assignments :show='activeName==="1"'></role-assignments>
           </el-tab-pane>
           <el-tab-pane label="角色权限设置"
-                       name="second">
-            <role-permissions></role-permissions>
+                       name="2">
+            <!-- <role-permissions></role-permissions> -->
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -20,34 +22,23 @@
   </div>
 </template>
 <script>
-// admin/src/views/company/components/functionAuthority
-import roleAssignments from '@/views/company/components/functionAuthority/roleAssignments.vue'
-import rolePermissions from '@/views/company/components/functionAuthority/rolePermissions.vue'
+// // admin/src/views/company/components/functionAuthority
+import roleAssignments from '@/views/comprehensive/company/components/functionAuthority/roleAssignments.vue'
+// import rolePermissions from '@/views/company/components/functionAuthority/rolePermissions.vue'
+// functionAuthorityRoleList
 
 export default {
-  data() {
+  data () {
     return {
-      activeName: 'second',
+      activeName: '1',
     }
   },
   components: {
     roleAssignments,
-    rolePermissions,
+    // rolePermissions,
   },
   methods: {},
 }
 </script>
-<style scoped>
-.myContent {
-  background: #fff;
-  margin: 0 auto 20px;
-  border-radius: 3px;
-}
-.myContentTitle {
-  margin-bottom: 10px;
-  padding: 0 20px 10px;
-  color: #202332;
-  font-size: 16px;
-  line-height: 60px;
-}
+<style scoped lang='scss' >
 </style>

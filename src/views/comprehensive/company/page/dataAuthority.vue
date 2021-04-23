@@ -24,7 +24,7 @@
 import basicData from '@/views/company/components/dataAuthority/basicData.vue'
 import dataPermission from '@/views/company/components/dataAuthority/dataPermission.vue'
 export default {
-  data() {
+  data () {
     return {
       activeName: 'second',
     }
@@ -33,20 +33,21 @@ export default {
     basicData,
     dataPermission,
   },
+
   methods: {},
 }
 </script>
 <style scoped>
 .myContent {
-  background: #fff;
-  margin: 0 auto 20px;
-  border-radius: 3px;
+    background: #fff;
+    margin: 0 auto 20px;
+    border-radius: 3px;
 }
 .myContentTitle {
-  margin-bottom: 10px;
-  padding: 0 20px 10px;
-  color: #202332;
-  font-size: 16px;
-  line-height: 60px;
+    margin-bottom: 10px;
+    padding: 0 20px 10px;
+    color: #202332;
+    font-size: 16px;
+    line-height: 60px;
 }
 </style>

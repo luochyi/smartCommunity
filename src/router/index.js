@@ -47,7 +47,15 @@ const routes = [
                             require([
                                 '@/views/comprehensive/company/page/personnelManagement'
                             ], resolve)
+                    },
+                    {
+                        path: '/company/functionAuthority',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/functionAuthority'
+                            ], resolve)
                     }
+                    // /company/functionAuthority
                 ]
             }
         ]

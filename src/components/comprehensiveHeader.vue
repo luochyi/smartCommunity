@@ -40,6 +40,12 @@
         <router-view></router-view>
       </el-container>
     </el-container>
+    <div class='control'>
+      <div class='control_box'
+           @click="toAdmin">
+        <span>信息服务系统</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -97,6 +103,9 @@ export default {
       }
       console.log(this.$route.path)
     },
+    toAdmin () {
+      this.$router.push('/overview')
+    },
   },
   watch: {
     $route: {
@@ -126,8 +135,8 @@ export default {
 .control {
     cursor: pointer;
     width: 20px;
-    height: 90px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 40px;
     background: rgba(0, 0, 0, 0.4);
     border-radius: 100px 0px 0px 100px;
     bottom: 20%;

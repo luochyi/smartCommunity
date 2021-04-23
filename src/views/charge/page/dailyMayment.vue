@@ -225,7 +225,7 @@ export default {
             disabled: true,
           },
           {
-            type: 'Input',
+            type: 'Int',
             label: '面积/用量  ',
             placeholder: '请输入',
             prop: 'num',
