@@ -76,14 +76,17 @@
                     :header-cell-style="{background:'#eef1f6',color:'#606266'}">
             <el-table-column prop="nickName"
                              label="昵称（系统名）"
-                             width="180"></el-table-column>
+                             width="140"></el-table-column>
             <el-table-column prop="tel"
+                             width="140"
                              label="电话">
             </el-table-column>
             <el-table-column prop="roleName"
+                             width="120"
                              label="主要负责人">
             </el-table-column>
             <el-table-column prop="positionName"
+                             width="100"
                              label="职位"> </el-table-column>
             <el-table-column prop="status"
                              width="120"
@@ -97,8 +100,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="remake"
-                             label="备注"
-                             width='180'></el-table-column>
+                             label="备注"></el-table-column>
             <el-table-column width="250"
                              label="操作">
               <template slot-scope="scope">
@@ -117,27 +119,25 @@
               </template>
             </el-table-column>
           </el-table>
-
-          <!-- 页码 -->
-          <!-- <template>
+          <template>
             <div class="pagination-box">
               <div class="pagination-item">
                 <p>当前1-3，共3条 <span>每页显示10条</span></p>
               </div>
               <div class="pagination-item">
                 <div class="block">
-                  <el-pagination @size-change="handleSizeChange"
-                                 @current-change="handleCurrentChange"
-                                 :page-size="100"
+                  <el-pagination @current-change="handleCurrentChange"
+                                 :page-size="10"
+                                 :current-page='currentPage'
                                  background
                                  :pager-count="9"
                                  layout="prev, pager, next,jumper"
-                                 :total="900">
+                                 :total="rowCount">
                   </el-pagination>
                 </div>
               </div>
             </div>
-          </template> -->
+          </template>
         </div>
         <!--重置密码-->
         <el-dialog title="重置密码"
@@ -225,9 +225,12 @@ export default {
       },
       currentPage: 1,
       limit: 10,
+      pageCount: null,
+      rowCount: null,
       organizationId: null,
       nickName: null,
       status: null,
+
       statusOptions: []
     }
   },
@@ -257,6 +260,8 @@ export default {
       sysUserList(resData).then(result => {
         console.log(result)
         this.tableData = result.tableList
+        this.rowCount = result.rowCount
+
       })
     },
     // 树形结构过滤
@@ -280,10 +285,9 @@ export default {
       console.log(row)
     },
     // 表格分页
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
-    },
     handleCurrentChange (val) {
+      this.currentPage = val
+      this.getTableData()
       console.log(`当前页: ${val}`)
     },
   },

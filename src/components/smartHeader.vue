@@ -115,6 +115,7 @@ export default {
     },
   },
   watch: {
+    // '$route': 'getPath',
     $route: {
       handler: function (val, oldVal) {
         this.getPath()

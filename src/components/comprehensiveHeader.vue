@@ -39,13 +39,14 @@
       <el-container style="height:100%">
         <router-view></router-view>
       </el-container>
-    </el-container>
-    <div class='control'>
-      <div class='control_box'
-           @click="toAdmin">
-        <span>信息服务系统</span>
+      <div class='control'>
+        <div class='control_box'
+             @click="toAdmin">
+          <span>信息服务系统</span>
+        </div>
       </div>
-    </div>
+    </el-container>
+
   </div>
 </template>
 

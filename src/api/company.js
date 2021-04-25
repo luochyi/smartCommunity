@@ -40,15 +40,21 @@ export function sysUserFindById(data) {
         params: data
     })
 }
-// /functionAuthority/roleList
 export function functionAuthorityRoleList(data) {
-  return service.request({
-      method: 'GET',
-      url: '/functionAuthority/roleList',
-      params: data
-  })
+    return service.request({
+        method: 'GET',
+        url: '/functionAuthority/roleList',
+        params: data
+    })
 }
-
+// 功能权限管理：查询所属角色下所有的员工信息 （包含条件搜索）
+export function functionAuthorityList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/functionAuthority/list',
+        params: data
+    })
+}
 // // 日常缴费：添加缴费信息（带有付款功能）【打印未做】
 // export function dailyPaymentInsert(data) {
 //     return service.request({
