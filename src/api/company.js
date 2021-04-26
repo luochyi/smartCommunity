@@ -55,6 +55,32 @@ export function functionAuthorityList(data) {
         params: data
     })
 }
+//功能权限管理：修改该角色的权限信息
+export function functionAuthorityUpdateJurisdiction(data) {
+    return service.request({
+        method: 'POST',
+        url: '/functionAuthority/updateJurisdiction',
+        data: data
+    })
+}
+// 功能权限管理：查询所有当前角色的权限信息
+export function functionAuthorityListJurisdiction(data) {
+    return service.request({
+        method: 'GET',
+        url: '/functionAuthority/listJurisdiction',
+        params: data
+    })
+}
+//功能权限管理：修改该角色的权限信息
+
+export function functionAuthorityUpdateOneJurisdiction(data) {
+    return service.request({
+        method: 'POST',
+        url: '/functionAuthority/updateOneJurisdiction',
+        data: data
+    })
+}
+
 // // 日常缴费：添加缴费信息（带有付款功能）【打印未做】
 // export function dailyPaymentInsert(data) {
 //     return service.request({

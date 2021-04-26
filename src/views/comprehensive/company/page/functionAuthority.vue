@@ -14,7 +14,7 @@
           </el-tab-pane>
           <el-tab-pane label="角色权限设置"
                        name="2">
-            <!-- <role-permissions></role-permissions> -->
+            <role-permissions></role-permissions>
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -24,18 +24,18 @@
 <script>
 // // admin/src/views/company/components/functionAuthority
 import roleAssignments from '@/views/comprehensive/company/components/functionAuthority/roleAssignments.vue'
-// import rolePermissions from '@/views/company/components/functionAuthority/rolePermissions.vue'
+import rolePermissions from '@/views/comprehensive/company/components/functionAuthority/rolePermissions.vue'
 // functionAuthorityRoleList
 
 export default {
   data () {
     return {
-      activeName: '1',
+      activeName: '2',
     }
   },
   components: {
     roleAssignments,
-    // rolePermissions,
+    rolePermissions,
   },
   methods: {},
 }

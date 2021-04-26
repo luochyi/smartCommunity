@@ -134,8 +134,6 @@ export default {
   },
   data () {
     return {
-      cities: [],
-      drawer: false,
       tableData: [],
       roleList: [],
       organizationId: null,  //部门Id

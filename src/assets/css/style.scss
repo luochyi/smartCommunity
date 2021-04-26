@@ -374,6 +374,10 @@
         background-color: #3163c0 !important;
         color: #fff !important;
     }
-
+    .el-checkbox__input.is-checked .el-checkbox__inner,
+    .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+        background-color: #409eff !important;
+        border-color: #409eff !important;
+    }
     // comprehensive
 }

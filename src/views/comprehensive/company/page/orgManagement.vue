@@ -334,7 +334,7 @@ export default {
       })
     },
     //  树形表格过滤
-    handleTreeData (treeData, searchValue) {
+    handleTreeData (treeData, searchValuse) {
       if (!treeData || treeData.length === 0) {
         return []
       }
