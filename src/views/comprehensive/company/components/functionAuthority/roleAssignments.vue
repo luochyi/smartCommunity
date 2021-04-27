@@ -54,8 +54,8 @@
             </div>
             <div>
               <el-button size="small"
-                         @click="drawer = true"
-                         type="primary">新建员工</el-button>
+                         @click="addEidtVrisible = true"
+                         type="primary">添加 员工</el-button>
             </div>
           </div>
           <div>
@@ -117,8 +117,54 @@
             </template>
           </div>
         </div>
-      </div>
+        <!-- 添加员工 -->
+        <Drawer drawerTitle="添加员工"
+                @drawerClose="addEidtClose"
+                :drawerVrisible='addEidtVrisible'>
+          <div style="padding:30px"
+               class="role-box">
+            <FromCard>
+              <template slot="title">角色配置</template>
+              <template>
+                <div style="padding:7%">
+                  <div>
+                    <div class="tips">
+                      <span>说明：新添加的角色会与员工的原有角色进行合并</span>
+                    </div>
+                    <div class='li'>
 
+                    </div>
+                  </div>
+                  <div class="check-box">
+                    <div v-for="(item) in roleList"
+                         :key='item.id'>
+                      <div class="flex list">
+                        <div class="list-title">
+                          <span>{{item.name}}</span>
+                        </div>
+                        <el-checkbox-group v-model='checkArr'>
+                          <el-checkbox v-for="check in item.voRoleList"
+                                       :label="check.id"
+                                       :key="check.id">{{check.name}}</el-checkbox>
+                        </el-checkbox-group>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </template>
+            </FromCard>
+          </div>
+          <div slot="footer">
+            <button class="btn-orange"
+                    @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+            <button class="btn-gray"
+                    @click="addEidtClose"><span>取消</span></button>
+          </div>
+        </Drawer>
+      </div>
     </div>
   </div>
 </template>
@@ -143,6 +189,9 @@ export default {
       pageCount: null,
       rowCount: null,
       roleId: null,
+      addEidtVrisible: false,
+      // 分配权限选中的id列表
+      checkArr: []
     }
   },
   created () {
@@ -151,6 +200,12 @@ export default {
     this.getOrganizationData()
   },
   methods: {
+    addEidtClose () {
+      this.addEidtVrisible = false
+    },
+    onSubmit () {
+      console.log(this.checkArr)
+    },
     // 角色列表
     GetRoleList () {
       functionAuthorityRoleList().then(res => {
@@ -278,5 +333,35 @@ export default {
     overflow: auto;
     overflow: auto;
     border: 1px solid #cfd0dd;
+}
+.role-box {
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #666666;
+    .tips {
+        padding-left: 12px;
+        height: 40px;
+        line-height: 40px;
+        background: #edf5ff;
+        border: 1px solid #97c3ff;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+}
+.check-box {
+    .list {
+        margin: 20px 0;
+        .list-title {
+            width: 90px;
+            text-align: right;
+            margin-right: 50px;
+        }
+        .check {
+            // width: 90px;
+            // text-align: right;
+            // display: flex;
+        }
+    }
 }
 </style>

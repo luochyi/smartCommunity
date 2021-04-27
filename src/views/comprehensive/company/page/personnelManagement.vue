@@ -47,8 +47,6 @@
                              :key="item.value"
                              :label="item.label"
                              :value="item.value">
-                    <span style="float: left">{{ item.label }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
                   </el-option>
                 </el-select>
               </div>
@@ -56,16 +54,19 @@
             <div class='flex align-center justify-center'
                  style="flex:2;">
               <el-button size="small"
+                         @click="search()"
                          type="primary">查询</el-button>
-              <el-button size="small">重置</el-button>
+              <el-button @click="reset()"
+                         size="small">重置</el-button>
 
             </div>
             <div>
               <el-button size="small"
-                         @click="drawer = true"
+                         @click="addPerson()"
                          type="primary">新建员工</el-button>
             </div>
           </div>
+          <!-- 表格 -->
           <el-table :data="tableData"
                     style="width: 100%;margin-bottom: 20px;"
                     row-key="id"
@@ -109,7 +110,7 @@
                            size="small">编辑</el-button>
                 <el-button @click="prohibitLogin = true"
                            type="text"
-                           size="small">禁止登陆</el-button>
+                           size="small">禁止登录 </el-button>
                 <el-button @click="resetPassword = true"
                            type="text"
                            size="small">重置密码</el-button>
@@ -119,6 +120,7 @@
               </template>
             </el-table-column>
           </el-table>
+          <!-- 分页 -->
           <template>
             <div class="pagination-box">
               <div class="pagination-item">
@@ -161,11 +163,10 @@
                        @click="resetPassword = false">取 消</el-button>
             <el-button size="mini"
                        type="primary"
-                       @click="resetPassword = false">确 定</el-button>
+                       @click="resetPasswordOk()">确 定</el-button>
           </span>
         </el-dialog>
         <!--禁止登陆-->
-
         <el-dialog title="禁止登陆"
                    width="480px"
                    top="40vh"
@@ -179,7 +180,7 @@
                        @click="prohibitLogin = false">取 消</el-button>
             <el-button size="mini"
                        type="primary"
-                       @click="prohibitLogin = false">确 定</el-button>
+                       @click="prohibitLoginOk()">确 定</el-button>
           </span>
         </el-dialog>
         <!--停用-->
@@ -215,10 +216,12 @@ export default {
       prohibitLogin: false, //禁止登陆
       resetPassword: false, //重置密码
       Deactivate: false, //停用
+      handleId: null,  //操作id  用于编辑禁止登陆 重置密码、停用等
       // 表格数据
       tableData: [],
       // 组织结构
       organizationData: [],
+      // 组织结构属性配置
       defaultProps: {
         children: 'organizationList',
         label: 'name',
@@ -228,15 +231,16 @@ export default {
       pageCount: null,
       rowCount: null,
       organizationId: null,
+      // 搜索条件
       nickName: null,
+      // 搜索条件 
       status: null,
-
-      statusOptions: []
+      statusOptions: [
+        { value: 1, label: '正常' },
+        { value: 2, label: '异常' }
+      ]
     }
   },
-  // components: {
-  //   newRule,
-  // },
   created () {
     this.getData()
     this.getTableData()
@@ -248,6 +252,26 @@ export default {
       this.organizationId = data.id
       this.getTableData()
     },
+    //查询
+    search () {
+      this.getTableData()
+    },
+    // 重置
+    reset () {
+      this.nickName = null
+      this.status = null
+      this.getTableData()
+    },
+    // 禁止登录确认
+    prohibitLoginOk () {
+      this.prohibitLogin = false
+    },
+    // 重置密码确定
+    resetPasswordOk () {
+      this.resetPassword = false
+    },
+    // 重制密码对话框的关闭事件
+    resetDialog () { },
     // 表格数据
     getTableData () {
       let resData = {
@@ -264,6 +288,10 @@ export default {
 
       })
     },
+    // 新建员工
+    addPerson () {
+
+    },
     // 树形结构过滤
     filterNode (value, data) {
       console.log(value)
@@ -277,8 +305,6 @@ export default {
         this.organizationData = res
       })
     },
-    // 重制密码对话框的关闭事件
-    resetDialog () { },
     //编辑
     editLogin (row) {
       this.drawer = true
@@ -288,7 +314,6 @@ export default {
     handleCurrentChange (val) {
       this.currentPage = val
       this.getTableData()
-      console.log(`当前页: ${val}`)
     },
   },
   watch: {

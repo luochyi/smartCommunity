@@ -6,7 +6,8 @@ const routes = [
     {
         path: '/',
         // 路由重定向
-        redirect: '/Login'
+        redirect: '/Login',
+        component: resolve => require(['@/views/Login'], resolve)
     },
     {
         path: '/company',

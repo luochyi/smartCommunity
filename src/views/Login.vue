@@ -86,7 +86,6 @@
 </template>
 <script>
 import { Login } from '@/api/basic'
-import axios from 'axios'
 
 export default {
   data () {
@@ -101,14 +100,6 @@ export default {
       passWrod: '',
       activeName: 'first',
     }
-  },
-  mounted () {
-    axios.get('http://test.akuhotel.com:8804/IntelligentCommunity/app/share/visitorApplication/findAll', {     
-    }).then(function (res) {
-      console.log(res)
-    }).catch(function (error) {
-      console.log(error);
-    });
   },
   methods: {
     //   前往官方网站
@@ -137,14 +128,11 @@ export default {
         userName: this.UserName,
         pwd: this.passWrod
       }
-      // // /IntelligentCommunity/app/share/visitorApplication/findAll
-
       Login(resData).then((res) => {
         if (res.status) {
           sessionStorage.setItem('X-Admin-Token', res.token)
-          this.$router.push('/company')
+          this.$router.push('/company/companyInfo')
         }
-        // sessionStorage.setItem('X-Admin-Token', res.token)
       })
     },
   },

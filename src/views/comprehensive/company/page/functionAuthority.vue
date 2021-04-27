@@ -22,7 +22,6 @@
   </div>
 </template>
 <script>
-// // admin/src/views/company/components/functionAuthority
 import roleAssignments from '@/views/comprehensive/company/components/functionAuthority/roleAssignments.vue'
 import rolePermissions from '@/views/comprehensive/company/components/functionAuthority/rolePermissions.vue'
 // functionAuthorityRoleList
@@ -30,7 +29,7 @@ import rolePermissions from '@/views/comprehensive/company/components/functionAu
 export default {
   data () {
     return {
-      activeName: '2',
+      activeName: '1',
     }
   },
   components: {

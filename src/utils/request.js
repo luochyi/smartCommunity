@@ -1,6 +1,7 @@
 import axios from 'axios'
 // ElementUI 单独引入
 import ElementUI from 'element-ui'
+import router from '../router'
 import qs from 'qs'
 // 创建实例
 const service = axios.create({
@@ -31,11 +32,12 @@ service.interceptors.response.use(
         const data = response.data
         // 未登录或登录失效
         if (data == '{message=未登录, status=-1000}') {
-            // ElementUI.Message.error('未登录')
-            alert('未登录')
+            ElementUI.Message.error('未登录')
             setTimeout(() => {
-                window.location.href = '/'
-            }, 1000)
+                router.replace({
+                    path: '/Login'
+                })
+            }, 500)
 
             return response
         }
