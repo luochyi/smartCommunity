@@ -1,5 +1,5 @@
 <template>
-  <div v-if="change">
+  <div>
     <div class="main-content">
       <div class="main-titel">
         <span>工单费用</span>
@@ -9,6 +9,21 @@
           <VueTable ref="table"
                     :config='config'
                     @tableCheck="tableCheck">
+            <!-- searchForm -->
+            <template slot="searchForm">
+              <div>
+                <el-tabs v-model="activeName"
+                         @tab-click="handleClick">
+                  <el-tab-pane label="全部"
+                               name="0"></el-tab-pane>
+                  <el-tab-pane label="未缴纳"
+                               name="1"></el-tab-pane>
+                  <el-tab-pane label="部分缴纳"
+                               name="2"></el-tab-pane>
+                </el-tabs>
+              </div>
+            </template>
+
             <template slot="tabs">
               <el-tabs v-model="activeName"
                        @tab-click="handleClick">
@@ -22,8 +37,8 @@
             </template>
             <template slot="footer">
               <div class="table-footer">
-                <button @click="refundVrisible=true">退款</button>
-                <button @click="Pay()">缴费</button>
+                <button>退款</button>
+                <button>缴费</button>
                 <button>删除</button>
                 <button>详情</button>
               </div>
@@ -31,158 +46,14 @@
           </VueTable>
         </div>
       </div>
-
-      <!-- 退款 -->
-      <Refund :drawerVrisible='refundVrisible'
-              @handleClose='getClose'></Refund>
     </div>
-    <!-- 缴费 -->
-  </div>
-  <div v-else>
-    <Pay v-if="Pay_show"
-         @cancel="cancel"></Pay>
   </div>
 </template>
 
 <script>
-import Refund from '@/views/charge/components/depositManagement/Refund.vue'
-import Pay from '@/views/charge/components/dailyMayment/Pay.vue'
 export default {
   data () {
     return {
-      change: true,
-      Pay_show: false,
-      // 退款
-      refundVrisible: false,
-      // 添加抽屉数据
-      drawer_config: {
-        drawer_vrisible: false,
-        head_title: '添加押金',
-        content_title: '基本信息',
-        ruleForm: {
-          p1: '',
-          p2: '',
-          p3: '',
-          p4: '',
-          p5: '',
-          p6: '',
-          p7: '5000',
-          p8: '',
-          p9: '',
-          p10: '',
-          p11: '',
-          p12: ''
-        },
-        form_item: [
-          {
-            type: "Select",
-            label: "费用项目名",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            options: [],
-            prop: "p1",
-          },
-          {
-            type: "Select",
-            label: "费用类型",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            disabled: true,
-            options: [],
-            prop: "p2",
-          }, {
-            type: "Input",
-            label: "房屋信息",
-            value: '',
-            placeholder: '请输入',
-            width: "50%",
-            prop: "p3",
-          },
-          {
-            type: "Select",
-            label: "来源",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            options: [],
-            prop: "p4",
-          },
-          {
-            type: "Input",
-            label: "押金人姓名",
-            value: '',
-            placeholder: '请输入',
-            width: "50%",
-            prop: "p5",
-          },
-
-          {
-            type: "Input",
-            label: "押金人联系方式 ",
-            value: '',
-            placeholder: '请输入',
-            width: "50%",
-            prop: "p6",
-          },
-          {
-            type: "Select",
-            label: "押金金额",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            disabled: true,
-            options: [],
-            prop: "p7",
-          },
-          {
-            type: "Select",
-            label: "支付方式",
-            value: '',
-            placeholder: '请选择',
-            width: "50%",
-            options: [],
-            prop: "p8",
-          },
-          {
-            type: "date",
-            label: "缴费时间",
-            value: '',
-            placeholder: '请选择时间',
-            width: "100%",
-            options: [],
-            prop: "p9",
-          },
-          {
-            type: "date",
-            label: "装修开始时间",
-            value: '',
-            placeholder: '请选择时间',
-            width: "50%",
-            options: [],
-            prop: "p10",
-          },
-          {
-            type: "date",
-            label: "装修结束时间",
-            value: '',
-            placeholder: '请选择时间',
-            width: "50%",
-            options: [],
-            prop: "p11",
-          },
-          {
-            type: "textarea",
-            label: "备注",
-            placeholder: "请输入",
-            rows: 6,
-            width: "100%",
-            prop: "p12",
-          }
-        ],
-      },
-      drawer_vrisible: false,
       activeName: '0',
       config: {
         thead: [
@@ -206,53 +77,60 @@ export default {
         ],
         table_data: [],
         url: 'workOrderCostList',
+        // 是否请求后台
+        isRequest: false,
         search_item: [
           {
             type: 'select',
             label: '费用项目名称',
             placeholder: '请选择',
             value: '',
-            prop: 'chargesTemplateDetailId',
+            prop: 'a',
             options: [
               {
                 label: '水电费',
-                value: '1'
+                value: 1
               },
               {
                 label: '车辆费',
-                value: '2'
+                value: 2
               }
             ],
           },
-          {
-            type: 'Input',
-            label: '房屋信息',
-            placeholder: '楼栋/单元/房间号',
-            prop: 'roomName'
-          },
+
           {
             type: 'Input',
             label: '缴费人',
             placeholder: '请选择',
-            prop: 'payName'
+            prop: 'b'
           },
           {
             type: 'Input',
             label: '联系方式',
             placeholder: '请输入',
-            prop: 'tel'
+            prop: 'c'
           },
           {
             type: 'startDate',
             label: '计费时间',
             placeholder: '请选择开始日期',
-            prop: 'beginDate'
+            prop: 'd'
           },
           {
             type: 'endDate',
             label: '计费时间',
             placeholder: '请选择结束时间',
-            prop: 'endDate'
+            prop: 'e'
+          },
+          {
+            type: 'picker',
+            label: 'asdasdasd',
+            placeholder: '楼栋/单元/房间号',
+            prop: 'f',
+            startDate: 'x',
+            endDate: 'y',
+            width: '280px',
+            value: null,
           }
         ],
         data: {
@@ -262,11 +140,8 @@ export default {
       }
     }
   },
-  components: {
-    Refund,
-    Pay
-  },
   methods: {
+    // tabs切换
     handleClick (tab, event) {
       let status = null
       if (this.activeName != 0) {
@@ -281,22 +156,9 @@ export default {
       }
       this.$refs.table.requestData(requestData);
     },
+    // 表格选中
     tableCheck (data) {
       this.table_row = data;
-    },
-    Pay () {
-      this.change = false;
-      this.Pay_show = true;
-    },
-    // 关闭抽屉
-    getClose (data) {
-      this.drawer_vrisible = false;
-      this.refundVrisible = false;
-    },
-    cancel (data) {
-      this.Pay_show = false;
-      this.change = true;
-      console.log(data + "")
     }
   }
 }

@@ -69,6 +69,16 @@
                               v-model="form[item.prop]"
                               default-time="23:59:59"
                               :placeholder="item.placeholder"></el-date-picker>
+              <el-date-picker v-else-if="item.type === 'picker'"
+                              v-model="form[item.prop]"
+                              value-format="yyyy/MM/dd HH:mm:ss"
+                              @change="GetzhifuTime"
+                              type="datetimerange"
+                              :style="{ width: item.width }"
+                              range-separator="至"
+                              start-placeholder="开始日期"
+                              end-placeholder="结束日期">
+              </el-date-picker>
               <el-input v-else-if="item.type === 'textarea'"
                         type="textarea"
                         :rows="item.rows"
@@ -76,8 +86,7 @@
                         :placeholder="item.placeholder">
               </el-input>
               <slot v-else-if="item.type = 'Slot'"
-                    :name="item.slotName
-              "></slot>
+                    :name="item.slotName"></slot>
             </el-form-item>
           </div>
         </div>
@@ -127,13 +136,22 @@ export default {
       const forDate = {}
       // 取出formItem的prop
       this.formItem.forEach((item) => {
-        if (item.prop) {
+        if (item.type === 'picker') {
+          forDate[item.startDate] = item.value || null
+          forDate[item.endDate] = item.value || null
+        } else if (item.prop) {
           forDate[item.prop] = item.value || null
         }
+        // picker
       })
       this.form = forDate
+      console.log(this.form)
+    },
+    GetzhifuTime (value) {
+      // console.log(value)
     },
     onSubmit () {
+      console.log(this.form)
       this.$emit('searchForm', this.form)
     },
     resetForm (form) {

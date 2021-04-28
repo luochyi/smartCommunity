@@ -8,7 +8,7 @@
                     :btnWidth="'20%'">
         </searchForm>
       </template>
-
+      <!-- isRequest -->
       <slot name="tabs"></slot>
       <div class="content-table">
         <div style='width:100%;'>
@@ -20,7 +20,7 @@
                     highlight-current-row
                     :default-sort="{prop: 'date', order: 'descending'}"
                     :header-cell-style="{ background: '#F5F5F6', color: '#999999' }"
-                    :data="table_data">
+                    :data="table_config.table_data">
             <el-table-column v-if="table_config.checkbox"
                              type="selection"
                              width="55"></el-table-column>
@@ -100,6 +100,8 @@ export default {
         thead: [],
         checkbox: true,
         url: '',
+        isRequest: true,
+        table_data: [],
         pagination: true,
         data: {},
         search_form: true,
@@ -135,10 +137,15 @@ export default {
         url: this.table_config.url,
         data: this.table_config.data,
       }
+      if (!this.table_config.isRequest) {
+        this.loading_table = false
+        // 不请求后台
+        return
+      }
       this.loading_table = true
       GetTableData(requestData)
         .then((response) => {
-          console.log(response.tableList)
+
           // 判断数据是否存在
           if (response) {
             this.table_data = response.tableList
@@ -180,6 +187,7 @@ export default {
     // 查询
     search (data) {
       const searchData = data
+      console.log(data)
       searchData.pageNum = 1
       searchData.size = this.table_config.data.size
       this.requestData(searchData)
