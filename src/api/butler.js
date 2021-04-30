@@ -25,6 +25,30 @@ export function userArticleOuFindGoOutImgById(data) {
         params: data
     })
 }
+//访客管理： 查询今日家庭申报访客通行数量
+export function visitorsCountVisitorsNew(data) {
+    return service.request({
+        method: 'GET',
+        url: '/visitors/countVisitorsNew',
+        params: data
+    })
+}
+//投诉表扬：查询今日投诉条数
+export function adviceCountComplaintNew(data) {
+    return service.request({
+        method: 'GET',
+        url: '/advice/countComplaintNew',
+        params: data
+    })
+}
+// 投诉表扬：查询今日表扬条数
+export function adviceCountPraiseNew(data) {
+    return service.request({
+        method: 'GET',
+        url: '/advice/countPraiseNew',
+        params: data
+    })
+}
 //装修管理： 查询今日预计发起装修数量
 export function userDecorationCountDecorationNow(data) {
     return service.request({
@@ -275,6 +299,21 @@ export function reportRepairFindById(data) {
         params: data
     })
 }
+export function facilitiesManageInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/facilitiesManage/insert',
+        data: data
+    })
+}
+//设施预约-设施分类：添加设施分类信息
+export function facilitiesCategoryInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/facilitiesCategory/insert',
+        data: data
+    })
+}
 // 问卷调查：添加问卷调查表信息【照片未测】
 export function questionnaireInsert(data) {
     return service.request({
@@ -309,13 +348,13 @@ export function questionnaireReportAnalysis(data) {
 }
 // 物品管理：根据物品主键id查询物品信息
 export function articleFindById(data) {
-  return service.request({
-      method: 'GET',
-      url: '/article/findById',
-      params: data
-  })
+    return service.request({
+        method: 'GET',
+        url: '/article/findById',
+        params: data
+    })
 }
-// 
+//
 // 社区话题管理：添加话题信息(物业后台添加)
 export function gambitInsert(data) {
     return service.request({

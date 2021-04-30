@@ -72,7 +72,7 @@
               <el-date-picker v-else-if="item.type === 'picker'"
                               v-model="form[item.prop]"
                               value-format="yyyy/MM/dd HH:mm:ss"
-                              @change="GetzhifuTime"
+                              @change="(value) => GetzhifuTime(value,item.startDate,item.endDate)"
                               type="datetimerange"
                               :style="{ width: item.width }"
                               range-separator="至"
@@ -129,34 +129,41 @@ export default {
   data () {
     return {
       form: {},
+      // 日期选择器控件 开始时间结束时间 拆分成为一个对象
+      pickerFormat: {},
     }
   },
   methods: {
+    // 将传入item项 prop提取出来用于组件的双向绑定
     initFromDate () {
       const forDate = {}
-      // 取出formItem的prop
       this.formItem.forEach((item) => {
-        if (item.type === 'picker') {
-          forDate[item.startDate] = item.value || null
-          forDate[item.endDate] = item.value || null
-        } else if (item.prop) {
+        if (item.prop) {
           forDate[item.prop] = item.value || null
         }
-        // picker
       })
       this.form = forDate
       console.log(this.form)
     },
-    GetzhifuTime (value) {
-      // console.log(value)
+    // 日期选择器控件开始时间结束时间 拆分成为一个对象
+    GetzhifuTime (value, startDate, endDate) {
+      // startDate ， endDate  是传入属性名
+      this.$set(this.pickerFormat, startDate, value[0])
+      this.$set(this.pickerFormat, endDate, value[1])
     },
     onSubmit () {
-      console.log(this.form)
-      this.$emit('searchForm', this.form)
+      for (let k in this.form) {
+        if (!Array.isArray(this.form[k])) {
+          this.$set(this.pickerFormat, k, this.form[k])
+        }
+      }
+      console.log(this.pickerFormat)
+      this.$emit('searchForm', this.pickerFormat)
     },
     resetForm (form) {
+      console.log(this.form)
       this.$refs[form].resetFields()
-      this.$emit('searchForm', this.form)
+      this.$emit('searchForm', { pageNum: 1, size: 10 })
     },
   },
   watch: {

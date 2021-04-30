@@ -264,14 +264,14 @@ export default {
           },
           form_item: [
             {
-              type: 'Int',
+              type: 'Input',
               label: '业主姓名',
               placeholder: '请输入',
               width: '50%',
               prop: 'name'
             },
             {
-              type: 'Input',
+              type: 'Int',
               label: '联系方式',
               placeholder: '请输入',
               width: '50%',

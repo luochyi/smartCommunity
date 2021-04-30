@@ -86,14 +86,14 @@ export default {
           iconisactive: require('@/assets/images/charge/icon_charge03_sel.png'),
           isChildren: 0
         },
-        {
-          // Work order management
-          path: '/charge/orderManagement',
-          label: '工单管理',
-          iconurl: require('@/assets/images/charge/icon_charge04_nor.png'),
-          iconisactive: require('@/assets/images/charge/icon_charge04_sel.png'),
-          isChildren: 0
-        },
+        // {
+        //   // Work order management
+        //   path: '/charge/orderManagement',
+        //   label: '工单管理',
+        //   iconurl: require('@/assets/images/charge/icon_charge04_nor.png'),
+        //   iconisactive: require('@/assets/images/charge/icon_charge04_sel.png'),
+        //   isChildren: 0
+        // },
         {
           // Bill management
           path: '/charge/billManagement',

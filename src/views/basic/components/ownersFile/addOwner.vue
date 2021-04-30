@@ -44,9 +44,15 @@
                     <el-table-column prop="address"
                                      label="身份">
                       <template slot-scope="scope">
-                        <el-input size="small"
-                                  v-model="scope.row.identity"
-                                  placeholder="请输入"></el-input>
+                        <el-select size="small"
+                                   v-model="scope.row.identity"
+                                   placeholder="请输入">
+                          <el-option v-for="item in identityOptions"
+                                     :key="item.value"
+                                     :label="item.label"
+                                     :value="item.value">
+                          </el-option>
+                        </el-select>
                       </template>
                     </el-table-column>
                     <el-table-column label="证件类型">
@@ -152,14 +158,15 @@
           </div>
           <div>
             <el-select size="small"
+                       @change='(value) =>parkingChange(value,index)'
                        filterable
                        style="margin-right:16px"
                        v-model="item.parkingValue"
                        placeholder="请输入">
               <el-option v-for="obj in parkingOptions"
-                         :key="obj.value"
-                         :label="obj.label"
-                         :value="obj.value">
+                         :key="obj.id"
+                         :label="obj.code"
+                         :value="obj.id">
               </el-option>
             </el-select>
           </div>
@@ -185,7 +192,7 @@
 
 <script>
 
-import { userResidentInsert, cpmBuildingUnitFindAll, findByBuildingUnitId, findByBuildingId, } from '@/api/basic'
+import { GetTableData, userResidentInsert, cpmBuildingUnitFindAll, findByBuildingUnitId, findByBuildingId, } from '@/api/basic'
 export default {
   props: {
     drawerVrisible: {
@@ -201,6 +208,7 @@ export default {
     return {
       // 楼栋 单元 房产
       buildOptions: [],
+
       hoursArray: [
         {
           buildValue: null,
@@ -214,6 +222,8 @@ export default {
       ],
       // 车位
       parkingOptions: [],
+      parkingList: [],
+      // 
       parkingArray: [
         {
           parkingValue: null,
@@ -222,23 +232,29 @@ export default {
       // 亲属
       userOptions: [
         {
-          label: '父亲',
+          label: '身份证',
           value: 1
         },
         {
-          label: '母亲',
+          label: '营业执照',
           value: 2
         }
       ],
+      identityOptions: [{
+        label: '父亲',
+        value: 1
+      },
+      {
+        label: '母亲',
+        value: 2
+      },
+      {
+        label: '其他',
+        value: 3
+      }],
       drawer_vrisible: false,
       // 亲属表格
-      tableData: [{
-        name: null,
-        tel: null,
-        idType: null,
-        idNumber: null,
-        identity: null,
-      }],
+      tableData: [],
       // 基本信息
       fromjson: {
         ruleForm: {
@@ -289,11 +305,25 @@ export default {
     cpmBuildingUnitFindAll().then(res => {
       this.buildOptions = res
     })
+    GetTableData({
+      url: 'parkList',
+      data: {
+        pageNum: 1,
+        size: 100,
+      }
+    }).then(res => {
+      this.parkingOptions = res.tableList
+      console.log(res)
+    })
   },
   methods: {
+    parkingChange (value, index) {
+      this.$set(this.parkingList, index, value)
+      console.log(this.parkingList)
+    },
     //  提交
     onSubmit () {
-      let table_data = this.tableData.map(({ name, tel, idType, idNumber, identity }) => ({ name, tel, idType, idNumber, identity }))
+
       let result = this.hoursArray.map(i => i.hoursValue)
       for (let key in this.fromjson.ruleForm) {
         if (!this.fromjson.ruleForm[key]) {
@@ -304,6 +334,28 @@ export default {
           return
         }
       }
+      // 家属成员  表格有内容时间必填写
+      let isRequest = true
+
+      let table_data = this.tableData.map(item => {
+        if (!item.name || !item.tel || !item.idType || !item.idNumber || !item.identity) {
+          isRequest = false
+        }
+        return {
+          name: item.name,
+          tel: item.tel,
+          idType: item.idType, idNumber: item.idNumber,
+          identity: item.identity
+        }
+      })
+      if (isRequest === false) {
+        this.$message({
+          message: '请完善成员信息填写（可不填写）',
+          type: 'error'
+        })
+        return
+      }
+
       for (let i = 0; i < result.length; i++) {
         if (result[i] === null) {
           this.$message({
@@ -313,6 +365,9 @@ export default {
           return
         }
       }
+
+
+
       let resData = {
         userResident: {
           name: this.fromjson.ruleForm.name,
@@ -322,7 +377,7 @@ export default {
         },
         voRelativesList: table_data,
         buildingUnitEstateIds: result,
-        cpmParkingSpaceIds: []
+        cpmParkingSpaceIds: this.parkingList
       }
       console.log(resData)
       userResidentInsert(resData).then(res => {
@@ -337,6 +392,17 @@ export default {
     },
     // 弹窗关闭
     drawerClose () {
+      /****
+       *       parkingArray: [
+          {
+            parkingValue: null,
+          },
+        ],
+       * */
+      this.parkingArray = [{
+        parkingValue: null,
+      }]
+      this.tableData = []
       this.drawer_vrisible = false;
       this.$emit('handleClose', 'Close')
     },

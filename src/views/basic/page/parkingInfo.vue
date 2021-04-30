@@ -8,11 +8,11 @@
         <el-button class="init-button"
                    @click="add()"
                    icon="el-icon-plus">新增车辆</el-button>
-        <el-button type="init-button2"
+        <!-- <el-button type="init-button2"
                    icon="el-icon-folder-add"
                    plain>批量导入</el-button>
         <el-button class="init-text"
-                   type="text">模板下载</el-button>
+                   type="text">模板下载</el-button> -->
       </div>
       <VueTable ref="table"
                 :config='config'

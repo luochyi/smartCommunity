@@ -77,11 +77,11 @@ export default {
           path: '/operation',
           label: '运营管理',
         },
-        {
-          // path: '/Commodity Center',
-          path: '/commodity',
-          label: '商品中心',
-        },
+        // {
+        //   // path: '/Commodity Center',
+        //   path: '/commodity',
+        //   label: '商品中心',
+        // },
         // {
         //   path: '/system',
         //   label: '系统设置',

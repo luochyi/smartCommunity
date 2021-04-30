@@ -187,8 +187,12 @@ export default {
       },
     }
   },
+  created () {
+    this.getUserList()
+  },
   methods: {
-    remoteMethod (val) {
+    // 获取用户列表
+    getUserList (val) {
       let reeData = {
         pageNum: 1,
         size: 20,
@@ -200,17 +204,11 @@ export default {
         this.loading = false
       })
     },
+    remoteMethod (val) {
+      this.getUserList(val)
+    },
     sefocus () {
-      let reeData = {
-        pageNum: 1,
-        size: 20
-      }
-      this.loading = true
-      userResidentFindAllBySearch(reeData).then(res => {
-        this.options = res.tableList
-        this.loading = false
-        console.log(this.options)
-      })
+      this.getUserList()
     },
     change (value) {
       console.log(value)
@@ -219,7 +217,6 @@ export default {
     voteImgeSuccess (res, file) {
       this.fileUrls = res.url
       this.editBool = false
-      // this.$set(this.reportRepairFrom.ruleForm.fileUrls)
       this.reportRepairFrom.ruleForm.fileUrls[0] = res.url
     },
     // vueForm 验证通过提交服务器
@@ -280,8 +277,16 @@ export default {
         this.editBool = true
         this.editId = result.id
         this.reportRepairFrom.ruleForm.type = result.type + ''
-        this.reportRepairFrom.ruleForm.fileUrls = result.imgUrls[0].url
-        this.fileUrls = result.imgUrls[0].url
+        if (result.imgUrls[0]) {
+          this.reportRepairFrom.ruleForm.fileUrls = result.imgUrls[0].url
+          this.fileUrls = result.imgUrls[0].url
+        } else {
+          this.reportRepairFrom.ruleForm.fileUrls = []
+          this.fileUrls = ''
+        }
+        console.log(this.reportRepairFrom.ruleForm.fileUrls)
+        console.log(this.fileUrls)
+
         this.reportRepairFrom.ruleForm.reportDetail = result.reportDetail
         this.reportRepairFrom.ruleForm.repairman = result.repairman
         this.reportRepairFrom.ruleForm.tel = result.tel

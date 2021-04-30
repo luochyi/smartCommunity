@@ -10,20 +10,6 @@
                     :config='config'
                     @tableCheck="tableCheck">
             <!-- searchForm -->
-            <template slot="searchForm">
-              <div>
-                <el-tabs v-model="activeName"
-                         @tab-click="handleClick">
-                  <el-tab-pane label="全部"
-                               name="0"></el-tab-pane>
-                  <el-tab-pane label="未缴纳"
-                               name="1"></el-tab-pane>
-                  <el-tab-pane label="部分缴纳"
-                               name="2"></el-tab-pane>
-                </el-tabs>
-              </div>
-            </template>
-
             <template slot="tabs">
               <el-tabs v-model="activeName"
                        @tab-click="handleClick">
@@ -78,7 +64,7 @@ export default {
         table_data: [],
         url: 'workOrderCostList',
         // 是否请求后台
-        isRequest: false,
+        // isRequest: false,
         search_item: [
           {
             type: 'select',
@@ -124,11 +110,11 @@ export default {
           },
           {
             type: 'picker',
-            label: 'asdasdasd',
+            label: '时间',
             placeholder: '楼栋/单元/房间号',
-            prop: 'f',
-            startDate: 'x',
-            endDate: 'y',
+            prop: 'sss',
+            startDate: 'sDate',
+            endDate: 'eDate',
             width: '280px',
             value: null,
           }

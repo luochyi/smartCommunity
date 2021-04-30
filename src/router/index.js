@@ -157,6 +157,27 @@ const routes = [
                             ], resolve)
                     },
                     {
+                        //设施预约
+                        //设施管理
+                        path:'/butler/facilitiesManagement',
+                        component:()=>import('@/views/butler/page/facilitiesManagement')
+                    },
+                    {
+                         //预约管理
+                         path:'/butler/bookingManagement',
+                         component:()=>import('@/views/butler/page/bookingManagement')
+                    },
+                    {
+                         //设施检查
+                         path:'/butler/facilityInspection',
+                         component:()=>import('@/views/butler/page/facilityInspection')
+                    },
+                    {
+                        //设施分类
+                        path:'/butler/facilityItem',
+                        component:()=>import('@/views/butler/page/facilityItem')
+                   },
+                    {
                         // 问卷调查
                         path: '/butler/Questionnaire',
                         component: resolve =>

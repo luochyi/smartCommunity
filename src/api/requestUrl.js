@@ -14,12 +14,16 @@ const requestUrl = {
     vehicleListDelete: '/userCar/delete',
     ownerList: '/userResident/list',
     ownerListDelete: '/userResident/delete',
+    tenantList: '/tenant/list',
     // 管家服务
     itemsOutList: '/userArticleOut/list',
     itemsOutListDelete: '/userArticleOut/delete',
     userDecorationList: '/userDecoration/list',
     userDecorationListDelete: '',
 
+    facilitiesManageList: 'facilitiesManage/list',
+    facilitiesCategoryList: '/facilitiesCategory/list',
+    facilitiesCategoryListDelete: '/facilitiesCategory/delete',
     voteList: '/vote/list',
     voteListDelete: '/vote/falseDelete',
     voteListDetailList: '/vote/listDetailCandidate',
@@ -65,7 +69,8 @@ const requestUrl = {
     notificationManagementListDelete: '/notificationManagement/delete',
     activityManagementList: '/activityManagement/list',
     activityManagementListDelete: '/activityManagement/falseDelete',
-    sponsorManagementList: '/sponsorManagement/list'
+    sponsorManagementList: '/sponsorManagement/list',
+    sponsorManagementListDelete: '/sponsorManagement/falseDelete'
 
     // List Delete
 }

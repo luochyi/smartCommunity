@@ -18,6 +18,7 @@ import tablePagination from '@/components/tablePagination.vue'
 import tableData from '@/components/table/tableData.vue'
 import VueTable from '@/components/table/index.vue'
 import Dialog from '@/components/dialog/Dialog.vue'
+//Drawer
 import Drawer from '@/components/Drawer/indexs'
 
 // import contentBox from '@/components/Drawer/contentBox.vue'

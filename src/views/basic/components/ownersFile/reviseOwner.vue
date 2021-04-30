@@ -50,7 +50,7 @@
                         <el-select size="small"
                                    v-model="scope.row.identity"
                                    placeholder="请输入">
-                          <el-option v-for="item in userOptions"
+                          <el-option v-for="item in identityOptions"
                                      :key="item.value"
                                      :label="item.label"
                                      :value="item.value">
@@ -125,17 +125,6 @@ export default {
   data () {
     return {
       // 亲属
-      userOptions: [
-        {
-          label: '父亲',
-          value: 1
-        },
-        {
-          label: '母亲',
-          value: 2
-        }
-      ],
-      // 亲属
       idTypeOptions: [
         {
           label: '身份证',
@@ -146,6 +135,18 @@ export default {
           value: 2
         }
       ],
+      identityOptions: [{
+        label: '父亲',
+        value: 1
+      },
+      {
+        label: '母亲',
+        value: 2
+      },
+      {
+        label: '其他',
+        value: 3
+      }],
       drawer_vrisible: false,
       // 亲属表格
       tableData: [],
@@ -204,7 +205,28 @@ export default {
     //  提交
     onSubmit () {
       this.fromjson.ruleForm.id = this.owerId
-      let table_data = this.tableData.map(({ name, tel, idType, idNumber, identity }) => ({ name, tel, idType, idNumber, identity }))
+      // let table_data = this.tableData.map(({ name, tel, idType, idNumber, identity }) => ({ name, tel, idType, idNumber, identity }))
+      // 家属成员  表格有内容时间必填写
+      let isRequest = true
+
+      let table_data = this.tableData.map(item => {
+        if (!item.name || !item.tel || !item.idType || !item.idNumber || !item.identity) {
+          isRequest = false
+        }
+        return {
+          name: item.name,
+          tel: item.tel,
+          idType: item.idType, idNumber: item.idNumber,
+          identity: item.identity
+        }
+      })
+      if (isRequest === false) {
+        this.$message({
+          message: '请完善成员信息填写（可不填写）',
+          type: 'error'
+        })
+        return
+      }
       let resData = {
         userResident: this.fromjson.ruleForm,
         userRelatives: table_data

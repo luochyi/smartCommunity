@@ -127,6 +127,30 @@ export default {
           isChildren: 0
         },
         {
+          // Facility Booking
+          path: '/butler/facilityBooking',
+          label: '设施预约',
+          iconurl: require('@/assets/images/butler/icon_service08_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service08_sel.png'),
+          isChildren: 1,
+          children:[{
+              path: '/butler/facilitiesManagement',
+              label: '设施管理'
+            },
+            {
+              path: '/butler/bookingManagement',
+              label: '预约管理'
+            },
+            // {
+            //   path: '/butler/facilityInspection',
+            //   label: '设施检查'
+            // },
+            {
+              path: '/butler/facilityItem',
+              label: '设施分类'
+            }]
+        },
+        {
           // Questionnaire
           path: '/butler/Questionnaire',
           label: '问卷调查',
@@ -198,14 +222,14 @@ export default {
           iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
           isChildren: 0
         },
-        {
-          // /Voice Butler
-          path: '/butler/voiceButler',
-          label: '语音管家',
-          iconurl: require('@/assets/images/butler/icon_service14_nor.png'),
-          iconisactive: require('@/assets/images/butler/icon_service14_sel.png'),
-          isChildren: 0
-        }
+        // {
+        //   // /Voice Butler
+        //   path: '/butler/voiceButler',
+        //   label: '语音管家',
+        //   iconurl: require('@/assets/images/butler/icon_service14_nor.png'),
+        //   iconisactive: require('@/assets/images/butler/icon_service14_sel.png'),
+        //   isChildren: 0
+        // }
       ],
       isCollapse: false
     }

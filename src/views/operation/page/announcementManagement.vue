@@ -152,321 +152,412 @@
   </div>
 </template>
 <script>
-import { announcementManagementRelease, announcementManagementFindById, announcementManagementInsert } from '@/api/operation.js'
+import {
+    announcementManagementRelease,
+    announcementManagementFindById,
+    announcementManagementInsert
+} from '@/api/operation.js'
 import previewImg from '@/assets/images/dialogPreviewbg.png'
 export default {
-  data () {
-    return {
-      // 添加
-      announceTitle: '新增公告',
-      announce_vrisible: false,
-      previewImg: previewImg,
-      dialogPreview: false,
-      table_row: [],
-      // 上传word文件
-      wordList: [],
-      // 上传img文件
-      imglist: [],
-      config: {
-        thead: [
-          { label: '序号', type: 'index', width: '80' },
-          { label: '公告标题', prop: 'title', width: 'auto' },
-          { label: '推送对象', prop: 'pushObject', width: 'auto' },
-          { label: '阅读量', prop: 'readingVolume', width: 'auto' },
-          { label: '状态', prop: 'status', width: 'auto' },
-          { label: '创建人', prop: 'createName', width: 'auto' },
-          { label: '更新时间', prop: 'updateDate', width: 'auto' },
-        ],
-        table_data: [],
-        url: 'announcementManagementList',
-        search_item: [
-          {
-            type: 'Input',
-            label: '公告标题',
-            placeholder: '请输入内容',
-            prop: 'title'
-          },
-          {
-            type: 'select',
-            label: '公告状态',
-            value: '',
-            options: [
-              { label: '未发布', value: '1' },
-              { label: '已发布', value: '2' },
-            ],
-            placeholder: '请选择',
-            prop: 'status'
-          }
-        ],
-        data: {
-          pageNum: 1,
-          size: 10
-        },
-      },
-      announceForm: {
-        ruleForm: {
-          title: null,
-          pushObject: null,
-          excelFileUrls: [],
-          content: null,
-          fileDocUrl: null,
-          status: null,
-          scheduledReleaseTime: null
-        },
-        form_item: [
-          {
-            type: 'Input',
-            label: '公告标题',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'title',
-          },
-          {
-            type: 'Select',
-            label: '推送对象',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'pushObject',
-            options: [
-              { label: '业主', value: 1 },
-              { label: '租户', value: 2 },
-              { label: '租户', value: 3 },
-            ],
-          },
-          {
-            type: 'Slot',
-            label: '公告图片',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'excelFileUrls',
-            slotName: 'excelFileUrls'
-          },
-          {
-            type: 'textarea',
-            label: '公告内容',
-            placeholder: '请输入公告内容',
-            prop: 'content',
-            width: '100%',
-            rows: 5,
-          },
-          {
-            type: 'Slot',
-            label: '上传文件',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'fileDocUrl',
-            slotName: 'fileDocUrl'
-          },
-          {
-            type: 'Select',
-            label: '状态',
-            placeholder: '请输入',
-            prop: 'status',
-            width: '100%',
-            options: [
-              { label: '未发布', value: 1 },
-              { label: '已发布', value: 2 },
-              { label: '定时发布', value: 3 },
-            ],
-          },
-          {
-            type: 'DateTime',
-            label: '定时时间',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'scheduledReleaseTime'
-          },
-        ],
-        rules: {
-          title: [{ required: true, message: '请输入费用项目名称', trigger: 'blur' }],
-          pushObject: [{ required: true, message: '请输入费用项目名称', trigger: 'change' }],
-          excelFileUrls: [{ required: true, message: '请上传图片', trigger: 'change' }],
-          content: [{ required: true, message: '请输入公告内容', trigger: 'blur' }],
-          fileDocUrl: [{ required: true, message: '请选择文件', trigger: 'change' }],
-          status: [{ required: true, message: '请选择状态', trigger: 'change' }],
-          scheduledReleaseTime: [{ required: true, message: '请选择定时时间', trigger: 'change' }]
-        }
-      }
-    }
-  },
-
-  methods: {
-    // 表格选中
-    tableCheck (data) {
-      this.table_row = data;
-    },
-    // 弹窗关闭
-    announceClose () {
-      this.announce_vrisible = false
-      this.wordList = []
-      this.imglist = []
-      this.$refs.announceVueForm.reset()
-    },
-    // 提交验证通过
-    announceRuleSubmit () {
-      let resData = {
-        title: this.announceForm.ruleForm.title,
-        pushObject: this.announceForm.ruleForm.pushObject,
-        excelFileUrls: this.announceForm.ruleForm.excelFileUrls,
-        content: this.announceForm.ruleForm.content,
-        fileDocUrl: this.announceForm.ruleForm.fileDocUrl,
-        status: this.announceForm.ruleForm.status,
-        scheduledReleaseTime: this.announceForm.ruleForm.scheduledReleaseTime
-      }
-      announcementManagementInsert(resData).then(res => {
-        console.log(res)
-        if (res.status) {
-          this.$message({
-            message: res.message,
-            type: 'success'
-          })
-          this.announceClose()
-          this.$refs.table.loadData()
-        }
-      })
-    },
-    // 提交验证
-    announceSubmit () {
-      this.$refs.announceVueForm.submitForm()
-    },
-    // 添加
-    add () {
-      this.announce_vrisible = true
-    },
-    // 图片上传成功
-    ImgeSuccess (res, file) {
-      this.announceForm.ruleForm.excelFileUrls[0] = file.response.url
-    },
-    // 图片文件上传之前
-    beforeAvatarUpload (file) {
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      const isJPG = file.type === 'image/png'
-      const isPNG = file.type === 'image/jpeg'
-      if (!isJPG && !isPNG) {
-        this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
-      }
-      return (isJPG || isPNG) && isLt2M;
-    },
-    // word 文件上传成功
-    fileSuccess (res, file) {
-      this.announceForm.ruleForm.fileDocUrl = file.response.url
-    },
-    // word 文件上传限制提示
-    handleExceed (files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
-    wordRemove () {
-      this.announceForm.ruleForm.fileDocUrl = null
-    },
-    // word 文件上传之前
-    beforeFileUpload (file) {
-      console.log(file)
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      const fileType = file.name.endsWith('.doc') || file.name.endsWith('.docx')
-      console.log(fileType)
-      if (!fileType) {
-        this.$message.error('上传头像图片只能是 doc/docx 格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传文件大小不能超过 2MB!');
-      }
-      return fileType && isLt2M;
-    },
-    // 删除
-    del (data) {
-      if (data.length) {
-        let arr = []
-        for (let i = 0; i < this.table_row.length; i++) {
-          arr.push(this.table_row[i].id)
-        }
-        this.$confirm('是否确认删除？删除不可恢复', '删除', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          confirmButtonClass: 'confirmButton',
-          cancelButtonClass: 'cancelButton'
-        }).then(() => {
-          this.$refs.table.tableDelete(arr)
-        }).catch(action => { });
-      } else {
-        this.$message.error('请选中需要删除的数据');
-      }
-    },
-    // 发布
-    release (data) {
-      if (data.length) {
-        let arr = []
-        for (let i = 0; i < this.table_row.length; i++) {
-          arr.push(this.table_row[i].id)
-        }
-        this.$confirm('确认现在发布？', '发布提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          confirmButtonClass: 'confirmButton',
-          cancelButtonClass: 'cancelButton'
-        }).then(() => {
-          let resData = {
-            ids: arr,
-          }
-          announcementManagementRelease(resData).then(result => {
-            if (result.status) {
-              this.$message({
-                type: 'success',
-                message: result.message
-              });
-              this.$refs.table.loadData()
+    data() {
+        return {
+            // 添加
+            announceTitle: '新增公告',
+            announce_vrisible: false,
+            previewImg: previewImg,
+            dialogPreview: false,
+            table_row: [],
+            // 上传word文件
+            wordList: [],
+            // 上传img文件
+            imglist: [],
+            config: {
+                thead: [
+                    { label: '序号', type: 'index', width: '80' },
+                    { label: '公告标题', prop: 'title', width: 'auto' },
+                    { label: '推送对象', prop: 'pushObject', width: 'auto' },
+                    { label: '阅读量', prop: 'readingVolume', width: 'auto' },
+                    { label: '状态', prop: 'status', width: 'auto' },
+                    { label: '创建人', prop: 'createName', width: 'auto' },
+                    { label: '更新时间', prop: 'updateDate', width: 'auto' }
+                ],
+                table_data: [],
+                url: 'announcementManagementList',
+                search_item: [
+                    {
+                        type: 'Input',
+                        label: '公告标题',
+                        placeholder: '请输入内容',
+                        prop: 'title'
+                    },
+                    {
+                        type: 'select',
+                        label: '公告状态',
+                        value: '',
+                        options: [
+                            { label: '未发布', value: '1' },
+                            { label: '已发布', value: '2' }
+                        ],
+                        placeholder: '请选择',
+                        prop: 'status'
+                    }
+                ],
+                data: {
+                    pageNum: 1,
+                    size: 10
+                }
+            },
+            announceForm: {
+                ruleForm: {
+                    title: null,
+                    pushObject: null,
+                    excelFileUrls: [],
+                    content: null,
+                    fileDocUrl: null,
+                    status: 1,
+                    scheduledReleaseTime: null
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '公告标题',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'title'
+                    },
+                    {
+                        type: 'Select',
+                        label: '推送对象',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'pushObject',
+                        options: [
+                            { label: '业主', value: 1 },
+                            { label: '租户', value: 2 },
+                            { label: '租户', value: 3 }
+                        ]
+                    },
+                    {
+                        type: 'Slot',
+                        label: '公告图片',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'excelFileUrls',
+                        slotName: 'excelFileUrls'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '公告内容',
+                        placeholder: '请输入公告内容',
+                        prop: 'content',
+                        width: '100%',
+                        rows: 5
+                    },
+                    {
+                        type: 'Slot',
+                        label: '上传文件',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'fileDocUrl',
+                        slotName: 'fileDocUrl'
+                    },
+                    {
+                        type: 'Select',
+                        label: '状态',
+                        placeholder: '请输入',
+                        prop: 'status',
+                        width: '100%',
+                        options: [
+                            { label: '未发布', value: 1 },
+                            { label: '已发布', value: 2 },
+                            { label: '定时发布', value: 3 }
+                        ]
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '定时时间',
+                        placeholder: '请输入',
+                        width: '100%',
+                        disabled: true,
+                        prop: 'scheduledReleaseTime'
+                        // disabled:true
+                    }
+                ],
+                rules: {
+                    title: [
+                        {
+                            required: true,
+                            message: '请输入费用项目名称',
+                            trigger: 'blur'
+                        }
+                    ],
+                    pushObject: [
+                        {
+                            required: true,
+                            message: '请输入费用项目名称',
+                            trigger: 'change'
+                        }
+                    ],
+                    excelFileUrls: [
+                        {
+                            required: true,
+                            message: '请上传图片',
+                            trigger: 'change'
+                        }
+                    ],
+                    content: [
+                        {
+                            required: true,
+                            message: '请输入公告内容',
+                            trigger: 'blur'
+                        }
+                    ],
+                    fileDocUrl: [
+                        {
+                            required: true,
+                            message: '请选择文件',
+                            trigger: 'change'
+                        }
+                    ],
+                    status: [
+                        {
+                            required: true,
+                            message: '请选择状态',
+                            trigger: 'change'
+                        }
+                    ]
+                    // form_item
+                    // scheduledReleaseTime: [
+                    //     {
+                    //         required: true,
+                    //         message: '请选择定时时间',
+                    //         trigger: 'change'
+                    //     }
+                    // ]
+                }
             }
-
-          })
-        }).catch(action => { });
-      } else {
-        this.$message.error('请选中需要发布的数据');
-      }
-    },
-    // 修改
-    edit (data) {
-      if (!data.length) return;
-      let resData = {
-        id: data[0].id
-      }
-      announcementManagementFindById(resData).then(res => {
-        if (res.status) {
-          console.log(res.data)
-          const data = res.data
-          this.announceForm.ruleForm.title = data.title
-          this.announceForm.ruleForm.pushObject = data.pushObject
-          this.announceForm.ruleForm.excelFileUrls[0] = data.imgUrls[0].url
-
-          this.announceForm.ruleForm.content = data.content
-          this.announceForm.ruleForm.fileDocUrl = data.fileDocUrl
-          this.announceForm.ruleForm.status = data.status
-          this.announceForm.ruleForm.scheduledReleaseTime = data.scheduledReleaseTime
-          // this.wordList[0].name = data.fileDocUrl
-          // this.wordList[0].url = data.url
-
-          let obj = {
-            name: data.fileDocUrl,
-            url: data.fileDocUrl,
-
-          }
-          this.$set(this.wordList, '0', obj)
-
-          let imgObj = {
-            name: data.imgUrls[0].url,
-            url: data.imgUrls[0].url,
-          }
-          this.$set(this.imglist, '0', imgObj)
-
-
-          this.announce_vrisible = true
-
         }
-
-      })
     },
-  }
+    watch: {
+        //  announceForm: {
+        // ruleForm:
+        'announceForm.ruleForm.status': {
+            handler(newValue) {
+                console.log(newValue)
+                if (newValue === 3) {
+                    //   // form_item
+                    // scheduledReleaseTime
+                    this.announceForm.form_item.find((item) => {
+                        if (item.prop === 'scheduledReleaseTime') {
+                            item.disabled = false
+                        }
+                    })
+                } else {
+                    this.announceForm.form_item.find((item) => {
+                        if (item.prop === 'scheduledReleaseTime') {
+                            item.disabled = true
+                        }
+                    })
+                }
+            },
+            immediate: true
+        }
+    },
+    methods: {
+        // 表格选中
+        tableCheck(data) {
+            this.table_row = data
+        },
+        // 弹窗关闭
+        announceClose() {
+            this.announce_vrisible = false
+            this.wordList = []
+            this.imglist = []
+            this.$refs.announceVueForm.reset()
+        },
+        // 提交验证通过
+        announceRuleSubmit() {
+            let resData = {
+                title: this.announceForm.ruleForm.title,
+                pushObject: this.announceForm.ruleForm.pushObject,
+                excelFileUrls: this.announceForm.ruleForm.excelFileUrls,
+                content: this.announceForm.ruleForm.content,
+                fileDocUrl: this.announceForm.ruleForm.fileDocUrl,
+                status: this.announceForm.ruleForm.status,
+                scheduledReleaseTime: this.announceForm.ruleForm
+                    .scheduledReleaseTime
+            }
+            // scheduledReleaseTime
+            if (
+                this.announceForm.ruleForm.status === 3 &&
+                !this.announceForm.ruleForm.scheduledReleaseTime
+            ) {
+                this.$message.error('请选择定时时间')
+
+                return
+            }
+            announcementManagementInsert(resData).then((res) => {
+                console.log(res)
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.announceClose()
+                    this.$refs.table.loadData()
+                }
+            })
+        },
+        // 提交验证
+        announceSubmit() {
+            this.$refs.announceVueForm.submitForm()
+        },
+        // 添加
+        add() {
+            this.announce_vrisible = true
+        },
+        // 图片上传成功
+        ImgeSuccess(res, file) {
+            this.announceForm.ruleForm.excelFileUrls[0] = file.response.url
+        },
+        // 图片文件上传之前
+        beforeAvatarUpload(file) {
+            const isLt2M = file.size / 1024 / 1024 < 2
+            const isJPG = file.type === 'image/png'
+            const isPNG = file.type === 'image/jpeg'
+            if (!isJPG && !isPNG) {
+                this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!')
+            }
+            return (isJPG || isPNG) && isLt2M
+        },
+        // word 文件上传成功
+        fileSuccess(res, file) {
+            this.announceForm.ruleForm.fileDocUrl = file.response.url
+        },
+        // word 文件上传限制提示
+        handleExceed(files, fileList) {
+            this.$message.warning(
+                `当前限制选择 1 个文件，本次选择了 ${
+                    files.length
+                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            )
+        },
+        wordRemove() {
+            this.announceForm.ruleForm.fileDocUrl = null
+        },
+        // word 文件上传之前
+        beforeFileUpload(file) {
+            console.log(file)
+            const isLt2M = file.size / 1024 / 1024 < 2
+            const fileType =
+                file.name.endsWith('.doc') || file.name.endsWith('.docx')
+            console.log(fileType)
+            if (!fileType) {
+                this.$message.error('上传头像图片只能是 doc/docx 格式!')
+            }
+            if (!isLt2M) {
+                this.$message.error('上传文件大小不能超过 2MB!')
+            }
+            return fileType && isLt2M
+        },
+        // 删除
+        del(data) {
+            if (data.length) {
+                let arr = []
+                for (let i = 0; i < this.table_row.length; i++) {
+                    arr.push(this.table_row[i].id)
+                }
+                this.$confirm('是否确认删除？删除不可恢复', '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    confirmButtonClass: 'confirmButton',
+                    cancelButtonClass: 'cancelButton'
+                })
+                    .then(() => {
+                        this.$refs.table.tableDelete(arr)
+                    })
+                    .catch((action) => {})
+            } else {
+                this.$message.error('请选中需要删除的数据')
+            }
+        },
+        // 发布
+        release(data) {
+            if (data.length) {
+                let arr = []
+                for (let i = 0; i < this.table_row.length; i++) {
+                    arr.push(this.table_row[i].id)
+                }
+                this.$confirm('确认现在发布？', '发布提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    confirmButtonClass: 'confirmButton',
+                    cancelButtonClass: 'cancelButton'
+                })
+                    .then(() => {
+                        let resData = {
+                            ids: arr
+                        }
+                        announcementManagementRelease(resData).then(
+                            (result) => {
+                                if (result.status) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: result.message
+                                    })
+                                    this.$refs.table.loadData()
+                                }
+                            }
+                        )
+                    })
+                    .catch((action) => {})
+            } else {
+                this.$message.error('请选中需要发布的数据')
+            }
+        },
+        // 修改
+        edit(data) {
+            if (!data.length) return
+            let resData = {
+                id: data[0].id
+            }
+            announcementManagementFindById(resData).then((res) => {
+                if (res.status) {
+                    console.log(res.data)
+                    const data = res.data
+                    this.announceForm.ruleForm.title = data.title
+                    this.announceForm.ruleForm.pushObject = data.pushObject
+                    this.announceForm.ruleForm.excelFileUrls[0] =
+                        data.imgUrls[0].url
+
+                    this.announceForm.ruleForm.content = data.content
+                    this.announceForm.ruleForm.fileDocUrl = data.fileDocUrl
+                    this.announceForm.ruleForm.status = data.status
+                    this.announceForm.ruleForm.scheduledReleaseTime =
+                        data.scheduledReleaseTime
+                    // this.wordList[0].name = data.fileDocUrl
+                    // this.wordList[0].url = data.url
+
+                    let obj = {
+                        name: data.fileDocUrl,
+                        url: data.fileDocUrl
+                    }
+                    this.$set(this.wordList, '0', obj)
+
+                    let imgObj = {
+                        name: data.imgUrls[0].url,
+                        url: data.imgUrls[0].url
+                    }
+                    this.$set(this.imglist, '0', imgObj)
+
+                    this.announce_vrisible = true
+                }
+            })
+        }
+    }
 }
 </script>
 <style scoped>

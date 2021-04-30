@@ -6,9 +6,10 @@
         <searchForm :formItem="table_config.search_item"
                     @searchForm="search"
                     :btnWidth="'20%'">
+
         </searchForm>
       </template>
-      <!-- isRequest -->
+
       <slot name="tabs"></slot>
       <div class="content-table">
         <div style='width:100%;'>
@@ -82,6 +83,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    isRequest:{
+       type: Boolean,
+       default: () => false,
+    }
   },
   data () {
     return {
@@ -100,10 +105,10 @@ export default {
         thead: [],
         checkbox: true,
         url: '',
-        isRequest: true,
-        table_data: [],
+        isRequest:true,
         pagination: true,
         data: {},
+        table_data:[],
         search_form: true,
         // form
         search_item: [],
@@ -120,6 +125,7 @@ export default {
         }
       }
       // 配置完成后开始读取接口数据
+      console.log(this.table_config)
       this.loadData()
     },
     sortChage (column) {
@@ -137,18 +143,18 @@ export default {
         url: this.table_config.url,
         data: this.table_config.data,
       }
-      if (!this.table_config.isRequest) {
-        this.loading_table = false
-        // 不请求后台
+      // ssssss
+      if(!this.table_config.isRequest){
+         this.loading_table = false
         return
       }
       this.loading_table = true
       GetTableData(requestData)
         .then((response) => {
-
+          console.log(response.tableList)
           // 判断数据是否存在
           if (response) {
-            this.table_data = response.tableList
+            this.table_config.table_data = response.tableList
             this.loading_table = false
           }
           this.pageCount = response.pageCount
@@ -187,7 +193,6 @@ export default {
     // 查询
     search (data) {
       const searchData = data
-      console.log(data)
       searchData.pageNum = 1
       searchData.size = this.table_config.data.size
       this.requestData(searchData)
