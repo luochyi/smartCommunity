@@ -230,6 +230,29 @@ export default {
         //   iconisactive: require('@/assets/images/butler/icon_service14_sel.png'),
         //   isChildren: 0
         // }
+        {
+          // xunjiandian
+          path: '/butler/inspection',
+          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          label: '巡检管理',
+          isChildren: 1,
+          children: [
+            {
+              path: '/butler/inspectionPlan',
+              label: '巡检计划'
+            },
+            {
+              path: '/butler/inspectionRoute',
+              label: '巡检路线'
+            },
+            {
+              path: '/butler/inspectionPoint',
+              label: '巡检点'
+            },
+            
+          ]
+        },
       ],
       isCollapse: false
     }

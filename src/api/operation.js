@@ -105,6 +105,13 @@ export function announcementManagementInsert(data) {
         data: data
     })
 }
+export function announcementManagementUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/announcementManagement/update',
+        data: data
+    })
+}
 // 主办方管理：查询所有的主办方信息（包含条件搜索）
 export function sponsorManagementList(data) {
     return service.request({

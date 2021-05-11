@@ -503,7 +503,7 @@ export default {
         sysMessage: {
           content: this.receiverForm.ruleForm.content
         },
-        receiverAccountId: this.table_row[0].id
+        dailyPaymentId: this.table_row[0].id
       }
       dailyPaymentPush(resData).then(res => {
         if (res.status) {

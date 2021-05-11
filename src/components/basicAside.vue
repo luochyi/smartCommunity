@@ -117,7 +117,14 @@ export default {
         //   iconurl: require('@/assets/images/baisc/icon_archives01_nor.png'),
         //   iconisactive: require('@/assets/images/baisc/icon_archives01_sel.png'),
         //   isChildren: 0
-        // }
+        // }auditManagement
+        {
+          path: '/basic/auditManagement',
+          label: '审核管理',
+          iconurl: require('@/assets/images/baisc/icon_archives05_nor.png'),
+          iconisactive: require('@/assets/images/baisc/icon_archives05_sel.png'),
+          isChildren: 0
+        },
       ],
       isCollapse: false
     }

@@ -25,6 +25,14 @@ export function dailyPaymentFindEnableTempleDetail(data) {
         params: data
     })
 }
+// 日常缴费：查询已开启的收费标准明细信息(物业管理费和日常费用)
+export function activityManagementFindEnableTempleDetail(data) {
+    return service.request({
+        method: 'GET',
+        url: '/activityManagement/findEnableTempleDetail',
+        params: data
+    })
+}
 // 收费标准管理：导出EXCEL
 export function chargesTemplateDetailExport(data) {
     return service.request({

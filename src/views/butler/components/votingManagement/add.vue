@@ -120,7 +120,6 @@ export default {
   },
   data () {
     return {
-
       drawer_vrisible: false,
       editBool: false, //是否为编辑状态 默认用服务器临时地址
       editBoolImage: false,

@@ -165,8 +165,9 @@ export default {
                         placeholder: '请选择',
                         prop: 'status',
                         options: [
-                            { value: 1, label: '有反馈信息' },
-                            { value: 2, label: '无反馈信息' }
+                            { value: 1, label: '未反馈' },
+                            { value: 2, label: '反馈中' },
+                            { value: 3, label: '已反馈' }
                         ]
                     }
 

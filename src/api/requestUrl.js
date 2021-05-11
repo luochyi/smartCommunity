@@ -15,6 +15,7 @@ const requestUrl = {
     ownerList: '/userResident/list',
     ownerListDelete: '/userResident/delete',
     tenantList: '/tenant/list',
+    auditManagementList:'/auditManagement/list',
     // 管家服务
     itemsOutList: '/userArticleOut/list',
     itemsOutListDelete: '/userArticleOut/delete',
@@ -24,6 +25,13 @@ const requestUrl = {
     facilitiesManageList: 'facilitiesManage/list',
     facilitiesCategoryList: '/facilitiesCategory/list',
     facilitiesCategoryListDelete: '/facilitiesCategory/delete',
+    facilitiesManageListDelete:'/facilitiesManage/delete',
+    facilitiesAppointmentList:'facilitiesAppointment/list',
+    //巡检
+    inspectionPointList:'inspectionPoint/list',
+    inspectionPlanList:'inspectionPlan/list',
+    inspectionRouteList:'inspectionRoute/list',
+    
     voteList: '/vote/list',
     voteListDelete: '/vote/falseDelete',
     voteListDetailList: '/vote/listDetailCandidate',

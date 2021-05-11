@@ -299,11 +299,26 @@ export function reportRepairFindById(data) {
         params: data
     })
 }
+//设施
 export function facilitiesManageInsert(data) {
     return service.request({
         method: 'POST',
         url: '/facilitiesManage/insert',
         data: data
+    })
+}
+export function facilitiesAppointmentInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: 'facilitiesAppointment/insert',
+        data: data
+    })
+}
+export function facilitiesCategoryList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/facilitiesCategory/list',
+        params: data
     })
 }
 //设施预约-设施分类：添加设施分类信息
@@ -521,6 +536,59 @@ export function ownersCommitteeFindById(data) {
     return service.request({
         method: 'GET',
         url: '/ownersCommittee/findById',
+        params: data
+    })
+}
+//巡检点
+export function inspectionPointInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/inspectionPoint/insert',
+        params: data
+    })
+}
+export function inspectionPlanInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/inspectionPlan/insert',
+        params: data
+    })
+}
+export function inspectionRouteInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/inspectionRoute/insert',
+        params: data
+    })
+}
+// /inspectionRoute/list
+export function inspectionRouteList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/inspectionRoute/list',
+        params: data
+    })
+}
+//部门
+export function sysOrganizationList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysOrganization/list',
+        params: data
+    })
+}
+export function inspectionPointList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/inspectionPoint/list',
+        params: data
+    })
+}
+//根据组织id organizationId查询所有的人员nickName
+export function sysUserList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysUser/list',
         params: data
     })
 }

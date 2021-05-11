@@ -79,7 +79,7 @@ export default {
       detailId: null,
       detailsDetailsId: null,
       detailsDetailsData: null,
-      addEidtDrawerTitle: '新增活动',
+      addEidtDrawerTitle: '新增投票',
       // 详情
       details_vrisible: false,
       // 详情——详情

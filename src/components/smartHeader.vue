@@ -28,6 +28,7 @@
                             :disabled='item.disabled'
                             v-for="item in headMenu"
                             :key="item.path">{{ item.label }}</el-menu-item>
+              <el-button type="warning" class="exit" @click="exit">退出登录</el-button>
             </el-menu>
           </div>
           <div></div>
@@ -77,11 +78,11 @@ export default {
           path: '/operation',
           label: '运营管理',
         },
-        // {
-        //   // path: '/Commodity Center',
-        //   path: '/commodity',
-        //   label: '商品中心',
-        // },
+        {
+          // path: '/Commodity Center',
+          path: '/commodity',
+          label: '商品中心',
+        },
         // {
         //   path: '/system',
         //   label: '系统设置',
@@ -94,6 +95,10 @@ export default {
     this.getPath()
   },
   methods: {
+    exit(){
+      window.sessionStorage.clear(),
+      this.$router.push('/login')
+    },
     complex () {
       window.location.href = ' http://testmanage.kaidalai.cn/manage/#/headKf'
     },
@@ -128,6 +133,11 @@ export default {
 </script>
 
 <style scoped>
+.exit{
+    position: fixed !important;
+    right: 200px; 
+    top: 10px;
+}
 .el-container {
     position: relative;
     overflow: hidden;

@@ -258,7 +258,20 @@ const routes = [
                             require([
                                 '@/views/butler/page/voiceButler'
                             ], resolve)
-                    }
+                    },
+                    //巡检
+                    {
+                        path:'/butler/inspectionPoint',
+                        component:()=>import('@/views/butler/page/inspectionPoint')
+                    },
+                    {
+                        path:'/butler/inspectionPlan',
+                        component:()=>import('@/views/butler/page/inspectionPlan')
+                    },
+                    {
+                        path:'/butler/inspectionRoute',
+                        component:()=>import('@/views/butler/page/inspectionRoute')
+                    },
                 ]
             }
         ]
@@ -323,7 +336,23 @@ const routes = [
                             require([
                                 '@/views/operation/page/votingManagement'
                             ], resolve)
-                    }
+                    },
+                    {
+                        // 资讯发布
+                        path: '/operation/consultationRelease',
+                        component: resolve =>
+                            require([
+                                '@/views/operation/page/consultationRelease'
+                            ], resolve)
+                    },
+                    {
+                        // 资讯分类
+                        path: '/operation/consultationItem',
+                        component: resolve =>
+                            require([
+                                '@/views/operation/page/consultationItem'
+                            ], resolve)
+                    },
                 ]
             }
         ]
@@ -610,7 +639,23 @@ const routes = [
                             require([
                                 '@/views/commodity/page/supplierBills'
                             ], resolve)
-                    }
+                    },
+                    {
+                        // 居家生活
+                        //服务管理
+                        path:'/commodity/serviceManagement',
+                         component:()=>import('@/views/commodity/page/serviceManagement')
+                    },
+                    {
+                        // 服务分类
+                        path:'/commodity/serviceItem',
+                         component:()=>import('@/views/commodity/page/serviceItem')
+                    },
+                    {
+                        // 商家管理
+                        path:'/commodity/businessManagement',
+                         component:()=>import('@/views/commodity/page/businessManagement')
+                    },
                 ]
             }
         ]
@@ -689,6 +734,14 @@ const routes = [
                         component: resolve =>
                             require([
                                 '@/views/basic/page/houseManagement'
+                            ], resolve)
+                    },
+                    {
+                        // 房屋管理
+                        path: '/basic/auditManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/basic/page/auditManagement'
                             ], resolve)
                     }
                 ]

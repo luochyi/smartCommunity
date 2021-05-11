@@ -114,7 +114,7 @@
 </template>
 <script>
 import { activityManagementUpdate, activityManagementFindById, sponsorManagementList, activityManagementInsert, activityManagementFindRegistrationById } from '@/api/operation'
-import { dailyPaymentFindEnableTempleDetail } from '@/api/charge'
+import { activityManagementFindEnableTempleDetail } from '@/api/charge'
 
 
 export default {
@@ -128,7 +128,7 @@ export default {
           { label: '序号', type: 'index', width: '80' },
           { label: '通知标题', prop: 'title', width: '180' },
           { label: '主办方', prop: 'sponsorUnit', width: '100' },
-          { label: '图片', prop: 'imgs', width: 'auto' },
+          // { label: '图片', prop: 'imgs', width: 'auto' },
           { label: '活动地点', prop: 'location', width: '140' },
           { label: '活动联系人', prop: 'name', width: '140' },
           { label: '联系电话', prop: 'tel', width: '140' },
@@ -136,7 +136,21 @@ export default {
           { label: '报名截止时间', prop: 'registrationEndTime', width: '180' },
           { label: '活动开始时间', prop: 'activityStartTime', width: '180' },
           { label: '活动结束时间', prop: 'activityEndTime', width: '180' },
-          { label: '状态', prop: 'status', width: 'auto' },
+          { label: '状态', prop: 'status', width: 'auto' ,type:'function',
+            callback: (row, prop) => {
+                            switch (row.status) {
+                                case 1:
+                                    return '未开始'
+                                    break
+                                case 2:
+                                    return '进行中'
+                                    break
+                                case 3:
+                                    return '已结束'
+                                    break
+                            }
+                        }
+          },
           { label: '报名人数', prop: 'registrationNumber', width: ' 180' },
           { label: '收费标准', prop: 'participantsNumber', width: '120' },
           { label: '退费', prop: 'refund', width: '120' },
@@ -308,16 +322,16 @@ export default {
             type: 'Select',
             label: '状态',
             width: '50%',
-            placeholder: '请选择租房状态',
+            placeholder: '请选择',
             prop: 'status',
             options: [
               {
                 value: 1,
-                label: '已租'
+                label: '未开始'
               },
               {
                 value: 2,
-                label: '已售'
+                label: '进行中'
               }
             ]
           }
@@ -356,7 +370,7 @@ export default {
       sponsorIdObj.options = data
     })
     // 收费标准
-    dailyPaymentFindEnableTempleDetail().then(result => {
+    activityManagementFindEnableTempleDetail().then(result => {
       const feeData = result.data.map(item => {
         return {
           value: item.id,

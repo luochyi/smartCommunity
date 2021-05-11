@@ -7,6 +7,8 @@ import './assets/css/global.css'
 import './plugins/element.js'
 import './assets/css/style.scss'
 import JsonExcel from 'vue-json-excel'
+import global from '@/api/global.js'
+Vue.prototype.$global = global
 
 Vue.component('downloadExcel', JsonExcel)
 

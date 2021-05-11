@@ -81,7 +81,6 @@ export default {
             linkHouse_vrisible: false,
             linkPark_vrisible: false,
             table_row: [],
-
             parkType: [],
             parkStatus: [],
             config: {

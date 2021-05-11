@@ -273,7 +273,32 @@ export default {
               label: '供应商账单'
             }
           ]
-        }
+        },
+        {
+          //family life
+          path: '/commodity/familyLife',
+          label: '居家生活',
+          iconurl: require('@/assets/images/commodity/icon_shopping09_nor.png'),
+          iconisactive: require('@/assets/images/commodity/icon_shopping09_sel.png'),
+          isChildren: 1,
+          children: [
+            {
+              //Service Management
+              path: '/commodity/serviceManagement',
+              label: '服务管理'
+            },
+            {
+              //Service Item
+              path: '/commodity/serviceItem',
+              label: '服务分类'
+            },
+            {
+              //business Management
+              path: '/commodity/businessManagement',
+              label: '商家管理'
+            }
+          ]
+        },
       ],
       isCollapse: false
     }

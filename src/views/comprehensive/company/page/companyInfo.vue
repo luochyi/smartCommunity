@@ -12,18 +12,18 @@
           </div>
           <div class="item-txt">
             <div class="txt-title">
-              <span>深圳市凯达来科技有限公司</span>
+              <span>南宁金融人才公寓智慧小区</span>
             </div>
             <div class="txt-small">
               <p><span><i class="el-icon-suitcase"></i></span> 计算机/互联网 计算机软件</p>
               <p><span><i class="el-icon-phone"></i></span>-</p>
-              <p><span><i class="el-icon-location-outline"></i></span>深圳市 龙岗区 横岗街道沙荷路40-11号</p>
+              <p><span><i class="el-icon-location-outline"></i></span>广西南宁市五象新区</p>
             </div>
           </div>
         </div>
         <div class="cart-item cart-r">
           <p><span><i class="el-icon-s-custom"></i></span> -</p>
-          <p><span><i class="el-icon-view"></i></span>www.kaidalai.cn</p>
+          <p><span><i class="el-icon-view"></i></span>zhihuishequ</p>
         </div>
       </div>
       <div class="cart-content">

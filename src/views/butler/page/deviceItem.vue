@@ -2,13 +2,13 @@
   <div>
     <div class="main-content">
       <div class="main-titel">
-        <span>设施分类</span>
+        <span>设备分类</span>
       </div>
       <div class="content">
         <div class="content-btn">
           <el-button class="init-button"
                      @click="add()"
-                     icon="el-icon-plus">新增设施分类 </el-button>
+                     icon="el-icon-plus">新增设备分类 </el-button>
         </div>
         <div class="">
           <VueTable ref="table"

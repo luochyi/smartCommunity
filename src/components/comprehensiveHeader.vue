@@ -31,6 +31,7 @@
                             :disabled='item.disabled'
                             v-for="item in headMenu"
                             :key="item.path">{{ item.label }}</el-menu-item>
+                            <el-button type="warning" class="exit" @click="exit">退出登录</el-button>
             </el-menu>
           </div>
           <div></div>
@@ -90,6 +91,10 @@ export default {
     this.getPath()
   },
   methods: {
+    exit(){
+      window.sessionStorage.clear(),
+      this.$router.push('/login')
+    },
     handleSelect (key, keyPath) { },
     // 路由过滤
     getPath () {
@@ -121,6 +126,11 @@ export default {
 </script>
 
 <style scoped>
+.exit{
+    position: fixed !important;
+    right: 200px; 
+    top: 10px;
+}
 .el-container {
     position: relative;
     overflow: hidden;

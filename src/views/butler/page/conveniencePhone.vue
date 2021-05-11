@@ -126,7 +126,7 @@ export default {
                                     break
                             }
                         }
-                    },
+                    },//类型
                     {
                         label: '类型',
                         prop: 'type',
@@ -329,6 +329,7 @@ export default {
         // 增加或修改
         onSubmit() {
             this.$refs.childFrom.submitForm()
+            console.log(this);
             if (this.bool) {
                 if (this.drawerControl) {
                     // 添加
