@@ -1,84 +1,125 @@
 <template>
-  <div class="main-content">
-    <div class="main-titel">
-      <span>车辆档案</span>
-    </div>
-    <div class="content">
-      <div class="content-btn">
-        <el-button class="init-button"
-                   @click="add()"
-                   icon="el-icon-plus">新增车辆</el-button>
-        <!-- <el-button type="init-button2"
+    <div class="main-content">
+        <div class="main-titel">
+            <span>车辆档案</span>
+        </div>
+        <div class="content">
+            <div class="content-btn">
+                <el-button
+                    class="init-button"
+                    @click="add()"
+                    icon="el-icon-plus"
+                    >新增车辆</el-button
+                >
+                <!-- <el-button type="init-button2"
                    icon="el-icon-folder-add"
                    plain>批量导入</el-button>
         <el-button class="init-text"
                    type="text">模板下载</el-button> -->
-      </div>
-      <VueTable ref="table"
-                :config='config'
-                @tableCheck="tableCheck">
-        <template slot="footer">
-          <div class="table-footer">
-            <button @click="revises(table_row)">修改</button>
-            <button @click="del(table_row)">删除</button>
-          </div>
-        </template>
-      </VueTable>
-    </div>
-    <Drawer :drawerTitle="drawerTitle"
+            </div>
+            <VueTable ref="table" :config="config" @tableCheck="tableCheck">
+                <template slot="footer">
+                    <div class="table-footer">
+                        <button @click="revises(table_row)">修改</button>
+                        <button @click="del(table_row)">删除</button>
+                    </div>
+                </template>
+            </VueTable>
+        </div>
+        <Drawer
+            :drawerTitle="drawerTitle"
             @drawerClose="drawerClose"
-            :drawerVrisible='drawer_vrisible'>
-      <div style="padding:30px">
-        <FromCard>
-          <template slot="title">基本信息</template>
-          <template>
-            <VueForm ref="childFrom"
-                     @ruleSubmit='ruleSubmit'
-                     :formObj='addEidtForm'>
-              <template v-slot:hours>
-                <el-select v-model="buildValue"
-                           filterable
-                           style="width:30%;margin-right:16px"
-                           placeholder="幢">
-                  <el-option v-for="item in buildOptions"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                  </el-option>
-                </el-select>
-                <el-select v-model="unitValue"
-                           filterable
-                           style="width:30%;margin-right:16px"
-                           placeholder="单元">
-                  <el-option v-for="item in unitOptions"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                  </el-option>
-                </el-select>
-                <el-select v-model="hoursValue"
-                           filterable
-                           style="width:30%"
-                           placeholder="房间号">
-                  <el-option v-for="item in hoursOptions"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                  </el-option>
-                </el-select>
-              </template>
-            </VueForm>
-          </template>
-        </FromCard>
-      </div>
-      <div slot="footer">
-        <button class="btn-orange"
-                @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
-        <button class="btn-gray"
-                @click="drawerClose"><span>取消</span></button>
-      </div>
-    </Drawer>
-  </div>
+            :drawerVrisible="drawer_vrisible"
+        >
+            <div style="padding: 30px">
+                <FromCard>
+                    <template slot="title">基本信息</template>
+                    <template>
+                        <VueForm
+                            ref="childFrom"
+                            @ruleSubmit="ruleSubmit"
+                            :formObj="addEidtForm"
+                        >
+                            <template v-slot:hours>
+                                <el-select
+                                    v-model="buildValue"
+                                    filterable
+                                    style="width: 30%; margin-right: 16px"
+                                    placeholder="幢"
+                                >
+                                    <el-option
+                                        v-for="item in buildOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <el-select
+                                    v-model="unitValue"
+                                    filterable
+                                    style="width: 30%; margin-right: 16px"
+                                    placeholder="单元"
+                                >
+                                    <el-option
+                                        v-for="item in unitOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <el-select
+                                    v-model="hoursValue"
+                                    filterable
+                                    style="width: 30%"
+                                    placeholder="房间号"
+                                >
+                                    <el-option
+                                        v-for="item in hoursOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                    >
+                                    </el-option>
+                                </el-select>
+                            </template>
+                            <!-- chewei -->
+                            <template v-slot:cpmParkingSpaceList>
+                                <el-select
+                                    v-model="addEidtForm.ruleForm.cpmParkingSpaceList"
+                                    :remote-method="remoteMethod"
+                                    @change="change"
+                                    @focus="sefocus"
+                                    :loading="loading"
+                                    remote
+                                    style="width: 240px"
+                                    filterable
+                                    placeholder="请选择"
+                                >
+                                    <el-option
+                                        v-for="item in parkOptions"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.code"
+                                    >
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </VueForm>
+                    </template>
+                </FromCard>
+            </div>
+            <div slot="footer">
+                <button class="btn-orange" @click="onSubmit()">
+                    <span> <i class="el-icon-circle-check"></i>提交</span>
+                </button>
+                <button class="btn-gray" @click="drawerClose">
+                    <span>取消</span>
+                </button>
+            </div>
+        </Drawer>
+    </div>
 </template>
 
 <script>
@@ -88,7 +129,8 @@ import {
     findByBuildingUnitId,
     findByBuildingId,
     findUserCarStatus,
-    userCarInsert
+    userCarInsert,
+    cpmParkingSpaceList
 } from '@/api/basic'
 
 export default {
@@ -103,6 +145,7 @@ export default {
             // 房屋
             hoursValue: null,
             hoursOptions: [],
+            parkOptions: [],
             loading: false,
             // 业主
             userName: '',
@@ -120,7 +163,8 @@ export default {
                     tel: null,
                     idType: null,
                     idNumber: null,
-                    status: null
+                    status: null,
+                    cpmParkingSpaceList:null
                 },
                 form_item: [
                     {
@@ -131,11 +175,12 @@ export default {
                         prop: 'code'
                     },
                     {
-                        type: 'Input',
+                        type: 'Slot',
                         label: '车位号',
                         placeholder: '请输入车位号',
                         width: '50%',
-                        prop: 'no'
+                        prop: 'no',
+                        slotName: 'cpmParkingSpaceList'
                     },
                     {
                         type: 'Input',
@@ -230,9 +275,27 @@ export default {
                     { label: '车牌号', prop: 'code', width: 'auto' },
                     { label: '姓名', prop: 'owner', width: 'auto' },
                     { label: '手机号', prop: 'tel', width: 'auto' },
-                    { label: '状态', prop: 'status', width: 'auto' },
+                    { label: '状态', prop: 'status', width: 'auto' ,type:'function',
+                        callback(row,prop){
+                            switch (row.status) {
+                                case 1:
+                                    return '产权车位'
+                                    break;
+                                case 2:
+                                    return '包年'
+                                    break;
+                                case 3:
+                                    return '包月'
+                                    break;
+                                case 4:
+                                    return '临时'
+                                    break;
+                            
+                            }
+                        }
+                    },
                     {
-                        label: '剩余时间',
+                        label: '截止时间',
                         prop: 'effectiveTimeEnd',
                         width: 'auto'
                     },
@@ -242,7 +305,18 @@ export default {
                         width: 'auto'
                     },
                     { label: '房屋信息', prop: 'roomName', width: 'auto' },
-                    { label: '证件类型', prop: 'idType', width: 'auto' },
+                    { label: '证件类型', prop: 'idType', width: 'auto' ,type:'function',
+                        callback(row,prop){
+                            switch (row.status) {
+                                case 1:
+                                    return '身份证'
+                                    break;
+                                case 2:
+                                    return '营业执照'
+                                    break;
+                            
+                            }
+                        }},
                     { label: '证件号码', prop: 'idNumber', width: 'auto' }
                 ],
                 url: 'vehicleList',
@@ -271,6 +345,29 @@ export default {
         })
     },
     methods: {
+        getUserList(val) {
+            let reeData = {
+                pageNum: 1,
+                size: 20
+            }
+
+            this.loading = true
+            cpmParkingSpaceList(reeData).then((res) => {
+                console.log(res)
+                this.parkOptions = res.tableList
+                this.loading = false
+            })
+        },
+        remoteMethod(val) {
+            this.getUserList(val)
+        },
+        sefocus() {
+            this.getUserList()
+        },
+        change(value) {
+            console.log(value)
+        },
+
         onSubmit() {
             let resData = {
                 buildingUnitEstateId: 57,
@@ -317,7 +414,8 @@ export default {
             userCarFindById(resData).then((res) => {})
         },
         add() {
-            ;(this.drawerTitle = '新增车辆'), (this.drawer_vrisible = true)
+            ((this.drawerTitle = '新增车辆')),
+                (this.drawer_vrisible = true)
         },
         handleClose() {
             this.drawer_vrisible = false

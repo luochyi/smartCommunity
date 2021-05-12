@@ -67,6 +67,10 @@ export default {
             {
               value: '/basic/tenantFile',
               label: '租户档案',
+            },//basic/auditManagement
+            {
+              value: '/basic/auditManagement',
+              label: '审核管理',
             }
           ],
         },
@@ -140,14 +144,14 @@ export default {
               label: '主题明细管理'
             }
             ,
-            {
-              value: '/butler/orderManagement',
-              label: '派工单管理'
-            },
-            {
-              value: '/butler/managementSet',
-              label: '工单设置'
-            },
+            // {
+            //   value: '/butler/orderManagement',
+            //   label: '派工单管理'
+            // },
+            // {
+            //   value: '/butler/managementSet',
+            //   label: '工单设置'
+            // },
             {
               value: '/butler/loanManagement',
               label: '借还管理'
@@ -168,6 +172,27 @@ export default {
             //   value: '/butler/voiceButler',
             //   label: '语音管家',
             // },
+            {
+              value: '/butler/inspectionPlan',
+              label: '巡检计划'
+            },
+            {
+              value: '/butler/inspectionRoute',
+              label: '巡检路线'
+            },
+            {
+              value: '/butler/inspectionPoint',
+              label: '巡检点'
+            },
+            //packageCollection keyManagement
+            {
+              value: '/butler/packageCollection',
+              label: '钥匙管理'
+            },
+            {
+              value: '/butler/keyManagement',
+              label: '包裹代收'
+            },
           ]
         },
         {
@@ -209,11 +234,11 @@ export default {
               value: '/operation/announcementManagement',
               label: '公告管理'
             },
-            {
-              // Notification management
-              value: '/operation/notificationManagement',
-              label: '通知管理'
-            },
+            // {
+            //   // Notification management
+            //   value: '/operation/notificationManagement',
+            //   label: '通知管理'
+            // },
             {
               // Announcement management
               value: '/operation/eventManagement',
@@ -228,7 +253,15 @@ export default {
               // Voting management
               label: '投票管理',
               value: '/operation/votingManagement',
-            }
+            },
+            {
+              value: '/operation/consultationRelease',
+              label: '资讯发布'
+            },
+            {
+              value: '/operation/consultationItem',
+              label: '资讯分类'
+            },
           ],
         }
         ,

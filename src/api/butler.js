@@ -544,21 +544,21 @@ export function inspectionPointInsert(data) {
     return service.request({
         method: 'POST',
         url: '/inspectionPoint/insert',
-        params: data
+        data: data
     })
 }
 export function inspectionPlanInsert(data) {
     return service.request({
         method: 'POST',
         url: '/inspectionPlan/insert',
-        params: data
+        data: data
     })
 }
 export function inspectionRouteInsert(data) {
     return service.request({
         method: 'POST',
         url: '/inspectionRoute/insert',
-        params: data
+        data: data
     })
 }
 // /inspectionRoute/list
@@ -569,7 +569,7 @@ export function inspectionRouteList(data) {
         params: data
     })
 }
-//部门
+// 部门
 export function sysOrganizationList(data) {
     return service.request({
         method: 'GET',
@@ -584,11 +584,57 @@ export function inspectionPointList(data) {
         params: data
     })
 }
+//sysOrganization/findAllDepartment
+export function sysOrganizationFindAllDepartment(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysOrganization/findAllDepartment',
+        params: data
+    })
+}
+export function sysOrganizationFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysOrganization/findById',
+        params: data
+    })
+}
 //根据组织id organizationId查询所有的人员nickName
 export function sysUserList(data) {
     return service.request({
         method: 'GET',
         url: '/sysUser/list',
         params: data
+    })
+}
+//路线禁用inspectionRoute/isEnable
+export function inspectionRouteIsEnable(data) {
+    return service.request({
+        method: 'GET',
+        url: '/inspectionRoute/isEnable',
+        params: data
+    })
+}
+//inspectionPlan/isEnable
+export function inspectionPlanIsEnable(data) {
+    return service.request({
+        method: 'GET',
+        url: '/inspectionPlan/isEnable',
+        params: data
+    })
+}
+//keyManagement/insert
+export function keyManagementInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/keyManagement/insert',
+        data: data
+    })
+}
+export function packageCollectionInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/packageCollection/insert',
+        data: data
     })
 }

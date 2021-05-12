@@ -29,7 +29,7 @@
             </template> -->
                         <template slot="footer">
                             <div class="table-footer">
-                                <button>编辑</button>
+                                <button @click="isEnable(table_row)">启用/停用</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -69,7 +69,7 @@
                                             :key="index"
                                         >
                                             <el-select
-                                                v-model="item.id"
+                                                v-model="item.inspectionPointId"
                                                 :remote-method="remoteMethod"
                                                 @change="change"
                                                 @focus="sefocus"
@@ -110,13 +110,13 @@
 </template>
 
 <script>
-import { inspectionRouteInsert,inspectionPointList } from '@/api/butler'
+import { inspectionRouteInsert,inspectionPointList,inspectionRouteIsEnable} from '@/api/butler'
 export default {
     data() {
         return {
             inspectionArr: [
                 {
-                    id: null
+                    inspectionPointId: null
                 }
             ],
             options: [],
@@ -130,9 +130,9 @@ export default {
                     {
                         type: 'Input',
                         label: '巡检路线编号',
-                        placeholder: '请输入',
                         width: '50%',
-                        prop: 'code'
+                        prop: 'code',
+                        disabled:true
                     },
                     {
                         type: 'Input',
@@ -189,7 +189,18 @@ export default {
                         width: 'auto'
                     },
                     { label: '创建时间', prop: 'createDate', width: 'auto' },
-                    { label: '状态', prop: 'status', width: 'auto' }
+                    { label: '状态', prop: 'status', width: 'auto' ,type:'function',
+                        callback(row,prop){
+                            switch (row.status) {
+                                case 1:
+                                    return '启用'
+                                    break;
+                                case 2:
+                                    return '停用'
+                                    break;
+                            }
+                        }
+                    }
                 ],
                 table_data: [],
                 url: 'inspectionRouteList',
@@ -220,11 +231,8 @@ export default {
     },
     methods: {
         addInt() {
-            // inspectionArr: [{
-            //         name: null
-            //     }],
             this.inspectionArr.push({
-                id: null
+                inspectionPointId: null
             })
         },
 
@@ -254,10 +262,17 @@ export default {
         },
         add() {
             this.add_vrisible = true
+            let random = Math.floor(Math.random() * 100000000)
+            this.addForm.ruleForm.code = random
         },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
+            this.inspectionArr= [
+                {
+                    inspectionPointId: null
+                }
+            ]
         },
         addSubmit() {
             let resData = {
@@ -308,6 +323,29 @@ export default {
                     .catch((action) => {})
             } else {
                 this.$message.error('请选中需要删除的数据')
+            }
+        },
+        isEnable(data) {
+            console.log(data[0].id);
+            if (data.length > 1) {
+                this.$message.error('只能操作一条数据')
+                return
+            }
+            if (!data.length) {
+                this.$message.error('请选择')
+                return
+            }else{
+                inspectionRouteIsEnable({id:data[0].id}).then((res) => {
+                     console.log(res)
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
             }
         }
     }

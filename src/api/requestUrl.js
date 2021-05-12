@@ -31,7 +31,14 @@ const requestUrl = {
     inspectionPointList:'inspectionPoint/list',
     inspectionPlanList:'inspectionPlan/list',
     inspectionRouteList:'inspectionRoute/list',
-    
+    inspectionPointListDelete:'inspectionPoint/falseDelete',
+    inspectionRouteListDelete:'inspectionRoute/falseDelete',
+    inspectionPlanListDelete:'inspectionPlan/falseDelete',
+    keyManagementList:'/keyManagement/list',
+    keyManagementListDelete:'/keyManagement/delete',
+    //包裹
+    packageCollectionList:'packageCollection/list',
+    packageCollectionListDelete:'/packageCollection/delete',
     voteList: '/vote/list',
     voteListDelete: '/vote/falseDelete',
     voteListDetailList: '/vote/listDetailCandidate',
@@ -78,8 +85,13 @@ const requestUrl = {
     activityManagementList: '/activityManagement/list',
     activityManagementListDelete: '/activityManagement/falseDelete',
     sponsorManagementList: '/sponsorManagement/list',
-    sponsorManagementListDelete: '/sponsorManagement/falseDelete'
-
+    sponsorManagementListDelete: '/sponsorManagement/falseDelete',
     // List Delete
+    //资讯
+    newsCategoryManagementList:'newsCategoryManagement/list',
+    newsCategoryManagementListDelete:'newsCategoryManagement/delete',
+    newsManagementList:'newsManagement/list',
+    newsManagementListDelete:'newsManagement/delete'
+    
 }
 export default requestUrl

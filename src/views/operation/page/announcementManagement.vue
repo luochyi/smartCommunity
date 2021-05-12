@@ -16,9 +16,9 @@
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
-              <button @click="dialogPreview = true">预览</button>
+              <!-- <button @click="dialogPreview = true">预览</button> -->
               <button @click="edit(table_row)">修改</button>
-              <button>打印</button>
+              <!-- <button>打印</button> -->
               <button @click="release(table_row)">发布</button>
               <button @click='del(table_row)'>删除</button>
             </div>

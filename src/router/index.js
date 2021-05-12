@@ -272,6 +272,14 @@ const routes = [
                         path:'/butler/inspectionRoute',
                         component:()=>import('@/views/butler/page/inspectionRoute')
                     },
+                    {
+                        path:'/butler/keyManagement',
+                        component:()=>import('@/views/butler/page/keyManagement')
+                    },
+                    {
+                        path:'/butler/packageCollection',
+                        component:()=>import('@/views/butler/page/packageCollection')
+                    },
                 ]
             }
         ]

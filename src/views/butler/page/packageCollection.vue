@@ -31,7 +31,7 @@
             </template>
             <template slot="footer">
               <div class="table-footer">
-                <button>编辑</button>
+                <!-- <button>编辑</button> -->
                 <button @click="del(table_row)">删除</button>
 
               </div>
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { facilitiesManageInsert } from '@/api/butler'
+import { packageCollectionInsert } from '@/api/butler'
 export default {
   data () {
     return {
@@ -86,59 +86,47 @@ export default {
       addDate: null,
       addForm: {
         ruleForm: {
-          name: null,
-          code: 'hdede',
-          facilitiesCategoryId:null,
-          address:null
+          code:null,
+          addresseeName:null,
+          addresseeTel:null,
+          address:null,
+          placePosition:null
         },
         form_item: [
           {
             type: 'Input',
-            label: '设施名称',
-            placeholder: '请输入',
-            width: '50%',
-            prop: 'name'
-          },
-          // {
-          //   type: 'Input',
-          //   label: '添加人',
-          //   placeholder: '请输入',
-          //   width: '50%',
-          //   prop: 'createName'
-          // },
-          // {
-          //   type: 'Input',
-          //   label: '电话',
-          //   placeholder: '请输入',
-          //   width: '50%',
-          //   prop: 'name'
-          // },
-          {
-            type: 'Input',
-            label: '设施编号',
-            disabled: true,
+            label: '包裹编号',
             placeholder: '请输入',
             width: '50%',
             prop: 'code'
           },
           {
-            type: 'Select',
-            label: '设施类型',
-            placeholder: '请选择',
-            width: '100%',
-            options:[
-              { value: 1, label: '乒乓球场' },
-              { value: 2, label: '篮球场' },
-              { value: 3, label: '网球场' },
-            ],
-            prop: 'facilitiesCategoryId',
+            type: 'Input',
+            label: '收件人名称',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'addresseeName'
           },
           {
             type: 'Input',
-            label: '设施地址',
+            label: '收件人联系方式',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'addresseeTel'
+          },
+          {
+            type: 'Input',
+            label: '收件人地址',
             placeholder: '请输入',
             width: '100%',
             prop: 'address'
+          },
+          {
+            type: 'Input',
+            label: '放置位置',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'placePosition'
           },
 
         ]
@@ -150,56 +138,75 @@ export default {
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '包裹编号', prop: 'code', width: 'auto' },
-          { label: '运单号', prop: 'facilitiesCategoryName', width: 'auto' },
-          { label: '收件人', prop: 'addressee', width: 'auto' },
-          { label: '联系方式', prop: 'tel', width: 'auto' },
+          { label: '包裹单号', prop: 'code', width: 'auto' },
+          { label: '收件人', prop: 'addresseeName', width: 'auto' },
+          { label: '联系方式', prop: 'addresseeTel', width: 'auto' },
           { label: '收件地址', prop: 'address', width: 'auto' },
-          { label: '配送公司', prop: 'expressCompany', width: 'auto' },
-          { label: '状态', prop: 'status', width: 'auto' },
+          { label: '状态', prop: 'status', width: 'auto' ,type:'function',
+            callback(row,prop){
+              switch(row.status){
+                case 1:
+                  return'未领取'
+                  break
+                case 2:
+                  return'已领取'
+                  break
+              }
+            }
+          },
+          { label: '领取时间', prop: 'receiveDate', width: '220' },
           { label: '送达时间', prop: 'createDate', width: '220' },
         ],
         table_data: [],
-        url: 'facilitiesManageList',
+        url: 'packageCollectionList',
         search_item: [
-
           {
             type: 'Input',
-            label: '包裹编号',
+            label: '包裹单号',
             placeholder: '请输入',
             prop: 'code',
           },
           {
             type: 'Input',
-            label: '运单号',
+            label: '收件人姓名',
             placeholder: '请输入',
-            prop: 'name',
+            prop: 'addresseeName',
           },
           {
             type: 'Input',
-            label: '收件人',
+            label: '收件人方式',
             placeholder: '请输入',
-            prop: 'name',
+            prop: 'addresseeTel',
           },
           {
             type: 'Input',
-            label: '联系方式',
+            label: '收件人地址',
             placeholder: '请输入',
-            prop: 'tel',
+            prop: 'address',
           },
           {
-            type: 'Input',
-            label: '配送公司',
-            placeholder: '请输入',
-            prop: 'expressCompany',
+            type:'select',
+            label:'状态',
+            placeholder: '请选择',
+            prop: 'status',
+            options:[
+              {
+                value:1,
+                label:'未领取'
+              },
+              {
+                value:2,
+                label:'已领取'
+              }
+            ]
           },
           {
             type: 'picker',
-            label: '添加时间',
+            label: '送达时间',
             placeholder: '请输入',
             prop: 'date',
-            startDate: 'createStartDate',
-            endDate: 'createEndDate',
+            startDate: 'createDateStart',
+            endDate: 'createDateEnd',
             width: '280px',
           },
           // Slot
@@ -228,7 +235,7 @@ export default {
         // openEndDate:  this.openEndDate,
         // imgUrls:this.addForm.ruleForm.imgUrls,
       }
-      facilitiesManageInsert(resData).then(res => {
+      packageCollectionInsert(resData).then(res => {
         if (res.status) {
           this.$message({
             message: res.message,

@@ -251,7 +251,24 @@ export default {
               label: '巡检点'
             },
             
-          ]
+          ],
+          
+        },
+        {
+          // Business meeting management
+          path: '/butler/keyManagement',
+          label: '钥匙管理',
+          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          isChildren: 0
+        },
+        {
+          // Business meeting management
+          path: '/butler/packageCollection',
+          label: '包裹代收',
+          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          isChildren: 0
         },
       ],
       isCollapse: false

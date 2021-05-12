@@ -8,30 +8,28 @@
         <div class="content-btn">
           <el-button class="init-button"
                      @click="add()"
-                     icon="el-icon-plus">新增分类</el-button>
-                     
+                     icon="el-icon-plus">新增分类 </el-button>
         </div>
-        
         <div class="">
           <VueTable ref="table"
                     :config='config'
                     @tableCheck="tableCheck">
-            <template slot="tabs">
+            <!-- <template slot="tabs">
               <el-tabs v-model="activeName"
                        @tab-click="handleClick">
                 <el-tab-pane label="全部"
                              name="0"></el-tab-pane>
-                <!-- <el-tab-pane label="使用中"
+                <el-tab-pane label="使用中"
                              name="1"></el-tab-pane>
                 <el-tab-pane label="空置中"
                              name="2"></el-tab-pane>
                 <el-tab-pane label="停用"
-                             name="3"></el-tab-pane> -->
+                             name="3"></el-tab-pane>
               </el-tabs>
-            </template>
+            </template> -->
             <template slot="footer">
               <div class="table-footer">
-                <button>编辑</button>
+                <!-- <button>编辑</button> -->
                 <button @click="del(table_row)">删除</button>
 
               </div>
@@ -39,17 +37,17 @@
           </VueTable>
         </div>
         <!-- 新增 -->
-        <Drawer drawerTitle="新增分类"
+        <Drawer drawerTitle="新增资讯分类"
                 @drawerClose="addClose"
                 :drawerVrisible='add_vrisible'>
           <div style="padding:30px">
             <FromCard>
-              <template slot="title">分类</template>
+              <template slot="title">填写分类信息</template>
               <template>
                 <VueForm ref="addForm"
                          :formObj='addForm'>
                   <!-- Slot -->
-                  <template v-slot:date>
+                  <!-- <template v-slot:date>
                     <el-time-picker is-range
                                     v-model="addDate"
                                     range-separator="至"
@@ -59,7 +57,26 @@
                                     end-placeholder="结束时间"
                                     placeholder="选择时间范围">
                     </el-time-picker>
-                  </template>
+                  </template> 
+                   <template slot='imgUrls'>
+                    <template>
+                      <el-upload :action="`${$baseUrl}upload/uploadAnnouncement`"
+                                 :on-success="ImgeSuccess"
+                                 :file-list="imglist"
+                                 :on-exceed="handleExceed"
+                                 :limit="1"
+                                 accept=".jpg,.png,.JPG,.PNG"
+                                 :before-upload="beforeAvatarUpload">
+                        <el-button icon="el-icon-edit"
+                                   size="small">上传图片</el-button>
+                        <span style='margin-left:10px;font-size:12px;color:#444444'>建议比例：3:2</span>
+                        <div slot="tip"
+                             class="el-upload__tip">
+                          <span>支持扩展名：png,jpg</span>
+                        </div>
+                      </el-upload>
+                    </template>
+                  </template> -->
                 </VueForm>
               </template>
             </FromCard>
@@ -78,7 +95,7 @@
 </template>
 
 <script>
-import { facilitiesManageInsert } from '@/api/butler'
+import { newsCategoryManagementInsert } from '@/api/operation'
 export default {
   data () {
     return {
@@ -86,84 +103,43 @@ export default {
       addDate: null,
       addForm: {
         ruleForm: {
+          // code: '',
           name: null,
-          code: 'hdede',
-          facilitiesCategoryId:null,
-          address:null
+          // openStartDate: null,
+          // openEndDate: null,
+          // imgUrls: []
         },
         form_item: [
           {
             type: 'Input',
-            label: '设施名称',
+            label: '分类名称',
             placeholder: '请输入',
-            width: '50%',
+            width: '100%',
             prop: 'name'
           },
-          // {
-          //   type: 'Input',
-          //   label: '添加人',
-          //   placeholder: '请输入',
-          //   width: '50%',
-          //   prop: 'createName'
-          // },
-          // {
-          //   type: 'Input',
-          //   label: '电话',
-          //   placeholder: '请输入',
-          //   width: '50%',
-          //   prop: 'name'
-          // },
-          {
-            type: 'Input',
-            label: '设施编号',
-            disabled: true,
-            placeholder: '请输入',
-            width: '50%',
-            prop: 'code'
-          },
-          {
-            type: 'Select',
-            label: '设施类型',
-            placeholder: '请选择',
-            width: '100%',
-            options:[
-              { value: 1, label: '乒乓球场' },
-              { value: 2, label: '篮球场' },
-              { value: 3, label: '网球场' },
-            ],
-            prop: 'facilitiesCategoryId',
-          },
-          {
-            type: 'Input',
-            label: '设施地址',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'address'
-          },
-
         ]
       },
       table_row: [],
       // 上传img文件
       imglist: [],
-      activeName: '0',
+      // activeName: '0',
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
           { label: '分类编号', prop: 'code', width: 'auto' },
-          { label: '分类名称', prop: 'facilitiesCategoryName', width: 'auto' },
-          { label: '资讯数量', prop: 'count', width: 'auto' },
-          { label: '创建人', prop: 'createName', width: 'auto' },
-          { label: '创建时间', prop: 'createDate', width: '220' },
+          { label: '分类类型', prop: 'name', width: 'auto' },
+          { label: '资讯数量', prop: 'num', width: 'auto' },
+          { label: '创建人名称', prop: 'createName', width: 'auto' },
+          { label: '添加时间', prop: 'createDate', width: '220' },
         ],
         table_data: [],
-        url: 'facilitiesManageList',
+        url: 'newsCategoryManagementList',
         search_item: [
 
           {
             type: 'Input',
             label: '分类编号',
-            placeholder: '请输入',
+            placeholder: '请选择',
             prop: 'code',
           },
           {
@@ -176,10 +152,8 @@ export default {
             type: 'Input',
             label: '添加人',
             placeholder: '请输入',
-            prop: 'name',
+            prop: 'createName',
           },
-          
-          // Slot
         ],
         data: {
           pageNum: 1,
@@ -191,6 +165,8 @@ export default {
   methods: {
     add () {
       this.add_vrisible = true
+      // let random = Math.floor(Math.random()*100000000)
+      // this.addForm.ruleForm.code = random
     },
     addClose () {
       this.$refs.addForm.reset()
@@ -215,7 +191,7 @@ export default {
         // openEndDate:  this.openEndDate,
         // imgUrls:this.addForm.ruleForm.imgUrls,
       }
-      facilitiesManageInsert(resData).then(res => {
+      newsCategoryManagementInsert(resData).then(res => {
         if (res.status) {
           this.$message({
             message: res.message,
@@ -230,21 +206,42 @@ export default {
       this.addForm.ruleForm.openStartDate = arr[0]
       this.addForm.ruleForm.openEndDate = arr[1]
     },
-    // tabs切换
-    handleClick (tab, event) {
-      let status = null
-      if (this.activeName != 0) {
-        status = this.activeName
-      } else {
-        status = null
-      }
-      const requestData = {
-        pageNum: 1,
-        size: 10,
-        status: status
-      }
-      this.$refs.table.requestData(requestData);
+    // 图片上传成功
+    ImgeSuccess (res, file) {
+      this.addForm.ruleForm.imgUrls[0] = file.response.url
     },
+    // 图片文件上传之前
+    beforeAvatarUpload (file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/png'
+      const isPNG = file.type === 'image/jpeg'
+      if (!isJPG && !isPNG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return (isJPG || isPNG) && isLt2M;
+    },
+    //  上传限制提示
+    handleExceed (files, fileList) {
+      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    // // tabs切换
+    // handleClick (tab, event) {
+    //   let status = null
+    //   if (this.activeName != 0) {
+    //     status = this.activeName
+    //   } else {
+    //     status = null
+    //   }
+    //   const requestData = {
+    //     pageNum: 1,
+    //     size: 10,
+    //     status: status
+    //   }
+    //   this.$refs.table.requestData(requestData);
+    // },
 
     // 表格选中
     tableCheck (data) {

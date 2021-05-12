@@ -114,11 +114,53 @@ export default {
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '职位', prop: 'positionId', width: 'auto' },
+          { label: '职位', prop: 'positionId', width: 'auto' ,
+          type: 'function',
+                        callback: (row, prop) => {
+                            switch (row.positionId) {
+                                case 1:
+                                    return '业委会主任'
+                                    break
+                                case 2:
+                                    return '业委会副主任'
+                                    break
+                                case 3:
+                                    return '业委会委员'
+                                    break
+                            }
+                        }},
           { label: '姓名', prop: 'name', width: 'auto' },
-          { label: '性别', prop: 'sexId', width: 'auto' },
+          // { label: '性别', prop: 'sexId', width: 'auto',
+          // type: 'function',
+          //               callback: (row, prop) => {
+          //                   switch (row.sexId) {
+          //                       case 1:
+          //                           return '男'
+          //                           break
+          //                       case 2:
+          //                           return '女'
+          //                           break
+          //                   }
+          //               } },
           { label: '年龄', prop: 'age', width: 'auto' },
-          { label: '学历', prop: 'educationId', width: 'auto' },
+          { label: '学历', prop: 'educationId', width: 'auto',
+          type: 'function',
+                        callback: (row, prop) => {
+                            switch (row.educationId) {
+                                case 1:
+                                    return '专科'
+                                    break
+                                case 2:
+                                    return '本科'
+                                    break
+                                case 3:
+                                    return '硕士'
+                                    break
+                                case 4:
+                                    return '博士'
+                                    break
+                            }
+                        } },
           { label: '房屋信息', prop: 'roomName', width: 'auto' },
           { label: '职业', prop: 'profession', width: 'auto' },
         ],

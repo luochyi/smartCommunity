@@ -120,3 +120,25 @@ export function sponsorManagementList(data) {
         params: data
     })
 }
+//资讯新增
+export function newsCategoryManagementInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/newsCategoryManagement/insert',
+        data: data
+    })
+}
+export function newsManagementInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/newsManagement/insert',
+        data: data
+    })
+}
+export function newsCategoryManagementList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/newsCategoryManagement/list',
+        params: data
+    })
+}

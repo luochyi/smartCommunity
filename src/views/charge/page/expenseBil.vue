@@ -221,7 +221,21 @@ export default {
           { label: '计费结束时间', prop: 'endDate', width: '180' },
           { label: '费用金额', prop: 'costPrice', width: '180' },
           { label: '应收总计', prop: 'totalPrice', width: '180' },
-          { label: '状态', prop: 'status', width: '180' },
+          { label: '状态', prop: 'status', width: '180' ,type:'function',
+            callback:(row,prop)=>{
+              switch (row.status) {
+                case 1:
+                  return '未缴纳'
+                  break
+                case 2:
+                  return '部分缴纳'
+                  break
+                case 3:
+                  return '全部缴纳'
+                  break
+              }
+            }
+          },
           { label: '缴费人', prop: 'createName', width: '180' },
           { label: '缴费人联系方式', prop: 'payTel', width: '280' },
           { label: '备注', prop: 'remake', width: '180' },

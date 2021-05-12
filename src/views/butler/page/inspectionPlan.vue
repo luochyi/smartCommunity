@@ -45,7 +45,8 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button>编辑</button>
+                                <!-- <button>编辑</button> -->
+                                <button @click="isEnable(table_row)">启用/停用</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -106,7 +107,7 @@
                                                 addForm.ruleForm.organizationId
                                             "
                                             :remote-method="remoteMethod"
-                                            @change="change"
+                                            @change="sChange"
                                             @focus="sefocus"
                                             :loading="loading"
                                             remote
@@ -147,8 +148,9 @@
 import {
     inspectionPlanInsert,
     inspectionRouteList,
-    sysOrganizationList,
-    sysUserList
+    sysOrganizationFindAllDepartment,
+    sysUserList,
+    inspectionPlanIsEnable
 } from '@/api/butler'
 export default {
     data() {
@@ -157,14 +159,15 @@ export default {
             addDate: null,
             options: [],
             sysOptions: [],
-            inspector: [],
+            // inspector: [],
             loading: false,
             addForm: {
                 ruleForm: {
                     name: null,
-                    code: '2332423',
+                    code: '',
                     inspectionRouteId: null,
-                    organizationId: null
+                    organizationId: null,
+                    isSort:'2'
                 },
                 form_item: [
                     {
@@ -194,7 +197,7 @@ export default {
                         type: 'Select',
                         label: '巡检人',
                         placeholder: '请输入',
-                        width: '100%',
+                        width: '50%',
                         prop: 'inspector',
                         options: []
                     },
@@ -202,29 +205,29 @@ export default {
                         type: 'DateTime',
                         label: '开始时间',
                         placeholder: '请输入',
-                        width: '100%',
+                        width: '50%',
                         prop: 'planBeginDate'
                     },
-                    {
-                        type: 'Select',
-                        label: '按顺序巡检',
-                        width: '100%',
-                        options: [
-                            {
-                                value: '1',
-                                label: '是'
-                            },
-                            {
-                                value: '2',
-                                label: '否'
-                            }
-                        ],
-                        prop: 'isSort'
-                    },
+                    // {
+                    //     type: 'Select',
+                    //     label: '按顺序巡检',
+                    //     width: '100%',
+                    //     options: [
+                    //         {
+                    //             value: '1',
+                    //             label: '是'
+                    //         },
+                    //         {
+                    //             value: '2',
+                    //             label: '否'
+                    //         }
+                    //     ],
+                    //     prop: 'isSort'
+                    // },
                     {
                         type: 'Select',
                         label: '检查频率',
-                        width: '100%',
+                        width: '50%',
                         options: [
                             {
                                 value: '1',
@@ -345,26 +348,24 @@ export default {
             }
         }
     },
-    created() {
-        this.getUserList()
-    },
     methods: {
         // 获取用户列表
         getUserList(val) {
             let reeData = {
                 pageNum: 1,
-                size: 20,
-                name: val
+                size: 20
             }
+            
             this.loading = true
             inspectionRouteList(reeData).then((res) => {
-                // console.log(res)
+                console.log(res)
                 this.options = res.tableList
                 this.loading = false
             })
-            sysOrganizationList(reeData).then((res) => {
-                console.log(res)
-                this.sysOptions = res
+            sysOrganizationFindAllDepartment(reeData).then((res) => {
+                // console.log(res)
+                this.sysOptions = res.data
+                // console.log(this.sysOptions);
                 this.loading = false
             })
         },
@@ -375,10 +376,35 @@ export default {
             this.getUserList()
         },
         change(value) {
-            console.log(value)
+            console.log(value)//sysUserList
+
+            
+        },
+        //根据部门获取人员
+        sChange(value){
+            this.addForm.form_item[3].options = []
+             let sData = {
+                pageNum: 1,
+                size: 100,
+                organizationId:value
+             }
+             sysUserList(sData).then((res) => {
+                console.log(res)
+                
+                 res.tableList.forEach(element => {
+                     let obj = {
+                         value: element.id,
+                         label: element.nickName
+                     }
+                    this.addForm.form_item[3].options.push(obj)
+                });
+                console.log(this.addForm.form_item[3].options)
+                this.loading = false
+            })
         },
         add() {
             this.add_vrisible = true
+            // this.getUserList()
         },
         addClose() {
             this.$refs.addForm.reset()
@@ -444,6 +470,29 @@ export default {
                 this.$message.error('请选中需要删除的数据')
             }
         },
+        isEnable(data) {
+            console.log(data[0].id);
+            if (data.length > 1) {
+                this.$message.error('只能操作一条数据')
+                return
+            }
+            if (!data.length) {
+                this.$message.error('请选择')
+                return
+            }else{
+                inspectionPlanIsEnable({id:data[0].id}).then((res) => {
+                     console.log(res)
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
+            }
+        }
     },
 }
 </script>

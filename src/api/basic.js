@@ -187,6 +187,13 @@ export const findParkingSpaceType = data => {
         params: data
     })
 }
+// export function cpmParkingSpaceist(data) {
+//     return service.request({
+//         method: 'GET',
+//         url: '/myParkingSpace/list',
+//         params: data
+//     })
+// }
 // 查询车位类型
 export const findParkingSpaceStatus = data => {
     return service.request({
@@ -328,6 +335,16 @@ export const conveniencePhoneFindById = data => {
         params: data
     })
 }
+//auditManagement/reviewResult
+export const auditManagementReviewResult = data => {
+    return service.request({
+        method: 'POST',
+        url: '/auditManagement/reviewResult',
+        data: data
+    })
+}
+
+
 // http://192.168.31.129:9001/cpmBuildingUnitEstate/findByBuildingUnitId
 // GET
 

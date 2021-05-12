@@ -1,6 +1,9 @@
 <style scoped>
-.demo-dynamic {
-    justify-content: left;
+.qrcode {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    z-index: 100;
 }
 </style>
 <template>
@@ -10,6 +13,7 @@
                 <span>巡检点</span>
             </div>
             <div class="content">
+                 <div class="qrcode" ref="qrCodeUrl" v-if="isShow"></div>
                 <div class="content-btn">
                     <el-button
                         class="init-button"
@@ -18,13 +22,22 @@
                         >新增巡检点</el-button
                     >
                 </div>
-
+                
                 <div class="">
                     <VueTable
                         ref="table"
                         :config="config"
                         @tableCheck="tableCheck"
                     >
+                        <!-- 二维码
+                        <template slot="qrCode">
+                            <el-button
+                                class="init-text"
+                                type="text"
+                            >
+                                <span @mouseenter="creatQrCode()" @mouseleave="missQr()"> 查看</span>
+                            </el-button>
+                        </template> -->
                         <template slot="tabs">
                             <el-tabs v-model="activeName">
                                 <el-tab-pane
@@ -33,8 +46,10 @@
                                 ></el-tab-pane>
                             </el-tabs>
                         </template>
+
                         <template slot="footer">
                             <div class="table-footer">
+                                <button @click="creatQrCode()" @mouseleave="missQr()">查看二维码</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -61,7 +76,7 @@
                                             :key="index"
                                         >
                                             <el-input
-                                                v-model="item.id"
+                                                v-model="item.name"
                                                 placeholder="请输入内容"
                                                 size="small"
                                             ></el-input>
@@ -89,29 +104,32 @@
 
 <script>
 import { inspectionPointInsert } from '@/api/butler'
+import QRCode from 'qrcodejs2'
 export default {
     data() {
         return {
             inspectionArr: [
                 {
-                    id: null
+                    name: null
                 }
             ],
+            isShow: false,
+            link: '',
             add_vrisible: false,
             addDate: null,
             addForm: {
                 ruleForm: {
                     name: null,
                     code: '',
-                    type: '1',
+                    type: '1'
                 },
                 form_item: [
                     {
                         type: 'Input',
                         label: '编号',
-                        placeholder: '请输入',
                         width: '100%',
-                        prop: 'code'
+                        prop: 'code',
+                        disabled:true
                     },
                     {
                         type: 'Input',
@@ -120,13 +138,13 @@ export default {
                         width: '100%',
                         prop: 'name'
                     },
-                    {
-                        type: 'Input',
-                        label: '巡检模式',
-                        disabled: true,
-                        width: '100%',
-                        prop: 'type'
-                    },
+                    // {
+                    //     type: 'Input',
+                    //     label: '巡检模式',
+                    //     disabled: true,
+                    //     width: '100%',
+                    //     prop: 'type'
+                    // },
                     {
                         type: 'Slot',
                         label: '检查项',
@@ -154,6 +172,12 @@ export default {
                             }
                         }
                     },
+                    // {
+                    //     label: '二维码',
+                    //     width: 'auto',
+                    //     type: 'slot',
+                    //     slotName: 'qrCode'
+                    // },
                     { label: '创建时间', prop: 'createDate', width: 'auto' }
                 ],
                 table_data: [],
@@ -180,17 +204,48 @@ export default {
         }
     },
     methods: {
+        creatQrCode() {
+            if(this.table_row.length>1){
+                this.$message.error('只能查看一条')
+                return
+            }else{
+            // this.missQr()
+            this.isShow = !this.isShow
+            this.link = ''
+            this.link = this.table_row[0].code
+            console.log(this.link);
+            this.$nextTick(function () {
+                setTimeout(() => {
+                    let qrcode = new QRCode(this.$refs.qrCodeUrl, {
+                        text: this.link, //this.link, // 需要转换为二维码的内容
+                        width: 200,
+                        height: 200,
+                        colorDark: '#000000',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.H
+                    })
+                }, 100)
+            })
+            }
+        },
+        missQr() {
+            this.isShow = false,
+            this.link=null
+        },
         addInt() {
             this.inspectionArr.push({
-                id: null
+                name: null
             })
         },
         add() {
             this.add_vrisible = true
+            let random = Math.floor(Math.random() * 100000000)
+            this.addForm.ruleForm.code = random
         },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
+            this.inspectionArr = [{ name: null }]
             // if (this.dynamicValidateForm.domains.length == 0) {
             //     return
             // } else {
@@ -201,12 +256,15 @@ export default {
             // }
         },
         addSubmit() {
-            console.log(this.addForm)
-            console.log(this.inspectionArr);
+            // console.log(this.addForm)
+            console.log(this.inspectionArr)
+            console.log(this.addForm.ruleForm)
             let resData = {
                 ...this.addForm.ruleForm,
-                itemsList:this.inspectionArr
+                type:this.addForm.ruleForm.type,
+                itemsList: this.inspectionArr
             }
+            console.log(resData)
             inspectionPointInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({

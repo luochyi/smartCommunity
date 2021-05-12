@@ -110,26 +110,26 @@ export default {
           label: '投票管理',
           isChildren: 0
         },
-        // {
-        //   // zixun
-        //   path: '/operation/consultation',
-        //   label: '资讯',
-        //   iconurl: require('@/assets/images/operation/icon_operate01_nor.png'),
-        //   iconisactive: require('@/assets/images/operation/icon_operate01_sel.png'),
-        //   isChildren: 1,
-        //   children: [
-        //     {
-        //       // consultation Release
-        //       path: '/operation/consultationRelease',
-        //       label: '资讯发布'
-        //     },
-        //     {
-        //       // consultation Item
-        //       path: '/operation/consultationItem',
-        //       label: '资讯分类'
-        //     }
-        //   ]
-        // },
+        {
+          // zixun
+          path: '/operation/consultation',
+          label: '资讯管理',
+          iconurl: require('@/assets/images/operation/icon_operate01_nor.png'),
+          iconisactive: require('@/assets/images/operation/icon_operate01_sel.png'),
+          isChildren: 1,
+          children: [
+            {
+              // consultation Release
+              path: '/operation/consultationRelease',
+              label: '资讯发布'
+            },
+            {
+              // consultation Item
+              path: '/operation/consultationItem',
+              label: '资讯分类'
+            }
+          ]
+        },
       ],
       isCollapse: false
     }
