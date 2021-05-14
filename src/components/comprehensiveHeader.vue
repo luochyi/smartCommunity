@@ -58,32 +58,40 @@ export default {
       logoImg: require('../../src/assets/images/header_logo.png'),
       activeIndex: this.$route.path,
       headMenu: [
-        {
-          path: '/develop',
-          label: '开发平台',
-          disabled: true
-        },
+        // {
+        //   path: '/develop',
+        //   label: '开发平台',
+        //   disabled: true
+        // },
         {
           path: '/company',
           label: '企业管理',
         },
         {
-          path: '/property',
-          label: '物业综合',
-          disabled: true
-
+          path: '/daily',
+          label: '日常管理',
         },
         {
-          path: '/Safety',
-          label: '安全防控',
-          disabled: true
+          path: '/basic',
+          label: '基础档案',
+        },
+        // {
+        //   path: '/property',
+        //   label: '物业综合',
+        //   disabled: true
 
-        },
-        {
-          path: '/partyBuilding',
-          label: '建党服务',
-          disabled: true
-        },
+        // },
+        // {
+        //   path: '/Safety',
+        //   label: '安全防控',
+        //   disabled: true
+
+        // },
+        // {
+        //   path: '/partyBuilding',
+        //   label: '建党服务',
+        //   disabled: true
+        // },
       ],
     }
   },

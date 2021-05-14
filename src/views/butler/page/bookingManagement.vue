@@ -289,7 +289,7 @@ export default {
                         prop: 'date',
                         startDate: 'appointmentStartDate',
                         endDate: 'appointmentEndDate',
-                        width: '280px'
+                        width: '230px'
                     },
                     {
                         type: 'picker',
@@ -298,7 +298,7 @@ export default {
                         prop: 'createDate',
                         startDate: 'createStartDate',
                         endDate: 'createEndDate',
-                        width: '280px'
+                        width: '230px'
                     }
                     // Slot
                 ],

@@ -60,7 +60,8 @@ export default {
                     { label: '借用人', prop: 'borrowName', width: 'auto' },
                     { label: '联系方式', prop: 'tel', width: '130' },
                     { label: '出借时间', prop: 'beginDate', width: '130' },
-                    { label: '归还时间', prop: 'endDate', width: '180' },
+                    { label: '归还时间', prop: 'endDate', width: '180' 
+                    },
                     { label: '出借时长', prop: 'borrowDate', width: '180' },
                     {
                         label: '借取状态',

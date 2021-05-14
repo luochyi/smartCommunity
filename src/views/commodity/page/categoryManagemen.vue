@@ -14,7 +14,8 @@
                             :options="options"
                             :props="props"
                             ref="cascaderAddr"
-                            @active-item-change="getChild()"
+                            @change="getChild"
+                            @expand-change="getChild"
                             size="medium"
                             style="margin: 20px 0"
                         ></el-cascader-panel>
@@ -43,19 +44,19 @@ export default {
     methods: {
         getDate() {
             shopCategoryList({ parentId: 0 }).then((res) => {
+                console.log(res);
                 this.options = res.data
                 this.options.forEach((item, index) => {
                     this.options[index].children = []
                 })
-                console.log(this.options);
             })
         },
         getChild() {
-            let childrenId = this.$refs.cascaderAddr.getCheckedNodes()
+            console.log(1);
+            let childrenId = this.$refs['cascaderAddr'].getCheckedNodes()
             console.log(childrenId);
             // shopCategoryList({parentId:childrenId}).then((res)=>{
-            //     console.log(res);
-            //     this.options = res.data
+            //     this.options.children = res.data
             // })
         }
     }

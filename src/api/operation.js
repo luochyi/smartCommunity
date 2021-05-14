@@ -173,3 +173,18 @@ export function greenAreaFindById(data) {
         params: data
     })
 }
+//规程
+export function regulationManagementInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/regulationManagement/insert',
+        data: data
+    })
+}
+export function serviceBrowsingInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/serviceBrowsing/insert',
+        data: data
+    })
+}

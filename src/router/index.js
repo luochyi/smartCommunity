@@ -519,169 +519,11 @@ const routes = [
                             ], resolve)
                     },
                     {
-                        // 品牌资质
-                        path: '/commodity/brandQualification',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/brandQualification'
-                            ], resolve)
-                    },
-                    {
                         // 订单管理
                         path: '/commodity/orderManagement',
                         component: resolve =>
                             require([
                                 '@/views/commodity/page/orderManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 批量发货
-                        path: '/commodity/bulkShipping',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/bulkShipping'
-                            ], resolve)
-                    },
-                    {
-                        // 评价管理
-                        path: '/commodity/evaluationManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/evaluationManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 违规处理
-                        path: '/commodity/violationHandling',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/violationHandling'
-                            ], resolve)
-                    },
-                    {
-                        // 预售买预警
-                        path: '/commodity/buyWarning',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/buyWarning'
-                            ], resolve)
-                    },
-                    {
-                        // 未发货退款
-                        path: '/commodity/unshippedRefund',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/unshippedRefund'
-                            ], resolve)
-                    },
-                    {
-                        // 已发货售后
-                        path: '/commodity/Shipped',
-                        component: resolve =>
-                            require(['@/views/commodity/page/Shipped'], resolve)
-                    },
-                    {
-                        // 客户电话设置
-                        path: '/commodity/phoneSet',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/phoneSet'
-                            ], resolve)
-                    },
-                    {
-                        // 服务请求
-                        path: '/commodity/requestService',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/requestService'
-                            ], resolve)
-                    },
-                    {
-                        // 极速退款助手
-                        path: '/commodity/refundAssistant',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/refundAssistant'
-                            ], resolve)
-                    },
-                    {
-                        // 团购商品管理
-                        path: '/commodity/groupMerchandise',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/groupMerchandise'
-                            ], resolve)
-                    },
-                    {
-                        // 拼团管理
-                        path: '/commodity/groupManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/groupManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 运费模版
-                        path: '/commodity/freightTemplate',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/freightTemplate'
-                            ], resolve)
-                    },
-                    {
-                        // 地址库管理
-                        path: '/commodity/addressManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/addressManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 商品分析
-                        path: '/commodity/commodityAnalysis',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/commodityAnalysis'
-                            ], resolve)
-                    },
-                    {
-                        // 账户中心
-                        path: '/commodity/accountCenter',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/accountCenter'
-                            ], resolve)
-                    },
-                    {
-                        // 在线支付账单
-                        path: '/commodity/payBills',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/payBills'
-                            ], resolve)
-                    },
-                    {
-                        // 订单流水明细
-                        path: '/commodity/orderDetails',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/orderDetails'
-                            ], resolve)
-                    },
-                    {
-                        // 供应商结算列表
-                        path: '/commodity/settlementList',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/settlementList'
-                            ], resolve)
-                    },
-                    {
-                        // 供应商账单
-                        path: '/commodity/supplierBills',
-                        component: resolve =>
-                            require([
-                                '@/views/commodity/page/supplierBills'
                             ], resolve)
                     },
                     {
@@ -695,11 +537,11 @@ const routes = [
                         path:'/commodity/serviceItem',
                          component:()=>import('@/views/commodity/page/serviceItem')
                     },
-                    {
-                        // 商家管理
-                        path:'/commodity/businessManagement',
-                         component:()=>import('@/views/commodity/page/businessManagement')
-                    },
+                    // {
+                    //     // 商家管理
+                    //     path:'/commodity/businessManagement',
+                    //      component:()=>import('@/views/commodity/page/businessManagement')
+                    // },
                 ]
             }
         ]

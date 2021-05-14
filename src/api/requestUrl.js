@@ -92,6 +92,10 @@ const requestUrl = {
     newsCategoryManagementListDelete:'newsCategoryManagement/delete',
     newsManagementList:'newsManagement/list',
     newsManagementListDelete:'newsManagement/delete',
+    regulationManagementList:'regulationManagement/list',
+    regulationManagementListDelete:'regulationManagement/delete',
+    serviceBrowsingList:'serviceBrowsing/list',
+    serviceBrowsingListDelete:'serviceBrowsing/delete',
     //绿化
     greenAreaList:'greenArea/list',
     greenAreaListDelete:'greenArea/delete',
@@ -101,6 +105,7 @@ const requestUrl = {
     //商城shop/supplier/list
     shopSupplierList:'shop/supplier/list',
     shopSupplierListDelete:'shop/supplier/delete',
-    
+    shopGoodsList:'shop/goods/list',
+    shopGoodsListDelete:'shop/goods/delete'
 }
 export default requestUrl

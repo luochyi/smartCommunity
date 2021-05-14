@@ -17,3 +17,18 @@ export function shopCategoryList(data){
         params: data
     })
 }
+//商品管理 上架shop/goods/loading 下架shop/goods/unloading
+export function shopGoodsLoading(data){
+    return service.request({
+        method:'GET',
+        url:'shop/goods/loading',
+        params: data
+    })
+}
+export function shopGoodsUnloading(data){
+    return service.request({
+        method:'GET',
+        url:'shop/goods/unloading',
+        params: data
+    })
+}
