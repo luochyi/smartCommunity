@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>设施管理</span>
+                <span>绿化任务</span>
             </div>
             <div class="content">
                 <div class="content-btn">
@@ -10,7 +10,7 @@
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增设施</el-button
+                        >新增任务</el-button
                     >
                 </div>
 
@@ -20,7 +20,7 @@
                         :config="config"
                         @tableCheck="tableCheck"
                     >
-                        <template slot="tabs">
+                        <!-- <template slot="tabs">
                             <el-tabs
                                 v-model="activeName"
                                 @tab-click="handleClick"
@@ -30,22 +30,23 @@
                                     name="0"
                                 ></el-tab-pane>
                                 <el-tab-pane
-                                    label="空置中"
+                                    label="待巡检"
                                     name="1"
                                 ></el-tab-pane>
                                 <el-tab-pane
-                                    label="使用中"
+                                    label="已巡检"
                                     name="2"
                                 ></el-tab-pane>
                                 <el-tab-pane
-                                    label="已停用"
+                                    label="已完成"
                                     name="3"
                                 ></el-tab-pane>
                             </el-tabs>
-                        </template>
+                        </template> -->
                         <template slot="footer">
                             <div class="table-footer">
-                                <button>编辑</button>
+                                <!-- <button>编辑</button> -->
+                                <!-- <button @click="isEnable(table_row)">启用/停用</button> -->
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -53,13 +54,13 @@
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增设施"
+                    drawerTitle="新增计划"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">基本信息</template>
+                            <template slot="title">信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
@@ -76,11 +77,11 @@
                                         >
                                         </el-time-picker>
                                     </template>
-                                    <template v-slot:facilitiesCategoryId>
+                                    <template v-slot:greenAreaId>
                                         <el-select
                                             v-model="
                                                 addForm.ruleForm
-                                                    .facilitiesCategoryId
+                                                    .greenAreaId
                                             "
                                             :remote-method="remoteMethod"
                                             @change="change"
@@ -93,6 +94,29 @@
                                         >
                                             <el-option
                                                 v-for="item in options"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                    </template>
+                                    <template v-slot:sysOrganization>
+                                        <el-select
+                                            v-model="
+                                                addForm.ruleForm.organizationId
+                                            "
+                                            :remote-method="remoteMethod"
+                                            @change="sChange"
+                                            @focus="sefocus"
+                                            :loading="loading"
+                                            remote
+                                            style="width: 240px"
+                                            filterable
+                                            placeholder="请选择"
+                                        >
+                                            <el-option
+                                                v-for="item in sysOptions"
                                                 :key="item.id"
                                                 :label="item.name"
                                                 :value="item.id"
@@ -121,132 +145,177 @@
 </template>
 
 <script>
-import { facilitiesManageInsert, facilitiesCategoryList } from '@/api/butler'
+import {
+    inspectionPlanInsert,
+    sysOrganizationFindAllDepartment,
+    sysUserList,
+} from '@/api/butler'
+import {
+    // greenAreaFindById,
+    greenAreaList,
+    greenTaskInsert
+}from '@/api/operation'
+// import func from 'vue-editor-bridge'
 export default {
     data() {
         return {
             add_vrisible: false,
             addDate: null,
             options: [],
+            sysOptions: [],
+            loading: false,
             addForm: {
                 ruleForm: {
-                    name: null,
-                    code: '',
-                    facilitiesCategoryId: null,
-                    address: null
+                    greenAreaId: null,
+                    content: null,
+                    director: null,
+                    endDate:null
                 },
                 form_item: [
                     {
-                        type: 'Input',
-                        label: '设施名称',
+                        type: 'Slot',
+                        label: '绿化区域',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'name'
+                        prop: 'greenAreaId',
+                        slotName: 'greenAreaId'
                     },
                     {
                         type: 'Input',
-                        label: '设施编号',
-                        disabled: true,
+                        label: '工作内容',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'code'
+                        prop: 'content'
                     },
                     {
                         type: 'Slot',
-                        label: '设施类型',
+                        label: '部门',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'facilitiesCategoryId',
-                        slotName: 'facilitiesCategoryId'
+                        prop: 'organizationId',
+                        slotName: 'sysOrganization'
                     },
                     {
-                        type: 'Input',
-                        label: '设施地址',
+                        type: 'Select',
+                        label: '负责人员',
                         placeholder: '请输入',
-                        width: '100%',
-                        prop: 'address'
-                    }
+                        width: '50%',
+                        prop: 'director',
+                        options: []
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '截止时间',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'endDate'
+                    },
                 ]
             },
             table_row: [],
-            // 上传img文件
-            imglist: [],
             activeName: '0',
             config: {
                 thead: [
-                    { label: '序号', type: 'index', width: '80' },
-                    { label: '设施编号', prop: 'code', width: 'auto' },
                     {
-                        label: '设施类型',
-                        prop: 'facilitiesCategoryName',
+                        label: '序号',
+                        type: 'index',
+                        width: '80'
+                    },
+                    {
+                        label: '绿化区域名称',
+                        prop: 'greenAreaName',
                         width: 'auto'
                     },
-                    { label: '设施名称', prop: 'name', width: 'auto' },
-                    { label: '添加人', prop: 'createName', width: 'auto' },
                     {
-                        label: '设施状态',
+                        label: '工作内容',
+                        prop: 'content',
+                        width: 'auto'
+                    },
+                    {
+                        label: '负责人名称',
+                        prop: 'directorName',
+                        width: 'auto'
+                    },
+                    {
+                        label: '状态',
                         prop: 'status',
-                        width: 'auto',
-                        type: 'function',
-                        callback(row, prop){
+                        width: 'auto',type:'function',
+                        callback:(row,prop)=>{
                             switch (row.status) {
                                 case 1:
-                                    return '空置中'
-                                    break
+                                    return '待处理'
+                                    break;
                                 case 2:
-                                    return '使用中'
-                                    break
-                                case 3:
-                                    return '已停用'
-                                    break
+                                    return '已处理'
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                     },
-                    { label: '添加时间', prop: 'createDate', width: '220' }
+                    {
+                        label: '截止时间',
+                        prop: 'endDate',
+                        width: 'auto'
+                    },
+                    {
+                        label: '发布时间',
+                        prop: 'createDate',
+                        width: 'auto'
+                    },
                 ],
                 table_data: [],
-                url: 'facilitiesManageList',
+                url: 'greenTaskList',
                 search_item: [
                     {
                         type: 'Input',
-                        label: '设施编号',
+                        label: '绿化区域名称',
                         placeholder: '请输入',
-                        prop: 'code'
+                        prop: 'greenAreaName'
                     },
-                    // {
-                    //     type: 'Slot',
-                    //     label: '设施种类',
-                    //     placeholder: '请选择',
-                    //     prop: 'facilitiesCategoryName',
-                    //     slotName: 'facilitiesCategoryName'
-                    // },
                     {
                         type: 'Input',
-                        label: '设施名称',
+                        label: '工作内容',
                         placeholder: '请输入',
-                        prop: 'name'
+                        prop: 'content'
+                    },
+                    {
+                        type: 'Input',
+                        label: '负责人名称',
+                        placeholder: '请输入',
+                        prop: 'directorName'
                     },
                     {
                         type: 'select',
-                        label: '设施状态',
-                        placeholder: '请选择',
-                        value: null,
-                        options: [
-                            { value: 1, label: '空置中' },
-                            { value: 2, label: '使用中' },
-                            { value: 3, label: '已停用' }
-                        ],
-                        prop: 'status'
+                        label: '状态',
+                        placeholder: '请输入',
+                        prop: 'status',
+                        options:[
+                            {
+                                label:'待处理',value:'1'
+                            },
+                            {
+                                label:'已完成',value:'2'
+                            }
+                        ]
                     },
                     {
                         type: 'picker',
-                        label: '添加时间',
-                        placeholder: '请输入',
+                        label: '截止时间',
                         prop: 'date',
-                        startDate: 'createStartDate',
-                        endDate: 'createEndDate',
-                        width: '280px'
+                        startDate: 'endDateStart',
+                        endDate: 'endDateEnd',
+                        width: '250px',
+                    },
+                    {
+                        type: 'picker',
+                        label: '发布时间',
+                        prop: 'actualDate',
+                        startDate: 'createDateStart',
+                        endDate: 'createDateEnd',
+                        width: '250px'
                     }
+
                     // Slot
                 ],
                 data: {
@@ -256,21 +325,24 @@ export default {
             }
         }
     },
-    created() {
-        this.getUserList()
-    },
     methods: {
         // 获取用户列表
         getUserList(val) {
             let reeData = {
                 pageNum: 1,
                 size: 20,
-                name: val
             }
             this.loading = true
-            facilitiesCategoryList(reeData).then((res) => {
-                // console.log(res)
+            greenAreaList(reeData).then((res) => {
+                console.log(res)
                 this.options = res.tableList
+                console.log(this.options);
+                this.loading = false
+            })
+            sysOrganizationFindAllDepartment(reeData).then((res) => {
+                // console.log(res)
+                this.sysOptions = res.data
+                // console.log(this.sysOptions);
                 this.loading = false
             })
         },
@@ -281,37 +353,45 @@ export default {
             this.getUserList()
         },
         change(value) {
-            console.log(value)
+            console.log(value)//sysUserList
+
+            
+        },
+        //根据部门获取人员
+        sChange(value){
+            this.addForm.form_item[3].options = []
+             let sData = {
+                pageNum: 1,
+                size: 100,
+                organizationId:value
+             }
+             sysUserList(sData).then((res) => {
+                console.log(res)
+                
+                 res.tableList.forEach(element => {
+                     let obj = {
+                         value: element.id,
+                         label: element.nickName
+                     }
+                    this.addForm.form_item[3].options.push(obj)
+                });
+                console.log(this.addForm.form_item[3].options)
+                this.loading = false
+            })
         },
         add() {
             this.add_vrisible = true
-            let random = Math.floor(Math.random() * 100000000)
-            this.addForm.ruleForm.code = random
+            // this.getUserList()
         },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
         addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
             let resData = {
                 ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
             }
-            facilitiesManageInsert(resData).then((res) => {
+            greenTaskInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
@@ -327,25 +407,26 @@ export default {
             this.addForm.ruleForm.openEndDate = arr[1]
         },
         // tabs切换
-        handleClick(tab, event) {
-            let status = null
-            if (this.activeName != 0) {
-                status = this.activeName
-            } else {
-                status = null
-            }
-            const requestData = {
-                pageNum: 1,
-                size: 10,
-                status: status
-            }
-            this.$refs.table.requestData(requestData)
-        },
+        // handleClick(tab, event) {
+        //     let status = null
+        //     if (this.activeName != 0) {
+        //         status = this.activeName
+        //     } else {
+        //         status = null
+        //     }
+        //     const requestData = {
+        //         pageNum: 1,
+        //         size: 10,
+        //         status: status
+        //     }
+        //     this.$refs.table.requestData(requestData)
+        // },
 
         // 表格选中
         tableCheck(data) {
             this.table_row = data
         },
+        // 删除
         del(data) {
             if (data.length) {
                 let arr = []
@@ -365,7 +446,30 @@ export default {
             } else {
                 this.$message.error('请选中需要删除的数据')
             }
-        }
-    }
+        },
+        // isEnable(data) {
+        //     console.log(data[0].id);
+        //     if (data.length > 1) {
+        //         this.$message.error('只能操作一条数据')
+        //         return
+        //     }
+        //     if (!data.length) {
+        //         this.$message.error('请选择')
+        //         return
+        //     }else{
+        //         inspectionPlanIsEnable({id:data[0].id}).then((res) => {
+        //              console.log(res)
+        //         if (res.status) {
+        //             this.$message({
+        //                 message: res.message,
+        //                 type: 'success'
+        //             })
+        //             this.$refs.table.loadData()
+        //             this.addClose()
+        //         }
+        //     })
+        //     }
+        // }
+    },
 }
 </script>

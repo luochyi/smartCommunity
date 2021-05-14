@@ -43,425 +43,526 @@
 }
 </style>
 <template>
-  <div>
-    <div v-show="handleChangeShow"
-         class="main-content">
-      <div class="main-titel">
-        <span>报事报修</span>
-      </div>
-      <div class="content">
-        <div class="content-btn">
-          <el-button class="init-button"
-                     icon="el-icon-plus"
-                     @click="add()">新增报修</el-button>
+    <div>
+        <div v-show="handleChangeShow" class="main-content">
+            <div class="main-titel">
+                <span>报事报修</span>
+            </div>
+            <div class="content">
+                <div class="content-btn">
+                    <el-button
+                        class="init-button"
+                        icon="el-icon-plus"
+                        @click="add()"
+                        >新增报修</el-button
+                    >
+                </div>
+                <div class="">
+                    <VueTable
+                        ref="table"
+                        :config="config"
+                        @tableCheck="tableCheck"
+                    >
+                        <template slot="tabs">
+                            <el-tabs
+                                v-model="activeName"
+                                @tab-click="handleClick"
+                            >
+                                <el-tab-pane
+                                    label="全部"
+                                    name="0"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="待分配"
+                                    name="1"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已分配未接单"
+                                    name="2"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已分配处理中"
+                                    name="3"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已处理"
+                                    name="4"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已确认已完成"
+                                    name="5"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已关闭"
+                                    name="6"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已作废"
+                                    name="7"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已取消"
+                                    name="8"
+                                ></el-tab-pane>
+                            </el-tabs>
+                        </template>
+                        <template slot="footer">
+                            <div class="table-footer">
+                                <button @click="onDetails(table_row)">
+                                    详情
+                                </button>
+                                <button @click="edit(table_row)">编辑</button>
+                                <button @click="Dispatch(table_row)">
+                                    派工
+                                </button>
+                                <button @click="onVisit(table_row)">
+                                    回访
+                                </button>
+                                <button @click="onCancel(table_row)">
+                                    作废
+                                </button>
+                                <button @click="del(table_row)">删除</button>
+                            </div>
+                        </template>
+                    </VueTable>
+                </div>
+                <addEidt
+                    :drawerTitle="addEidtDrawerTitle"
+                    ref="addEdit"
+                    @submitSuccess="submitSuccess"
+                    @handleClose="addEidtHandleClose"
+                    :drawerVrisible="addEidt_vrisible"
+                ></addEidt>
+                <Dispatch
+                    drawerTitle="派工"
+                    ref="Dispatch"
+                    @submitSuccess="DispatchSuccess"
+                    @handleClose="DispatchHandleClose"
+                    :drawerVrisible="Dispatch_vrisible"
+                ></Dispatch>
+
+                <Drawer
+                    drawerTitle="回访"
+                    @drawerClose="visitClose"
+                    :drawerVrisible="visit_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">基本信息</template>
+                            <template>
+                                <VueForm
+                                    ref="visitFrom"
+                                    @ruleSuccess="visitRuleSuccess"
+                                    :formObj="visitForm"
+                                ></VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="visitSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="visitClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
+
+                <Drawer
+                    drawerTitle="作废"
+                    @drawerClose="cancelClose"
+                    :drawerVrisible="cancel_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">作废原因</template>
+                            <template>
+                                <VueForm
+                                    ref="cancelFrom"
+                                    @ruleSuccess="cancelRuleSuccess"
+                                    :formObj="cancelForm"
+                                ></VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="cancelSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="cancelClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
+            </div>
         </div>
-        <div class="">
-          <VueTable ref="table"
-                    :config='config'
-                    @tableCheck="tableCheck">
-            <template slot="tabs">
-              <el-tabs v-model="activeName"
-                       @tab-click="handleClick">
-                <el-tab-pane label="全部"
-                             name="0"></el-tab-pane>
-                <el-tab-pane label="待分配"
-                             name="1"></el-tab-pane>
-                <el-tab-pane label="已分配未接单"
-                             name="2"></el-tab-pane>
-                <el-tab-pane label="已分配处理中"
-                             name="3"></el-tab-pane>
-                <el-tab-pane label="已处理"
-                             name="4"></el-tab-pane>
-                <el-tab-pane label="已确认已完成"
-                             name="5"></el-tab-pane>
-                <el-tab-pane label="已关闭"
-                             name="6"></el-tab-pane>
-                <el-tab-pane label="已作废"
-                             name="7"></el-tab-pane>
-                <el-tab-pane label="已取消"
-                             name="8"></el-tab-pane>
-              </el-tabs>
-            </template>
-            <template slot="footer">
-              <div class="table-footer">
-                <button @click='onDetails(table_row)'>详情</button>
-                <button @click='edit(table_row)'>编辑</button>
-                <button @click="Dispatch(table_row)">派工</button>
-                <button @click='onVisit(table_row)'>回访</button>
-                <button @click='onCancel(table_row)'>作废</button>
-                <button @click="del(table_row)">删除</button>
-              </div>
-            </template>
-          </VueTable>
-        </div>
-        <addEidt :drawerTitle="addEidtDrawerTitle"
-                 ref="addEdit"
-                 @submitSuccess='submitSuccess'
-                 @handleClose="addEidtHandleClose"
-                 :drawerVrisible='addEidt_vrisible'></addEidt>
-        <Dispatch drawerTitle="派工"
-                  ref="Dispatch"
-                  @submitSuccess='DispatchSuccess'
-                  @handleClose="DispatchHandleClose"
-                  :drawerVrisible='Dispatch_vrisible'></Dispatch>
+        <div v-show="!handleChangeShow">
+            <div class="main details-box" v-if="!handleChangeShow">
+                <div class="head-box">
+                    <div class="titel">
+                        <span>报修详情</span>
+                    </div>
+                    <div class="content">
+                        <span>{{ tabsName }}</span>
+                        <div class="flex justify-between align-center">
+                            <div>
+                                <span>{{ table_row[0].code }}</span>
+                            </div>
+                            <div>
+                                <button
+                                    class="btn-orange"
+                                    @click="handleChangeShow = true"
+                                >
+                                    <span> 返回</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="title">
+                        <span>报修详情</span>
+                    </div>
+                    <!-- detailsData -->
+                    <div class="box-item" v-if="detailsData.voRepair">
+                        <div class="item">
+                            <div class="span">
+                                <span>报修区域</span>
+                            </div>
+                            <div>
+                                <span>{{
+                                    detailsData.voRepair.type === 1
+                                        ? '户内'
+                                        : '户外'
+                                }}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="span">
+                                <span>报修来源</span>
+                            </div>
+                            <div>
+                                <span>业主来电</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="span">
+                                <span>报修人</span>
+                            </div>
+                            <div>
+                                <span>{{
+                                    detailsData.voRepair.repairName
+                                }}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="span">
+                                <span>联系电话</span>
+                            </div>
+                            <div>
+                                <span>{{ detailsData.voRepair.tel }}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="span">
+                                <span>分配人</span>
+                            </div>
+                            <div>
+                                <span>{{
+                                    detailsData.voRepair.dispatchName
+                                }}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="span">
+                                <span>报修详情</span>
+                            </div>
+                            <div>
+                                <span>{{
+                                    detailsData.voRepair.reportDetail
+                                }}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="span">
+                                <span>照片</span>
+                            </div>
+                            <div v-if="detailsData.voRepair.imgUrls.length">
+                                <el-image
+                                    style="width: 100px; height: 100px"
+                                    :src="
+                                        $ImgUrl +
+                                        detailsData.voRepair.imgUrls[0].url
+                                    "
+                                    fit="fit"
+                                ></el-image>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box" v-if="detailsData.voDispatch">
+                    <div class="title">
+                        <span>派工详情</span>
+                    </div>
+                    <div class="">
+                        <div class="box-item">
+                            <div class="item">
+                                <div class="span">
+                                    <span>工单大类</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voDispatch.workOrderTypeName
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="span">
+                                    <span>工单子类</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voDispatch
+                                            .workOrderTypeDetailName
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="span">
+                                    <span>工单时限</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voDispatch
+                                            .workOrderTimeLimitName
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="span">
+                                    <span>指派给</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voDispatch.operatorName
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="span">
+                                    <span>预约时间</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voDispatch.dispatchDate
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="span">
+                                    <span>派工备注</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voDispatch.remake
+                                    }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <Drawer drawerTitle="回访"
-                @drawerClose="visitClose"
-                :drawerVrisible='visit_vrisible'>
-          <div style="padding:30px">
-            <FromCard>
-              <template slot="title">基本信息</template>
-              <template>
-                <VueForm ref="visitFrom"
-                         @ruleSuccess='visitRuleSuccess'
-                         :formObj='visitForm'></VueForm>
-              </template>
-            </FromCard>
-          </div>
-          <div slot="footer">
-            <button class="btn-orange"
-                    @click="visitSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
-            <button class="btn-gray"
-                    @click="visitClose"><span>取消</span></button>
-          </div>
-        </Drawer>
-
-        <Drawer drawerTitle="作废"
-                @drawerClose="cancelClose"
-                :drawerVrisible='cancel_vrisible'>
-          <div style="padding:30px">
-            <FromCard>
-              <template slot="title">作废原因</template>
-              <template>
-                <VueForm ref="cancelFrom"
-                         @ruleSuccess='cancelRuleSuccess'
-                         :formObj='cancelForm'></VueForm>
-              </template>
-            </FromCard>
-          </div>
-          <div slot="footer">
-            <button class="btn-orange"
-                    @click="cancelSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
-            <button class="btn-gray"
-                    @click="cancelClose"><span>取消</span></button>
-          </div>
-        </Drawer>
-      </div>
-    </div>
-    <div v-show="!handleChangeShow">
-      <div class="main details-box"
-           v-if="!handleChangeShow">
-        <div class="head-box">
-          <div class="titel">
-            <span>报修详情</span>
-          </div>
-          <div class="content">
-            <span>{{tabsName}}</span>
-            <div class='flex justify-between align-center'>
-              <div>
-                <span>{{table_row[0].code}}</span>
-              </div>
-              <div>
-                <button class="btn-orange"
-                        @click="handleChangeShow=true"><span> 返回</span></button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">
-            <span>报修详情</span>
-          </div>
-          <!-- detailsData -->
-          <div class='box-item'
-               v-if="detailsData.voRepair">
-            <div class='item'>
-              <div class='span'>
-                <span>报修区域</span>
-              </div>
-              <div>
-                <span>{{detailsData.voRepair.type===1 ? '户内':'户外'}}</span>
-              </div>
-            </div>
-            <div class='item'>
-              <div class='span'>
-                <span>报修来源</span>
-              </div>
-              <div>
-                <span>业主来电</span>
-              </div>
-            </div>
-            <div class='item'>
-              <div class='span'>
-                <span>报修人</span>
-              </div>
-              <div>
-                <span>{{detailsData.voRepair.repairName}}</span>
-              </div>
-            </div>
-            <div class='item'>
-              <div class='span'>
-                <span>联系电话</span>
-              </div>
-              <div>
-                <span>{{detailsData.voRepair.tel}}</span>
-              </div>
-            </div>
-            <div class='item'>
-              <div class='span'>
-                <span>分配人</span>
-              </div>
-              <div>
-                <span>{{detailsData.voRepair.dispatchName}}</span>
-              </div>
-            </div>
-            <div class='item'>
-              <div class='span'>
-                <span>报修详情</span>
-              </div>
-              <div>
-                <span>{{detailsData.voRepair.reportDetail}}</span>
-
-              </div>
-            </div>
-            <div class='item'>
-              <div class='span'>
-                <span>照片</span>
-              </div>
-              <div v-if='detailsData.voRepair.imgUrls.length'>
-                <el-image style="width: 100px; height: 100px"
-                          :src="$ImgUrl+detailsData.voRepair.imgUrls[0].url"
-                          fit="fit"></el-image>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="box"
-             v-if="detailsData.voDispatch">
-          <div class="title">
-            <span>派工详情</span>
-          </div>
-          <div class=''>
-            <div class='box-item'>
-
-              <div class='item'>
-                <div class='span'>
-                  <span>工单大类</span>
+                <div class="box">
+                    <div class="title">
+                        <span>处理进程记录</span>
+                    </div>
+                    <div class="">
+                        <tableData :config="handleConfig"> </tableData>
+                    </div>
                 </div>
-                <div>
-                  <span>{{detailsData.voDispatch.workOrderTypeName}}</span>
-                </div>
-              </div>
-              <div class='item'>
-                <div class='span'>
-                  <span>工单子类</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voDispatch.workOrderTypeDetailName}}</span>
-                </div>
-              </div>
-              <div class='item'>
-                <div class='span'>
-                  <span>工单时限</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voDispatch.workOrderTimeLimitName}}</span>
-                </div>
-              </div>
-              <div class='item'>
-                <div class='span'>
-                  <span>指派给</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voDispatch.operatorName}}</span>
-
-                </div>
-              </div>
-              <div class='item'>
-                <div class='span'>
-                  <span>预约时间</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voDispatch.dispatchDate}}</span>
-
-                </div>
-              </div>
-              <div class='item'>
-                <div class='span'>
-                  <span>派工备注</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voDispatch.remake}}</span>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="title">
-            <span>处理进程记录</span>
-          </div>
-          <div class=''>
-            <tableData :config="handleConfig">
-            </tableData>
-          </div>
-        </div>
-        <div class="box"
-             v-if="detailsData.voHandleCompleteDetail">
-          <div class="title">
-            <span>处理完成情况</span>
-          </div>
-          <div class=''>
-            <div class='box-item'>
-
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>完成处理情况</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voHandleCompleteDetail.detail}}</span>
-                </div>
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>更换材料清单</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voHandleCompleteDetail.materialList}}</span>
-                </div>
-                <!--      <tableData :config="handleConfig">
+                <div class="box" v-if="detailsData.voHandleCompleteDetail">
+                    <div class="title">
+                        <span>处理完成情况</span>
+                    </div>
+                    <div class="">
+                        <div class="box-item">
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>完成处理情况</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voHandleCompleteDetail
+                                            .detail
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>更换材料清单</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voHandleCompleteDetail
+                                            .materialList
+                                    }}</span>
+                                </div>
+                                <!--      <tableData :config="handleConfig">
             </tableData> -->
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>人工费</span>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>人工费</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voHandleCompleteDetail
+                                            .laborCost
+                                            ? detailsData.voHandleCompleteDetail
+                                                  .laborCost
+                                            : '0.00'
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>材料费 </span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voHandleCompleteDetail
+                                            .materialCost
+                                            ? detailsData.voHandleCompleteDetail
+                                                  .materialCost
+                                            : '0.00'
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>总计费 </span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voHandleCompleteDetail
+                                            .totalCost
+                                            ? detailsData.voHandleCompleteDetail
+                                                  .totalCost
+                                            : '0.00'
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>报修结果</span>
+                                </div>
+                                <div>
+                                    <el-radio-group
+                                        :value="
+                                            detailsData.voHandleCompleteDetail
+                                                .repairResult
+                                        "
+                                    >
+                                        <el-radio :label="1">完成</el-radio>
+                                        <el-radio :label="2">未完成</el-radio>
+                                    </el-radio-group>
+                                </div>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>完成时间</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voHandleCompleteDetail
+                                            .completeDate
+                                    }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                  <span>{{detailsData.voHandleCompleteDetail.laborCost?detailsData.voHandleCompleteDetail.laborCost:"0.00"}}</span>
+                <div class="box" v-if="detailsData.voEvaluation">
+                    <div class="title">
+                        <span>客户评价</span>
+                    </div>
+                    <div class="">
+                        <div class="box-item">
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>评价</span>
+                                </div>
+                                <div>
+                                    <el-rate
+                                        :value="
+                                            detailsData.voEvaluation
+                                                .evaluation_level / 2
+                                        "
+                                        :colors="colors"
+                                        disabled
+                                    ></el-rate>
+                                </div>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>评价内容</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voEvaluation
+                                            .evaluation_content
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>评价时间</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voEvaluation.evaluation_date
+                                    }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>材料费
-                  </span>
+                <div class="box">
+                    <div class="title">
+                        <span>回访</span>
+                    </div>
+                    <div class="">
+                        <div class="box-item" v-if="detailsData.voRevisit">
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>回访结果</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voRevisit.revisitDetail
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="item" style="width: 100%">
+                                <div class="span">
+                                    <span>回访时间</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailsData.voRevisit.revisitDate
+                                    }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                  <span>{{detailsData.voHandleCompleteDetail.materialCost?detailsData.voHandleCompleteDetail.materialCost:"0.00"}}</span>
-                </div>
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>总计费
-                  </span>
-                </div>
-                <div>
-                  <span>{{detailsData.voHandleCompleteDetail.totalCost?detailsData.voHandleCompleteDetail.totalCost:"0.00"}}</span>
-                </div>
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>报修结果</span>
-                </div>
-                <div>
-                  <el-radio-group :value="detailsData.voHandleCompleteDetail.repairResult">
-                    <el-radio :label="1">完成</el-radio>
-                    <el-radio :label="2">未完成</el-radio>
-                  </el-radio-group>
-                </div>
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>完成时间</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voHandleCompleteDetail.completeDate}}</span>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-        <div class="box"
-             v-if="detailsData.voEvaluation">
-          <div class="title">
-            <span>客户评价</span>
-          </div>
-          <div class=''>
-            <div class='box-item'>
-
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>评价</span>
-                </div>
-                <div>
-                  <el-rate :value="detailsData.voEvaluation.evaluation_level/2"
-                           :colors="colors"
-                           disabled></el-rate>
-                </div>
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>评价内容</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voEvaluation.evaluation_content}}</span>
-                </div>
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>评价时间</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voEvaluation.evaluation_date}}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">
-            <span>回访</span>
-          </div>
-          <div class=''>
-            <div class='box-item'
-                 v-if="detailsData.voRevisit">
-
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>回访结果</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voRevisit.revisitDetail}}</span>
-                </div>
-              </div>
-              <div class='item'
-                   style="width:100%">
-                <div class='span'>
-                  <span>回访时间</span>
-                </div>
-                <div>
-                  <span>{{detailsData.voRevisit.revisitDate}}</span>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 <script>
 import addEidt from '@/views/butler/components/reportRepair/addEidt'
@@ -611,7 +712,7 @@ export default {
                     {
                         label: '状态',
                         prop: 'status',
-                        width: '180',
+                        width: '100',
                         type: 'function',
                         callback: (row, prop) => {
                             switch (row.status) {
@@ -654,8 +755,20 @@ export default {
                         label: '工单时限',
                         prop: 'workOrderTimeLimit',
                         width: '180'
-                    },
-                    { label: '来源', prop: 'fromsName', width: '180' }
+                    }, //fromsName
+                    {
+                        label: '来源',
+                        prop: 'fromsName',
+                        width: 'auto',
+                        type: 'function',
+                        callback(row, prop) {
+                            if(row.fromsName == 1){
+                              return '业主来电'
+                            }else if(row.fromsName ==2 ){
+                              return 'app提交'
+                            }
+                        }
+                    }
                 ],
                 url: 'reportRepairList',
                 table_data: [],

@@ -156,7 +156,17 @@ export default {
                         prop: 'nextControlDate',
                         width: 'auto'
                     },
-                    { label: '检查状态', prop: 'checkStatus', width: 'auto' },
+                    { label: '检查状态', prop: 'checkStatus', width: 'auto' ,type: 'function',
+                        callback: (row, prop) => {
+                            switch (row.checkStatus) {
+                                case 0:
+                                    return '未检查'
+                                    break
+                                case 1:
+                                    return '已检查'
+                                    break
+                            }
+                        }},
                     { label: '权重', prop: 'weight', width: 'auto' }
                 ],
                 url: 'conveniencePhoneList',

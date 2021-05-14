@@ -37,7 +37,7 @@ export function visitorsCountVisitorsNew(data) {
 export function adviceCountComplaintNew(data) {
     return service.request({
         method: 'GET',
-        url: '/advice/countComplaintNew',
+        url: '/complaintPraise/countComplaintNew',
         params: data
     })
 }
@@ -45,7 +45,7 @@ export function adviceCountComplaintNew(data) {
 export function adviceCountPraiseNew(data) {
     return service.request({
         method: 'GET',
-        url: '/advice/countPraiseNew',
+        url: '/complaintPraise/countPraiseNew',
         params: data
     })
 }

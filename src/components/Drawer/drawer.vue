@@ -140,7 +140,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log('submit!')
-          this.$refs['ruleForm'].resetFields()
+          this.['ruleForm'].resetFields()
           this.$emit('handleClose', 'submit')
         } else {
           console.log('error submit!!')

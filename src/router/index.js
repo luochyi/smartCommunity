@@ -277,9 +277,14 @@ const routes = [
                         component:()=>import('@/views/butler/page/keyManagement')
                     },
                     {
+                        path:'/butler/keyExamine',
+                        component:()=>import('@/views/butler/page/keyExamine')
+                    },
+                    {
                         path:'/butler/packageCollection',
                         component:()=>import('@/views/butler/page/packageCollection')
                     },
+                    
                 ]
             }
         ]
@@ -361,6 +366,37 @@ const routes = [
                                 '@/views/operation/page/consultationItem'
                             ], resolve)
                     },
+                    //CommunityIntroduction
+                    {
+                        path:'/operation/CommunityIntroduction',
+                        component:()=>import('@/views/operation/page/CommunityIntroduction')
+                    },
+                    //Regulation management
+                    {
+                        path:'/operation/RegulationManagement',
+                        component:()=>import('@/views/operation/page/RegulationManagement')
+                    },
+                    //服务浏览Service browsing
+                    {
+                        path:'/operation/ServiceBrowsing',
+                        component:()=>import('@/views/operation/page/ServiceBrowsing')
+                    },
+                    {
+                        path:'/operation/GreeningTask',
+                        component:()=>import('@/views/operation/page/GreeningTask')
+                    },
+                    {
+                        path:'/operation/GreeningArea',
+                        component:()=>import('@/views/operation/page/GreeningArea')
+                    },
+                    {
+                        path:'/operation/HealthManagement',
+                        component:()=>import('@/views/operation/page/HealthManagement')
+                    },
+                    {
+                        path:'/operation/HealthArea',
+                        component:()=>import('@/views/operation/page/HealthArea')
+                    }
                 ]
             }
         ]

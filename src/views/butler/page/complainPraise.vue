@@ -37,7 +37,7 @@
         </template>
         <template slot="footer">
           <div class="table-footer">
-            <button @click="details(table_row)">详情</button>
+            <!-- <button @click="details(table_row)">详情</button> -->
             <button @click="details(table_row)">回复</button>
             <button @click="del(table_row)">删除</button>
           </div>

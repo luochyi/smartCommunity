@@ -130,8 +130,8 @@ export default {
           // Facility Booking
           path: '/butler/facilityBooking',
           label: '设施预约',
-          iconurl: require('@/assets/images/butler/icon_service08_nor.png'),
-          iconisactive: require('@/assets/images/butler/icon_service08_sel.png'),
+          iconurl: require('@/assets/images/butler/ssyy_nor.png'),
+          iconisactive: require('@/assets/images/butler/ssyy_sel.png'),
           isChildren: 1,
           children:[{
               path: '/butler/facilitiesManagement',
@@ -233,8 +233,8 @@ export default {
         {
           // xunjiandian
           path: '/butler/inspection',
-          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
-          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          iconurl: require('@/assets/images/butler/icon_service15_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service15_sel.png'),
           label: '巡检管理',
           isChildren: 1,
           children: [
@@ -256,20 +256,31 @@ export default {
         },
         {
           // Business meeting management
-          path: '/butler/keyManagement',
+          path: '/butler/key',
           label: '钥匙管理',
-          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
-          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
-          isChildren: 0
+          iconurl: require('@/assets/images/butler/icon_service16_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service16_sel.png'),
+          isChildren: 1,
+          children:[
+            {
+              path: '/butler/keyManagement',
+              label: '钥匙管理'
+            },
+            {
+              path: '/butler/keyExamine',
+              label: '钥匙审核'
+            },
+          ]
         },
         {
           // Business meeting management
           path: '/butler/packageCollection',
           label: '包裹代收',
-          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
-          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          iconurl: require('@/assets/images/butler/icon_service17_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service17_sel.png'),
           isChildren: 0
         },
+        
       ],
       isCollapse: false
     }

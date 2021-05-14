@@ -121,8 +121,8 @@ export default {
         {
           path: '/basic/auditManagement',
           label: '审核管理',
-          iconurl: require('@/assets/images/baisc/icon_archives05_nor.png'),
-          iconisactive: require('@/assets/images/baisc/icon_archives05_sel.png'),
+          iconurl: require('@/assets/images/baisc/icon_archives06_nor.png'),
+          iconisactive: require('@/assets/images/baisc/icon_archives06_sel.png'),
           isChildren: 0
         },
       ],

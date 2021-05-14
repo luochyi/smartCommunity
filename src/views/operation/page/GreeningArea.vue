@@ -2,13 +2,13 @@
   <div>
     <div class="main-content">
       <div class="main-titel">
-        <span>供应商管理</span>
+        <span>绿化区域</span>
       </div>
       <div class="content">
         <div class="content-btn">
           <el-button class="init-button"
                      @click="add()"
-                     icon="el-icon-plus">新增供应商</el-button>
+                     icon="el-icon-plus">新增区域</el-button>
         </div>
         <div class="">
           <VueTable ref="table"
@@ -37,12 +37,12 @@
           </VueTable>
         </div>
         <!-- 新增 -->
-        <Drawer drawerTitle="新增供应商"
+        <Drawer drawerTitle="新增区域"
                 @drawerClose="addClose"
                 :drawerVrisible='add_vrisible'>
           <div style="padding:30px">
             <FromCard>
-              <template slot="title">填写供应商信息</template>
+              <template slot="title">区域信息</template>
               <template>
                 <VueForm ref="addForm"
                          :formObj='addForm'>
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { shopSupplierInsert } from '@/api/shop'
+import { greenAreaInsert } from '@/api/operation'
 export default {
   data () {
     return {
@@ -104,48 +104,40 @@ export default {
       addForm: {
         ruleForm: {
           name: null,
-          director: '',
-          tel:null,
-          address:null,
-          imgUrls: []
         },
         form_item: [
           {
             type: 'Input',
-            label: '供应商名称',
+            label: '区域名称',
             placeholder: '请输入',
             width: '100%',
             prop: 'name'
           },
-          {
-            type: 'Input',
-            label: '负责人',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'director'
-          },
-          {
-            type: 'Input',
-            label: '联系方式',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'tel'
-          },
-          {
-            type: 'Input',
-            label: '商家地址',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'address'
-          },
-          {
-            type: 'Slot',
-            label: '商家图标',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'imgUrls',
-            slotName: 'imgUrls'
-          }
+        //   {
+        //     type: 'Input',
+        //     label: '类型编号',
+        //     placeholder: '请输入',
+        //     width: '100%',
+        //     disabled: true,
+        //     prop: 'code'
+        //   },
+        //   {
+        //     type: 'Slot',
+        //     label: '图片上传',
+        //     placeholder: '请输入',
+        //     width: '100%',
+        //     prop: 'imgUrls',
+        //     slotName: 'imgUrls'
+        //   }
+        //   ,
+        //   {
+        //     type: 'Slot',
+        //     label: '开放时间',
+        //     placeholder: '请输入',
+        //     width: '100%',
+        //     prop: 'date',
+        //     slotName: 'date'
+        //   },
 
         ]
       },
@@ -156,22 +148,36 @@ export default {
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '供应商编号', prop: 'code', width: 'auto' },
-          { label: '供应商名称', prop: 'name', width: 'auto' },
-          { label: '负责人', prop: 'director', width: 'auto' },
-          { label: '联系方式', prop: 'tel', width: 'auto' },
-          { label: '商家地址', prop: 'address', width: 'auto' },
-          { label: '创建时间', prop: 'createDate', width: '220' },
+          { label: '区域名称', prop: 'name', width: 'auto' },
+          { label: '创建人名称', prop: 'createName', width: 'auto' },
+          { label: '创建时间', prop: 'createDate', width: 'auto' },
         ],
         table_data: [],
-        url: 'shopSupplierList',
+        url: 'greenAreaList',
         search_item: [
+
           {
             type: 'Input',
-            label: '供应商名称',
+            label: '区域名称',
             placeholder: '请选择',
             prop: 'name',
           },
+          {
+            type: 'Input',
+            label: '创建人名称',
+            placeholder: '请输入',
+            prop: 'createName',
+          },
+          {
+            type: 'picker',
+            label: '发布时间',
+            placeholder: '请输入',
+            prop: 'date',
+            startDate: 'createDateStart',
+            endDate: 'createDateEnd',
+            width: '280px',
+          },
+          // Slot
         ],
         data: {
           pageNum: 1,
@@ -183,6 +189,8 @@ export default {
   methods: {
     add () {
       this.add_vrisible = true
+      let random = Math.floor(Math.random()*100000000)
+      this.addForm.ruleForm.code = random
     },
     addClose () {
       this.$refs.addForm.reset()
@@ -207,7 +215,7 @@ export default {
         // openEndDate:  this.openEndDate,
         // imgUrls:this.addForm.ruleForm.imgUrls,
       }
-      shopSupplierInsert(resData).then(res => {
+      greenAreaInsert(resData).then(res => {
         if (res.status) {
           this.$message({
             message: res.message,

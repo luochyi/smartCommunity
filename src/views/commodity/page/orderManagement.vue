@@ -34,17 +34,17 @@
                        name="first"></el-tab-pane>
           <el-tab-pane label="待确认"
                        name="second"></el-tab-pane>
-          <el-tab-pane label="待支付"
-                       name="third"></el-tab-pane>
+          <!-- <el-tab-pane label="待支付"
+                       name="third"></el-tab-pane> -->
           <el-tab-pane label="备货中"
                        name="fourth"></el-tab-pane>
-          <el-tab-pane label="已发货"
-                       name="tab5"></el-tab-pane>
+          <!-- <el-tab-pane label="已发货"
+                       name="tab5"></el-tab-pane> -->
           <el-tab-pane label="已完成"
                        name="tab6"></el-tab-pane>
           <el-tab-pane label="已关闭"
                        name="tab7"></el-tab-pane>
-          <el-tab-pane label="未发货退款"
+          <!-- <el-tab-pane label="未发货退款"
                        name="tab8"></el-tab-pane>
           <el-tab-pane label="已发货退款"
                        name="tab9"></el-tab-pane>
@@ -55,7 +55,7 @@
           <el-tab-pane label="超时未发货"
                        name="tab12"></el-tab-pane>
           <el-tab-pane label="催发货"
-                       name="tab13"></el-tab-pane>
+                       name="tab13"></el-tab-pane> -->
         </el-tabs>
         <div class="content-table">
           <div class="shop_table">
@@ -539,69 +539,69 @@ export default {
                     rangeSeparator: ' ～',
                     endPlaceholder: '结束时间',
                 },
-                {
-                    type: 'Input',
-                    label: '收货人姓名',
-                    placeholder: '请输入',
-                    prop: 'p10',
-                    value: '',
-                },
-                {
-                    type: 'Input',
-                    label: '收货人手机',
-                    placeholder: '请选择输入',
-                    prop: 'p11',
-                    value: '全部',
-                },
-                {
-                    type: 'select',
-                    label: '支付方式',
-                    placeholder: '请选择',
-                    prop: 'p12',
-                    value: '全部',
-                    options: [
-                        {
-                            label: '全部',
-                            value: '1',
-                        },
-                        {
-                            label: '是',
-                            value: '2',
-                        },
-                        {
-                            label: '否',
-                            value: '3',
-                        },
-                    ],
-                },
-                {
-                    type: 'select',
-                    label: '快递公司',
-                    placeholder: '请选择',
-                    prop: 'p13',
-                    value: '全部',
-                    options: [
-                        {
-                            label: '全部',
-                            value: '1',
-                        },
-                        {
-                            label: '是',
-                            value: '2',
-                        },
-                        {
-                            label: '否',
-                            value: '3',
-                        },
-                    ],
-                },
-                {
-                    type: 'Input',
-                    label: '快递单号',
-                    placeholder: '请选择输入',
-                    prop: 'p14',
-                    value: '',
-                },
+                // {
+                //     type: 'Input',
+                //     label: '收货人姓名',
+                //     placeholder: '请输入',
+                //     prop: 'p10',
+                //     value: '',
+                // },
+                // {
+                //     type: 'Input',
+                //     label: '收货人手机',
+                //     placeholder: '请选择输入',
+                //     prop: 'p11',
+                //     value: '全部',
+                // },
+                // {
+                //     type: 'select',
+                //     label: '支付方式',
+                //     placeholder: '请选择',
+                //     prop: 'p12',
+                //     value: '全部',
+                //     options: [
+                //         {
+                //             label: '全部',
+                //             value: '1',
+                //         },
+                //         {
+                //             label: '是',
+                //             value: '2',
+                //         },
+                //         {
+                //             label: '否',
+                //             value: '3',
+                //         },
+                //     ],
+                // },
+                // {
+                //     type: 'select',
+                //     label: '快递公司',
+                //     placeholder: '请选择',
+                //     prop: 'p13',
+                //     value: '全部',
+                //     options: [
+                //         {
+                //             label: '全部',
+                //             value: '1',
+                //         },
+                //         {
+                //             label: '是',
+                //             value: '2',
+                //         },
+                //         {
+                //             label: '否',
+                //             value: '3',
+                //         },
+                //     ],
+                // },
+                // {
+                //     type: 'Input',
+                //     label: '快递单号',
+                //     placeholder: '请选择输入',
+                //     prop: 'p14',
+                //     value: '',
+                // },
             ],
             // 控制dialog显示隐藏
 

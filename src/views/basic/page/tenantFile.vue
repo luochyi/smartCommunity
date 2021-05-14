@@ -17,21 +17,21 @@
             <button @click="detailsOwnerDrawer(table_row)">详情</button>
             <button @click="reviseOwnerDrawer(table_row)">修改</button>
             <button @click="del(table_row)">删除</button>
-            <button @click="linkHouseDrawer(table_row)">关联房屋</button>
-            <button @click="linkParkDrawer(table_row)">关联车位</button>
+            <!-- <button @click="linkHouseDrawer(table_row)">关联房屋</button>
+            <button @click="linkParkDrawer(table_row)">关联车位</button> -->
           </div>
         </template>
       </VueTable>
     </div>
-    <addOwner drawerTitle="添加业主"
+    <addOwner drawerTitle="添加租客"
               @handleClose="addOwnerClose"
               :drawerVrisible='add_vrisible'></addOwner>
 
-    <detailsOwner drawerTitle="业主详情"
+    <detailsOwner drawerTitle="业主租客"
                   :owerId="owerId"
                   @handleClose="detailsOwnerClose"
                   :drawerVrisible='details_vrisible'></detailsOwner>
-    <reviseOwner drawerTitle="修改业主"
+    <reviseOwner drawerTitle="修改信息"
                  :owerId="reviseOwerId"
                  @handleClose="reviseOwnerClose"
                  :drawerVrisible='revise_vrisible'></reviseOwner>

@@ -114,8 +114,8 @@ export default {
           // zixun
           path: '/operation/consultation',
           label: '资讯管理',
-          iconurl: require('@/assets/images/operation/icon_operate01_nor.png'),
-          iconisactive: require('@/assets/images/operation/icon_operate01_sel.png'),
+          iconurl: require('@/assets/images/operation/icon_operate04_nor.png'),
+          iconisactive: require('@/assets/images/operation/icon_operate04_sel.png'),
           isChildren: 1,
           children: [
             {
@@ -130,6 +130,63 @@ export default {
             }
           ]
         },
+        //CommunityIntroduction
+        {
+          path: '/operation/CommunityIntroduction',
+          label: '社区介绍',
+          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          isChildren: 0
+        },
+        {
+          path: '/operation/RegulationManagement',
+          label: '规程管理',
+          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          isChildren: 0
+        },
+        {
+          path: '/operation/ServiceBrowsing',
+          label: '服务浏览',
+          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          isChildren: 0
+        },
+        {
+          path: '/operation/greening',
+          label: '绿化管理',
+          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          isChildren: 1,
+          children:[
+            {
+              path: '/operation/GreeningTask',
+              label: '绿化任务'
+            },
+            {
+              path: '/operation/GreeningArea',
+              label: '绿化区域'
+            }
+          ]
+        },
+        {
+          path: '/operation/health',
+          label: '卫生计划',
+          iconurl: require('@/assets/images/butler/icon_service13_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service13_sel.png'),
+          isChildren: 1,
+          children:[
+            {
+              path: '/operation/HealthManagement',
+              label: '卫生管理'
+            },
+            {
+              path: '/operation/HealthArea',
+              label: '卫生区域'
+            }
+          ]
+        },
+        
       ],
       isCollapse: false
     }

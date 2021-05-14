@@ -17,8 +17,8 @@
             <button @click="detailsOwnerDrawer(table_row)">详情</button>
             <button @click="reviseOwnerDrawer(table_row)">修改</button>
             <button @click="del(table_row)">删除</button>
-            <button @click="linkHouseDrawer(table_row)">关联房屋</button>
-            <button @click="linkParkDrawer(table_row)">关联车位</button>
+            <!-- <button @click="linkHouseDrawer(table_row)">关联房屋</button>
+            <button @click="linkParkDrawer(table_row)">关联车位</button> -->
           </div>
         </template>
       </VueTable>

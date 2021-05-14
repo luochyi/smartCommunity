@@ -80,10 +80,45 @@ export default {
           { label: '楼栋', prop: 'buildingName', width: 'auto' },
           { label: '单元（号）', prop: 'buildingUnitNo', width: 'auto' },
           { label: '房屋名称', prop: 'roomNumber', width: 'auto' },
-          { label: '房屋状态', prop: 'status', width: 'auto' },
+          { label: '房屋状态', prop: 'status', width: 'auto' ,type:'function',
+            callback(row,prop){
+              switch(row.status){
+                case 1:
+                return '入住'
+                break
+                case 2:
+                return '装修'
+                break
+                case 3:
+                return '空置'
+                break
+                case 4:
+                return '未售'
+                break
+                case 5:
+                return '已租'
+                break
+              }
+            }},
           { label: '业主', prop: 'userResidentName', width: 'auto' },
           { label: '手机号', prop: 'userResidentTel', width: 'auto' },
-          { label: '房屋类型', prop: 'type', width: 'auto' },
+          { label: '房屋类型', prop: 'type', width: 'auto' ,type:'function',
+            callback(row,prop){
+              switch(row.type){
+                case 1:
+                return '住宅'
+                break
+                case 2:
+                return '公寓'
+                break
+                case 3:
+                return '别墅'
+                break
+                case 4:
+                return '商铺'
+                break
+              }
+            }},
           { label: '建筑面积', prop: 'constructionArea', width: 'auto' },
           { label: '室内面积', prop: 'indoorArea', width: 'auto' },
         ],

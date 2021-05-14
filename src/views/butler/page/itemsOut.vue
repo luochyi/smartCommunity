@@ -126,7 +126,17 @@ export default {
                     },
                     { label: '申请人', prop: 'applicantName', width: '180' },
                     { label: '联系方式', prop: 'applicantTel', width: '180' },
-                    { label: '搬运方式', prop: 'approach', width: '180' },
+                    { label: '搬运方式', prop: 'approach', width: '180' ,type: 'function',
+                        callback: (row, prop) => {
+                            switch (row.approach) {
+                                case 1:
+                                    return '自己搬运'
+                                    break
+                                case 2:
+                                    return '搬家公司'
+                                    break
+                            }
+                        }},
                     {
                         label: '预计出门时间',
                         prop: 'expectedTime',

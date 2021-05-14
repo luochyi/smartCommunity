@@ -142,3 +142,34 @@ export function newsCategoryManagementList(data) {
         params: data
     })
 }
+//greenArea/insert
+export function greenAreaInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/greenArea/insert',
+        data: data
+    })
+}
+//greenArea/list
+export function greenAreaList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/greenArea/list',
+        params: data
+    })
+}
+export function greenTaskInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/greenTask/insert',
+        data: data
+    })
+}
+//greenArea/findById
+export function greenAreaFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/greenArea/findById',
+        params: data
+    })
+}
