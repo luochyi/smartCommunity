@@ -2,13 +2,13 @@
   <div>
     <div class="main-content">
       <div class="main-titel">
-        <span>绿化区域</span>
+        <span>设施分类</span>
       </div>
       <div class="content">
         <div class="content-btn">
           <el-button class="init-button"
                      @click="add()"
-                     icon="el-icon-plus">新增区域</el-button>
+                     icon="el-icon-plus">新增设施分类 </el-button>
         </div>
         <div class="">
           <VueTable ref="table"
@@ -29,7 +29,7 @@
             </template> -->
             <template slot="footer">
               <div class="table-footer">
-                <!-- <button>编辑</button> -->
+                <button>编辑</button>
                 <button @click="del(table_row)">删除</button>
 
               </div>
@@ -37,12 +37,12 @@
           </VueTable>
         </div>
         <!-- 新增 -->
-        <Drawer drawerTitle="新增区域"
+        <Drawer drawerTitle="新增设施分类"
                 @drawerClose="addClose"
                 :drawerVrisible='add_vrisible'>
           <div style="padding:30px">
             <FromCard>
-              <template slot="title">区域信息</template>
+              <template slot="title">填写分类信息</template>
               <template>
                 <VueForm ref="addForm"
                          :formObj='addForm'>
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { greenAreaInsert } from '@/api/operation'
+import { facilitiesCategoryInsert } from '@/api/daily'
 export default {
   data () {
     return {
@@ -103,41 +103,45 @@ export default {
       addDate: null,
       addForm: {
         ruleForm: {
+          code: '',
           name: null,
+          openStartDate: null,
+          openEndDate: null,
+          imgUrls: []
         },
         form_item: [
           {
             type: 'Input',
-            label: '区域名称',
+            label: '分类名称',
             placeholder: '请输入',
             width: '100%',
             prop: 'name'
           },
-        //   {
-        //     type: 'Input',
-        //     label: '类型编号',
-        //     placeholder: '请输入',
-        //     width: '100%',
-        //     disabled: true,
-        //     prop: 'code'
-        //   },
-        //   {
-        //     type: 'Slot',
-        //     label: '图片上传',
-        //     placeholder: '请输入',
-        //     width: '100%',
-        //     prop: 'imgUrls',
-        //     slotName: 'imgUrls'
-        //   }
-        //   ,
-        //   {
-        //     type: 'Slot',
-        //     label: '开放时间',
-        //     placeholder: '请输入',
-        //     width: '100%',
-        //     prop: 'date',
-        //     slotName: 'date'
-        //   },
+          {
+            type: 'Input',
+            label: '类型编号',
+            placeholder: '请输入',
+            width: '100%',
+            disabled: true,
+            prop: 'code'
+          },
+          {
+            type: 'Slot',
+            label: '图片上传',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'imgUrls',
+            slotName: 'imgUrls'
+          }
+          ,
+          {
+            type: 'Slot',
+            label: '开放时间',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'date',
+            slotName: 'date'
+          },
 
         ]
       },
@@ -148,33 +152,35 @@ export default {
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '区域名称', prop: 'name', width: 'auto' },
-          { label: '创建人名称', prop: 'createName', width: 'auto' },
-          { label: '创建时间', prop: 'createDate', width: 'auto' },
+          { label: '分类编号', prop: 'code', width: 'auto' },
+          { label: '设施类型', prop: 'name', width: 'auto' },
+          { label: '添加人', prop: 'createName', width: 'auto' },
+          { label: '设施数量', prop: 'num', width: 'auto' },
+          { label: '添加时间', prop: 'createDate', width: '220' },
         ],
         table_data: [],
-        url: 'greenAreaList',
+        url: 'facilitiesCategoryList',
         search_item: [
 
           {
             type: 'Input',
-            label: '区域名称',
+            label: '设施类型',
             placeholder: '请选择',
             prop: 'name',
           },
           {
             type: 'Input',
-            label: '创建人名称',
+            label: '分类编号',
             placeholder: '请输入',
-            prop: 'createName',
+            prop: 'code',
           },
           {
             type: 'picker',
-            label: '发布时间',
+            label: '添加时间',
             placeholder: '请输入',
             prop: 'date',
-            startDate: 'createDateStart',
-            endDate: 'createDateEnd',
+            startDate: 'createStartDate',
+            endDate: 'createEndDate',
             width: '280px',
           },
           // Slot
@@ -215,7 +221,7 @@ export default {
         // openEndDate:  this.openEndDate,
         // imgUrls:this.addForm.ruleForm.imgUrls,
       }
-      greenAreaInsert(resData).then(res => {
+      facilitiesCategoryInsert(resData).then(res => {
         if (res.status) {
           this.$message({
             message: res.message,

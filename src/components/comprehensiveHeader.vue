@@ -75,6 +75,10 @@ export default {
           path: '/basic',
           label: '基础档案',
         },
+        {
+          path: '/charge',
+          label: '收费管理',
+        },
         // {
         //   path: '/property',
         //   label: '物业综合',

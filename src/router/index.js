@@ -61,7 +61,261 @@ const routes = [
             }
         ]
     },
-
+    //日常管理
+    {
+        path: '/daily',
+        component: resolve => require(['@/components/comprehensiveHeader'], resolve),
+        children: [
+            {
+                path: '/daily',
+                component: resolve =>
+                    require(['@/components/dailyAside'], resolve),
+                children: [
+                    {
+                        // 收费标准管理
+                        path: '/daily',
+                        // 路由重定向
+                        redirect: '/daily/facilitiesManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/daily/page/facilitiesManagement'
+                            ], resolve)
+                    },
+                    {
+                        //设施预约
+                        //设施管理
+                        path:'/daily/facilitiesManagement',
+                        component:()=>import('@/views/daily/page/facilitiesManagement')
+                    },
+                    {
+                         //预约管理
+                         path:'/daily/bookingManagement',
+                         component:()=>import('@/views/daily/page/bookingManagement')
+                    },
+                    // {
+                    //      //设施检查
+                    //      path:'/daily/facilityInspection',
+                    //      component:()=>import('@/views/daily/page/facilityInspection')
+                    // },
+                    {
+                        //设施分类
+                        path:'/daily/facilityItem',
+                        component:()=>import('@/views/daily/page/facilityItem')
+                   },
+                   //巡检
+                   {
+                    path:'/daily/inspectionPoint',
+                    component:()=>import('@/views/daily/page/inspectionPoint')
+                    },
+                    {
+                        path:'/daily/inspectionPlan',
+                        component:()=>import('@/views/daily/page/inspectionPlan')
+                    },
+                    {
+                        path:'/daily/inspectionRoute',
+                        component:()=>import('@/views/daily/page/inspectionRoute')
+                    },
+                    
+                    {
+                        path:'/daily/packageCollection',
+                        component:()=>import('@/views/daily/page/packageCollection')
+                    },
+                    {
+                        path:'/daily/keyManagement',
+                        component:()=>import('@/views/daily/page/keyManagement')
+                    },
+                    {
+                        path:'/daily/keyExamine',
+                        component:()=>import('@/views/daily/page/keyExamine')
+                    },
+                    {
+                        // 业务会管理
+                        path: '/daily/businessManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/daily/page/businessManagement'
+                            ], resolve)
+                    },
+                    //CommunityIntroduction
+                    {
+                        path:'/daily/CommunityIntroduction',
+                        component:()=>import('@/views/daily/page/CommunityIntroduction')
+                    },
+                    //Regulation management
+                    {
+                        path:'/daily/RegulationManagement',
+                        component:()=>import('@/views/daily/page/RegulationManagement')
+                    },
+                    //服务浏览Service browsing
+                    {
+                        path:'/daily/ServiceBrowsing',
+                        component:()=>import('@/views/daily/page/ServiceBrowsing')
+                    },
+                    {
+                        path:'/daily/GreeningTask',
+                        component:()=>import('@/views/daily/page/GreeningTask')
+                    },
+                    {
+                        path:'/daily/GreeningArea',
+                        component:()=>import('@/views/daily/page/GreeningArea')
+                    },
+                    {
+                        path:'/daily/HealthManagement',
+                        component:()=>import('@/views/daily/page/HealthManagement')
+                    },
+                    {
+                        path:'/daily/HealthArea',
+                        component:()=>import('@/views/daily/page/HealthArea')
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        // 基础档案
+        path: '/basic',
+        component: resolve => require(['@/components/comprehensiveHeader'], resolve),
+        children: [
+            {
+                path: '/basic',
+                component: resolve =>
+                    require(['@/components/basicAside'], resolve),
+                children: [
+                    {
+                        // 车辆档案
+                        path: '/basic',
+                        // 路由重定向
+                        redirect: '/basic/buildingManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/basic/page/buildingManagement'
+                            ], resolve)
+                    },
+                    {
+                        // 车辆档案
+                        path: '/basic/vehicleFile',
+                        component: resolve =>
+                            require(['@/views/basic/page/vehicleFile'], resolve)
+                    },
+                    {
+                        // 车位信息
+                        path: '/basic/parkingInfo',
+                        component: resolve =>
+                            require(['@/views/basic/page/parkingInfo'], resolve)
+                    },
+                    {
+                        // 业主档案
+                        path: '/basic/ownersFile',
+                        component: resolve =>
+                            require(['@/views/basic/page/ownersFile'], resolve)
+                    },
+                    {
+                        // 租户档案
+                        path: '/basic/tenantFile',
+                        component: resolve =>
+                            require(['@/views/basic/page/tenantFile'], resolve)
+                    },
+                    {
+                        // 租户档案
+                        path: '/basic/formDate',
+                        component: resolve =>
+                            require(['@/components/form/formDate'], resolve)
+                    },
+                    {
+                        // 楼栋管理
+                        path: '/basic/buildingManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/basic/page/buildingManagement'
+                            ], resolve)
+                    },
+                    {
+                        // 单元管理
+                        path: '/basic/unitInfo',
+                        component: resolve =>
+                            require(['@/views/basic/page/unitInfo'], resolve)
+                    },
+                    {
+                        // 房屋管理
+                        path: '/basic/houseManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/basic/page/houseManagement'
+                            ], resolve)
+                    },
+                    {
+                        // 房屋管理
+                        path: '/basic/auditManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/basic/page/auditManagement'
+                            ], resolve)
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        path: '/charge',
+        component: resolve => require(['@/components/comprehensiveHeader'], resolve),
+        children: [
+            {
+                path: '/charge',
+                component: resolve =>
+                    require(['@/components/chargeAside'], resolve),
+                children: [
+                    {
+                        // 收费标准管理
+                        path: '/charge',
+                        // 路由重定向
+                        redirect: '/charge/chargeStandard',
+                        component: resolve =>
+                            require([
+                                '@/views/charge/page/chargeStandard'
+                            ], resolve)
+                    },
+                    {
+                        // 收费标准管理
+                        path: '/charge/chargeStandard',
+                        component: resolve =>
+                            require([
+                                '@/views/charge/page/chargeStandard'
+                            ], resolve)
+                    },
+                    {
+                        // 日常缴费
+                        path: '/charge/dailyMayment',
+                        component: resolve =>
+                            require([
+                                '@/views/charge/page/dailyMayment'
+                            ], resolve)
+                    },
+                    {
+                        // 押金管理
+                        path: '/charge/depositManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/charge/page/depositManagement'
+                            ], resolve)
+                    },
+                    {
+                        // 工单管理
+                        path: '/charge/orderManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/charge/page/orderManagement'
+                            ], resolve)
+                    },
+                    {
+                        // 账单管理
+                        path: '/charge/expenseBil',
+                        component: resolve =>
+                            require(['@/views/charge/page/expenseBil'], resolve)
+                    }
+                ]
+            }
+        ]
+    },
     {
         // 概览
         path: '/overview',
@@ -157,27 +411,6 @@ const routes = [
                             ], resolve)
                     },
                     {
-                        //设施预约
-                        //设施管理
-                        path:'/butler/facilitiesManagement',
-                        component:()=>import('@/views/butler/page/facilitiesManagement')
-                    },
-                    {
-                         //预约管理
-                         path:'/butler/bookingManagement',
-                         component:()=>import('@/views/butler/page/bookingManagement')
-                    },
-                    {
-                         //设施检查
-                         path:'/butler/facilityInspection',
-                         component:()=>import('@/views/butler/page/facilityInspection')
-                    },
-                    {
-                        //设施分类
-                        path:'/butler/facilityItem',
-                        component:()=>import('@/views/butler/page/facilityItem')
-                   },
-                    {
                         // 问卷调查
                         path: '/butler/Questionnaire',
                         component: resolve =>
@@ -243,14 +476,7 @@ const routes = [
                                 '@/views/butler/page/itemManagemsent'
                             ], resolve)
                     },
-                    {
-                        // 业务会管理
-                        path: '/butler/businessManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/butler/page/businessManagement'
-                            ], resolve)
-                    },
+                    
                     {
                         // 语音管家
                         path: '/butler/voiceButler',
@@ -259,31 +485,7 @@ const routes = [
                                 '@/views/butler/page/voiceButler'
                             ], resolve)
                     },
-                    //巡检
-                    {
-                        path:'/butler/inspectionPoint',
-                        component:()=>import('@/views/butler/page/inspectionPoint')
-                    },
-                    {
-                        path:'/butler/inspectionPlan',
-                        component:()=>import('@/views/butler/page/inspectionPlan')
-                    },
-                    {
-                        path:'/butler/inspectionRoute',
-                        component:()=>import('@/views/butler/page/inspectionRoute')
-                    },
-                    {
-                        path:'/butler/keyManagement',
-                        component:()=>import('@/views/butler/page/keyManagement')
-                    },
-                    {
-                        path:'/butler/keyExamine',
-                        component:()=>import('@/views/butler/page/keyExamine')
-                    },
-                    {
-                        path:'/butler/packageCollection',
-                        component:()=>import('@/views/butler/page/packageCollection')
-                    },
+                    
                     
                 ]
             }
@@ -366,102 +568,11 @@ const routes = [
                                 '@/views/operation/page/consultationItem'
                             ], resolve)
                     },
-                    //CommunityIntroduction
-                    {
-                        path:'/operation/CommunityIntroduction',
-                        component:()=>import('@/views/operation/page/CommunityIntroduction')
-                    },
-                    //Regulation management
-                    {
-                        path:'/operation/RegulationManagement',
-                        component:()=>import('@/views/operation/page/RegulationManagement')
-                    },
-                    //服务浏览Service browsing
-                    {
-                        path:'/operation/ServiceBrowsing',
-                        component:()=>import('@/views/operation/page/ServiceBrowsing')
-                    },
-                    {
-                        path:'/operation/GreeningTask',
-                        component:()=>import('@/views/operation/page/GreeningTask')
-                    },
-                    {
-                        path:'/operation/GreeningArea',
-                        component:()=>import('@/views/operation/page/GreeningArea')
-                    },
-                    {
-                        path:'/operation/HealthManagement',
-                        component:()=>import('@/views/operation/page/HealthManagement')
-                    },
-                    {
-                        path:'/operation/HealthArea',
-                        component:()=>import('@/views/operation/page/HealthArea')
-                    }
                 ]
             }
         ]
     },
-    {
-        path: '/charge',
-        component: resolve => require(['@/components/smartHeader'], resolve),
-        children: [
-            {
-                path: '/charge',
-                component: resolve =>
-                    require(['@/components/chargeAside'], resolve),
-                children: [
-                    {
-                        // 收费标准管理
-                        path: '/charge',
-                        // 路由重定向
-                        redirect: '/charge/chargeStandard',
-                        component: resolve =>
-                            require([
-                                '@/views/charge/page/chargeStandard'
-                            ], resolve)
-                    },
-                    {
-                        // 收费标准管理
-                        path: '/charge/chargeStandard',
-                        component: resolve =>
-                            require([
-                                '@/views/charge/page/chargeStandard'
-                            ], resolve)
-                    },
-                    {
-                        // 日常缴费
-                        path: '/charge/dailyMayment',
-                        component: resolve =>
-                            require([
-                                '@/views/charge/page/dailyMayment'
-                            ], resolve)
-                    },
-                    {
-                        // 押金管理
-                        path: '/charge/depositManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/charge/page/depositManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 工单管理
-                        path: '/charge/orderManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/charge/page/orderManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 账单管理
-                        path: '/charge/expenseBil',
-                        component: resolve =>
-                            require(['@/views/charge/page/expenseBil'], resolve)
-                    }
-                ]
-            }
-        ]
-    },
+    
     {
         path: '/commodity',
         component: resolve => require(['@/components/smartHeader'], resolve),
@@ -526,17 +637,17 @@ const routes = [
                                 '@/views/commodity/page/orderManagement'
                             ], resolve)
                     },
-                    {
-                        // 居家生活
-                        //服务管理
-                        path:'/commodity/serviceManagement',
-                         component:()=>import('@/views/commodity/page/serviceManagement')
-                    },
-                    {
-                        // 服务分类
-                        path:'/commodity/serviceItem',
-                         component:()=>import('@/views/commodity/page/serviceItem')
-                    },
+                    // {
+                    //     // 居家生活
+                    //     //服务管理
+                    //     path:'/commodity/serviceManagement',
+                    //      component:()=>import('@/views/commodity/page/serviceManagement')
+                    // },
+                    // {
+                    //     // 服务分类
+                    //     path:'/commodity/serviceItem',
+                    //      component:()=>import('@/views/commodity/page/serviceItem')
+                    // },
                     // {
                     //     // 商家管理
                     //     path:'/commodity/businessManagement',
@@ -550,90 +661,7 @@ const routes = [
         path: '/system',
         component: resolve => require(['@/components/smartHeader'], resolve)
     },
-    {
-        // 基础档案
-        path: '/basic',
-        component: resolve => require(['@/components/smartHeader'], resolve),
-        children: [
-            {
-                path: '/basic',
-                component: resolve =>
-                    require(['@/components/basicAside'], resolve),
-                children: [
-                    {
-                        // 车辆档案
-                        path: '/basic',
-                        // 路由重定向
-                        redirect: '/basic/buildingManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/basic/page/buildingManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 车辆档案
-                        path: '/basic/vehicleFile',
-                        component: resolve =>
-                            require(['@/views/basic/page/vehicleFile'], resolve)
-                    },
-                    {
-                        // 车位信息
-                        path: '/basic/parkingInfo',
-                        component: resolve =>
-                            require(['@/views/basic/page/parkingInfo'], resolve)
-                    },
-                    {
-                        // 业主档案
-                        path: '/basic/ownersFile',
-                        component: resolve =>
-                            require(['@/views/basic/page/ownersFile'], resolve)
-                    },
-                    {
-                        // 租户档案
-                        path: '/basic/tenantFile',
-                        component: resolve =>
-                            require(['@/views/basic/page/tenantFile'], resolve)
-                    },
-                    {
-                        // 租户档案
-                        path: '/basic/formDate',
-                        component: resolve =>
-                            require(['@/components/form/formDate'], resolve)
-                    },
-                    {
-                        // 楼栋管理
-                        path: '/basic/buildingManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/basic/page/buildingManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 单元管理
-                        path: '/basic/unitInfo',
-                        component: resolve =>
-                            require(['@/views/basic/page/unitInfo'], resolve)
-                    },
-                    {
-                        // 房屋管理
-                        path: '/basic/houseManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/basic/page/houseManagement'
-                            ], resolve)
-                    },
-                    {
-                        // 房屋管理
-                        path: '/basic/auditManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/basic/page/auditManagement'
-                            ], resolve)
-                    }
-                ]
-            }
-        ]
-    }
+  
 ]
 const router = new VueRouter({
     routes,

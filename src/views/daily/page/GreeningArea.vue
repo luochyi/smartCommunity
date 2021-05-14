@@ -2,36 +2,34 @@
   <div>
     <div class="main-content">
       <div class="main-titel">
-        <span>服务管理</span>
+        <span>绿化区域</span>
       </div>
       <div class="content">
         <div class="content-btn">
           <el-button class="init-button"
                      @click="add()"
-                     icon="el-icon-plus">新增服务</el-button>
-                     
+                     icon="el-icon-plus">新增区域</el-button>
         </div>
-        
         <div class="">
           <VueTable ref="table"
                     :config='config'
                     @tableCheck="tableCheck">
-            <template slot="tabs">
+            <!-- <template slot="tabs">
               <el-tabs v-model="activeName"
                        @tab-click="handleClick">
                 <el-tab-pane label="全部"
                              name="0"></el-tab-pane>
-                <!-- <el-tab-pane label="使用中"
+                <el-tab-pane label="使用中"
                              name="1"></el-tab-pane>
                 <el-tab-pane label="空置中"
                              name="2"></el-tab-pane>
                 <el-tab-pane label="停用"
-                             name="3"></el-tab-pane> -->
+                             name="3"></el-tab-pane>
               </el-tabs>
-            </template>
+            </template> -->
             <template slot="footer">
               <div class="table-footer">
-                <button>编辑</button>
+                <!-- <button>编辑</button> -->
                 <button @click="del(table_row)">删除</button>
 
               </div>
@@ -39,12 +37,12 @@
           </VueTable>
         </div>
         <!-- 新增 -->
-        <Drawer drawerTitle="新增服务"
+        <Drawer drawerTitle="新增区域"
                 @drawerClose="addClose"
                 :drawerVrisible='add_vrisible'>
           <div style="padding:30px">
             <FromCard>
-              <template slot="title">服务</template>
+              <template slot="title">区域信息</template>
               <template>
                 <VueForm ref="addForm"
                          :formObj='addForm'>
@@ -59,6 +57,25 @@
                                     end-placeholder="结束时间"
                                     placeholder="选择时间范围">
                     </el-time-picker>
+                  </template>
+                  <template slot='imgUrls'>
+                    <template>
+                      <el-upload :action="`${$baseUrl}upload/uploadAnnouncement`"
+                                 :on-success="ImgeSuccess"
+                                 :file-list="imglist"
+                                 :on-exceed="handleExceed"
+                                 :limit="1"
+                                 accept=".jpg,.png,.JPG,.PNG"
+                                 :before-upload="beforeAvatarUpload">
+                        <el-button icon="el-icon-edit"
+                                   size="small">上传图片</el-button>
+                        <span style='margin-left:10px;font-size:12px;color:#444444'>建议比例：3:2</span>
+                        <div slot="tip"
+                             class="el-upload__tip">
+                          <span>支持扩展名：png,jpg</span>
+                        </div>
+                      </el-upload>
+                    </template>
                   </template>
                 </VueForm>
               </template>
@@ -78,7 +95,7 @@
 </template>
 
 <script>
-import { facilitiesManageInsert } from '@/api/butler'
+import { greenAreaInsert } from '@/api/daily'
 export default {
   data () {
     return {
@@ -87,124 +104,77 @@ export default {
       addForm: {
         ruleForm: {
           name: null,
-          code: 'hdede',
-          facilitiesCategoryId:null,
-          address:null
         },
         form_item: [
           {
             type: 'Input',
-            label: '设施名称',
+            label: '区域名称',
             placeholder: '请输入',
-            width: '50%',
+            width: '100%',
             prop: 'name'
           },
-          // {
-          //   type: 'Input',
-          //   label: '添加人',
-          //   placeholder: '请输入',
-          //   width: '50%',
-          //   prop: 'createName'
-          // },
-          // {
-          //   type: 'Input',
-          //   label: '电话',
-          //   placeholder: '请输入',
-          //   width: '50%',
-          //   prop: 'name'
-          // },
-          {
-            type: 'Input',
-            label: '设施编号',
-            disabled: true,
-            placeholder: '请输入',
-            width: '50%',
-            prop: 'code'
-          },
-          {
-            type: 'Select',
-            label: '设施类型',
-            placeholder: '请选择',
-            width: '100%',
-            options:[
-              { value: 1, label: '乒乓球场' },
-              { value: 2, label: '篮球场' },
-              { value: 3, label: '网球场' },
-            ],
-            prop: 'facilitiesCategoryId',
-          },
-          {
-            type: 'Input',
-            label: '设施地址',
-            placeholder: '请输入',
-            width: '100%',
-            prop: 'address'
-          },
+        //   {
+        //     type: 'Input',
+        //     label: '类型编号',
+        //     placeholder: '请输入',
+        //     width: '100%',
+        //     disabled: true,
+        //     prop: 'code'
+        //   },
+        //   {
+        //     type: 'Slot',
+        //     label: '图片上传',
+        //     placeholder: '请输入',
+        //     width: '100%',
+        //     prop: 'imgUrls',
+        //     slotName: 'imgUrls'
+        //   }
+        //   ,
+        //   {
+        //     type: 'Slot',
+        //     label: '开放时间',
+        //     placeholder: '请输入',
+        //     width: '100%',
+        //     prop: 'date',
+        //     slotName: 'date'
+        //   },
 
         ]
       },
       table_row: [],
       // 上传img文件
       imglist: [],
-      activeName: '0',
+      // activeName: '0',
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '服务编号', prop: 'code', width: 'auto' },
-          { label: '服务名称', prop: 'facilitiesCategoryName', width: 'auto' },
-          { label: '服务商家', prop: 'count', width: 'auto' },
-          { label: '所属分类', prop: 'item', width: 'auto' },
-          { label: '报名人数', prop: 'number', width: 'auto' },
-          { label: '报名人数', prop: 'status', width: 'auto' },
-          { label: '创建人', prop: 'createName', width: 'auto' },
-          { label: '创建时间', prop: 'createDate', width: '220' },
+          { label: '区域名称', prop: 'name', width: 'auto' },
+          { label: '创建人名称', prop: 'createName', width: 'auto' },
+          { label: '创建时间', prop: 'createDate', width: 'auto' },
         ],
         table_data: [],
-        url: 'facilitiesManageList',
+        url: 'greenAreaList',
         search_item: [
 
           {
             type: 'Input',
-            label: '服务编号',
-            placeholder: '请输入',
-            prop: 'code',
-          },
-          {
-            type: 'Input',
-            label: '服务名称',
-            placeholder: '请输入',
+            label: '区域名称',
+            placeholder: '请选择',
             prop: 'name',
           },
           {
             type: 'Input',
-            label: '服务商家',
-            placeholder: '请输入',
-            prop: 'business',
-          },
-          {
-            type: 'select',
-            label: '所属分类',
-            placeholder: '请选择',
-            options: [
-              { value: 1, label: '乒乓球场' },
-              { value: 2, label: '篮球场' },
-              { value: 3, label: '网球场' },
-            ],
-            prop: 'facilitiesCategoryName',
-          },
-          {
-            type: 'Input',
-            label: '创建人',
+            label: '创建人名称',
             placeholder: '请输入',
             prop: 'createName',
           },
           {
             type: 'picker',
-            label: '添加时间',
+            label: '发布时间',
             placeholder: '请输入',
             prop: 'date',
-            startDate: 'createStartDate',
-            endDate: 'createEndDate',
+            startDate: 'createDateStart',
+            endDate: 'createDateEnd',
             width: '280px',
           },
           // Slot
@@ -219,6 +189,8 @@ export default {
   methods: {
     add () {
       this.add_vrisible = true
+      let random = Math.floor(Math.random()*100000000)
+      this.addForm.ruleForm.code = random
     },
     addClose () {
       this.$refs.addForm.reset()
@@ -243,7 +215,7 @@ export default {
         // openEndDate:  this.openEndDate,
         // imgUrls:this.addForm.ruleForm.imgUrls,
       }
-      facilitiesManageInsert(resData).then(res => {
+      greenAreaInsert(resData).then(res => {
         if (res.status) {
           this.$message({
             message: res.message,
@@ -258,21 +230,42 @@ export default {
       this.addForm.ruleForm.openStartDate = arr[0]
       this.addForm.ruleForm.openEndDate = arr[1]
     },
-    // tabs切换
-    handleClick (tab, event) {
-      let status = null
-      if (this.activeName != 0) {
-        status = this.activeName
-      } else {
-        status = null
-      }
-      const requestData = {
-        pageNum: 1,
-        size: 10,
-        status: status
-      }
-      this.$refs.table.requestData(requestData);
+    // 图片上传成功
+    ImgeSuccess (res, file) {
+      this.addForm.ruleForm.imgUrls[0] = file.response.url
     },
+    // 图片文件上传之前
+    beforeAvatarUpload (file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/png'
+      const isPNG = file.type === 'image/jpeg'
+      if (!isJPG && !isPNG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return (isJPG || isPNG) && isLt2M;
+    },
+    //  上传限制提示
+    handleExceed (files, fileList) {
+      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    // // tabs切换
+    // handleClick (tab, event) {
+    //   let status = null
+    //   if (this.activeName != 0) {
+    //     status = this.activeName
+    //   } else {
+    //     status = null
+    //   }
+    //   const requestData = {
+    //     pageNum: 1,
+    //     size: 10,
+    //     status: status
+    //   }
+    //   this.$refs.table.requestData(requestData);
+    // },
 
     // 表格选中
     tableCheck (data) {

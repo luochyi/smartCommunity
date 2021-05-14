@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>巡检路线</span>
+                <span>设施管理</span>
             </div>
             <div class="content">
                 <div class="content-btn">
@@ -10,7 +10,7 @@
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增路线</el-button
+                        >新增设施</el-button
                     >
                 </div>
 
@@ -20,16 +20,32 @@
                         :config="config"
                         @tableCheck="tableCheck"
                     >
-                        <!-- <template slot="tabs">
-              <el-tabs v-model="activeName"
-                       @tab-click="handleClick">
-                <el-tab-pane label="全部"
-                             name="0"></el-tab-pane>
-              </el-tabs>
-            </template> -->
+                        <template slot="tabs">
+                            <el-tabs
+                                v-model="activeName"
+                                @tab-click="handleClick"
+                            >
+                                <el-tab-pane
+                                    label="全部"
+                                    name="0"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="空置中"
+                                    name="1"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="使用中"
+                                    name="2"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已停用"
+                                    name="3"
+                                ></el-tab-pane>
+                            </el-tabs>
+                        </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button @click="isEnable(table_row)">启用/停用</button>
+                                <button>编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -37,13 +53,13 @@
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增路线"
+                    drawerTitle="新增设施"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">路线信息</template>
+                            <template slot="title">基本信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
@@ -60,34 +76,29 @@
                                         >
                                         </el-time-picker>
                                     </template>
-                                    <template v-slot:inspectionPonitId>
-                                        <Button @click="addInt">添加</Button>
-                                        <div
-                                            v-for="(
-                                                item, index
-                                            ) in inspectionArr"
-                                            :key="index"
+                                    <template v-slot:facilitiesCategoryId>
+                                        <el-select
+                                            v-model="
+                                                addForm.ruleForm
+                                                    .facilitiesCategoryId
+                                            "
+                                            :remote-method="remoteMethod"
+                                            @change="change"
+                                            @focus="sefocus"
+                                            :loading="loading"
+                                            remote
+                                            style="width: 240px"
+                                            filterable
+                                            placeholder="请选择"
                                         >
-                                            <el-select
-                                                v-model="item.inspectionPointId"
-                                                :remote-method="remoteMethod"
-                                                @change="change"
-                                                @focus="sefocus"
-                                                :loading="loading"
-                                                remote
-                                                style="width: 240px"
-                                                filterable
-                                                placeholder="请选择"
+                                            <el-option
+                                                v-for="item in options"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id"
                                             >
-                                                <el-option
-                                                    v-for="item in options"
-                                                    :key="item.id"
-                                                    :label="item.name"
-                                                    :value="item.id"
-                                                >
-                                                </el-option>
-                                            </el-select>
-                                        </div>
+                                            </el-option>
+                                        </el-select>
                                     </template>
                                 </VueForm>
                             </template>
@@ -110,112 +121,131 @@
 </template>
 
 <script>
-import { inspectionRouteInsert,inspectionPointList,inspectionRouteIsEnable} from '@/api/butler'
+import { facilitiesManageInsert, facilitiesCategoryList } from '@/api/daily'
 export default {
     data() {
         return {
-            inspectionArr: [
-                {
-                    inspectionPointId: null
-                }
-            ],
-            options: [],
             add_vrisible: false,
             addDate: null,
+            options: [],
             addForm: {
                 ruleForm: {
-                    name: null
+                    name: null,
+                    code: '',
+                    facilitiesCategoryId: null,
+                    address: null
                 },
                 form_item: [
                     {
                         type: 'Input',
-                        label: '巡检路线编号',
-                        width: '50%',
-                        prop: 'code',
-                        disabled:true
-                    },
-                    {
-                        type: 'Input',
-                        label: '路线名称',
+                        label: '设施名称',
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'name'
                     },
                     {
-                        type: 'textarea',
-                        label: '描述',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'describes'
-                    },
-                    {
-                        type: 'Select',
-                        label: '状态',
-                        placeholder: '请选择',
-                        width: '100%',
-                        options: [
-                            { label: '启用', value: '1' },
-                            { label: '停用', value: '2' }
-                        ],
-                        prop: 'status'
-                    },
-                    {
                         type: 'Input',
-                        label: '持续时间（分钟）',
+                        label: '设施编号',
+                        disabled: true,
                         placeholder: '请输入',
-                        width: '100%',
-                        prop: 'spaceTime'
+                        width: '50%',
+                        prop: 'code'
                     },
                     {
                         type: 'Slot',
-                        label: '巡检点',
+                        label: '设施类型',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'pointRouteList',
-                        slotName: 'inspectionPonitId'
+                        prop: 'facilitiesCategoryId',
+                        slotName: 'facilitiesCategoryId'
                     },
+                    {
+                        type: 'Input',
+                        label: '设施地址',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'address'
+                    }
                 ]
             },
             table_row: [],
+            // 上传img文件
+            imglist: [],
             activeName: '0',
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '编号', prop: 'code', width: 'auto' },
-                    { label: '名称', prop: 'name', width: 'auto' },
+                    { label: '设施编号', prop: 'code', width: 'auto' },
                     {
-                        label: '持续时间（分钟）',
-                        prop: 'spaceTime',
+                        label: '设施类型',
+                        prop: 'facilitiesCategoryName',
                         width: 'auto'
                     },
-                    { label: '创建时间', prop: 'createDate', width: 'auto' },
-                    { label: '状态', prop: 'status', width: 'auto' ,type:'function',
-                        callback(row,prop){
+                    { label: '设施名称', prop: 'name', width: 'auto' },
+                    { label: '添加人', prop: 'createName', width: 'auto' },
+                    {
+                        label: '设施状态',
+                        prop: 'status',
+                        width: 'auto',
+                        type: 'function',
+                        callback(row, prop){
                             switch (row.status) {
                                 case 1:
-                                    return '启用'
-                                    break;
+                                    return '空置中'
+                                    break
                                 case 2:
-                                    return '停用'
-                                    break;
+                                    return '使用中'
+                                    break
+                                case 3:
+                                    return '已停用'
+                                    break
                             }
                         }
-                    }
+                    },
+                    { label: '添加时间', prop: 'createDate', width: '220' }
                 ],
                 table_data: [],
-                url: 'inspectionRouteList',
+                url: 'facilitiesManageList',
                 search_item: [
                     {
                         type: 'Input',
-                        label: '编号',
+                        label: '设施编号',
                         placeholder: '请输入',
                         prop: 'code'
                     },
+                    // {
+                    //     type: 'Slot',
+                    //     label: '设施种类',
+                    //     placeholder: '请选择',
+                    //     prop: 'facilitiesCategoryName',
+                    //     slotName: 'facilitiesCategoryName'
+                    // },
                     {
                         type: 'Input',
-                        label: '名称',
+                        label: '设施名称',
                         placeholder: '请输入',
                         prop: 'name'
+                    },
+                    {
+                        type: 'select',
+                        label: '设施状态',
+                        placeholder: '请选择',
+                        value: null,
+                        options: [
+                            { value: 1, label: '空置中' },
+                            { value: 2, label: '使用中' },
+                            { value: 3, label: '已停用' }
+                        ],
+                        prop: 'status'
+                    },
+                    {
+                        type: 'picker',
+                        label: '添加时间',
+                        placeholder: '请输入',
+                        prop: 'date',
+                        startDate: 'createStartDate',
+                        endDate: 'createEndDate',
+                        width: '280px'
                     }
                     // Slot
                 ],
@@ -230,12 +260,6 @@ export default {
         this.getUserList()
     },
     methods: {
-        addInt() {
-            this.inspectionArr.push({
-                inspectionPointId: null
-            })
-        },
-
         // 获取用户列表
         getUserList(val) {
             let reeData = {
@@ -244,12 +268,11 @@ export default {
                 name: val
             }
             this.loading = true
-            inspectionPointList(reeData).then((res) => {
-                console.log(res)
+            facilitiesCategoryList(reeData).then((res) => {
+                // console.log(res)
                 this.options = res.tableList
                 this.loading = false
             })
-            console.log(this.inspectionArr);
         },
         remoteMethod(val) {
             this.getUserList(val)
@@ -268,23 +291,27 @@ export default {
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
-            this.inspectionArr= [
-                {
-                    inspectionPointId: null
-                }
-            ]
         },
         addSubmit() {
+            // this.add_vrisible = false
+            /**
+       * 
+       *  code	       :null, 设施分类编号	是	[string]		
+        2	name	       :null,   设施分类名称	是	[string]		
+        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
+        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
+        5	imgUrls:null,
+       * 
+       * **/
             let resData = {
-                ...this.addForm.ruleForm,
-                pointRouteList:this.inspectionArr
+                ...this.addForm.ruleForm
                 // code: this.addForm.ruleForm.code,
                 // name: this.addForm.ruleForm.name,
                 // openStartDate: this.openStartDate,
                 // openEndDate:  this.openEndDate,
                 // imgUrls:this.addForm.ruleForm.imgUrls,
             }
-            inspectionRouteInsert(resData).then((res) => {
+            facilitiesManageInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
@@ -299,12 +326,26 @@ export default {
             this.addForm.ruleForm.openStartDate = arr[0]
             this.addForm.ruleForm.openEndDate = arr[1]
         },
+        // tabs切换
+        handleClick(tab, event) {
+            let status = null
+            if (this.activeName != 0) {
+                status = this.activeName
+            } else {
+                status = null
+            }
+            const requestData = {
+                pageNum: 1,
+                size: 10,
+                status: status
+            }
+            this.$refs.table.requestData(requestData)
+        },
 
         // 表格选中
         tableCheck(data) {
             this.table_row = data
         },
-        // 删除
         del(data) {
             if (data.length) {
                 let arr = []
@@ -323,29 +364,6 @@ export default {
                     .catch((action) => {})
             } else {
                 this.$message.error('请选中需要删除的数据')
-            }
-        },
-        isEnable(data) {
-            console.log(data[0].id);
-            if (data.length > 1) {
-                this.$message.error('只能操作一条数据')
-                return
-            }
-            if (!data.length) {
-                this.$message.error('请选择')
-                return
-            }else{
-                inspectionRouteIsEnable({id:data[0].id}).then((res) => {
-                     console.log(res)
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
             }
         }
     }

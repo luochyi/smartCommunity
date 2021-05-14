@@ -151,7 +151,7 @@ import {
     sysOrganizationFindAllDepartment,
     sysUserList,
     inspectionPlanIsEnable
-} from '@/api/butler'
+} from '@/api/daily'
 export default {
     data() {
         return {

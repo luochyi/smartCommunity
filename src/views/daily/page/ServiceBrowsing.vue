@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>规程管理</span>
+                <span>服务浏览</span>
             </div>
             <div class="content">
                 <div class="content-btn">
@@ -10,7 +10,7 @@
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增模板</el-button
+                        >新增服务</el-button
                     >
                 </div>
 
@@ -39,7 +39,7 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button>编辑</button> -->
+                                <button @click="edit(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -47,13 +47,13 @@
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增模板"
+                    drawerTitle="新增服务"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">规程信息</template>
+                            <template slot="title">服务信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { regulationManagementInsert } from '@/api/operation'
+import { serviceBrowsingInsert } from '@/api/daily'
 export default {
     data() {
         return {
@@ -105,35 +105,18 @@ export default {
                 form_item: [
                     {
                         type: 'Input',
-                        label: '标题',
+                        label: '服务名称',
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'title'
+                        prop: 'name'
                     },
                     {
                         type: 'textarea',
-                        label: '内容',
+                        label: '服务介绍',
                         placeholder: '请输入',
                         width: '100%',
                         prop: 'content'
                     },
-                    {
-                        type: 'Select',
-                        label: '发布状态',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'status',
-                        options:[
-                            {
-                                value:'1',
-                                label:'已发布'
-                            },
-                            {
-                                value:'2',
-                                label:'未发布'
-                            },
-                        ]
-                    }
                 ]
             },
             table_row: [],
@@ -143,58 +126,23 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '规程标题', prop: 'title', width: 'auto' },
-                    { label: '内容', prop: 'content', width: 'auto' },
-                    { label: '状态', prop: 'status', width: 'auto' ,type:'function',
-                        callback(row,prop){
-                            switch (row.status) {
-                                case 1:
-                                    return '已发布'
-                                    break;
-                                case 2:
-                                    return '未发布'
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    },
+                    { label: '服务名称', prop: 'name', width: 'auto' },
+                    { label: '服务介绍', prop: 'content', width: 'auto' },
                     {
                         label: '创建人名称',
                         prop: 'createName',
                         width: 'auto'
                     },
-                    {
-                        label: '最近修改时间',
-                        prop: 'nearModifyDate',
-                        width: 'auto'
-                    },
-                    { label: '发布时间', prop: 'createDate', width: 'auto' },
+                    { label: '创建时间', prop: 'createDate', width: 'auto' },
                 ],
                 table_data: [],
-                url: 'regulationManagementList',
+                url: 'serviceBrowsingList',
                 search_item: [
                     {
                         type: 'Input',
-                        label: '规程标题',
+                        label: '服务名称',
                         placeholder: '请输入',
-                        prop: 'title'
-                    },
-                    {
-                        type: 'select',
-                        label: '状态',
-                        placeholder: '请选择',
-                        prop: 'status',
-                        options:[
-                            {
-                                value:'1',
-                                label:'已发布'
-                            },
-                            {
-                                value:'2',
-                                label:'未发布'
-                            }
-                        ]
+                        prop: 'name'
                     },
                     {
                         type: 'Input',
@@ -204,21 +152,12 @@ export default {
                     },
                     {
                         type: 'picker',
-                        label: '最近修改时间',
-                        placeholder: '请输入',
-                        prop: 'nearModifyDate',
-                        startDate: 'nearModifyDateStart',
-                        endDate: 'nearModifyDateEnd',
-                        width: '220px'
-                    },
-                    {
-                        type: 'picker',
                         label: '发布时间',
                         placeholder: '请输入',
                         prop: 'createDate',
                         startDate: 'createDateStart',
                         endDate: 'createDateEnd',
-                        width: '220px'
+                        width: '280px'
                     }
                     // Slot
                 ],
@@ -241,7 +180,7 @@ export default {
             let resData = {
                 ...this.addForm.ruleForm
             }
-            regulationManagementInsert(resData).then((res) => {
+            serviceBrowsingInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,

@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { inspectionPointInsert } from '@/api/butler'
+import { inspectionPointInsert } from '@/api/daily'
 import QRCode from 'qrcodejs2'
 export default {
     data() {

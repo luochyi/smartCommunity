@@ -21,6 +21,10 @@
                   <span v-if="detailData.type ===3">投诉</span>
                   <span v-if="detailData.type ===4">表扬</span>
                 </el-form-item>
+                <el-form-item label="内容"
+                              style="width:100%">
+                  <span>{{detailData.content}}</span>
+                </el-form-item>
                 <el-form-item label="照片"
                               v-if="detailData.imgUrl!==null"
                               style="width:100%">

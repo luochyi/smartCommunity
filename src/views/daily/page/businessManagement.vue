@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { ownersCommitteeInsert, ownersCommitteeUpdate, ownersCommitteeFindById } from '@/api/butler'
+import { ownersCommitteeInsert, ownersCommitteeUpdate, ownersCommitteeFindById } from '@/api/daily'
 import { userResident, userResidentFindResidentNameBySearch } from '@/api/basic'
 export default {
   data () {

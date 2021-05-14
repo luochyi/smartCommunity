@@ -58,20 +58,11 @@ export default {
           path: '/overview',
           label: '概览',
         },
-        {
-          path: '/basic',
-          // Basic file
-          label: '基础档案',
-        },
+        
         {
           // path: '/Butler service',
           path: '/butler',
           label: '管家服务',
-        },
-        {
-          // path: '/Charge management',
-          path: '/charge',
-          label: '收费管理',
         },
         {
           // path: '/Operation Management',

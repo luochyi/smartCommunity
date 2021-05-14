@@ -2,16 +2,16 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>预约管理</span>
+                <span>钥匙管理</span>
             </div>
             <div class="content">
                 <div class="content-btn">
-                    <!-- <el-button
+                    <el-button
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增预约</el-button
-                    > -->
+                        >新增钥匙记录</el-button
+                    >
                 </div>
 
                 <div class="">
@@ -29,45 +29,31 @@
                                     label="全部"
                                     name="0"
                                 ></el-tab-pane>
-                                <el-tab-pane
-                                    label="未签到"
-                                    name="1"
-                                ></el-tab-pane>
-                                <el-tab-pane
-                                    label="已签到"
-                                    name="2"
-                                ></el-tab-pane>
-                                <el-tab-pane
-                                    label="已作废"
-                                    name="3"
-                                ></el-tab-pane>
-                                <el-tab-pane
-                                    label="已取消"
-                                    name="4"
-                                ></el-tab-pane>
-                                <el-tab-pane
-                                    label="已结束"
-                                    name="5"
-                                ></el-tab-pane>
+                                <!-- <el-tab-pane label="未领取"
+                             name="1"></el-tab-pane>
+                <el-tab-pane label="已领取"
+                             name="2"></el-tab-pane>
+                 <el-tab-pane label="停用"
+                             name="3"></el-tab-pane> -->
                             </el-tabs>
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
                                 <!-- <button>编辑</button> -->
-                                <button @click="del(table_row)">作废</button>
+                                <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增预约"
+                    drawerTitle="新增钥匙"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">基本信息</template>
+                            <template slot="title">钥匙信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
@@ -83,30 +69,6 @@
                                             placeholder="选择时间范围"
                                         >
                                         </el-time-picker>
-                                    </template>
-                                    <template v-slot:facilitiesCategoryId>
-                                        <el-select
-                                            v-model="
-                                                addForm.ruleForm
-                                                    .facilitiesCategoryId
-                                            "
-                                            :remote-method="remoteMethod"
-                                            @change="change"
-                                            @focus="sefocus"
-                                            :loading="loading"
-                                            remote
-                                            style="width: 240px"
-                                            filterable
-                                            placeholder="请选择"
-                                        >
-                                            <el-option
-                                                v-for="item in options"
-                                                :key="item.id"
-                                                :label="item.name"
-                                                :value="item.id"
-                                            >
-                                            </el-option>
-                                        </el-select>
                                     </template>
                                 </VueForm>
                             </template>
@@ -129,60 +91,79 @@
 </template>
 
 <script>
-import {
-    facilitiesAppointmentInsert,
-    facilitiesCategoryList
-} from '@/api/butler'
+import { keyManagementInsert } from '@/api/daily'
 export default {
     data() {
         return {
             add_vrisible: false,
             addDate: null,
-            options: [],
             addForm: {
                 ruleForm: {
-                    name: null,
-                    code: 'hdede',
-                    facilitiesCategoryId: null,
-                    address: null
+                    facilityName: null,
+                    num: null,
+                    correspondingPosition: null,
+                    storageLocation: null,
+                    administrator: null,
+                    tel: null
+                },
+                rules: {
+                    tel: [
+                        // {
+                        //     required: true,
+                        //     message: '请输入手机号',
+                        //     trigger: 'blur'
+                        // },
+                        {
+                        min: 11,
+                        max: 11,
+                        message: '请输入正确的手机号',
+                        trigger: 'blur',
+                        },
+                    ]
                 },
                 form_item: [
                     {
                         type: 'Input',
-                        label: '名称',
+                        label: '设施名称',
                         placeholder: '请输入',
-                        width: '100%',
-                        prop: 'estateId'
+                        width: '50%',
+                        prop: 'facilityName'
                     },
                     {
                         type: 'Input',
-                        label: '预约人',
+                        label: '钥匙数量',
+                        // disabled: true,
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'appointmentId'
-                    },
-                    {
-                        type: 'Slot',
-                        label: '设施类型',
-                        placeholder: '请输入',
-                        width: '50%',
-                        prop: 'facilitiesCategoryId',
-                        slotName: 'facilitiesCategoryId'
+                        prop: 'num'
                     },
                     {
                         type: 'Input',
-                        label: '设施编号',
-                        placeholder: '请输入',
-                        width: '50%',
-                        prop: 'facilitiesManageId'
+                        label: '对应位置',
+                        placeholder: '请选择',
+                        width: '100%',
+                        prop: 'correspondingPosition'
                     },
                     {
-                        type: 'Slot',
-                        label: '预约时间',
+                        type: 'Input',
+                        label: '存放位置',
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'date',
-                        slotName: 'date'
+                        prop: 'storageLocation'
+                    },
+                    {
+                        type: 'Input',
+                        label: '管理人',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'administrator'
+                    },
+                    {
+                        type: 'Input',
+                        label: '管理人联系方式',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'tel'
                     }
                 ]
             },
@@ -193,112 +174,58 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '预约编号', prop: 'code', width: 'auto' },
+                    { label: '编号', prop: 'code', width: 'auto' },
+                    { label: '设备名称', prop: 'facilityName', width: 'auto' },
+                    { label: '钥匙数量', prop: 'num', width: 'auto' },
                     {
-                        label: '设施类型',
-                        prop: 'facilitiesCategoryName',
+                        label: '对应位置',
+                        prop: 'correspondingPosition',
                         width: 'auto'
                     },
                     {
-                        label: '预约设施',
-                        prop: 'facilitiesName',
+                        label: '存放位置',
+                        prop: 'storageLocation',
                         width: 'auto'
                     },
-                    { label: '预约人', prop: 'appointmentName', width: 'auto' },
-                    {
-                        label: '预约人电话',
-                        prop: 'appointmentTel',
-                        width: 'auto'
-                    },
-                    {
-                        label: '预约时间',
-                        prop: 'appointmentStartDate',
-                        width: 'auto'
-                    },
-                    {
-                        label: '预约状态',
-                        prop: 'status',
-                        width: '220',
-                        type: 'function',
-                        callback(row, prop) {
-                            switch (row.status) {
-                                case 1:
-                                    return '未签到'
-                                    break
-                                case 2:
-                                    return '已签到'
-                                    break
-                                case 3:
-                                    return '已作废'
-                                    break
-                                case 4:
-                                    return '已取消'
-                                    break
-                                case 5:
-                                    return '已结束'
-                                    break
-                            }
-                        }
-                    },
-                    { label: '申请时间', prop: 'createDate', width: '220' }
+                    { label: '管理人', prop: 'administrator', width: 'auto' },
+                    { label: '管理人电话', prop: 'tel', width: 'auto' },
+                    { label: '创建时间', prop: 'createDate', width: 'auto' }
                 ],
                 table_data: [],
-                url: 'facilitiesAppointmentList',
+                url: 'keyManagementList',
                 search_item: [
                     {
                         type: 'Input',
-                        label: '预约编号',
+                        label: '钥匙编号',
                         placeholder: '请输入',
                         prop: 'code'
                     },
                     {
-                        type: 'select',
-                        label: '设施种类',
-                        placeholder: '请选择',
-                        options: [
-                            { value: 1, label: '乒乓球场' },
-                            { value: 2, label: '篮球场' },
-                            { value: 3, label: '网球场' }
-                        ],
-                        prop: 'facilitiesCategoryId' //需要获取设施分类中的主键id和名称
+                        type: 'Input',
+                        label: '设施名称',
+                        placeholder: '请输入',
+                        prop: 'facilityName'
                     },
                     {
                         type: 'Input',
-                        label: '预约人',
+                        label: '管理人名称',
                         placeholder: '请输入',
-                        prop: 'appointmentName'
+                        prop: 'administrator'
                     },
                     {
-                        type: 'select',
-                        label: '预约状态',
-                        placeholder: '请选择',
-                        value: null,
-                        options: [
-                            { value: 1, label: '未签到' },
-                            { value: 2, label: '已签到' },
-                            { value: 3, label: '已作废' },
-                            { value: 4, label: '已取消' },
-                            { value: 5, label: '已结束' }
-                        ],
-                        prop: 'status'
+                        type: 'Input',
+                        label: '管理人联系方式',
+                        placeholder: '请输入',
+                        prop: 'tel'
                     },
                     {
                         type: 'picker',
-                        label: '预约时间',
+                        label: '添加时间',
                         placeholder: '请输入',
                         prop: 'date',
-                        startDate: 'appointmentStartDate',
-                        endDate: 'appointmentEndDate',
-                        width: '230px'
-                    },
-                    {
-                        type: 'picker',
-                        label: '申请时间',
-                        placeholder: '请输入',
-                        prop: 'createDate',
-                        startDate: 'createStartDate',
-                        endDate: 'createEndDate',
-                        width: '230px'
+                        startDate: 'createDateStart',
+                        endDate: 'createDateEnd',
+                        width: '280px'
                     }
                     // Slot
                 ],
@@ -309,33 +236,7 @@ export default {
             }
         }
     },
-    created() {
-        this.getUserList()
-    },
     methods: {
-        // 获取用户列表
-        getUserList(val) {
-            let reeData = {
-                pageNum: 1,
-                size: 20,
-                name: val
-            }
-            this.loading = true
-            facilitiesCategoryList(reeData).then((res) => {
-                // console.log(res)
-                this.options = res.tableList
-                this.loading = false
-            })
-        },
-        remoteMethod(val) {
-            this.getUserList(val)
-        },
-        sefocus() {
-            this.getUserList()
-        },
-        change(value) {
-            console.log(value)
-        },
         add() {
             this.add_vrisible = true
         },
@@ -362,7 +263,7 @@ export default {
                 // openEndDate:  this.openEndDate,
                 // imgUrls:this.addForm.ruleForm.imgUrls,
             }
-            facilitiesAppointmentInsert(resData).then((res) => {
+            keyManagementInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
