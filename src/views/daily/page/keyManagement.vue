@@ -175,7 +175,7 @@ export default {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
                     { label: '编号', prop: 'code', width: 'auto' },
-                    { label: '设备名称', prop: 'facilityName', width: 'auto' },
+                    { label: '设施名称', prop: 'facilityName', width: 'auto' },
                     { label: '钥匙数量', prop: 'num', width: 'auto' },
                     {
                         label: '对应位置',

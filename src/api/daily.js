@@ -39,7 +39,14 @@ export function questionnaireInsert(data) {
         data: data
     })
 }
-
+//装修管理-作废userDecoration/invalid
+export function userDecorationInvalid(data) {
+    return service.request({
+        method: 'POST',
+        url: '/userDecoration/invalid',
+        data: data
+    })
+}
 // 业委会管理：添加业委会信息
 export function ownersCommitteeInsert(data) {
     return service.request({
@@ -194,7 +201,29 @@ export function greenAreaFindById(data) {
         params: data
     })
 }
-//规程
+
+export function hygieneAreaInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/hygieneArea/insert',
+        data: data
+    })
+}
+export function hygieneAreaList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/hygieneArea/list',
+        params: data
+    })
+}
+export function hygieneTaskInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/hygieneTask/insert',
+        data: data
+    })
+}
+//规程xinzeng & regulationManagement/release
 export function regulationManagementInsert(data) {
     return service.request({
         method: 'POST',
@@ -202,10 +231,33 @@ export function regulationManagementInsert(data) {
         data: data
     })
 }
+export function regulationManagementRelease(data) {
+    return service.request({
+        method: 'GET',
+        url: '/regulationManagement/release',
+        params: data
+    })
+}
 export function serviceBrowsingInsert(data) {
     return service.request({
         method: 'POST',
         url: '/serviceBrowsing/insert',
         data: data
+    })
+}
+//社区介绍
+export function communityIntroductionInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/communityIntroduction/insert',
+        data: data
+    })
+}
+//介绍启用
+export function communityIntroductionEnable(data){
+    return service.request({
+        method:'GET',
+        url:'/communityIntroduction/enable',
+        params:data
     })
 }

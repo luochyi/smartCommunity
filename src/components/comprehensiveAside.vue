@@ -93,6 +93,47 @@ export default {
           isChildren: 0
 
         },
+        {
+          path: '/company/systemSettings',
+          label: '系统设置',
+          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          isChildren: 0
+
+        },
+        {
+          path: '/company/reportForm',
+          label: '报表管理',
+          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          isChildren: 0
+        },
+        {
+          path: '/company/dataDictionary',
+          label: '数据字典',
+          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          isChildren: 0
+        },
+        {
+          path: '/company/alarm',
+          label: '报警记录',
+          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          isChildren: 1,
+          children: [
+            {
+              // Announcement management
+              path: '/company/emergencyAlarm',
+              label: '紧急报警记录'
+            },
+            {
+              // Notification management
+              path: '/company/fireAlarm',
+              label: '火灾报警记录'
+            }
+          ]
+        },
         // {
         //   path: '/company/dataAuthority',
         //   label: '数据权限管理',

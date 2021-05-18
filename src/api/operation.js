@@ -142,3 +142,25 @@ export function newsCategoryManagementList(data) {
         params: data
     })
 }
+export function electronicCommerceCategoryInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: 'electronicCommerceCategory/insert',
+        data: data
+    })
+}
+export function electronicCommerceInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: 'electronicCommerce/insert',
+        data: data
+    })
+}
+//electronicCommerceCategory/list
+export function electronicCommerceCategoryList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/electronicCommerceCategory/list',
+        params: data
+    })
+}

@@ -39,7 +39,7 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button>编辑</button> -->
+                                <button @click="release(table_row)">发布</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { regulationManagementInsert } from '@/api/daily'
+import { regulationManagementInsert,regulationManagementRelease } from '@/api/daily'
 export default {
     data() {
         return {
@@ -271,7 +271,26 @@ export default {
             }
             this.$refs.table.requestData(requestData)
         },
-
+        //规程发布
+        release(data){
+           if(data[0].status==1||data.length>1){
+               this.$message({
+                   message:'发布失败',
+                   type:'error'
+               })
+           }else{
+                regulationManagementRelease({id:data[0].id}).then((res) => {
+                     console.log(res)
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                }
+            })
+           }
+        },
         // 表格选中
         tableCheck(data) {
             this.table_row = data

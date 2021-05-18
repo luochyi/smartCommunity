@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>设施管理</span>
+                <span>设施设备管理</span>
             </div>
             <div class="content">
                 <div class="content-btn">
@@ -10,7 +10,7 @@
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增设施</el-button
+                        >新增设施/设备</el-button
                     >
                 </div>
 
@@ -45,7 +45,7 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button>编辑</button>
+                                <!-- <button>编辑</button> -->
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -53,7 +53,7 @@
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增设施"
+                    drawerTitle="新增设施/设备"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >

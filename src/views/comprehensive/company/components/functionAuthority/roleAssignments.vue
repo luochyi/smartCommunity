@@ -70,17 +70,20 @@
               <el-table-column prop="nickName"
                                label="昵称（系统名）"
                                width="140"></el-table-column>
-              <el-table-column prop="tel"
+              <!-- <el-table-column prop="tel"
                                width="140"
                                label="电话">
-              </el-table-column>
-              <el-table-column prop="roleName"
+              </el-table-column> -->
+              <el-table-column prop="organizationName"
                                width="120"
                                label="主属部门">
               </el-table-column>
               <el-table-column prop="positionName"
                                width="100"
-                               label="角色"> </el-table-column>
+                               label="职位名称"> </el-table-column>
+              <el-table-column prop="roleName"
+                               width="100"
+                               label="角色名称"> </el-table-column>
               <el-table-column prop="remake"
                                label="备注"></el-table-column>
               <el-table-column width="120"

@@ -2,16 +2,16 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>预约管理</span>
+                <span>电商信息</span>
             </div>
             <div class="content">
                 <div class="content-btn">
-                    <!-- <el-button
+                    <el-button
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增预约</el-button
-                    > -->
+                        >新增电商信息</el-button
+                    >
                 </div>
 
                 <div class="">
@@ -20,7 +20,7 @@
                         :config="config"
                         @tableCheck="tableCheck"
                     >
-                        <template slot="tabs">
+                        <!-- <template slot="tabs">
                             <el-tabs
                                 v-model="activeName"
                                 @tab-click="handleClick"
@@ -30,44 +30,36 @@
                                     name="0"
                                 ></el-tab-pane>
                                 <el-tab-pane
-                                    label="未签到"
+                                    label="空置中"
                                     name="1"
                                 ></el-tab-pane>
                                 <el-tab-pane
-                                    label="已签到"
+                                    label="使用中"
                                     name="2"
                                 ></el-tab-pane>
                                 <el-tab-pane
-                                    label="已作废"
+                                    label="已停用"
                                     name="3"
                                 ></el-tab-pane>
-                                <el-tab-pane
-                                    label="已取消"
-                                    name="4"
-                                ></el-tab-pane>
-                                <el-tab-pane
-                                    label="已结束"
-                                    name="5"
-                                ></el-tab-pane>
                             </el-tabs>
-                        </template>
+                        </template> -->
                         <template slot="footer">
                             <div class="table-footer">
                                 <!-- <button>编辑</button> -->
-                                <!-- <button @click="del(table_row)">作废</button> -->
+                                <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增预约"
+                    drawerTitle="新增电商信息"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">基本信息</template>
+                            <template slot="title">信息内容</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
@@ -84,11 +76,48 @@
                                         >
                                         </el-time-picker>
                                     </template>
-                                    <template v-slot:facilitiesCategoryId>
+                                    <template slot="imgUrls">
+                                        <template>
+                                            <el-upload
+                                                :action="`${$baseUrl}upload/uploadElectronicCommerce`"
+                                                :on-success="ImgeSuccess"
+                                                :file-list="imglist"
+                                                :on-exceed="handleExceed"
+                                                :limit="1"
+                                                accept=".jpg,.png,.JPG,.PNG"
+                                                :before-upload="
+                                                    beforeAvatarUpload
+                                                "
+                                            >
+                                                <el-button
+                                                    icon="el-icon-edit"
+                                                    size="small"
+                                                    >上传图片</el-button
+                                                >
+                                                <span
+                                                    style="
+                                                        margin-left: 10px;
+                                                        font-size: 12px;
+                                                        color: #444444;
+                                                    "
+                                                    >建议比例：3:2</span
+                                                >
+                                                <div
+                                                    slot="tip"
+                                                    class="el-upload__tip"
+                                                >
+                                                    <span
+                                                        >支持扩展名：png,jpg</span
+                                                    >
+                                                </div>
+                                            </el-upload>
+                                        </template>
+                                    </template>
+                                    <template v-slot:electronicCommerceCategoryId>
                                         <el-select
                                             v-model="
                                                 addForm.ruleForm
-                                                    .facilitiesCategoryId
+                                                    .electronicCommerceCategoryId
                                             "
                                             :remote-method="remoteMethod"
                                             @change="change"
@@ -129,10 +158,7 @@
 </template>
 
 <script>
-import {
-    facilitiesAppointmentInsert,
-    facilitiesCategoryList
-} from '@/api/daily'
+import { electronicCommerceInsert, electronicCommerceCategoryList } from '@/api/operation'
 export default {
     data() {
         return {
@@ -141,49 +167,42 @@ export default {
             options: [],
             addForm: {
                 ruleForm: {
-                    name: null,
-                    code: 'hdede',
-                    facilitiesCategoryId: null,
-                    address: null
+                    title:null,
+                    content:null,
+                    electronicCommerceCategoryId:null,
+                    imgUrls:[]
                 },
                 form_item: [
                     {
                         type: 'Input',
-                        label: '名称',
+                        label: '电子商务标题',
                         placeholder: '请输入',
-                        width: '100%',
-                        prop: 'estateId'
-                    },
-                    {
-                        type: 'Input',
-                        label: '预约人',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'appointmentId'
+                        width: '50%',
+                        prop: 'title'
                     },
                     {
                         type: 'Slot',
-                        label: '设施类型',
+                        label: '电子商务类型',
                         placeholder: '请输入',
-                        width: '50%',
-                        prop: 'facilitiesCategoryId',
-                        slotName: 'facilitiesCategoryId'
-                    },
-                    {
-                        type: 'Input',
-                        label: '设施编号',
-                        placeholder: '请输入',
-                        width: '50%',
-                        prop: 'facilitiesManageId'
+                        width: '100%',
+                        prop: 'electronicCommerceCategoryId',
+                        slotName: 'electronicCommerceCategoryId'
                     },
                     {
                         type: 'Slot',
-                        label: '预约时间',
+                        label: '图片上传',
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'date',
-                        slotName: 'date'
-                    }
+                        prop: 'imgUrls',
+                        slotName: 'imgUrls'
+                    },
+                     {
+                        type: 'textarea',
+                        label: '电子商务内容',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'content'
+                    },
                 ]
             },
             table_row: [],
@@ -193,112 +212,58 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '预约编号', prop: 'code', width: 'auto' },
-                    {
-                        label: '设施类型',
-                        prop: 'facilitiesCategoryName',
-                        width: 'auto'
-                    },
-                    {
-                        label: '预约设施',
-                        prop: 'facilitiesName',
-                        width: 'auto'
-                    },
-                    { label: '预约人', prop: 'appointmentName', width: 'auto' },
-                    {
-                        label: '预约人电话',
-                        prop: 'appointmentTel',
-                        width: 'auto'
-                    },
-                    {
-                        label: '预约时间',
-                        prop: 'appointmentStartDate',
-                        width: 'auto'
-                    },
-                    {
-                        label: '预约状态',
-                        prop: 'status',
-                        width: '220',
-                        type: 'function',
-                        callback(row, prop) {
-                            switch (row.status) {
-                                case 1:
-                                    return '未签到'
-                                    break
-                                case 2:
-                                    return '已签到'
-                                    break
-                                case 3:
-                                    return '已作废'
-                                    break
-                                case 4:
-                                    return '已取消'
-                                    break
-                                case 5:
-                                    return '已结束'
-                                    break
-                            }
-                        }
-                    },
-                    { label: '申请时间', prop: 'createDate', width: '220' }
+                    { label: '电子商务编号', prop: 'code', width: 'auto' },
+                    // {
+                    //     label: '设施类型',
+                    //     prop: 'facilitiesCategoryName',
+                    //     width: 'auto'
+                    // },
+                    { label: '电子商务标题', prop: 'title', width: 'auto' },
+                    { label: '电子商务类型名称', prop: 'electronicCommerceCategoryName', width: 'auto' },
+                    { label: '发布人', prop: 'createName', width: 'auto' },
+                    { label: '发布时间', prop: 'createDate', width: '220' }
                 ],
                 table_data: [],
-                url: 'facilitiesAppointmentList',
+                url: 'electronicCommerceList',
                 search_item: [
                     {
                         type: 'Input',
-                        label: '预约编号',
+                        label: '电子商务编号',
                         placeholder: '请输入',
                         prop: 'code'
                     },
                     {
-                        type: 'select',
-                        label: '设施种类',
-                        placeholder: '请选择',
-                        options: [
-                            { value: 1, label: '乒乓球场' },
-                            { value: 2, label: '篮球场' },
-                            { value: 3, label: '网球场' }
-                        ],
-                        prop: 'facilitiesCategoryId' //需要获取设施分类中的主键id和名称
+                        type: 'Input',
+                        label: '电子商务标题',
+                        placeholder: '请输入',
+                        prop: 'title'
                     },
+                    // {
+                    //     type: 'select',
+                    //     label: '设施状态',
+                    //     placeholder: '请选择',
+                    //     value: null,
+                    //     options: [
+                    //         { value: 1, label: '空置中' },
+                    //         { value: 2, label: '使用中' },
+                    //         { value: 3, label: '已停用' }
+                    //     ],
+                    //     prop: 'status'
+                    // },
                     {
                         type: 'Input',
-                        label: '预约人',
+                        label: '发布人',
                         placeholder: '请输入',
-                        prop: 'appointmentName'
-                    },
-                    {
-                        type: 'select',
-                        label: '预约状态',
-                        placeholder: '请选择',
-                        value: null,
-                        options: [
-                            { value: 1, label: '未签到' },
-                            { value: 2, label: '已签到' },
-                            { value: 3, label: '已作废' },
-                            { value: 4, label: '已取消' },
-                            { value: 5, label: '已结束' }
-                        ],
-                        prop: 'status'
+                        prop: 'createName'
                     },
                     {
                         type: 'picker',
-                        label: '预约时间',
+                        label: '发布时间',
                         placeholder: '请输入',
                         prop: 'date',
-                        startDate: 'appointmentStartDate',
-                        endDate: 'appointmentEndDate',
-                        width: '230px'
-                    },
-                    {
-                        type: 'picker',
-                        label: '申请时间',
-                        placeholder: '请输入',
-                        prop: 'createDate',
-                        startDate: 'createStartDate',
-                        endDate: 'createEndDate',
-                        width: '230px'
+                        startDate: 'createDateStart',
+                        endDate: 'createDateEnd',
+                        width: '280px'
                     }
                     // Slot
                 ],
@@ -321,7 +286,7 @@ export default {
                 name: val
             }
             this.loading = true
-            facilitiesCategoryList(reeData).then((res) => {
+            electronicCommerceCategoryList(reeData).then((res) => {
                 // console.log(res)
                 this.options = res.tableList
                 this.loading = false
@@ -344,16 +309,6 @@ export default {
             this.add_vrisible = false
         },
         addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
             let resData = {
                 ...this.addForm.ruleForm
                 // code: this.addForm.ruleForm.code,
@@ -362,7 +317,7 @@ export default {
                 // openEndDate:  this.openEndDate,
                 // imgUrls:this.addForm.ruleForm.imgUrls,
             }
-            facilitiesAppointmentInsert(resData).then((res) => {
+            electronicCommerceInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
@@ -376,6 +331,31 @@ export default {
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
             this.addForm.ruleForm.openEndDate = arr[1]
+        },
+        // 图片上传成功
+        ImgeSuccess(res, file) {
+            this.addForm.ruleForm.imgUrls[0] = file.response.url
+        },
+        // 图片文件上传之前
+        beforeAvatarUpload(file) {
+            const isLt2M = file.size / 1024 / 1024 < 2
+            const isJPG = file.type === 'image/png'
+            const isPNG = file.type === 'image/jpeg'
+            if (!isJPG && !isPNG) {
+                this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!')
+            }
+            return (isJPG || isPNG) && isLt2M
+        },
+        //  上传限制提示
+        handleExceed(files, fileList) {
+            this.$message.warning(
+                `当前限制选择 1 个文件，本次选择了 ${
+                    files.length
+                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            )
         },
         // tabs切换
         handleClick(tab, event) {
@@ -397,7 +377,6 @@ export default {
         tableCheck(data) {
             this.table_row = data
         },
-        // 删除
         del(data) {
             if (data.length) {
                 let arr = []

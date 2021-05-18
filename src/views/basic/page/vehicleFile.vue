@@ -22,6 +22,7 @@
                     <div class="table-footer">
                         <button @click="revises(table_row)">修改</button>
                         <button @click="del(table_row)">删除</button>
+                        
                     </div>
                 </template>
             </VueTable>

@@ -104,7 +104,7 @@ export default {
                         width: 'auto',
                         type: 'function',
                         callback: (row, prop) => {
-                            switch (row.type) {
+                            switch (row.status) {
                                 case 1:
                                     return '未反馈'
                                     break

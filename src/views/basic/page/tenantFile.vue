@@ -17,15 +17,16 @@
             <button @click="detailsOwnerDrawer(table_row)">详情</button>
             <button @click="reviseOwnerDrawer(table_row)">修改</button>
             <button @click="del(table_row)">删除</button>
+            <button>加入黑名单</button>
             <!-- <button @click="linkHouseDrawer(table_row)">关联房屋</button>
             <button @click="linkParkDrawer(table_row)">关联车位</button> -->
           </div>
         </template>
       </VueTable>
     </div>
-    <addOwner drawerTitle="添加租客"
+    <addTenant drawerTitle="添加租客"
               @handleClose="addOwnerClose"
-              :drawerVrisible='add_vrisible'></addOwner>
+              :drawerVrisible='add_vrisible'></addTenant>
 
     <detailsOwner drawerTitle="业主租客"
                   :owerId="owerId"
@@ -46,7 +47,7 @@
   </div>
 </template>
 <script>
-import addOwner from '@/views/basic/components/ownersFile/addOwner'
+import addTenant from '@/views/basic/components/tenantFile/addTenant'
 import detailsOwner from '@/views/basic/components/ownersFile/detailsOwner'
 import reviseOwner from '@/views/basic/components/ownersFile/reviseOwner'
 import linkParking from '@/views/basic/components/ownersFile/linkParking'
@@ -58,7 +59,7 @@ import {
 } from '@/api/basic'
 export default {
     components: {
-        addOwner,
+        addTenant,
         detailsOwner,
         reviseOwner,
         linkParking,

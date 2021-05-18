@@ -2,18 +2,9 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>社区介绍</span>
+                <span>火灾报警记录</span>
             </div>
             <div class="content">
-                <div class="content-btn">
-                    <el-button
-                        class="init-button"
-                        @click="add()"
-                        icon="el-icon-plus"
-                        >新增介绍</el-button
-                    >
-                </div>
-
                 <div class="">
                     <VueTable
                         ref="table"
@@ -22,24 +13,23 @@
                     >
                         <template slot="footer">
                             <div class="table-footer">
-                                <button @click="enable(table_row)">启用</button>
-                                <button @click="del(table_row)">删除</button>
+                                <!-- <button @click="add(table_row)">审核</button>
+                                <button @click="del(table_row)">删除</button> -->
                             </div>
                         </template>
                     </VueTable>
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增介绍"
+                    drawerTitle="审核"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">介绍内容</template>
+                            <template slot="title">审核信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
-                                    <!-- Slot -->
                                     <template v-slot:date>
                                         <el-time-picker
                                             is-range
@@ -56,7 +46,7 @@
                                     <template slot="imgUrls">
                                         <template>
                                             <el-upload
-                                                :action="`${$baseUrl}upload/uploadCommunityIntroduction`"
+                                                :action="`${$baseUrl}upload/uploadAnnouncement`"
                                                 :on-success="ImgeSuccess"
                                                 :file-list="imglist"
                                                 :on-exceed="handleExceed"
@@ -111,10 +101,7 @@
 </template>
 
 <script>
-import {
-    communityIntroductionInsert,
-    communityIntroductionEnable
-} from '@/api/daily'
+import { auditManagementReviewResult } from '@/api/basic'
 export default {
     data() {
         return {
@@ -122,16 +109,21 @@ export default {
             addDate: null,
             addForm: {
                 ruleForm: {
-                    imgUrls: [],
+                    //   code: 'hdede',
+                    //   facilitiesCategoryId:null,
+                    //   address:null
                 },
-                rules: {},
                 form_item: [
                     {
-                        type: 'Input',
-                        label: '模版名称',
-                        placeholder: '请输入',
+                        type: 'Select',
+                        label: '审核状态',
+                        placeholder: '请选择',
                         width: '100%',
-                        prop: 'name'
+                        options: [
+                            { value: 1, label: '通过' },
+                            { value: 2, label: '不通过' }
+                        ],
+                        prop: 'status'
                     },
                     {
                         type: 'Slot',
@@ -143,10 +135,10 @@ export default {
                     },
                     {
                         type: 'textarea',
-                        label: '内容',
+                        label: '备注',
                         placeholder: '请输入',
-                        width: '100%',
-                        prop: 'content'
+                        width: '50%',
+                        prop: 'remakes'
                     }
                 ]
             },
@@ -157,89 +149,67 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '模板名称', prop: 'name', width: 'auto' },
-                    { label: '内容', prop: 'content', width: 'auto' },
+                    { label: '设备号', prop: 'deviceNo', width: '100' },
                     {
-                        label: '状态',
-                        prop: 'status',
+                        label: '报警号',
+                        prop: 'alarmNo',
+                        width: '100'
+                    },
+                    {
+                        label: '报警类型',
+                        prop: 'alarmType',
                         width: 'auto',
                         type: 'function',
                         callback(row, prop) {
-                            switch (row.status) {
-                                case 1:
-                                    return '启用中'
+                            switch (row.alarmType) {
+                                case 'C':
+                                    return '数值报警'
                                     break
-                                case 2:
-                                    return '未启用'
+                                case 'X':
+                                    return '状态报警'
                                     break
+
                                 default:
                                     break
                             }
                         }
                     },
-                    {
-                        label: '创建人名称',
-                        prop: 'createName',
-                        width: 'auto'
-                    },
-                    {
-                        label: '最近修改时间',
-                        prop: 'nearModifyDate',
-                        width: 'auto'
-                    },
-                    { label: '创建时间', prop: 'createDate', width: 'auto' }
+                    { label: '设备名称', prop: 'deviceName', width: 'auto' },
+                    { label: '报警时间', prop: 'alarmTime', width: 'auto' },
+                    // { label: '创建时间', prop: 'createDate', width: 'auto' }
                 ],
                 table_data: [],
-                url: 'communityIntroductionList',
-                search_item: [
-                    {
-                        type: 'Input',
-                        label: '模板名称',
-                        placeholder: '请输入',
-                        prop: 'name'
-                    },
-                    {
-                        type: 'select',
-                        label: '状态',
-                        placeholder: '请选择',
-                        prop: 'status',
-                        options: [
-                            {
-                                value: '1',
-                                label: '启用中'
-                            },
-                            {
-                                value: '2',
-                                label: '未启用'
-                            }
-                        ]
-                    },
-                    {
-                        type: 'Input',
-                        label: '创建人',
-                        placeholder: '请输入',
-                        prop: 'createName'
-                    },
-                    {
-                        type: 'picker',
-                        label: '最近修改时间',
-                        placeholder: '请输入',
-                        prop: 'nearModifyDate',
-                        startDate: 'nearModifyDateStart',
-                        endDate: 'nearModifyDateEnd',
-                        width: '220px'
-                    },
-                    {
-                        type: 'picker',
-                        label: '发布时间',
-                        placeholder: '请输入',
-                        prop: 'createDate',
-                        startDate: 'createDateStart',
-                        endDate: 'createDateEnd',
-                        width: '220px'
-                    }
-                    // Slot
-                ],
+                url: 'alarmFireAlarmList',
+                // search_item: [
+                //     {
+                //         type: 'Input',
+                //         label: '房屋名称',
+                //         placeholder: '请输入房屋名称（如1-1-101）',
+                //         prop: 'roomName'
+                //     },
+                //     {
+                //         type: 'select',
+                //         label: '审核状态',
+                //         placeholder: '请选择',
+                //         options: [
+                //             { value: 1, label: '审核中' },
+                //             { value: 2, label: '审核失败' },
+                //             { value: 3, label: '审核成功' }
+                //         ],
+                //         prop: 'status'
+                //     },
+                //     {
+                //         type: 'select',
+                //         label: '申请身份',
+                //         placeholder: '请选择',
+                //         options: [
+                //             { value: 1, label: '审核业主' },
+                //             { value: 2, label: '审核亲属' },
+                //             { value: 3, label: '审核租客' }
+                //         ],
+                //         prop: 'type'
+                //     }
+                // ],
                 data: {
                     pageNum: 1,
                     size: 10
@@ -248,8 +218,24 @@ export default {
         }
     },
     methods: {
-        add() {
-            this.add_vrisible = true
+        add(data) {
+            if (data.length > 1) {
+                this.$message.error('只能操作一条数据')
+                return
+            }
+            if (!data.length) {
+                this.$message.error('请选择')
+                return
+            } else {
+                if (data[0].status !== 1) {
+                    this.$message({
+                        message: '该审核已结束',
+                        type: 'error'
+                    })
+                } else {
+                    this.add_vrisible = true
+                }
+            }
         },
         addClose() {
             this.$refs.addForm.reset()
@@ -257,9 +243,15 @@ export default {
         },
         addSubmit() {
             let resData = {
-                ...this.addForm.ruleForm
+                ...this.addForm.ruleForm,
+                id: this.table_row[0].id
+                // code: this.addForm.ruleForm.code,
+                // name: this.addForm.ruleForm.name,
+                // openStartDate: this.openStartDate,
+                // openEndDate:  this.openEndDate,
+                // imgUrls:this.addForm.ruleForm.imgUrls,
             }
-            communityIntroductionInsert(resData).then((res) => {
+            auditManagementReviewResult(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
@@ -274,52 +266,25 @@ export default {
             this.addForm.ruleForm.openStartDate = arr[0]
             this.addForm.ruleForm.openEndDate = arr[1]
         },
-        // 图片上传成功
-        ImgeSuccess(res, file) {
-            this.addForm.ruleForm.imgUrls[0] = file.response.url
-        },
-        // 图片文件上传之前
-        beforeAvatarUpload(file) {
-            const isLt2M = file.size / 1024 / 1024 < 2
-            const isJPG = file.type === 'image/png'
-            const isPNG = file.type === 'image/jpeg'
-            if (!isJPG && !isPNG) {
-                this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+        // tabs切换
+        handleClick(tab, event) {
+            let status = null
+            if (this.activeName != 0) {
+                status = this.activeName
+            } else {
+                status = null
             }
-            if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 2MB!')
+            const requestData = {
+                pageNum: 1,
+                size: 10,
+                status: status
             }
-            return (isJPG || isPNG) && isLt2M
+            this.$refs.table.requestData(requestData)
         },
-        //  上传限制提示
-        handleExceed(files, fileList) {
-            this.$message.warning(
-                `当前限制选择 1 个文件，本次选择了 ${
-                    files.length
-                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-            )
-        },
+
         // 表格选中
         tableCheck(data) {
             this.table_row = data
-        },
-        enable(data) {
-            if (data.length != 1) {
-                this.$message({
-                    message: '只能启用一条',
-                    type: 'error'
-                })
-            } else {
-                communityIntroductionEnable({ id: data[0].id }).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                    }
-                })
-            }
         },
         // 删除
         del(data) {
@@ -341,6 +306,30 @@ export default {
             } else {
                 this.$message.error('请选中需要删除的数据')
             }
+        },
+        // 图片上传成功
+        ImgeSuccess(res, file) {
+            this.addForm.ruleForm.imgUrls[0] = file.response.url
+        },
+        // 图片文件上传之前
+        beforeAvatarUpload(file) {
+            const isLt2M = file.size / 1024 / 1024 < 2
+            const isJPG = file.type === 'image/png'
+            const isPNG = file.type === 'image/jpeg'
+            if (!isJPG && !isPNG) {
+                this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!')
+            }
+            return (isJPG || isPNG) && isLt2M
+        },
+        handleExceed(files, fileList) {
+            this.$message.warning(
+                `当前限制选择 1 个文件，本次选择了 ${
+                    files.length
+                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            )
         }
     }
 }

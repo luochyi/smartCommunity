@@ -315,12 +315,12 @@
                     rules: {
                         title: [{
                             required: true,
-                            message: '请输入费用项目名称',
+                            message: '请输入',
                             trigger: 'blur'
                         }],
                         pushObject: [{
                             required: true,
-                            message: '请输入费用项目名称',
+                            message: '请输入',
                             trigger: 'change'
                         }],
                         excelFileUrls: [{

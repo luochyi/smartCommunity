@@ -45,7 +45,7 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button>编辑</button>
+                                <!-- <button>编辑</button> -->
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>

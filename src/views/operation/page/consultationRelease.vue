@@ -76,11 +76,47 @@
                                         >
                                         </el-time-picker>
                                     </template>
+                                    <template slot="imgUrls">
+                                        <template>
+                                            <el-upload
+                                                :action="`${$baseUrl}upload/uploadNews`"
+                                                :on-success="ImgeSuccess"
+                                                :file-list="imglist"
+                                                :on-exceed="handleExceed"
+                                                :limit="1"
+                                                accept=".jpg,.png,.JPG,.PNG"
+                                                :before-upload="
+                                                    beforeAvatarUpload
+                                                "
+                                            >
+                                                <el-button
+                                                    icon="el-icon-edit"
+                                                    size="small"
+                                                    >上传图片</el-button
+                                                >
+                                                <span
+                                                    style="
+                                                        margin-left: 10px;
+                                                        font-size: 12px;
+                                                        color: #444444;
+                                                    "
+                                                    >建议比例：3:2</span
+                                                >
+                                                <div
+                                                    slot="tip"
+                                                    class="el-upload__tip"
+                                                >
+                                                    <span
+                                                        >支持扩展名：png,jpg</span
+                                                    >
+                                                </div>
+                                            </el-upload>
+                                        </template>
+                                    </template>
                                     <template v-slot:newsCategoryId>
                                         <el-select
                                             v-model="
-                                                addForm.ruleForm
-                                                    .newsCategoryId
+                                                addForm.ruleForm.newsCategoryId
                                             "
                                             :remote-method="remoteMethod"
                                             @change="change"
@@ -121,7 +157,10 @@
 </template>
 
 <script>
-import { newsManagementInsert, newsCategoryManagementList } from '@/api/operation'
+import {
+    newsManagementInsert,
+    newsCategoryManagementList
+} from '@/api/operation'
 export default {
     data() {
         return {
@@ -130,9 +169,10 @@ export default {
             options: [],
             addForm: {
                 ruleForm: {
-                    title:null,
-                    content:null,
-                    newsCategoryId:null
+                    title: null,
+                    content: null,
+                    newsCategoryId: null,
+                    imgUrls: [],
                 },
                 form_item: [
                     {
@@ -143,13 +183,6 @@ export default {
                         prop: 'title'
                     },
                     {
-                        type: 'textarea',
-                        label: '资讯内容',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'content'
-                    },
-                    {
                         type: 'Slot',
                         label: '资讯类型',
                         placeholder: '请输入',
@@ -157,6 +190,21 @@ export default {
                         prop: 'newsCategoryId',
                         slotName: 'newsCategoryId'
                     },
+                    {
+                        type: 'Slot',
+                        label: '图片上传',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'imgUrls',
+                        slotName: 'imgUrls'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '资讯内容',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'content'
+                    }
                 ]
             },
             table_row: [],
@@ -173,7 +221,11 @@ export default {
                     //     width: 'auto'
                     // },
                     { label: '资讯标题', prop: 'title', width: 'auto' },
-                    { label: '资讯类型名称', prop: 'newsCategoryName', width: 'auto' },
+                    {
+                        label: '资讯类型名称',
+                        prop: 'newsCategoryName',
+                        width: 'auto'
+                    },
                     { label: '发布人', prop: 'createName', width: 'auto' },
                     { label: '发布时间', prop: 'createDate', width: '220' }
                 ],
@@ -285,6 +337,31 @@ export default {
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
             this.addForm.ruleForm.openEndDate = arr[1]
+        },
+        // 图片上传成功
+        ImgeSuccess(res, file) {
+            this.addForm.ruleForm.imgUrls[0] = file.response.url
+        },
+        // 图片文件上传之前
+        beforeAvatarUpload(file) {
+            const isLt2M = file.size / 1024 / 1024 < 2
+            const isJPG = file.type === 'image/png'
+            const isPNG = file.type === 'image/jpeg'
+            if (!isJPG && !isPNG) {
+                this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!')
+            }
+            return (isJPG || isPNG) && isLt2M
+        },
+        //  上传限制提示
+        handleExceed(files, fileList) {
+            this.$message.warning(
+                `当前限制选择 1 个文件，本次选择了 ${
+                    files.length
+                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            )
         },
         // tabs切换
         handleClick(tab, event) {

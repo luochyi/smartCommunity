@@ -218,6 +218,13 @@ export const userResidentInsert = data => {
         data: data
     })
 }
+export const tenantInsert = data => {
+    return service.request({
+        method: 'POST',
+        url: '/tenant/insert',
+        data: data
+    })
+}
 // 查询车位信息（包含条件搜索）
 export const cpmParkingSpaceList = data => {
     return service.request({

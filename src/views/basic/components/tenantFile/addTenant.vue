@@ -1,211 +1,637 @@
 <template>
-  <div>
-    <div class="drawer-box">
-      <div class="dra-header">
-        <span>添加租户</span>
-      </div>
-      <div class="dra-body">
-        <div class="dra-content">
-          <div class="content-titel">
-            <span>基本信息</span>
-          </div>
-          <form-datechildren :formItem="form_item"
-                             ref="formData"></form-datechildren>
-          <div class="dra-content2">
-            <div class="content-titel2">
-              <el-button class="init-text"
-                         type="text">添加成员</el-button>
-            </div>
-            <div class="dra-table">
-              <div class="content-table">
-                <el-table :data="tableData"
-                          style="width: 100%"
-                          highlight-current-row
-                          :header-cell-style="{
-                    background: '#F5F5F6',
-                    color: '#999999'
-                  }">
-                  <el-table-column prop="id"
-                                   label="序号"
-                                   width="70">
-                  </el-table-column>
-                  <el-table-column label="姓名">
-                    <template>
-                      <el-input size="small"
-                                v-model="input"
-                                placeholder="请输入内容"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="手机号">
-                    <template>
-                      <el-input size="small"
-                                v-model="input"
-                                placeholder="请输入内容"></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="身份">
-                    <template>
-                      <el-select v-model="value"
-                                 placeholder="请选择"
-                                 size="small">
-                        <el-option v-for="item in options"
-                                   :key="item.value"
-                                   :label="item.label"
-                                   :value="item.value">
-                        </el-option>
-                      </el-select>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="证件类型">
-                    <el-select v-model="value"
-                               placeholder="请选择"
-                               size="small">
-                      <el-option v-for="item in options"
-                                 :key="item.value"
-                                 :label="item.label"
-                                 :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-table-column>
-                  <el-table-column label="证件号码"
-                                   width="180"
-                                   prop="input">
-                    <template>
-                      <div style="display:flex;align-items: center;">
+    <div>
+        <Drawer
+            :drawerTitle="drawerTitle"
+            @drawerClose="drawerClose"
+            :drawerVrisible="drawer_vrisible"
+        >
+            <FromCard style="margin: 30px">
+                <span slot="title">基本信息1</span>
+                <VueForm ref="childFrom" :formObj="fromjson"> </VueForm>
+                <template>
+                    <div>
+                        <div class="hr"></div>
                         <div>
-                          <el-input size="small"
-                                    v-model="input"
-                                    placeholder="请输入内容"></el-input>
+                            <div class="add">
+                                <span @click="addMember">添加成员</span>
+                            </div>
+                            <div class="content-table">
+                                <template>
+                                    <el-table
+                                        :data="tableData"
+                                        highlight-current-row
+                                        :header-cell-style="{
+                                            background: '#F5F5F6',
+                                            color: '#999999'
+                                        }"
+                                        style="width: 100%"
+                                    >
+                                        <el-table-column
+                                            label="序号"
+                                            width="80"
+                                            type="index"
+                                        >
+                                        </el-table-column>
+                                        <el-table-column
+                                            prop="date"
+                                            label="姓名"
+                                        >
+                                            <template slot-scope="scope">
+                                                <el-input
+                                                    size="small"
+                                                    v-model="scope.row.name"
+                                                    placeholder="请输入"
+                                                ></el-input>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                            prop="name"
+                                            label="手机号"
+                                        >
+                                            <template slot-scope="scope">
+                                                <el-input
+                                                    size="small"
+                                                    v-model="scope.row.tel"
+                                                    placeholder="请输入"
+                                                ></el-input>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                            prop="address"
+                                            label="身份"
+                                        >
+                                            <template slot-scope="scope">
+                                                <el-select
+                                                    size="small"
+                                                    v-model="scope.row.identity"
+                                                    placeholder="请输入"
+                                                >
+                                                    <el-option
+                                                        v-for="item in identityOptions"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value"
+                                                    >
+                                                    </el-option>
+                                                </el-select>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column label="证件类型">
+                                            <template slot-scope="scope">
+                                                <el-select
+                                                    size="small"
+                                                    v-model="scope.row.idType"
+                                                    placeholder="请输入"
+                                                >
+                                                    <el-option
+                                                        v-for="item in userOptions"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value"
+                                                    >
+                                                    </el-option>
+                                                </el-select>
+                                                <el-date-picker
+                                                    v-model="value1"
+                                                    type="daterange"
+                                                    range-separator="至"
+                                                    start-placeholder="开始日期"
+                                                    end-placeholder="结束日期"
+                                                >
+                                                </el-date-picker>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                            prop="address"
+                                            width="220"
+                                            label="证件号码"
+                                        >
+                                            <template slot-scope="scope">
+                                                <div class="column_flex">
+                                                    <div style="flex: 1">
+                                                        <el-input
+                                                            size="small"
+                                                            v-model="
+                                                                scope.row
+                                                                    .idNumber
+                                                            "
+                                                            placeholder="请输入"
+                                                        ></el-input>
+                                                    </div>
+                                                    <div
+                                                        @click="
+                                                            deleteRow(
+                                                                scope.$index,
+                                                                tableData
+                                                            )
+                                                        "
+                                                        v-if="
+                                                            scope.$index !== 0
+                                                        "
+                                                        style="
+                                                            padding-left: 10px;
+                                                        "
+                                                    >
+                                                        <span
+                                                            ><i
+                                                                class="el-icon-delete"
+                                                            ></i
+                                                        ></span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </FromCard>
+            <FromCard style="margin: 30px">
+                <span slot="title">房屋信息</span>
+                <div
+                    v-for="(item, index) in hoursArray"
+                    class="flex"
+                    :key="index"
+                >
+                    <template>
+                        <div class="label-span">
+                            <span
+                                >房屋信息<span v-show="index !== 0">{{
+                                    index + 1
+                                }}</span></span
+                            >
                         </div>
                         <div>
-                          <el-button type="text"
-                                     icon="el-icon-delete"
-                                     style="color:#444444;font-size:20px"></el-button>
+                            <!-- @change='(value) => change(froms[index].addForm.ruleForm.residentId,index,value)' -->
+                            <el-select
+                                v-model="item.buildValue"
+                                filterable
+                                @change="(value) => buildChange(value, index)"
+                                size="small"
+                                style="width: 108px; margin-right: 16px"
+                                placeholder="幢"
+                            >
+                                <el-option
+                                    v-for="obj in buildOptions"
+                                    :key="obj.value"
+                                    :label="obj.label"
+                                    :value="obj.value"
+                                >
+                                </el-option>
+                            </el-select>
+                            <el-select
+                                v-model="item.unitValue"
+                                filterable
+                                @change="(value) => unitChange(value, index)"
+                                size="small"
+                                style="width: 108px; margin-right: 16px"
+                                placeholder="单元"
+                            >
+                                <el-option
+                                    v-for="obj in item.unitOptions"
+                                    :key="obj.value"
+                                    :label="obj.label"
+                                    :value="obj.value"
+                                >
+                                </el-option>
+                            </el-select>
+                            <el-select
+                                v-model="item.hoursValue"
+                                filterable
+                                size="small"
+                                style="width: 108px; margin-right: 16px"
+                                placeholder="房间号"
+                            >
+                                <el-option
+                                    v-for="obj in item.hoursOptions"
+                                    :key="obj.value"
+                                    :label="obj.label"
+                                    :value="obj.value"
+                                >
+                                </el-option>
+                            </el-select>
+                            <el-date-picker
+                                v-model="value1"
+                                type="date"
+                                placeholder="选择日期"
+                            >
+                            </el-date-picker>
+                            <el-date-picker
+                                v-model="value2"
+                                type="date"
+                                placeholder="选择日期"
+                            >
+                            </el-date-picker>
                         </div>
-                      </div>
+                        <div>
+                            <span
+                                style="font-size: 19px; margin-right: 8px"
+                                @click="houseAdd"
+                                ><i class="el-icon-circle-plus-outline"></i
+                            ></span>
+                            <span
+                                style="font-size: 19px"
+                                v-if="index !== 0"
+                                @click="houseRemove(index)"
+                                ><i class="el-icon-remove-outline"></i
+                            ></span>
+                        </div>
                     </template>
-                  </el-table-column>
-                </el-table>
-              </div>
+                </div>
+            </FromCard>
+            <FromCard style="margin: 30px">
+                <span slot="title">车位信息</span>
+                <div
+                    class="flex"
+                    v-for="(item, index) in parkingArray"
+                    :key="index"
+                >
+                    <div class="label-span">
+                        <span
+                            >车位信息<span v-show="index !== 0">{{
+                                index + 1
+                            }}</span></span
+                        >
+                    </div>
+                    <div>
+                        <el-select
+                            size="small"
+                            @change="(value) => parkingChange(value, index)"
+                            filterable
+                            style="margin-right: 16px"
+                            v-model="item.parkingValue"
+                            placeholder="请输入"
+                        >
+                            <el-option
+                                v-for="obj in parkingOptions"
+                                :key="obj.id"
+                                :label="obj.code"
+                                :value="obj.id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div>
+                        <span style="font-size: 19px" @click="parkingAdd"
+                            ><i class="el-icon-circle-plus-outline"></i
+                        ></span>
+                        <span
+                            style="font-size: 19px; margin-left: 8px"
+                            v-if="index !== 0"
+                            @click="parkingRemove(index)"
+                            ><i class="el-icon-remove-outline"></i
+                        ></span>
+                    </div>
+                </div>
+            </FromCard>
+            <div slot="footer">
+                <button class="btn-orange" @click="onSubmit()">
+                    <span> <i class="el-icon-circle-check"></i>提交</span>
+                </button>
+                <button class="btn-gray" @click="drawerClose">
+                    <span>取消</span>
+                </button>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="dra-footer">
-        <div class="dra-footer-content">
-          <button class="dra-submit el-icon-circle-check"
-                  @click="onSubmit">
-            <span>提交</span>
-          </button>
-          <button class="dra-cancel"><span>取消</span></button>
-        </div>
-      </div>
+        </Drawer>
     </div>
-  </div>
 </template>
+
 <script>
-import formDatechildren from '@/components/form/formDatechildren'
+import {
+    GetTableData,
+    tenantInsert,
+    cpmBuildingUnitFindAll,
+    findByBuildingUnitId,
+    findByBuildingId
+} from '@/api/basic'
 export default {
-  data () {
-    return {
-      input: '',
-      form_item: [
-        {
-          type: 'Input',
-          label: '姓名',
-          placeholder: '请输入',
-          prop: 'userName'
+    props: {
+        drawerVrisible: {
+            type: Boolean,
+            default: () => false
         },
-        {
-          type: 'Input',
-          label: '手机号',
-          placeholder: '请输入',
-          prop: 'phone'
-        },
-        {
-          type: 'date',
-          label: '起始日期',
-          placeholder: '请选择日期',
-          prop: 'startDate'
-        },
-        {
-          type: 'date',
-          label: '终止日期',
-          placeholder: '请选择日期',
-          prop: 'endDate'
-        },
-        {
-          type: 'select',
-          label: '状态',
-          placeholder: '请选择租房状态',
-          prop: 'status',
-          options: [
-            {
-              value: '1',
-              label: '已租'
-            },
-            {
-              value: '2',
-              label: '已售'
+        drawerTitle: {
+            type: String,
+            default: () => ''
+        }
+    },
+    data() {
+        return {
+            // 楼栋 单元 房产
+            buildOptions: [],
+            value1: null,
+            hoursArray: [
+                {
+                    buildValue: null,
+                    // 单元
+                    unitValue: null,
+                    unitOptions: [],
+                    hoursOptions: [],
+                    // 房产
+                    hoursValue: null
+                }
+            ],
+            // 车位
+            parkingOptions: [],
+            parkingList: [],
+            //
+            parkingArray: [
+                {
+                    parkingValue: null
+                }
+            ],
+            // 亲属
+            userOptions: [
+                {
+                    label: '身份证',
+                    value: 1
+                },
+                {
+                    label: '营业执照',
+                    value: 2
+                }
+            ],
+            identityOptions: [
+                {
+                    label: '父亲',
+                    value: 1
+                },
+                {
+                    label: '母亲',
+                    value: 2
+                },
+                {
+                    label: '其他',
+                    value: 3
+                }
+            ],
+            drawer_vrisible: false,
+            // 亲属表格
+            tableData: [],
+            // 基本信息
+            fromjson: {
+                ruleForm: {
+                    tel: null,
+                    name: null,
+                    idType: null,
+                    idNumber: null
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '业主姓名',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'name'
+                    },
+                    {
+                        type: 'Input',
+                        label: '联系方式',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'tel'
+                    },
+                    {
+                        type: 'Select',
+                        label: '证件类型',
+                        placeholder: '请输入',
+                        options: [
+                            { value: 1, label: '身份证' },
+                            { value: 2, label: '营业执照' }
+                        ],
+                        width: '50%',
+                        prop: 'idType'
+                    },
+                    {
+                        type: 'Input',
+                        label: '证件号码',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'idNumber'
+                    }
+                ]
             }
-          ]
         }
-      ],
-      value: '',
-      options: [
-        {
-          value: '1',
-          label: '黄金糕2'
+    },
+    mounted() {
+        // 楼栋下拉选择
+        cpmBuildingUnitFindAll().then((res) => {
+            this.buildOptions = res
+        })
+        GetTableData({
+            url: 'parkList',
+            data: {
+                pageNum: 1,
+                size: 100
+            }
+        }).then((res) => {
+            this.parkingOptions = res.tableList
+            console.log(res)
+        })
+    },
+    methods: {
+        parkingChange(value, index) {
+            this.$set(this.parkingList, index, value)
+            console.log(this.parkingList)
         },
-        {
-          value: '2',
-          label: '黄金2糕'
+        //  提交
+        onSubmit() {
+            let result = this.hoursArray.map((i) => i.hoursValue)
+            for (let key in this.fromjson.ruleForm) {
+                if (!this.fromjson.ruleForm[key]) {
+                    this.$message({
+                        message: '基础信息为必填项',
+                        type: 'error'
+                    })
+                    return
+                }
+            }
+            // 家属成员  表格有内容时间必填写
+            let isRequest = true
+
+            let table_data = this.tableData.map((item) => {
+                if (
+                    !item.name ||
+                    !item.tel ||
+                    !item.idType ||
+                    !item.idNumber ||
+                    !item.identity
+                ) {
+                    isRequest = false
+                }
+                return {
+                    name: item.name,
+                    tel: item.tel,
+                    idType: item.idType,
+                    idNumber: item.idNumber,
+                    identity: item.identity
+                }
+            })
+            if (isRequest === false) {
+                this.$message({
+                    message: '请完善成员信息填写（可不填写）',
+                    type: 'error'
+                })
+                return
+            }
+
+            for (let i = 0; i < result.length; i++) {
+                if (result[i] === null) {
+                    this.$message({
+                        message: '请将房屋信息填写完整',
+                        type: 'error'
+                    })
+                    return
+                }
+            }
+
+            let resData = {
+                userResident: {
+                    name: this.fromjson.ruleForm.name,
+                    tel: this.fromjson.ruleForm.tel,
+                    idType: this.fromjson.ruleForm.idType,
+                    idNumber: this.fromjson.ruleForm.idNumber
+                },
+                voRelativesList: table_data,
+                cpmResidentEstateList: result,
+                cpmParkingSpaceList: this.parkingList
+            }
+            console.log(resData)
+            tenantInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.drawerClose()
+                }
+            })
         },
-        {
-          value: '3',
-          label: '黄金糕3'
+        // 弹窗关闭
+        drawerClose() {
+            /****
+       *       parkingArray: [
+          {
+            parkingValue: null,
+          },
+        ],
+       * */
+            this.parkingArray = [
+                {
+                    parkingValue: null
+                }
+            ]
+            this.tableData = []
+            this.drawer_vrisible = false
+            this.$emit('handleClose', 'Close')
         },
-        {
-          value: '4',
-          label: '黄金4糕'
+        // 添加成员
+        addMember() {
+            this.tableData.push({
+                name: null,
+                tel: null,
+                idType: null,
+                idNumber: null,
+                identity: null
+            })
         },
-        {
-          value: '5',
-          label: '黄金5糕'
+        // 房产添加
+        houseAdd() {
+            this.hoursArray.push({
+                buildValue: null,
+                // 单元
+                unitValue: null,
+                unitOptions: [],
+                hoursOptions: [],
+                // 房屋
+                hoursValue: null
+            })
         },
-        {
-          value: '选项1122',
-          label: 'sadasd'
+        // 楼栋数据变化
+        buildChange(value, index) {
+            this.hoursArray[index].unitOptions = []
+            this.hoursArray[index].hoursOptions = []
+            this.hoursArray[index].unitValue = null
+            this.hoursArray[index].hoursValue = null
+            let resData = {
+                id: value
+            }
+            findByBuildingId(resData).then((res) => {
+                // 给单元号赋值
+                this.hoursArray[index].unitOptions = res
+            })
+        },
+        // 单元数据变化
+        unitChange(value, index) {
+            this.hoursArray[index].hoursValue = null
+            this.hoursArray[index].hoursOptions = []
+            let resData = {
+                id: value
+            }
+            findByBuildingUnitId(resData).then((res) => {
+                this.hoursArray[index].hoursOptions = res
+            })
+        },
+        houseRemove(index) {
+            this.hoursArray.splice(index, 1)
+        },
+        parkingAdd() {
+            this.parkingArray.push({
+                parkingValue: null
+            })
+        },
+        parkingRemove(index) {
+            this.parkingArray.splice(index, 1)
+        },
+        deleteRow(index, rows) {
+            rows.splice(index, 1)
         }
-      ],
-      tableData: [
-        {
-          id: 1,
-          ParkingNumber: 'A128',
-          status: '已售',
-          ParkingType: '产权车位',
-          owner: '夏恒灵',
-          userName: '夏恒灵 ',
-          phone: '18965334842'
+    },
+    watch: {
+        drawerVrisible: {
+            handler(newValue) {
+                this.drawer_vrisible = newValue
+            }
         }
-      ]
     }
-  },
-  components: {
-    formDatechildren
-  },
-  methods: {
-    onSubmit () {
-      // console.log(this.$refs.header.formData)
-      console.log('submit!')
-    }
-  }
 }
 </script>
-<style scoped>
-.content-titel2 {
-    margin: 0px 0px 20px 30px;
-    padding-top: 30px;
-    border-top: 1px solid #e8e8e8;
+
+<style scoped lang='scss'>
+.flex {
+    margin: 17px 0;
+    display: flex;
+    align-items: center;
+}
+.label-span {
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    width: 80px;
+}
+.add {
+    margin-bottom: 20px;
+
+    span {
+        cursor: pointer;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #fb4702;
+        line-height: 20px;
+    }
+}
+.hr {
+    margin: 30px 0;
+    height: 1px;
+    background: #e8e8e8;
+}
+.column_flex {
+    display: flex;
+    align-items: center;
 }
 </style>
+

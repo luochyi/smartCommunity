@@ -87,10 +87,10 @@ export default {
                             path: '/daily/bookingManagement',
                             label: '预约管理'
                         },
-                        // {
-                        //   path: '/daily/facilityInspection',
-                        //   label: '设施检查'
-                        // },
+                        {
+                          path: '/daily/facilityInspection',
+                          label: '设施检查'
+                        },
                         {
                             path: '/daily/facilityItem',
                             label: '设施分类'
@@ -143,6 +143,15 @@ export default {
                     label: '包裹代收',
                     iconurl: require('@/assets/images/daily/icon_service17_nor.png'),
                     iconisactive: require('@/assets/images/daily/icon_service17_sel.png'),
+                    isChildren: 0
+                },
+                //decorationManagement
+                {
+                    // Business meeting management
+                    path: '/daily/decorationManagement',
+                    label: '装修管理',
+                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
+                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
                     isChildren: 0
                 },
                 {
@@ -200,7 +209,7 @@ export default {
                     isChildren: 1,
                     children: [
                         {
-                            path: '/operation/HealthManagement',
+                            path: '/daily/HealthManagement',
                             label: '卫生管理'
                         },
                         {

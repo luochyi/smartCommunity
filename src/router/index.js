@@ -55,8 +55,45 @@ const routes = [
                             require([
                                 '@/views/comprehensive/company/page/functionAuthority'
                             ], resolve)
-                    }
-                    // /company/functionAuthority
+                    },
+                    // /company/functionAuthority  systemSettings
+                    {
+                        path: '/company/systemSettings',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/systemSettings'
+                            ], resolve)
+                    },
+                    //reportForm
+                    {
+                        path: '/company/reportForm',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/reportForm'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/dataDictionary',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/dataDictionary'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/emergencyAlarm',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/emergencyAlarm'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/fireAlarm',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/fireAlarm'
+                            ], resolve)
+                    },
+                    
                 ]
             }
         ]
@@ -92,11 +129,11 @@ const routes = [
                          path:'/daily/bookingManagement',
                          component:()=>import('@/views/daily/page/bookingManagement')
                     },
-                    // {
-                    //      //设施检查
-                    //      path:'/daily/facilityInspection',
-                    //      component:()=>import('@/views/daily/page/facilityInspection')
-                    // },
+                    {
+                         //设施检查
+                         path:'/daily/facilityInspection',
+                         component:()=>import('@/views/daily/page/facilityInspection')
+                    },
                     {
                         //设施分类
                         path:'/daily/facilityItem',
@@ -129,6 +166,14 @@ const routes = [
                         component:()=>import('@/views/daily/page/keyExamine')
                     },
                     {
+                        path:'/daily/decorationManagement',
+                        component:()=>import('@/views/daily/page/decorationManagement')
+                    },
+                    {
+                        path:'/daily/keyExamine',
+                        component:()=>import('@/views/daily/page/keyExamine')
+                    },
+                    {
                         // 业务会管理
                         path: '/daily/businessManagement',
                         component: resolve =>
@@ -146,6 +191,7 @@ const routes = [
                         path:'/daily/RegulationManagement',
                         component:()=>import('@/views/daily/page/RegulationManagement')
                     },
+                    
                     //服务浏览Service browsing
                     {
                         path:'/daily/ServiceBrowsing',
@@ -566,6 +612,22 @@ const routes = [
                         component: resolve =>
                             require([
                                 '@/views/operation/page/consultationItem'
+                            ], resolve)
+                    },
+                    {
+                        // dianshang
+                        path: '/operation/shoppingInfo',
+                        component: resolve =>
+                            require([
+                                '@/views/operation/page/shoppingInfo'
+                            ], resolve)
+                    },
+                    {
+                        // dianshang
+                        path: '/operation/shoppingItem',
+                        component: resolve =>
+                            require([
+                                '@/views/operation/page/shoppingItem'
                             ], resolve)
                     },
                 ]

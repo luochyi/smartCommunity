@@ -2,7 +2,7 @@
   <div>
     <div class="main-content">
       <div class="main-titel">
-        <span>资讯分类</span>
+        <span>电商分类</span>
       </div>
       <div class="content">
         <div class="content-btn">
@@ -37,7 +37,7 @@
           </VueTable>
         </div>
         <!-- 新增 -->
-        <Drawer drawerTitle="新增资讯分类"
+        <Drawer drawerTitle="新增电商分类"
                 @drawerClose="addClose"
                 :drawerVrisible='add_vrisible'>
           <div style="padding:30px">
@@ -47,7 +47,7 @@
                 <VueForm ref="addForm"
                          :formObj='addForm'>
                   <!-- Slot -->
-                  <template v-slot:date>
+                  <!-- <template v-slot:date>
                     <el-time-picker is-range
                                     v-model="addDate"
                                     range-separator="至"
@@ -76,7 +76,7 @@
                         </div>
                       </el-upload>
                     </template>
-                  </template>
+                  </template> -->
                 </VueForm>
               </template>
             </FromCard>
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { newsCategoryManagementInsert } from '@/api/operation'
+import { electronicCommerceCategoryInsert } from '@/api/operation'
 export default {
   data () {
     return {
@@ -127,13 +127,12 @@ export default {
         thead: [
           { label: '序号', type: 'index', width: '80' },
           { label: '分类编号', prop: 'code', width: 'auto' },
-          { label: '分类类型', prop: 'name', width: 'auto' },
-          { label: '资讯数量', prop: 'num', width: 'auto' },
+          { label: '分类名称', prop: 'name', width: 'auto' },
           { label: '创建人名称', prop: 'createName', width: 'auto' },
-          { label: '添加时间', prop: 'createDate', width: '220' },
+          { label: '创建人时间', prop: 'createDate', width: 'auto' },
         ],
         table_data: [],
-        url: 'newsCategoryManagementList',
+        url: 'electronicCommerceCategoryList',
         search_item: [
 
           {
@@ -191,7 +190,7 @@ export default {
         // openEndDate:  this.openEndDate,
         // imgUrls:this.addForm.ruleForm.imgUrls,
       }
-      newsCategoryManagementInsert(resData).then(res => {
+      electronicCommerceCategoryInsert(resData).then(res => {
         if (res.status) {
           this.$message({
             message: res.message,

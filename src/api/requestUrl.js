@@ -1,6 +1,7 @@
 const requestUrl = {
     // 综合服务
-
+    alarmOneButtonAlarmList:'alarm/oneButtonAlarmList',
+    alarmFireAlarmList:'alarm/fireAlarmList',
     //基础档案
     buildList: '/cpmBuilding/list',
     buildListDelete: '/cpmBuilding/delete',
@@ -39,6 +40,8 @@ const requestUrl = {
     //包裹
     packageCollectionList:'packageCollection/list',
     packageCollectionListDelete:'/packageCollection/delete',
+
+    userDecorationList:'userDecoration/list',
     voteList: '/vote/list',
     voteListDelete: '/vote/falseDelete',
     voteListDetailList: '/vote/listDetailCandidate',
@@ -92,6 +95,13 @@ const requestUrl = {
     newsCategoryManagementListDelete:'newsCategoryManagement/delete',
     newsManagementList:'newsManagement/list',
     newsManagementListDelete:'newsManagement/delete',
+    //电子商务
+    electronicCommerceCategoryList:'electronicCommerceCategory/list',
+    electronicCommerceCategoryListDelete:'electronicCommerceCategory/delete',
+    electronicCommerceList:'electronicCommerce/list',
+    electronicCommerceListDelete:'electronicCommerce/delete',
+
+
     regulationManagementList:'regulationManagement/list',
     regulationManagementListDelete:'regulationManagement/delete',
     serviceBrowsingList:'serviceBrowsing/list',
@@ -101,7 +111,12 @@ const requestUrl = {
     greenAreaListDelete:'greenArea/delete',
     greenTaskList:'greenTask/list',
     greenTaskListDelete:'greenTask/delete',
-
+    communityIntroductionList:'communityIntroduction/list',
+    communityIntroductionListDelete:'communityIntroduction/delete',
+    hygieneAreaList:'hygieneArea/list',
+    hygieneAreaListDelete:'hygieneArea/delete',
+    hygieneTaskList:'hygieneTask/list',
+    hygieneTaskListDelete:'hygieneTask/delete',
     //商城shop/supplier/list
     shopSupplierList:'shop/supplier/list',
     shopSupplierListDelete:'shop/supplier/delete',

@@ -72,11 +72,11 @@ export default {
             activeIndex: this.$route.path,
             asideMenu: [
                 {
-                    path: '/operation/announcement',
+                    path: '/operation/announcementManagement',
                     label: '通知公告',
                     iconurl: require('@/assets/images/operation/icon_operate01_nor.png'),
                     iconisactive: require('@/assets/images/operation/icon_operate01_sel.png'),
-                    isChildren: 1,
+                    isChildren: 0,
                     children: [
                         {
                             // Announcement management
@@ -136,6 +136,25 @@ export default {
                             // consultation Item
                             path: '/operation/consultationItem',
                             label: '资讯分类'
+                        }
+                    ]
+                },
+                {
+                    // zixun
+                    path: '/operation/shopping',
+                    label: '电子商务',
+                    iconurl: require('@/assets/images/operation/icon_operate04_nor.png'),
+                    iconisactive: require('@/assets/images/operation/icon_operate04_sel.png'),
+                    isChildren: 1,
+                    children: [
+                        {
+                            path: '/operation/shoppingInfo',
+                            label: '电商信息'
+                        },
+                        {
+                            // consultation Item
+                            path: '/operation/shoppingItem',
+                            label: '电商分类'
                         }
                     ]
                 }

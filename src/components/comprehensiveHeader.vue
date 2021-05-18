@@ -65,7 +65,7 @@ export default {
         // },
         {
           path: '/company',
-          label: '企业管理',
+          label: '系统管理',
         },
         {
           path: '/daily',

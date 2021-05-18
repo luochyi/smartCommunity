@@ -122,7 +122,14 @@ export function chargesTemplateDetailFindById(data) {
         params: data
     })
 }
-
+// chargesTemplateDetail/isEnable
+export function chargesTemplateDetailIsEnable(data) {
+    return service.request({
+        method: 'GET',
+        url: '/chargesTemplateDetail/isEnable',
+        params: data
+    })
+}
 //收费标准管理：更新物业收费标准明细信息
 export function chargesTemplateDetailUpdate(data) {
     return service.request({
