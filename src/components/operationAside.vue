@@ -143,8 +143,8 @@ export default {
                     // zixun
                     path: '/operation/shopping',
                     label: '电子商务',
-                    iconurl: require('@/assets/images/operation/icon_operate04_nor.png'),
-                    iconisactive: require('@/assets/images/operation/icon_operate04_sel.png'),
+                    iconurl: require('@/assets/images/operation/icon_operate05_nor.png'),
+                    iconisactive: require('@/assets/images/operation/icon_operate05_sel.png'),
                     isChildren: 1,
                     children: [
                         {

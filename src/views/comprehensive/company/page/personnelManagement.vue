@@ -82,9 +82,9 @@
                              width="140"
                              label="电话">
             </el-table-column>
-            <el-table-column prop="roleName"
+            <el-table-column prop="organizationName"
                              width="120"
-                             label="主要负责人">
+                             label="部门名称">
             </el-table-column>
             <el-table-column prop="positionName"
                              width="100"

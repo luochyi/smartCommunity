@@ -19,7 +19,7 @@
 export default {
     data() {
         return {
-            path: 'ws://39.103.177.88:8804/IntelligentCommunity/websocket/admin',
+            path: 'wss://test.kaidalai.cn/websocket/admin',
             socket: '',
             alertMsg: '',
             isShow: false

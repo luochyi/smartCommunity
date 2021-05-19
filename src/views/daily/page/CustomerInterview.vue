@@ -2,16 +2,16 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>钥匙审核</span>
+                <span>客户访谈</span>
             </div>
             <div class="content">
                 <div class="content-btn">
-                    <!-- <el-button
+                    <el-button
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增钥匙记录</el-button
-                    > -->
+                        >新增访谈预约</el-button
+                    >
                 </div>
 
                 <div class="">
@@ -39,21 +39,20 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button>审核</button>
-                                <!-- <button @click="del(table_row)">删除</button> -->
+                                <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增钥匙"
+                    drawerTitle="新增访谈"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">钥匙信息</template>
+                            <template slot="title">访谈内容</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
@@ -91,7 +90,7 @@
 </template>
 
 <script>
-import { keyManagementInsert } from '@/api/daily'
+import { regulationManagementInsert,regulationManagementRelease } from '@/api/daily'
 export default {
     data() {
         return {
@@ -99,71 +98,40 @@ export default {
             addDate: null,
             addForm: {
                 ruleForm: {
-                    facilityName: null,
-                    num: null,
-                    correspondingPosition: null,
-                    storageLocation: null,
-                    administrator: null,
-                    tel: null
                 },
                 rules: {
-                    tel: [
-                        // {
-                        //     required: true,
-                        //     message: '请输入手机号',
-                        //     trigger: 'blur'
-                        // },
-                        {
-                        min: 11,
-                        max: 11,
-                        message: '请输入正确的手机号',
-                        trigger: 'blur',
-                        },
-                    ]
                 },
                 form_item: [
                     {
                         type: 'Input',
-                        label: '设施名称',
-                        placeholder: '请输入',
-                        width: '50%',
-                        prop: 'facilityName'
-                    },
-                    {
-                        type: 'Input',
-                        label: '钥匙数量',
-                        // disabled: true,
+                        label: '客户姓名',
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'num'
+                        prop: 'content'
                     },
                     {
-                        type: 'Input',
-                        label: '对应位置',
-                        placeholder: '请选择',
-                        width: '100%',
-                        prop: 'correspondingPosition'
-                    },
-                    {
-                        type: 'Input',
-                        label: '存放位置',
+                        type: 'textarea',
+                        label: '访谈内容',
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'storageLocation'
+                        prop: 'content'
                     },
                     {
-                        type: 'Input',
-                        label: '管理人',
+                        type: 'Select',
+                        label: '访谈状态',
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'administrator'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人联系方式',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'tel'
+                        prop: 'status',
+                        options:[
+                            {
+                                value:'1',
+                                label:'已访谈'
+                            },
+                            {
+                                value:'2',
+                                label:'未访谈'
+                            },
+                        ]
                     }
                 ]
             },
@@ -174,55 +142,58 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '编号', prop: 'code', width: 'auto' },
-                    { label: '设备名称', prop: 'facilityName', width: 'auto' },
-                    // { label: '钥匙数量', prop: 'num', width: 'auto' },
                     {
-                        label: '对应位置',
-                        prop: 'correspondingPosition',
-                        width: 'auto'
+                        label: '客户姓名',
+                        prop: 'createName',
+                        width: '130'
                     },
-                    // {
-                    //     label: '存放位置',
-                    //     prop: 'storageLocation',
-                    //     width: 'auto'
-                    // },
-                    { label: '管理人', prop: 'administrator', width: 'auto' },
-                    { label: '管理人电话', prop: 'tel', width: 'auto' },
-                    { label: '创建时间', prop: 'createDate', width: 'auto' }
+                    { label: '访谈内容', prop: 'content', width: 'auto' },
+                    { label: '访谈状态', prop: 'status', width: 'auto' ,type:'function',
+                        callback(row,prop){
+                            switch (row.status) {
+                                case 1:
+                                    return '已访谈'
+                                    break;
+                                case 2:
+                                    return '未访谈'
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    },
+                    { label: '访谈时间', prop: 'createDate', width: 'auto' },
                 ],
                 table_data: [],
-                url: 'keyManagementList',
+                url: 'regulationManagementList',
                 search_item: [
-                    {
+                     {
                         type: 'Input',
-                        label: '钥匙编号',
+                        label: '客户姓名',
                         placeholder: '请输入',
-                        prop: 'code'
+                        prop: 'createName'
                     },
                     {
-                        type: 'Input',
-                        label: '设施名称',
-                        placeholder: '请输入',
-                        prop: 'facilityName'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人名称',
-                        placeholder: '请输入',
-                        prop: 'administrator'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人联系方式',
-                        placeholder: '请输入',
-                        prop: 'tel'
+                        type: 'select',
+                        label: '访谈状态',
+                        placeholder: '请选择',
+                        prop: 'status',
+                        options:[
+                            {
+                                value:'1',
+                                label:'已访谈'
+                            },
+                            {
+                                value:'2',
+                                label:'未访谈'
+                            }
+                        ]
                     },
                     {
                         type: 'picker',
-                        label: '添加时间',
+                        label: '访谈时间',
                         placeholder: '请输入',
-                        prop: 'date',
+                        prop: 'createDate',
                         startDate: 'createDateStart',
                         endDate: 'createDateEnd',
                         width: '280px'
@@ -245,33 +216,9 @@ export default {
             this.add_vrisible = false
         },
         addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
-            let resData = {
-                ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
-            }
-            keyManagementInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
+            this.$message({
+                type:'success',
+                message:'成功'
             })
         },
         dateTimeChange(arr) {
@@ -293,7 +240,26 @@ export default {
             }
             this.$refs.table.requestData(requestData)
         },
-
+        //规程发布
+        release(data){
+           if(data[0].status==1||data.length>1){
+               this.$message({
+                   message:'发布失败',
+                   type:'error'
+               })
+           }else{
+                regulationManagementRelease({id:data[0].id}).then((res) => {
+                     console.log(res)
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                }
+            })
+           }
+        },
         // 表格选中
         tableCheck(data) {
             this.table_row = data

@@ -86,8 +86,8 @@
             </div>
           </el-tab-pane>
 
-          <el-tab-pane label="组织架构管理"
-                       name="third"></el-tab-pane>
+          <!-- <el-tab-pane label="组织架构管理"
+                       name="third"></el-tab-pane> -->
         </el-tabs>
 
       </div>

@@ -31,7 +31,7 @@
             </template>
             <template slot="footer">
               <div class="table-footer">
-                <!-- <button>编辑</button> -->
+                <button @click="detail(table_row)">编辑</button>
                 <button @click="del(table_row)">删除</button>
 
               </div>
@@ -71,18 +71,51 @@
                     @click="addClose"><span>取消</span></button>
           </div>
         </Drawer>
-
+        <!-- detail -->
+        <Drawer drawerTitle="编辑包裹"
+                @drawerClose="detailClose"
+                :drawerVrisible='detail_vrisible'>
+          <div style="padding:30px">
+            <FromCard>
+              <template slot="title">快递信息</template>
+              <template>
+                <VueForm ref="detailForm"
+                         :formObj='detailForm'>
+                  <!-- Slot -->
+                  <template v-slot:date>
+                    <el-time-picker is-range
+                                    v-model="addDate"
+                                    range-separator="至"
+                                    @change='dateTimeChange'
+                                    value-format='HH:MM:SS'
+                                    start-placeholder="开始时间"
+                                    end-placeholder="结束时间"
+                                    placeholder="选择时间范围">
+                    </el-time-picker>
+                  </template>
+                </VueForm>
+              </template>
+            </FromCard>
+          </div>
+          <div slot="footer">
+            <button class="btn-orange"
+                    @click="detailSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+            <button class="btn-gray"
+                    @click="detailClose"><span>取消</span></button>
+          </div>
+        </Drawer>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { packageCollectionInsert } from '@/api/daily'
+import { packageCollectionInsert,packageCollectionUpdate,packageCollectionFindById } from '@/api/daily'
 export default {
   data () {
     return {
       add_vrisible: false,
+      detail_vrisible: false,
       addDate: null,
       addForm: {
         ruleForm: {
@@ -91,6 +124,54 @@ export default {
           addresseeTel:null,
           address:null,
           placePosition:null
+        },
+        form_item: [
+          {
+            type: 'Input',
+            label: '包裹编号',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'code'
+          },
+          {
+            type: 'Input',
+            label: '收件人名称',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'addresseeName'
+          },
+          {
+            type: 'Input',
+            label: '收件人联系方式',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'addresseeTel'
+          },
+          {
+            type: 'Input',
+            label: '收件人地址',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'address'
+          },
+          {
+            type: 'Input',
+            label: '放置位置',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'placePosition'
+          },
+
+        ]
+      },
+      detailForm: {
+        ruleForm: {
+          code:null,
+          addresseeName:null,
+          addresseeTel:null,
+          address:null,
+          placePosition:null,
+          id:null
         },
         form_item: [
           {
@@ -243,6 +324,53 @@ export default {
           })
           this.$refs.table.loadData()
           this.addClose()
+        }
+      })
+    },
+    detail (data) {
+      if(data.length!=1){
+        this.$message({
+          message:'只能编辑一条数据',
+          type:'error'
+        })
+      }else{
+        this.detail_vrisible = true
+         console.log(data[0].id);
+         this.detailForm.ruleForm.id = data[0].id
+         packageCollectionFindById({id:data[0].id}).then((res)=>{
+           console.log(res.data);
+           this.detailForm.ruleForm.code = res.data.code
+           this.detailForm.ruleForm.addresseeName = res.data.addresseeName
+           this.detailForm.ruleForm.addresseeTel = res.data.addresseeTel
+           this.detailForm.ruleForm.address = res.data.address
+           this.detailForm.ruleForm.placePosition = res.data.placePosition
+
+         })
+      // this.detailForm.ruleForm
+      }
+    },
+    detailClose () {
+      this.$refs.detailForm.reset()
+      this.detail_vrisible = false
+    },
+    detailSubmit () {
+      let resData = {
+        ...this.detailForm.ruleForm,
+        id:this.detailForm.ruleForm.id,
+        // code: this.addForm.ruleForm.code,
+        // name: this.addForm.ruleForm.name,
+        // openStartDate: this.openStartDate,
+        // openEndDate:  this.openEndDate,
+        // imgUrls:this.addForm.ruleForm.imgUrls,
+      }
+      packageCollectionUpdate(resData).then(res => {
+        if (res.status) {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.$refs.table.loadData()
+          this.detailClose()
         }
       })
     },

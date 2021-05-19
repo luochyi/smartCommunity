@@ -82,44 +82,58 @@ export default {
           label: '人员管理',
           iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
           iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
-          isChildren: 0
+          isChildren: 1,
+          children:[
+            {
+              path: '/company/personnelManagement',
+              label: '人员管理'
+            },
+            {
+              path: '/company/attendanceRecord',
+              label: '考勤记录管理'
+            },
+            {
+              path: '/company/salaryManagement',
+              label: '薪资管理'
+            }
+          ]
 
         },
         {
           path: '/company/functionAuthority',
           label: '功能权限管理',
-          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          iconurl: require('@/assets/images/company/icon_comprehensive08_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive08_sel.png'),
           isChildren: 0
 
         },
         {
           path: '/company/systemSettings',
           label: '系统设置',
-          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          iconurl: require('@/assets/images/company/icon_comprehensive07_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive07_sel.png'),
           isChildren: 0
 
         },
         {
           path: '/company/reportForm',
           label: '报表管理',
-          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          iconurl: require('@/assets/images/company/icon_comprehensive09_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive09_sel.png'),
           isChildren: 0
         },
         {
           path: '/company/dataDictionary',
           label: '数据字典',
-          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          iconurl: require('@/assets/images/company/icon_comprehensive10_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive10_sel.png'),
           isChildren: 0
         },
         {
           path: '/company/alarm',
           label: '报警记录',
-          iconurl: require('@/assets/images/company/icon_comprehensive03_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive03_sel.png'),
+          iconurl: require('@/assets/images/company/icon_comprehensive11_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive11_sel.png'),
           isChildren: 1,
           children: [
             {

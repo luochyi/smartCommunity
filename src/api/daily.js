@@ -170,6 +170,22 @@ export function packageCollectionInsert(data) {
         data: data
     })
 }
+//packageCollection/findById
+export function packageCollectionFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/packageCollection/findById',
+        params: data
+    })
+}
+//packageCollection/update
+export function packageCollectionUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/packageCollection/update',
+        data: data
+    })
+}
 //greenArea/insert
 export function greenAreaInsert(data) {
     return service.request({

@@ -156,6 +156,14 @@ export default {
                 },
                 {
                     // Business meeting management
+                    path: '/daily/CustomerInterview',
+                    label: '客户访谈',
+                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
+                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    isChildren: 0
+                },
+                {
+                    // Business meeting management
                     path: '/daily/businessManagement',
                     label: '业委会管理',
                     iconurl: require('@/assets/images/daily/icon_service13_nor.png'),

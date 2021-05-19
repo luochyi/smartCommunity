@@ -56,6 +56,22 @@ const routes = [
                                 '@/views/comprehensive/company/page/functionAuthority'
                             ], resolve)
                     },
+                    //考勤记录attendanceRecord
+                    {
+                        path: '/company/attendanceRecord',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/attendanceRecord'
+                            ], resolve)
+                    },
+                    //薪资管理salaryManagement
+                    {
+                        path: '/company/salaryManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/salaryManagement'
+                            ], resolve)
+                    },
                     // /company/functionAuthority  systemSettings
                     {
                         path: '/company/systemSettings',
@@ -172,6 +188,11 @@ const routes = [
                     {
                         path:'/daily/keyExamine',
                         component:()=>import('@/views/daily/page/keyExamine')
+                    },
+                    //CustomerInterview
+                    {
+                        path:'/daily/CustomerInterview',
+                        component:()=>import('@/views/daily/page/CustomerInterview')
                     },
                     {
                         // 业务会管理
@@ -699,7 +720,15 @@ const routes = [
                                 '@/views/commodity/page/orderManagement'
                             ], resolve)
                     },
-                    // {
+                    {
+                        // 订单管理
+                        path: '/commodity/unshippedRefund',
+                        component: resolve =>
+                            require([
+                                '@/views/commodity/page/unshippedRefund'
+                            ], resolve)
+                    },
+                    // {unshippedRefund
                     //     // 居家生活
                     //     //服务管理
                     //     path:'/commodity/serviceManagement',

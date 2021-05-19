@@ -28,8 +28,8 @@
             <div class='title'>
               {{roleName}}
             </div>
-            <div>
-              预设所有对象的查看列表及详情权限
+            <div style="font-size:30px">
+              请选择部门人员分配角色
             </div>
             <div>
               <div class='item-list'
