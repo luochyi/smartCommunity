@@ -95,9 +95,20 @@ export default {
             {
               path: '/company/salaryManagement',
               label: '薪资管理'
+            },
+            {
+              path: '/company/contractManage',
+              label: '合同管理'
             }
           ]
 
+        },
+        {
+          path: '/company/trainManage',
+          label: '培训管理',
+          iconurl: require('@/assets/images/company/icon_comprehensive08_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive08_sel.png'),
+          isChildren: 0
         },
         {
           path: '/company/functionAuthority',
@@ -105,7 +116,6 @@ export default {
           iconurl: require('@/assets/images/company/icon_comprehensive08_nor.png'),
           iconisactive: require('@/assets/images/company/icon_comprehensive08_sel.png'),
           isChildren: 0
-
         },
         {
           path: '/company/systemSettings',
@@ -125,6 +135,20 @@ export default {
         {
           path: '/company/dataDictionary',
           label: '数据字典',
+          iconurl: require('@/assets/images/company/icon_comprehensive10_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive10_sel.png'),
+          isChildren: 0
+        },//databaseManagement
+        {
+          path: '/company/databaseManagement',
+          label: '数据库管理',
+          iconurl: require('@/assets/images/company/icon_comprehensive10_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive10_sel.png'),
+          isChildren: 0
+        },
+        {
+          path: '/company/notice',
+          label: '提醒通知',
           iconurl: require('@/assets/images/company/icon_comprehensive10_nor.png'),
           iconisactive: require('@/assets/images/company/icon_comprehensive10_sel.png'),
           isChildren: 0

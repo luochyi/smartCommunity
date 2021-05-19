@@ -163,6 +163,21 @@ export function keyManagementInsert(data) {
         data: data
     })
 }
+//keyManagement/findById 
+export function keyManagementFindById (data) {
+    return service.request({
+        method: 'GET',
+        url: '/keyManagement/findById',
+        params: data
+    })
+}
+export function keyManagementUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/keyManagement/update',
+        data: data
+    })
+}
 export function packageCollectionInsert(data) {
     return service.request({
         method: 'POST',

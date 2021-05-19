@@ -29,7 +29,7 @@
               {{roleName}}
             </div>
             <div style="font-size:30px">
-              请选择部门人员分配角色
+              请选择角色分配权限
             </div>
             <div>
               <div class='item-list'

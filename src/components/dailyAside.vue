@@ -121,6 +121,24 @@ export default {
                 },
                 {
                     // Business meeting management
+                    path: '/daily/material',
+                    label: '物资管理',
+                    iconurl: require('@/assets/images/daily/icon_service16_nor.png'),
+                    iconisactive: require('@/assets/images/daily/icon_service16_sel.png'),
+                    isChildren: 1,
+                    children: [
+                        {
+                            path: '/daily/materialInOut',
+                            label: '物料出入库'
+                        },
+                        {
+                            path: '/daily/materialManagement',
+                            label: '物料管理'
+                        }
+                    ]
+                },
+                {
+                    // Business meeting management
                     path: '/daily/key',
                     label: '钥匙管理',
                     iconurl: require('@/assets/images/daily/icon_service16_nor.png'),

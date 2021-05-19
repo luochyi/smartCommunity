@@ -72,6 +72,21 @@ const routes = [
                                 '@/views/comprehensive/company/page/salaryManagement'
                             ], resolve)
                     },
+                    //contractManage
+                    {
+                        path: '/company/contractManage',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/contractManage'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/trainManage',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/trainManage'
+                            ], resolve)
+                    },
                     // /company/functionAuthority  systemSettings
                     {
                         path: '/company/systemSettings',
@@ -93,6 +108,21 @@ const routes = [
                         component: resolve =>
                             require([
                                 '@/views/comprehensive/company/page/dataDictionary'
+                            ], resolve)
+                    },
+                    {
+                        //databaseManagement
+                        path: '/company/databaseManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/databaseManagement'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/notice',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/notice'
                             ], resolve)
                     },
                     {
@@ -168,7 +198,15 @@ const routes = [
                         path:'/daily/inspectionRoute',
                         component:()=>import('@/views/daily/page/inspectionRoute')
                     },
-                    
+                    //物料
+                    {
+                        path:'/daily/materialInOut',
+                        component:()=>import('@/views/daily/page/materialInOut')
+                    },
+                    {
+                        path:'/daily/materialManagement',
+                        component:()=>import('@/views/daily/page/materialManagement')
+                    },
                     {
                         path:'/daily/packageCollection',
                         component:()=>import('@/views/daily/page/packageCollection')

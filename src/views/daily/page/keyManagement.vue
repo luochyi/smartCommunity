@@ -39,7 +39,7 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button>编辑</button> -->
+                                <button @click="detail(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -85,17 +85,62 @@
                         </button>
                     </div>
                 </Drawer>
+                <!-- detail -->
+                <Drawer
+                    drawerTitle="编辑包裹"
+                    @drawerClose="detailClose"
+                    :drawerVrisible="detail_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">快递信息</template>
+                            <template>
+                                <VueForm ref="detailForm" :formObj="detailForm">
+                                    <!-- Slot -->
+                                    <template v-slot:date>
+                                        <el-time-picker
+                                            is-range
+                                            v-model="addDate"
+                                            range-separator="至"
+                                            @change="dateTimeChange"
+                                            value-format="HH:MM:SS"
+                                            start-placeholder="开始时间"
+                                            end-placeholder="结束时间"
+                                            placeholder="选择时间范围"
+                                        >
+                                        </el-time-picker>
+                                    </template>
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="detailSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="detailClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { keyManagementInsert } from '@/api/daily'
+import {
+    keyManagementInsert,
+    keyManagementFindById,
+    keyManagementUpdate
+} from '@/api/daily'
 export default {
     data() {
         return {
             add_vrisible: false,
+            detail_vrisible: false,
             addDate: null,
             addForm: {
                 ruleForm: {
@@ -114,12 +159,67 @@ export default {
                         //     trigger: 'blur'
                         // },
                         {
-                        min: 11,
-                        max: 11,
-                        message: '请输入正确的手机号',
-                        trigger: 'blur',
-                        },
+                            min: 11,
+                            max: 11,
+                            message: '请输入正确的手机号',
+                            trigger: 'blur'
+                        }
                     ]
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '设施名称',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'facilityName'
+                    },
+                    {
+                        type: 'Input',
+                        label: '钥匙数量',
+                        // disabled: true,
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'num'
+                    },
+                    {
+                        type: 'Input',
+                        label: '对应位置',
+                        placeholder: '请选择',
+                        width: '100%',
+                        prop: 'correspondingPosition'
+                    },
+                    {
+                        type: 'Input',
+                        label: '存放位置',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'storageLocation'
+                    },
+                    {
+                        type: 'Input',
+                        label: '管理人',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'administrator'
+                    },
+                    {
+                        type: 'Input',
+                        label: '管理人联系方式',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'tel'
+                    }
+                ]
+            },
+            detailForm: {
+                ruleForm: {
+                    facilityName: null,
+                    num: null,
+                    correspondingPosition: null,
+                    storageLocation: null,
+                    administrator: null,
+                    tel: null
                 },
                 form_item: [
                     {
@@ -271,6 +371,57 @@ export default {
                     })
                     this.$refs.table.loadData()
                     this.addClose()
+                }
+            })
+        },
+        detail(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '只能编辑一条数据',
+                    type: 'error'
+                })
+            } else {
+                this.detail_vrisible = true
+                console.log(data[0].id)
+                this.detailForm.ruleForm.id = data[0].id
+                keyManagementFindById({ id: data[0].id }).then((res) => {
+                    console.log(res.data)
+                    this.detailForm.ruleForm.facilityName = res.data.facilityName
+                    this.detailForm.ruleForm.num =
+                        res.data.num
+                    this.detailForm.ruleForm.correspondingPosition =
+                        res.data.correspondingPosition
+                    this.detailForm.ruleForm.storageLocation = res.data.storageLocation
+                    this.detailForm.ruleForm.administrator =
+                        res.data.administrator
+                    this.detailForm.ruleForm.tel =
+                        res.data.tel
+                })
+                // this.detailForm.ruleForm
+            }
+        },
+        detailClose() {
+            this.$refs.detailForm.reset()
+            this.detail_vrisible = false
+        },
+        detailSubmit() {
+            let resData = {
+                ...this.detailForm.ruleForm,
+                id: this.detailForm.ruleForm.id
+                // code: this.addForm.ruleForm.code,
+                // name: this.addForm.ruleForm.name,
+                // openStartDate: this.openStartDate,
+                // openEndDate:  this.openEndDate,
+                // imgUrls:this.addForm.ruleForm.imgUrls,
+            }
+            keyManagementUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.detailClose()
                 }
             })
         },

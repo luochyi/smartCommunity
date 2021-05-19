@@ -1,10 +1,10 @@
 <template>
     <div class="main-content">
         <div class="main-titel">
-            <span>薪资管理</span>
+            <span>合同管理</span>
         </div>
         <div class="content">
-            <el-button size="mini">新增职工薪资</el-button>
+            <el-button size="mini">新增合同</el-button>
             <template>
                 <el-table
                     :data="tableData"
@@ -25,11 +25,16 @@
                     </el-table-column>
                     <el-table-column prop="tel" label="手机号" width="200">
                     </el-table-column>
-                    <el-table-column prop="card" label="工资卡号" width="200">
+                     <el-table-column prop="date" label="入职时间" width="200">
                     </el-table-column>
-                    <el-table-column prop="salary" label="薪资" width="200">
-                    </el-table-column>
-                    <el-table-column prop="baoxian" label="社保缴纳金额" width="200">
+                    <el-table-column prop="date" label="合同" width="200">
+                        <el-button
+                                @click="down"
+                                type="text"
+                                size="small"
+                            >
+                                下载合同
+                            </el-button>
                     </el-table-column>
                     <el-table-column fixed="right" label="操作" width="120">
                         <template slot-scope="scope">
@@ -63,7 +68,8 @@ export default {
                     tel:'137327113489',
                     card:'416080100100225186',
                     salary:'4000',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2020-4-18'
                 },
                 {
                     index:2,
@@ -73,7 +79,8 @@ export default {
                     tel:'13754546653',
                     card:'35453553543202251',
                     salary:'4200',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2019-6-18'
                 },
                 {
                     index:3,
@@ -83,7 +90,8 @@ export default {
                     tel:'13345357746',
                     card:'41606757349346786',
                     salary:'4500',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2017-6-6'
                 },
                 {
                     index:4,
@@ -93,7 +101,8 @@ export default {
                     tel:'13770777234',
                     card:'41654645654645654',
                     salary:'4000',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2020-4-11'
                 },
                 {
                     index:5,
@@ -103,7 +112,8 @@ export default {
                     tel:'177927312311',
                     card:'6217211107001880725',
                     salary:'3000',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2021-4-1'
                 },{
                     index:6,
                     item:'保安部',
@@ -112,7 +122,8 @@ export default {
                     tel:'17897897897',
                     card:'622202090400481871',
                     salary:'3000',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2020-3-11'
                 },
                 {
                     index:7,
@@ -122,7 +133,8 @@ export default {
                     tel:'18715687322',
                     card:'6225321135601694188',
                     salary:'6000',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2021-1-12'
                 },
                 {
                     index:8,
@@ -132,7 +144,8 @@ export default {
                     tel:'13588947544',
                     card:'6214650166541712121',
                     salary:'6200',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2020-6-19'
                 },
                 {
                     index:9,
@@ -142,7 +155,8 @@ export default {
                     tel:'13478959485',
                     card:'12005486667741143',
                     salary:'4700',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2017-11-5'
                 },
                 {
                     index:10,
@@ -152,12 +166,16 @@ export default {
                     tel:'18702752342',
                     card:'622319011018326498',
                     salary:'5000',
-                    baoxian:'960'
+                    baoxian:'960',
+                    date:'2020-12-11'
                 },
             ]
         }
     },
     methods: {
+        down(){
+            window.open('http://www.gov.cn/xinwen/2019-11/29/5456897/files/0cea2c85cb0742a9afe69b27ac0c7958.doc')
+        },
         deleteRow(index, rows) {
             rows.splice(index, 1)
         }

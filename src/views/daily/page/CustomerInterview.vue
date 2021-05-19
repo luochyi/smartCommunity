@@ -39,7 +39,7 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button @click="del(table_row)">删除</button>
+                                <!-- <button @click="del(table_row)">删除</button> -->
                             </div>
                         </template>
                     </VueTable>
