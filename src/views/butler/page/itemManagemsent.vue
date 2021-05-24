@@ -59,7 +59,7 @@
                        :formObj='addEidtForm'>
                 <template slot='fileUrls'>
                   <template>
-                    <el-upload :action="`${$baseUrl}upload/uploadRepair`"
+                    <el-upload :action="`${$baseUrl}upload/uploadArticle`"
                                :on-success="voteImgeSuccess"
                                :show-file-list="false"
                                :before-upload="beforeAvatarUpload">
@@ -159,7 +159,7 @@ export default {
             addEidtForm: {
                 ruleForm: {
                     name: null,
-                    fileUrls: null,
+                    fileUrls: [],
                     quantity: null,
                     articleDetailList: null
                 },
@@ -195,13 +195,13 @@ export default {
                             trigger: 'blur'
                         }
                     ],
-                    fileUrls: [
-                        {
-                            required: true,
-                            message: '请上传图片',
-                            trigger: 'change'
-                        }
-                    ],
+                    // fileUrls: [
+                    //     {
+                    //         required: true,
+                    //         message: '请上传图片',
+                    //         trigger: 'change'
+                    //     }
+                    // ],
                     quantity: [
                         {
                             required: true,
@@ -238,15 +238,6 @@ export default {
 
             articleFindById({ id: data[0].id }).then((result) => {
                 console.log(result)
-                // this.editBool = true
-                // this.editId = result.id
-                // this.reportRepairFrom.ruleForm.type = result.type + ''
-                // this.reportRepairFrom.ruleForm.fileUrls = result.imgUrls[0].url
-                // this.fileUrls = result.imgUrls[0].url
-                // this.reportRepairFrom.ruleForm.reportDetail = result.reportDetail
-                // this.reportRepairFrom.ruleForm.repairman = result.repairman
-                // this.reportRepairFrom.ruleForm.tel = result.tel
-                // this.reportRepairFrom.ruleForm.repairDate = result.repairDate
             })
         },
         // vueForm 验证通过提交服务器

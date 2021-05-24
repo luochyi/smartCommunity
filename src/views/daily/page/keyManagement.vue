@@ -87,13 +87,13 @@
                 </Drawer>
                 <!-- detail -->
                 <Drawer
-                    drawerTitle="编辑包裹"
+                    drawerTitle="编辑钥匙"
                     @drawerClose="detailClose"
                     :drawerVrisible="detail_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">快递信息</template>
+                            <template slot="title">钥匙信息</template>
                             <template>
                                 <VueForm ref="detailForm" :formObj="detailForm">
                                     <!-- Slot -->
@@ -386,16 +386,16 @@ export default {
                 this.detailForm.ruleForm.id = data[0].id
                 keyManagementFindById({ id: data[0].id }).then((res) => {
                     console.log(res.data)
-                    this.detailForm.ruleForm.facilityName = res.data.facilityName
-                    this.detailForm.ruleForm.num =
-                        res.data.num
+                    this.detailForm.ruleForm.facilityName =
+                        res.data.facilityName
+                    this.detailForm.ruleForm.num = res.data.num
                     this.detailForm.ruleForm.correspondingPosition =
                         res.data.correspondingPosition
-                    this.detailForm.ruleForm.storageLocation = res.data.storageLocation
+                    this.detailForm.ruleForm.storageLocation =
+                        res.data.storageLocation
                     this.detailForm.ruleForm.administrator =
                         res.data.administrator
-                    this.detailForm.ruleForm.tel =
-                        res.data.tel
+                    this.detailForm.ruleForm.tel = res.data.tel
                 })
                 // this.detailForm.ruleForm
             }

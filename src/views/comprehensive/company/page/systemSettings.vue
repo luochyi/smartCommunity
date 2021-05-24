@@ -7,7 +7,8 @@
                         <span>系统设置</span>
                     </div></el-header
                 >
-                <el-main>
+                <el-main
+                    ><el-button @click="go"> 网络安全 </el-button>
                     <el-table
                         :data="tableData"
                         height="800"
@@ -49,39 +50,44 @@ export default {
                 {
                     index: '1',
                     name: '字体大小',
-                    value:true
+                    value: true
                 },
                 {
                     index: '2',
                     name: '夜间模式',
-                    value:true
+                    value: true
                 },
                 {
                     index: '3',
                     name: '繁简切换',
-                    value:true
+                    value: true
                 },
                 {
                     index: '4',
                     name: '报警提示',
-                    value:true
+                    value: true
                 },
                 {
                     index: '5',
                     name: '静音',
-                    value:false
+                    value: false
                 },
                 {
                     index: '6',
                     name: '智能模式',
-                    value:true
+                    value: true
                 },
                 {
                     index: '8',
                     name: '字体加粗',
-                    value:false
+                    value: false
                 }
             ]
+        }
+    },
+    methods:{
+        go(){
+            window.open('https://yundun.console.aliyun.com/?spm=a2c4g.11186623.2.6.a3d36db3ujQ449&p=cfwnext&accounttraceid=1e5a78659ff549d69976951dbe6b6c2apdru#/security/access/internet/inbound')
         }
     }
 }

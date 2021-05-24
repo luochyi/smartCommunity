@@ -91,14 +91,6 @@
                                                     >
                                                     </el-option>
                                                 </el-select>
-                                                <el-date-picker
-                                                    v-model="value1"
-                                                    type="daterange"
-                                                    range-separator="至"
-                                                    start-placeholder="开始日期"
-                                                    end-placeholder="结束日期"
-                                                >
-                                                </el-date-picker>
                                             </template>
                                         </el-table-column>
                                         <el-table-column
@@ -212,16 +204,14 @@
                                 >
                                 </el-option>
                             </el-select>
-                            <el-date-picker
+                                <el-date-picker
+                                change='getTime'
                                 v-model="value1"
-                                type="date"
-                                placeholder="选择日期"
-                            >
-                            </el-date-picker>
-                            <el-date-picker
-                                v-model="value2"
-                                type="date"
-                                placeholder="选择日期"
+                                size="small"
+                                type="daterange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
                             >
                             </el-date-picker>
                         </div>
@@ -272,6 +262,18 @@
                             >
                             </el-option>
                         </el-select>
+                        <!-- <el-select></el-select> -->
+                        <el-date-picker
+                                v-model="value2"
+                                @change="getTime"
+                                size="small"
+                                type="daterange"
+                                value-format='yyyy-MM-dd'
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                            >
+                            </el-date-picker>
                     </div>
                     <div>
                         <span style="font-size: 19px" @click="parkingAdd"
@@ -322,6 +324,7 @@ export default {
             // 楼栋 单元 房产
             buildOptions: [],
             value1: null,
+            value2: null,
             hoursArray: [
                 {
                     buildValue: null,
@@ -339,7 +342,9 @@ export default {
             //
             parkingArray: [
                 {
-                    parkingValue: null
+                    parkingValue: null,
+                    effectiveTimeStart:null,
+                    effectiveTimeEnd:null
                 }
             ],
             // 亲属
@@ -432,6 +437,12 @@ export default {
         })
     },
     methods: {
+        getTime(data){
+            console.log(data);
+            this.parkingArray[0].effectiveTimeStart = data[0]
+            this.parkingArray[0].effectiveTimeEnd = data[1]
+            console.log( this.parkingArray);
+        },
         parkingChange(value, index) {
             this.$set(this.parkingList, index, value)
             console.log(this.parkingList)

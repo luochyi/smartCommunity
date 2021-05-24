@@ -115,7 +115,7 @@ export default {
   props: {
     labelWidth: {
       type: String,
-      default: "auto"
+      default: "100"
     },
     formItem: {
       type: Array,

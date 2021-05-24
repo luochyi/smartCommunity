@@ -40,11 +40,35 @@ export function sysUserFindById(data) {
         params: data
     })
 }
+//培训train/insert
+export function trainInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/train/insert',
+        data: data
+    })
+}
+//薪资salary/insert
+export function salaryInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/salary/insert',
+        data: data
+    })
+}
 export function functionAuthorityRoleList(data) {
     return service.request({
         method: 'GET',
         url: '/functionAuthority/roleList',
         params: data
+    })
+}
+//contract/insert合同
+export function contractInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/contract/insert',
+        data: data
     })
 }
 // 功能权限管理：查询所属角色下所有的员工信息 （包含条件搜索）
@@ -80,7 +104,29 @@ export function functionAuthorityUpdateOneJurisdiction(data) {
         data: data
     })
 }
-
+//dataDictionaryList:'dataDictionary/list',数据字典 dataDictionary/update
+export function dataDictionaryList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/dataDictionary/list',
+        params: data
+    })
+}
+export function dataDictionaryUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dataDictionary/update',
+        data: data
+    })
+}
+//数据库dataBase/insert
+export function dataBaseInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dataBase/insert',
+        data: data
+    })
+}
 // // 日常缴费：添加缴费信息（带有付款功能）【打印未做】
 // export function dailyPaymentInsert(data) {
 //     return service.request({

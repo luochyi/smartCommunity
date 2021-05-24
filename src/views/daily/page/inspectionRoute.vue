@@ -29,7 +29,10 @@
             </template> -->
                         <template slot="footer">
                             <div class="table-footer">
-                                <button @click="isEnable(table_row)">启用/停用</button>
+                                <button @click="isEnable(table_row)">
+                                    启用/停用
+                                </button>
+                                <button @click="edit(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -46,20 +49,6 @@
                             <template slot="title">路线信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
                                     <template v-slot:inspectionPonitId>
                                         <Button @click="addInt">添加</Button>
                                         <div
@@ -104,13 +93,74 @@
                         </button>
                     </div>
                 </Drawer>
+                <!-- edit -->
+                <Drawer
+                    drawerTitle="修改路线"
+                    @drawerClose="editClose"
+                    :drawerVrisible="edit_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">路线信息</template>
+                            <template>
+                                <VueForm ref="editForm" :formObj="editForm">
+                                    <template v-slot:inspectionPonitId>
+                                        <Button @click="addInt">添加</Button>
+                                        <div
+                                            v-for="(
+                                                item, index
+                                            ) in inspectionArr"
+                                            :key="index"
+                                        >
+                                            <el-select
+                                                v-model="item.inspectionPointId"
+                                                :remote-method="remoteMethod"
+                                                @change="change"
+                                                @focus="sefocus"
+                                                :loading="loading"
+                                                remote
+                                                style="width: 240px"
+                                                filterable
+                                                placeholder="请选择"
+                                            >
+                                                <el-option
+                                                    v-for="item in options"
+                                                    :key="item.id"
+                                                    :label="item.name"
+                                                    :value="item.id"
+                                                >
+                                                </el-option>
+                                            </el-select>
+                                        </div>
+                                    </template>
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="editSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="editClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { inspectionRouteInsert,inspectionPointList,inspectionRouteIsEnable} from '@/api/daily'
+import {
+    inspectionRouteInsert,
+    inspectionPointList,
+    inspectionRouteFindById,
+    inspectionRouteUpdate,
+    inspectionRouteIsEnable
+} from '@/api/daily'
 export default {
     data() {
         return {
@@ -121,6 +171,7 @@ export default {
             ],
             options: [],
             add_vrisible: false,
+            edit_vrisible: false,
             addDate: null,
             addForm: {
                 ruleForm: {
@@ -132,7 +183,7 @@ export default {
                         label: '巡检路线编号',
                         width: '50%',
                         prop: 'code',
-                        disabled:true
+                        disabled: true
                     },
                     {
                         type: 'Input',
@@ -173,7 +224,45 @@ export default {
                         width: '50%',
                         prop: 'pointRouteList',
                         slotName: 'inspectionPonitId'
+                    }
+                ]
+            },
+            editForm: {
+                ruleForm: {
+                    name: null,
+                    spaceTime:null,
+                    describes:null
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '路线名称',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'name'
                     },
+                    {
+                        type: 'textarea',
+                        label: '描述',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'describes'
+                    },
+                    {
+                        type: 'Int',
+                        label: '持续时间（分钟）',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'spaceTime'
+                    },
+                    // {
+                    //     type: 'Slot',
+                    //     label: '巡检点',
+                    //     placeholder: '请输入',
+                    //     width: '50%',
+                    //     prop: 'pointRouteList',
+                    //     slotName: 'inspectionPonitId'
+                    // }
                 ]
             },
             table_row: [],
@@ -189,15 +278,19 @@ export default {
                         width: 'auto'
                     },
                     { label: '创建时间', prop: 'createDate', width: 'auto' },
-                    { label: '状态', prop: 'status', width: 'auto' ,type:'function',
-                        callback(row,prop){
+                    {
+                        label: '状态',
+                        prop: 'status',
+                        width: 'auto',
+                        type: 'function',
+                        callback(row, prop) {
                             switch (row.status) {
                                 case 1:
                                     return '启用'
-                                    break;
+                                    break
                                 case 2:
                                     return '停用'
-                                    break;
+                                    break
                             }
                         }
                     }
@@ -226,7 +319,7 @@ export default {
             }
         }
     },
-    created() {
+    created(){
         this.getUserList()
     },
     methods: {
@@ -249,7 +342,7 @@ export default {
                 this.options = res.tableList
                 this.loading = false
             })
-            console.log(this.inspectionArr);
+            console.log(this.inspectionArr)
         },
         remoteMethod(val) {
             this.getUserList(val)
@@ -268,7 +361,7 @@ export default {
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
-            this.inspectionArr= [
+            this.inspectionArr = [
                 {
                     inspectionPointId: null
                 }
@@ -277,7 +370,7 @@ export default {
         addSubmit() {
             let resData = {
                 ...this.addForm.ruleForm,
-                pointRouteList:this.inspectionArr
+                pointRouteList: this.inspectionArr
                 // code: this.addForm.ruleForm.code,
                 // name: this.addForm.ruleForm.name,
                 // openStartDate: this.openStartDate,
@@ -292,6 +385,51 @@ export default {
                     })
                     this.$refs.table.loadData()
                     this.addClose()
+                }
+            })
+        },
+        edit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '只能编辑一条数据',
+                    type: 'error'
+                })
+            } else {
+                this.edit_vrisible = true
+                console.log(data[0].id)
+                this.editForm.ruleForm.id = data[0].id
+                inspectionRouteFindById({ id: data[0].id }).then((res) => {
+                    console.log(res.data)
+                    this.editForm.ruleForm.describes = res.data.describes
+                    this.editForm.ruleForm.name = res.data.name
+                    this.editForm.ruleForm.spaceTime= res.data.spaceTime
+                    this.inspectionArr = res.data.voRoutePointList
+                    
+                })
+                console.log(this.inspectionArr);
+            }
+        },
+        editClose() {
+            this.$refs.editForm.reset()
+            this.edit_vrisible = false
+            this.inspectionArr = [{ inspectionPointId: null }]
+        },
+        editSubmit() {
+            let resData = {
+                code:this.editForm.ruleForm.code,
+                name:this.editForm.ruleForm.name,
+                id: this.editForm.ruleForm.id,
+                spaceTime:this.editForm.ruleForm.spaceTime,
+                pointRouteList: this.inspectionArr
+            }
+            inspectionRouteUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.editClose()
                 }
             })
         },
@@ -326,7 +464,7 @@ export default {
             }
         },
         isEnable(data) {
-            console.log(data[0].id);
+            console.log(data[0].id)
             if (data.length > 1) {
                 this.$message.error('只能操作一条数据')
                 return
@@ -334,18 +472,18 @@ export default {
             if (!data.length) {
                 this.$message.error('请选择')
                 return
-            }else{
-                inspectionRouteIsEnable({id:data[0].id}).then((res) => {
-                     console.log(res)
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+            } else {
+                inspectionRouteIsEnable({ id: data[0].id }).then((res) => {
+                    console.log(res)
+                    if (res.status) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.$refs.table.loadData()
+                        this.addClose()
+                    }
+                })
             }
         }
     }

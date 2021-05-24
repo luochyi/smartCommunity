@@ -12,6 +12,16 @@
       <VueTable ref="table"
                 :config='config'
                 @tableCheck="tableCheck">
+                 <template v-slot:esStatus="slotData">
+                        <div>
+                          {{esStatusData|filterA(slotData.data.status)}}
+                        </div>
+                    </template>
+                    <template v-slot:esType="slotData">
+                        <div>
+                          {{esTypeData|filterA(slotData.data.type)}}
+                        </div>
+                    </template>
         <template slot="footer">
           <div class="table-footer">
             <button @click="revises(table_row)">修改</button>
@@ -27,7 +37,7 @@
   </div>
 </template>
 <script>
-import { cpmBuildingUnitEstateFindById } from '@/api/basic'
+import { dataDictionaryFindEstateType,dataDictionaryFindEstateStatus } from '@/api/basic'
 import addEidt from '../components/houseManagement/add.vue'
 export default {
   components: {
@@ -37,6 +47,8 @@ export default {
     return {
       // 抽屉标题
       drawerTitle: '',
+      esStatusData:[],
+      esTypeData:[],
       // 是否通过校验
       // 抽屉显示隐藏
       drawer_vrisible: false,
@@ -54,11 +66,6 @@ export default {
             label: '房屋状态',
             placeholder: '请输入内容',
             options: [
-              { value: 1, label: '入住' },
-              { value: 2, label: '装修' },
-              { value: 3, label: '空置' },
-              { value: 4, label: '为售' },
-              { value: 5, label: '已租' }
             ],
             prop: 'status'
           },
@@ -80,45 +87,10 @@ export default {
           { label: '楼栋', prop: 'buildingName', width: 'auto' },
           { label: '单元（号）', prop: 'buildingUnitNo', width: 'auto' },
           { label: '房屋名称', prop: 'roomNumber', width: 'auto' },
-          { label: '房屋状态', prop: 'status', width: 'auto' ,type:'function',
-            callback(row,prop){
-              switch(row.status){
-                case 1:
-                return '入住'
-                break
-                case 2:
-                return '装修'
-                break
-                case 3:
-                return '空置'
-                break
-                case 4:
-                return '未售'
-                break
-                case 5:
-                return '已租'
-                break
-              }
-            }},
+          { label: '房屋状态', prop: 'status', width: 'auto' ,type:'slot',slotName:'esStatus'},
           { label: '业主', prop: 'userResidentName', width: 'auto' },
           { label: '手机号', prop: 'userResidentTel', width: 'auto' },
-          { label: '房屋类型', prop: 'type', width: 'auto' ,type:'function',
-            callback(row,prop){
-              switch(row.type){
-                case 1:
-                return '住宅'
-                break
-                case 2:
-                return '公寓'
-                break
-                case 3:
-                return '别墅'
-                break
-                case 4:
-                return '商铺'
-                break
-              }
-            }},
+          { label: '房屋类型', prop: 'type', width: 'auto' ,type:'slot',slotName:'esType'},
           { label: '建筑面积', prop: 'constructionArea', width: 'auto' },
           { label: '室内面积', prop: 'indoorArea', width: 'auto' },
         ],
@@ -130,6 +102,24 @@ export default {
 
       },
     }
+  },
+  created () {
+    dataDictionaryFindEstateStatus().then(res=>{
+      this.esStatusData = res
+      console.log(this.esStatusData);
+      res.forEach(element => {
+        let obj ={
+          label:element.showName,
+          value:element.showValue
+        }
+         this.config.search_item[1].options.push(obj)
+      });
+    })
+    dataDictionaryFindEstateType().then(res=>{
+      this.esTypeData = res
+      console.log(res);
+    })
+    
   },
   methods: {
     revises (data) {

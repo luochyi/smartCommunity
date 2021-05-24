@@ -5,15 +5,6 @@
                 <span>钥匙审核</span>
             </div>
             <div class="content">
-                <div class="content-btn">
-                    <!-- <el-button
-                        class="init-button"
-                        @click="add()"
-                        icon="el-icon-plus"
-                        >新增钥匙记录</el-button
-                    > -->
-                </div>
-
                 <div class="">
                     <VueTable
                         ref="table"
@@ -39,37 +30,24 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button>审核</button>
-                                <!-- <button @click="del(table_row)">删除</button> -->
+                                <button @click="examine(table_row)">
+                                    审核
+                                </button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增钥匙"
+                    drawerTitle="钥匙审核"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">钥匙信息</template>
+                            <template slot="title">审核</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
                                 </VueForm>
                             </template>
                         </FromCard>
@@ -91,7 +69,7 @@
 </template>
 
 <script>
-import { keyManagementInsert } from '@/api/daily'
+import { keyManagementInsert, keyBorrowExamine } from '@/api/daily'
 export default {
     data() {
         return {
@@ -99,71 +77,34 @@ export default {
             addDate: null,
             addForm: {
                 ruleForm: {
-                    facilityName: null,
-                    num: null,
-                    correspondingPosition: null,
-                    storageLocation: null,
-                    administrator: null,
-                    tel: null
-                },
-                rules: {
-                    tel: [
-                        // {
-                        //     required: true,
-                        //     message: '请输入手机号',
-                        //     trigger: 'blur'
-                        // },
-                        {
-                        min: 11,
-                        max: 11,
-                        message: '请输入正确的手机号',
-                        trigger: 'blur',
-                        },
-                    ]
+                    id:null,
+                    status:null,
+                    reason:null
                 },
                 form_item: [
                     {
-                        type: 'Input',
-                        label: '设施名称',
-                        placeholder: '请输入',
-                        width: '50%',
-                        prop: 'facilityName'
-                    },
-                    {
-                        type: 'Input',
-                        label: '钥匙数量',
-                        // disabled: true,
+                        type: 'Select',
+                        label: '审核状态',
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'num'
+                        prop: 'status',
+                        options:[
+                            {
+                                label:'审核通过',
+                                value:'2'
+                            },
+                            {
+                                label:'审核驳回',
+                                value:'3'
+                            },
+                        ]
                     },
                     {
-                        type: 'Input',
-                        label: '对应位置',
-                        placeholder: '请选择',
-                        width: '100%',
-                        prop: 'correspondingPosition'
-                    },
-                    {
-                        type: 'Input',
-                        label: '存放位置',
+                        type: 'textarea',
+                        label: '驳回原因',
                         placeholder: '请输入',
                         width: '100%',
-                        prop: 'storageLocation'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'administrator'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人联系方式',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'tel'
+                        prop: 'reason',
                     }
                 ]
             },
@@ -174,53 +115,80 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '编号', prop: 'code', width: 'auto' },
-                    { label: '设备名称', prop: 'facilityName', width: 'auto' },
-                    // { label: '钥匙数量', prop: 'num', width: 'auto' },
+                    { label: '申请编号', prop: 'code', width: 'auto' },
+                    { label: '申请人', prop: 'reviewerName', width: 'auto' 
+                    // ,type:'function',
+                    //     callback(row,prop){
+                    //        if(row.tel){
+                    //            return row.reviewerName + row.tel
+                    //        }
+                    //     }
+                    },
+                    { label: '身份', prop: 'identity', width: 'auto' },
+                    { label: '联系方式', prop: 'tel', width: 'auto' },
+                    { label: '对应设备', prop: 'facilityName', width: 'auto' },
                     {
-                        label: '对应位置',
-                        prop: 'correspondingPosition',
+                        label: '钥匙可借数量',
+                        prop: 'loanableNum',
                         width: 'auto'
                     },
-                    // {
-                    //     label: '存放位置',
-                    //     prop: 'storageLocation',
-                    //     width: 'auto'
-                    // },
-                    { label: '管理人', prop: 'administrator', width: 'auto' },
-                    { label: '管理人电话', prop: 'tel', width: 'auto' },
-                    { label: '创建时间', prop: 'createDate', width: 'auto' }
+                    {
+                        label: '审核状态',
+                        prop: 'status',
+                        width: 'auto',
+                        type: 'function',
+                        callback(row, prop) {
+                            switch (row.status) {
+                                case 1:
+                                    return '待审核'
+                                    break
+                                case 2:
+                                    return '审核通过'
+                                    break
+                                case 3:
+                                    return '审核驳回'
+                                    break
+                                case 4:
+                                    return '已归还'
+                                    break
+                                default:
+                                    break
+                            }
+                        }
+                    },
+                    { label: '审核时间', prop: 'auditDate', width: 'auto' },
+                    { label: '申请时间', prop: 'createDate', width: 'auto' }
                 ],
                 table_data: [],
-                url: 'keyManagementList',
+                url: 'keyBorrowList',
                 search_item: [
                     {
                         type: 'Input',
-                        label: '钥匙编号',
+                        label: '申请编号',
                         placeholder: '请输入',
                         prop: 'code'
                     },
                     {
                         type: 'Input',
-                        label: '设施名称',
+                        label: '申请人',
+                        placeholder: '请输入',
+                        prop: 'reviewerName'
+                    },
+                    {
+                        type: 'Input',
+                        label: '身份',
+                        placeholder: '请输入',
+                        prop: 'identity'
+                    },
+                    {
+                        type: 'Input',
+                        label: '对应设备',
                         placeholder: '请输入',
                         prop: 'facilityName'
                     },
                     {
-                        type: 'Input',
-                        label: '管理人名称',
-                        placeholder: '请输入',
-                        prop: 'administrator'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人联系方式',
-                        placeholder: '请输入',
-                        prop: 'tel'
-                    },
-                    {
                         type: 'picker',
-                        label: '添加时间',
+                        label: '申请时间',
                         placeholder: '请输入',
                         prop: 'date',
                         startDate: 'createDateStart',
@@ -237,8 +205,17 @@ export default {
         }
     },
     methods: {
-        add() {
-            this.add_vrisible = true
+        examine(data) {
+            if(data.length!=1){
+                this.$message({
+                    type:'error',
+                    message:'只能审核一条数据'
+                })
+            }else{  
+                console.log(data);
+                this.add_vrisible = true
+                this.addForm.ruleForm.id = data[0].id
+            }
         },
         addClose() {
             this.$refs.addForm.reset()
@@ -257,13 +234,8 @@ export default {
        * **/
             let resData = {
                 ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
             }
-            keyManagementInsert(resData).then((res) => {
+            keyBorrowExamine(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,

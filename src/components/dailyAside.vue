@@ -72,7 +72,7 @@ export default {
             activeIndex: this.$route.path,
             asideMenu: [
                 {
-                    // Facility Booking
+                    // Facility Booking facilitiesPlanExecuteList
                     path: '/butler/facilityBooking',
                     label: '设施预约',
                     iconurl: require('@/assets/images/daily/ssyy_nor.png'),
@@ -81,19 +81,23 @@ export default {
                     children: [
                         {
                             path: '/daily/facilitiesManagement',
-                            label: '设施管理'
-                        },
-                        {
+                            label: '设施设备管理'
+                        }, {
                             path: '/daily/bookingManagement',
                             label: '预约管理'
                         },
                         {
+                            path: '/daily/facilitiesExecute',
+                            label: '检查记录'
+                        },
+                       
+                        {
                           path: '/daily/facilityInspection',
-                          label: '设施检查'
+                          label: '设施设备检查'
                         },
                         {
                             path: '/daily/facilityItem',
-                            label: '设施分类'
+                            label: '设施设备分类'
                         }
                     ]
                 },
@@ -106,6 +110,10 @@ export default {
                     isChildren: 1,
                     children: [
                         {
+                            path: '/daily/inspectionPlanExecuteList',
+                            label: '巡检记录'
+                        },
+                        {
                             path: '/daily/inspectionPlan',
                             label: '巡检计划'
                         },
@@ -116,7 +124,8 @@ export default {
                         {
                             path: '/daily/inspectionPoint',
                             label: '巡检点'
-                        }
+                        },
+                        
                     ]
                 },
                 {

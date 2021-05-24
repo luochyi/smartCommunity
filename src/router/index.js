@@ -185,6 +185,11 @@ const routes = [
                         path:'/daily/facilityItem',
                         component:()=>import('@/views/daily/page/facilityItem')
                    },
+                   {
+                    //检查记录
+                    path:'/daily/facilitiesExecute',
+                    component:()=>import('@/views/daily/page/facilitiesExecute')
+               },
                    //巡检
                    {
                     path:'/daily/inspectionPoint',
@@ -197,6 +202,11 @@ const routes = [
                     {
                         path:'/daily/inspectionRoute',
                         component:()=>import('@/views/daily/page/inspectionRoute')
+                    },
+                    //executeList
+                    {
+                        path:'/daily/inspectionPlanExecuteList',
+                        component:()=>import('@/views/daily/page/inspectionPlanExecuteList')
                     },
                     //物料
                     {

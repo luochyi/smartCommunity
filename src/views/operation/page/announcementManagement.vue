@@ -125,7 +125,7 @@
 </template>
 <script>
     import {
-        announcementManagementRelease,
+        Release,
         announcementManagementFindById,
         announcementManagementInsert,
         announcementManagementUpdate
@@ -238,6 +238,7 @@
                         excelFileUrls: [],
                         content: null,
                         fileDocUrl: null,
+                        fileDocName:null,
                         status: 1,
                         scheduledReleaseTime: null
                     },
@@ -368,6 +369,7 @@
                         content: this.announceForm.ruleForm.content,
                         fileDocUrl: this.announceForm.ruleForm.fileDocUrl,
                         status: this.announceForm.ruleForm.status,
+                        fileDocName: this.announceForm.ruleForm.fileDocName,
                         scheduledReleaseTime: this.announceForm.ruleForm
                             .scheduledReleaseTime
                     }
@@ -503,6 +505,7 @@
             // word 文件上传之前
             beforeFileUpload(file) {
                 console.log(file)
+                this.announceForm.ruleForm.fileDocName = file.name
                 const isLt2M = file.size / 1024 / 1024 < 2
                 const fileType =
                     file.name.endsWith('.doc') || file.name.endsWith('.docx')

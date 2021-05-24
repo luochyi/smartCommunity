@@ -123,6 +123,21 @@ export const houseManagementInsert = data => {
         data: data
     })
 }
+//查询房屋类型 状态 dataDictionary/findEstateStatus
+export const dataDictionaryFindEstateType = data => {
+    return service.request({
+        method: 'GET',
+        url: '/dataDictionary/findEstateType',
+        params: data
+    })
+}
+export const dataDictionaryFindEstateStatus = data => {
+    return service.request({
+        method: 'GET',
+        url: '/dataDictionary/findEstateStatus',
+        params: data
+    })
+}
 // 添加车辆信息
 export const userCarInsert = data => {
     return service.request({

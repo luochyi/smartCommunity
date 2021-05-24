@@ -1,15 +1,11 @@
 <template>
-    <div>
-        <div class="main-content">
-            <el-tabs v-model="activeName" @tab-click="handleClick">
-                <el-tab-pane label="设施分类" name="first"
-                    ><div class="content">
+    <div class="content">
                         <div class="content-btn">
                             <el-button
                                 class="init-button"
                                 @click="add()"
                                 icon="el-icon-plus"
-                                >新增设施分类
+                                >新增设备分类
                             </el-button>
                         </div>
                         <div class="">
@@ -32,7 +28,7 @@
                         </div>
                         <!-- 新增 -->
                         <Drawer
-                            drawerTitle="新增设施分类"
+                            drawerTitle="新增设备分类"
                             @drawerClose="addClose"
                             :drawerVrisible="add_vrisible"
                         >
@@ -119,7 +115,7 @@
                         </Drawer>
                         <!-- edit -->
                         <Drawer
-                            drawerTitle="修改设施分类信息"
+                            drawerTitle="修改设备分类信息"
                             @drawerClose="editClose"
                             :drawerVrisible="edit_vrisible"
                         >
@@ -208,16 +204,7 @@
                                 </button>
                             </div>
                         </Drawer>
-                    </div></el-tab-pane
-                >
-                <el-tab-pane label="设备分类" name="second"
-                    >
-                    <deviceItem></deviceItem>
-                    </el-tab-pane
-                >
-            </el-tabs>
-        </div>
-    </div>
+                    </div>
 </template>
 
 <script>
@@ -226,11 +213,7 @@ import {
     facilitiesCategoryFindDetailById,
     facilitiesCategoryUpdate
 } from '@/api/daily'
-import deviceItem from './deviceItem.vue';
 export default {
-    components:{
-        deviceItem
-    },
     data() {
         return {
             add_vrisible: false,
@@ -243,7 +226,7 @@ export default {
                     openStartDate: null,
                     openEndDate: null,
                     imgUrls: [],
-                    type:1
+                    type:2
                 },
                 form_item: [
                     {
@@ -281,7 +264,6 @@ export default {
             },
             editForm: {
                 ruleForm: {
-                    // code: '58767782',
                     name: null,
                     openStartDate: null,
                     openEndDate: null,
@@ -321,9 +303,9 @@ export default {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
                     { label: '分类编号', prop: 'code', width: 'auto' },
-                    { label: '设施类型', prop: 'name', width: 'auto' },
+                    { label: '设备类型', prop: 'name', width: 'auto' },
                     { label: '添加人', prop: 'createName', width: 'auto' },
-                    { label: '设施数量', prop: 'num', width: 'auto' },
+                    { label: '设备数量', prop: 'num', width: 'auto' },
                     { label: '添加时间', prop: 'createDate', width: '220' }
                 ],
                 table_data: [],
@@ -331,7 +313,7 @@ export default {
                 search_item: [
                     {
                         type: 'Input',
-                        label: '设施类型',
+                        label: '设备类型',
                         placeholder: '请选择',
                         prop: 'name'
                     },
@@ -354,14 +336,10 @@ export default {
                 ],
                 data: {
                     pageNum: 1,
-                    size: 10,
-                    type:1
+                    size: 10,type:2
                 }
             }
         }
-    },
-    mounted(){
-
     },
     methods: {
         add() {
@@ -371,9 +349,9 @@ export default {
         },
         addClose() {
             this.$refs.addForm.reset()
-            this.add_vrisible = false
-            this.imglist = []
-            this.addDate = ''
+            this.add_vrisible = false,
+            this.imglist=[]
+            this.addDate = []
         },
         addSubmit() {
             // this.add_vrisible = false
@@ -402,7 +380,6 @@ export default {
                     })
                     this.$refs.table.loadData()
                     this.addClose()
-                    
                 }
             })
         },
@@ -448,8 +425,6 @@ export default {
             this.$refs.editForm.reset()
             this.edit_vrisible = false
             this.$refs.myUpload.clearFiles()
-            this.imglist = []
-            this.addDate = ''
         },
         editSubmit() {
             let resData = {

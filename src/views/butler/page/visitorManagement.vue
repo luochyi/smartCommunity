@@ -22,7 +22,7 @@
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
-              <button @click="edit(table_row)">编辑</button>
+              <!-- <button @click="edit(table_row)">编辑</button> -->
               <button @click="record(table_row)">出入记录</button>
               <button @click="toVoid(table_row)">作废</button>
             </div>

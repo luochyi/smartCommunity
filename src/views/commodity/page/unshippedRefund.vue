@@ -1,203 +1,318 @@
-<style scoped>
-.tips {
-    margin: 20px;
-    height: 38px;
-    line-height: 38px;
-    background: #fafafa;
-    border-radius: 4px;
-    opacity: 0.8;
-    border: 1px solid #e8e8e8;
-}
-</style>
 <template>
-  <div class="main-content">
-    <div class="main-titel">
-      <span>未发货退款</span>
-    </div>
-    <div class="tips">
-      <p>
-        <span class="el-icon-warning-outline"
-              style="margin:0 12px"></span>
-        开启极速退款助手，自动处理退款订单。
-        <el-button class="init-text"
-                   type="text"
-                   style="font-size:12px">去开启></el-button>
-      </p>
-    </div>
-    <div class="content">
-      <div class="content-btn">
-        <el-button class="init-button"
-                   icon="el-icon-plus">新增品牌</el-button>
-      </div>
-      <!-- 查询重制 -->
-      <div class="">
-        <input-form :formItem="input_form"
-                    :btnWidth="'20%'"> </input-form>
-        <!-- 头部输入框 -->
-        <div style="margin-bottom:20px">
-          <el-radio-group v-model="radio1"
-                          size="small">
-            <el-radio-button label="全部"></el-radio-button>
-            <el-radio-button label="待审核"></el-radio-button>
-            <el-radio-button label="客服仲裁"></el-radio-button>
-            <el-radio-button label="退款成功"></el-radio-button>
-            <el-radio-button label="退款失败"></el-radio-button>
-          </el-radio-group>
+    <div>
+        <div class="main-content">
+            <div class="main-titel">
+                <span>退换申请</span>
+            </div>
+            <div class="content">
+                <div class="">
+                    <VueTable
+                        ref="table"
+                        :config="config"
+                        @tableCheck="tableCheck"
+                    >
+                    <template v-slot:goodsImgList="slotData">
+                            <div v-if="slotData.data.goodsImgList.length">
+                                <el-button
+                                    class="init-text"
+                                    type="text"
+                                    @click="
+                                        getPhotoView(slotData.data.goodsImgList)
+                                    "
+                                >
+                                    <span>查看</span>
+                                </el-button>
+                            </div>
+                            <div v-else>-</div>
+                        </template>
+                        <template slot="footer">
+                            <div class="table-footer">
+                                <button @click="add(table_row)">审核</button>
+                                <!-- <button @click="del(table_row)">删除</button> -->
+                            </div>
+                        </template>
+                    </VueTable>
+                </div>
+                <!-- 新增 -->
+                <Drawer
+                    drawerTitle="审核"
+                    @drawerClose="addClose"
+                    :drawerVrisible="add_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">退换审核</template>
+                            <template>
+                                <VueForm ref="addForm" :formObj="addForm">
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="addSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="addClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
+            </div>
         </div>
-        <div class="content-table">
-          <tableData :config="table_config"
-                     @clickrow="tableRow">
-            <template v-slot:table8="slotData">
-              <div>
-                <el-button class="init-text"
-                           type="text">{{
-                  slotData.data.table8
-                }}</el-button>
-              </div>
-            </template>
-          </tableData>
-          <div class="table-footer">
-            <button>查看</button>
-            <button>编辑</button>
-            <button>删除</button>
-          </div>
-        </div>
-        <table-pagination :pageSize="10"
-                          :totalNumber="100"></table-pagination>
-      </div>
+        <views-photo :isVisible="photos_Visible"
+                 :goodsImgsList="goodsImgsList"
+                 @closeViews="getclose"></views-photo>
     </div>
-  </div>
 </template>
+
 <script>
-// conveniencePhone
+import viewsPhoto from '@/components/dialog/viewsPhoto'
+import { shopRefundExamine } from '@/api/shop'
 export default {
-  data () {
-    return {
-      radio1: '退款成功',
-      // 选中表格数据
-      table_row: {},
-      // 搜索重置数据
-      input_form: [
-        {
-          type: 'Input',
-          label: '订单号',
-          placeholder: '请输入',
-          prop: 'userName'
-        },
-        {
-          type: 'Input',
-          label: '客户姓名',
-          placeholder: '请输入',
-          prop: 'p2'
-        },
-        {
-          type: 'Input',
-          label: '客户手机号',
-          placeholder: '请输入',
-          prop: 'p3'
+    components: {
+        viewsPhoto
+    },
+    data() {
+        return {
+            photos_Visible: false,
+            goodsImgsList: [],
+            add_vrisible: false,
+            addDate: null,
+            addForm: {
+                ruleForm: {
+                    //   code: 'hdede',
+                    //   facilitiesCategoryId:null,
+                    //   address:null
+                },
+                form_item: [
+                    {
+                        type: 'Select',
+                        label: '审核状态',
+                        placeholder: '请选择',
+                        width: '100%',
+                        options: [
+                            { value: 5, label: '申请通过' },
+                            { value: 6, label: '申请驳回' }
+                        ],
+                        prop: 'status'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '审核通过/驳回原因',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'reason'
+                    }
+                ]
+            },
+            table_row: [],
+            // 上传img文件
+            imglist: [],
+            activeName: '0',
+            config: {
+                thead: [
+                    { label: '序号', type: 'index', width: '80' },
+                    { label: '订单编号', prop: 'code', width: '100' },
+                    { label: '商品名称', prop: 'goodsName', width: 'auto' },
+                    {
+                        label: '商品照片',
+                        prop: 'goodsImgList',
+                        width: '150',
+                        type: 'slot',
+                        slotName: 'goodsImgList'
+                    },
+                    { label: '用户信息', prop: 'userName', width: '230' ,type:'function',
+                      callback:(row,prop)=>{
+                        if(row.userTel){
+                          return row.userName +' '+row.userTel
+                        }
+                      }
+                    },
+                    { label: '客户期望', prop: 'backType', width: 'auto' ,
+                      type:'function',
+                      callback:(row,prop)=>{
+                        switch (row.backType) {
+                          case 1:
+                            return '退货'
+                            break;
+                         case 2:
+                            return '换货'
+                            break;
+                          default:
+                            break;
+                        }
+                      }
+                    },
+                    {
+                        label: '退换货状态',
+                        prop: 'status',
+                        width: 'auto',
+                        type: 'function',
+                        callback: (row, prop) => {
+                            switch (row.status) {
+                                case 8:
+                                    return '申请退换货'
+                                    break
+                                case 9:
+                                    return '申请通过'
+                                    break
+                                case 10:
+                                    return '申请驳回'
+                                    break
+                            }
+                        }
+                    },
+                    { label: '退货申请时间', prop: 'backDate', width: 'auto' }
+                ],
+                table_data: [],
+                url: 'shopRefundList',
+                search_item: [
+                    {
+                        type: 'Input',
+                        label: '订单编号',
+                        placeholder: '请输入订单号',
+                        prop: 'code'
+                    },
+                    {
+                        type: 'select',
+                        label: '审核状态',
+                        placeholder: '请选择',
+                        options: [
+                            { value: 1, label: '退货' },
+                            { value: 2, label: '换货' },
+                        ],
+                        prop: 'backType'
+                    },
+                    {
+                        type: 'Int',
+                        label: '用户手机号',
+                        placeholder: '请输入手机号',
+                        prop: 'userTel'
+                    },
+                    {
+                        type: 'select',
+                        label: '退换货状态',
+                        placeholder: '请选择',
+                        options: [
+                            { value: 8, label: '申请退换货' },
+                            { value: 9, label: '申请通过' },
+                            { value: 10, label: '申请驳回' }
+                        ],
+                        prop: 'status'
+                    }
+                ],
+                data: {
+                    pageNum: 1,
+                    size: 10
+                }
+            }
         }
-      ],
-      // 表格数据
-      table_config: {
-        thead: [
-          { label: '订单号', prop: 'table1', width: '180' },
-          { label: '商品名称', prop: 'table2', width: '300' },
-          { label: '客户姓名', prop: 'table4', width: '180' },
-          { label: '客户电话', prop: 'table5', width: '180' },
-          {
-            label: '退款金额',
-            prop: 'table6',
-            width: '120'
-          },
-          {
-            label: '退款原因',
-            prop: 'table7',
-            width: '180'
-          },
-          {
-            label: '申请状态', prop: 'table8', width: '180', type: 'slot',
-            slotName: 'table8'
-          },
-          {
-            label: '审核时间',
-            prop: 'table9',
-            width: '180',
+    },
+    methods: {
+        getPhotoView(item) {
+            this.photos_Visible = true
+            // let resData = {
+            //   id: id,
+            // }
+            // userArticleOutFindGoodsImgById(resData).then(result => {
+            //   console.log(result)
+            this.goodsImgsList = item
+            // })
+        },
+        getclose() {
+            this.photos_Visible = false
+        },
+        add(data) {
+            if (data.length > 1) {
+                this.$message.error('只能操作一条数据')
+                return
+            }
+            if (!data.length) {
+                this.$message.error('请选择')
+                return
+            } else {
+                if (data[0].status !== 4) {
+                    this.$message({
+                        message: '该审核已结束',
+                        type: 'error'
+                    })
+                } else {
+                    this.add_vrisible = true
+                }
+            }
+        },
+        addClose() {
+            this.$refs.addForm.reset()
+            this.add_vrisible = false
+        },
+        addSubmit() {
+            let resData = {
+                ...this.addForm.ruleForm,
+                id: this.table_row[0].id
+                // code: this.addForm.ruleForm.code,
+                // name: this.addForm.ruleForm.name,
+                // openStartDate: this.openStartDate,
+                // openEndDate:  this.openEndDate,
+                // imgUrls:this.addForm.ruleForm.imgUrls,
+            }
+            shopRefundExamine(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
+        },
+        dateTimeChange(arr) {
+            this.addForm.ruleForm.openStartDate = arr[0]
+            this.addForm.ruleForm.openEndDate = arr[1]
+        },
+        // tabs切换
+        handleClick(tab, event) {
+            let status = null
+            if (this.activeName != 0) {
+                status = this.activeName
+            } else {
+                status = null
+            }
+            const requestData = {
+                pageNum: 1,
+                size: 10,
+                status: status
+            }
+            this.$refs.table.requestData(requestData)
+        },
 
-          },
-
-          // 申请时间
-        ],
-        table_data: [
-          {
-            table1: '323534520359',
-            table2:
-              '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-            table3: '14897344',
-            table4: '何非希',
-            table5: '1834562309',
-            table6: '¥28.8 ',
-            table7: '其他',
-            table8: '查看',
-            table9: ''
-          },
-          {
-            table1: '323534520359',
-            table2:
-              '【超定制】三只松鼠 零食坚果大礼包1490g中秋节礼盒送礼9袋装',
-            table3: '14897344',
-            table4: '韩梅',
-            table5: '13034562489',
-            table6: '¥38.8 ',
-            table7: '多拍/排错/不想要了',
-            table8: '查看',
-            table9: ''
-          },
-          {
-            table1: '323534520374',
-            table2:
-              '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-            table3: '14897344',
-            table4: '朱健健',
-            table5: '13534563249',
-            table6: '¥22.8 ',
-            table7: '其他',
-            table8: '查看',
-            table9: ''
-          },
-          {
-            table1: '323534520375',
-            table2:
-              '【超定制】三只松鼠 零食坚果大礼包1490g中秋节礼盒送礼9袋装',
-            table3: '14897344',
-            table4: '韩尧尧',
-            table5: '18034562389',
-            table6: '¥48.8 ',
-            table7: '多拍/排错/不想要了',
-            table8: '查看',
-            table9: ''
-          },
-          {
-            table1: '323534520359',
-            table2:
-              '俏美味综合蔬菜干果蔬脆水果干混合装果蔬脆片秋葵香菇脆儿童零食',
-            table3: '14897344',
-            table4: '何非希',
-            table5: '13034562489',
-            table6: '¥28.8 ',
-            table7: '多拍/排错/不想要了',
-            table8: '查看',
-            table9: ''
-          }
-        ]
-      }
+        // 表格选中
+        tableCheck(data) {
+            this.table_row = data
+        },
+        // 删除
+        del(data) {
+            if (data.length) {
+                let arr = []
+                for (let i = 0; i < this.table_row.length; i++) {
+                    arr.push(this.table_row[i].id)
+                }
+                this.$confirm('是否确认删除？删除不可恢复', '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    confirmButtonClass: 'confirmButton',
+                    cancelButtonClass: 'cancelButton'
+                })
+                    .then(() => {
+                        this.$refs.table.tableDelete(arr)
+                    })
+                    .catch((action) => {})
+            } else {
+                this.$message.error('请选中需要删除的数据')
+            }
+        },
     }
-  },
-
-  methods: {
-    // table选中行
-    tableRow (data) {
-      this.table_row = data
-    }
-  }
 }
 </script>

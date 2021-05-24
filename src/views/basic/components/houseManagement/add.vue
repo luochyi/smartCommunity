@@ -59,7 +59,7 @@
   </div>
 </template>
 <script>
-import { houseManagementInsert, cpmBuildingUnitFindAll, cpmBuildingUnitEstateFindById, findByBuildingId } from '@/api/basic'
+import { houseManagementInsert, cpmBuildingUnitFindAll, cpmBuildingUnitEstateFindById, findByBuildingId ,dataDictionaryFindEstateType,dataDictionaryFindEstateStatus} from '@/api/basic'
 export default {
   props: {
     drawerVrisible: {
@@ -124,11 +124,6 @@ export default {
             label: '房屋状态',
             placeholder: '请输入',
             options: [
-              { value: 1, label: '入住' },
-              { value: 2, label: '装修' },
-              { value: 3, label: '空置' },
-              { value: 4, label: '未售' },
-              { value: 5, label: '已租' },
             ],
             width: '50%',
             prop: 'status'
@@ -146,10 +141,6 @@ export default {
             label: '房屋类型',
             placeholder: '请输入',
             options: [
-              { value: 1, label: '住宅' },
-              { value: 2, label: '公寓' },
-              { value: 3, label: '别墅' },
-              { value: 4, label: '商铺' },
             ],
             width: '50%',
             prop: 'type'
@@ -171,6 +162,27 @@ export default {
     // 弹窗内下拉框
     cpmBuildingUnitFindAll().then(res => {
       this.fromjson.form_item[0].options = res
+    })
+    dataDictionaryFindEstateType().then(res => {
+      console.log(res);
+      res.forEach(element => {
+        let obj ={
+          label:element.showName,
+          value:element.showValue
+        }
+         this.fromjson.form_item[5].options.push(obj)
+      });
+     
+    })
+    dataDictionaryFindEstateStatus().then(res => {
+      console.log(res);
+      res.forEach(element => {
+        let obj ={
+          label:element.showName,
+          value:element.showValue
+        }
+         this.fromjson.form_item[3].options.push(obj)
+      });
     })
   },
   methods: {

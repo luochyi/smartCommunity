@@ -128,11 +128,41 @@ export function newsCategoryManagementInsert(data) {
         data: data
     })
 }
+//newsCategoryManagement/update
+export function newsCategoryManagementUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/newsCategoryManagement/update',
+        data: data
+    })
+}
+//newsCategoryManagement/findById
+export function newsCategoryManagementFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/newsCategoryManagement/findById',
+        params: data
+    })
+}
 export function newsManagementInsert(data) {
     return service.request({
         method: 'POST',
         url: '/newsManagement/insert',
         data: data
+    })
+}
+export function newsManagementUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/newsManagement/update',
+        data: data
+    })
+}
+export function newsManagementFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/newsManagement/findById',
+        params: data
     })
 }
 export function newsCategoryManagementList(data) {
@@ -149,10 +179,24 @@ export function electronicCommerceCategoryInsert(data) {
         data: data
     })
 }
+export function electronicCommerceCategoryUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: 'electronicCommerceCategory/update',
+        data: data
+    })
+}
 export function electronicCommerceInsert(data) {
     return service.request({
         method: 'POST',
         url: 'electronicCommerce/insert',
+        data: data
+    })
+}
+export function electronicCommerceUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: 'electronicCommerce/update',
         data: data
     })
 }
@@ -161,6 +205,20 @@ export function electronicCommerceCategoryList(data) {
     return service.request({
         method: 'GET',
         url: '/electronicCommerceCategory/list',
+        params: data
+    })
+}
+export function electronicCommerceCategoryFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/electronicCommerceCategory/findById',
+        params: data
+    })
+}
+export function electronicCommerceFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/electronicCommerce/findById',
         params: data
     })
 }

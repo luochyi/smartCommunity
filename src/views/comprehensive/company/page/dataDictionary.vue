@@ -1,102 +1,246 @@
 <template>
-    <div class="main-content">
-        <div class="main-titel">
-            <span>数据字典</span>
-        </div>
-        <div class="content">
-            <template>
-                <el-table
-                    :data="tableData"
-                    style="width: 100%"
-                    max-height="700"
-                >
-                    <el-table-column fixed prop="index" label="序号" width="80">
-                    </el-table-column>
-                    <el-table-column
-                        prop="item"
-                        label="所属功能大类"
-                        width="120"
+    <div>
+        <div class="main-content">
+            <div class="main-titel">
+                <span>数据字典</span>
+            </div>
+            <div class="content">
+
+                <div class="">
+                    <VueTable
+                        ref="table"
+                        :config="config"
+                        @tableCheck="tableCheck"
                     >
-                    </el-table-column>
-                    <el-table-column prop="gnm" label="功能名" width="120">
-                    </el-table-column>
-                    <el-table-column prop="field" label="字段名" width="700">
-                    </el-table-column>
-                    <el-table-column fixed="right" label="操作" width="120">
-                        <template slot-scope="scope">
-                            <el-button
-                                @click.native.prevent="
-                                    deleteRow(scope.$index, tableData)
-                                "
-                                type="text"
-                                size="small"
+                        <!-- <template slot="tabs">
+                            <el-tabs
+                                v-model="activeName"
+                                @tab-click="handleClick"
                             >
-                                移除
-                            </el-button>
+                                <el-tab-pane
+                                    label="全部"
+                                    name="0"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="待巡检"
+                                    name="1"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已巡检"
+                                    name="2"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已完成"
+                                    name="3"
+                                ></el-tab-pane>
+                            </el-tabs>
+                        </template> -->
+                        <template slot="footer">
+                            <div class="table-footer">
+                                <!-- <button>编辑</button> -->
+                                <!-- <button @click="isEnable(table_row)">启用/停用</button> -->
+                                <button @click="add(table_row)">编辑</button>
+                            </div>
                         </template>
-                    </el-table-column>
-                </el-table>
-            </template>
+                    </VueTable>
+                </div>
+                <!-- 新增 -->
+                <Drawer
+                    drawerTitle="新增字典信息"
+                    @drawerClose="addClose"
+                    :drawerVrisible="add_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">薪资信息</template>
+                            <template>
+                                <VueForm ref="addForm" :formObj="addForm">
+                                    <!-- Slot -->
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="addSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="addClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import {
+    sysOrganizationFindAllDepartment,
+    sysUserList,
+} from '@/api/daily'
+import {
+    dataDictionaryList,dataDictionaryUpdate
+}from '@/api/company'
+// import func from 'vue-editor-bridge'
 export default {
     data() {
         return {
-            tableData: [
-                {
-                    index: '1',
-                    item: '日常管理',
-                    gnm: '设施预约',
-                    field:
-                        'facilitiesCategoryName	设施分类名称;facilitiesName	设施名称; appointmentName	预约人;appointmentTel	预约人电话;appointmentStartDate	预约开始时间;appointmentEndDate	预约结束时间;status 预约状态（1.未签到，2.已签到，3.已作废，4.已取消,5.已结束）'
+            add_vrisible: false,
+            addDate: null,
+            options: [],
+            sysOptions: [],
+            loading: false,
+            addForm: {
+                ruleForm: {
+                    showName:null,
+                    id:null
                 },
-                {
-                    index:'2',
-                    item:'日常管理',
-                    gnm:'巡检管理',
-                    field:'inspectionRouteId	巡检路线主键id;name	巡检计划名称;	organizationId	部门id（组织id）;	inspector	巡检人id;planBeginDate	计划开始时间;isSort 是否按顺序巡检（1.顺序，2.不顺序）【当前只有实现不顺序】;checkRateType 检查频率【类型】类型：1.每天，2.每周，3.每月'
-                },
-                {
-                    index:'3',
-                    item:'日常管理',
-                    gnm:'钥匙管理',
-                    field:'facilityName	设备名称;	num	钥匙数量;	correspondingPosition	对应位置;storageLocation	存放位置;administrator	管理人名称;tel	管理人联系方式'
-                },
-                {
-                    index:'4',
-                    item:'收费管理',
-                    gnm:'押金管理',
-                    field:'	chargesTemplateDetailId	费用名称id;roomName	房屋信息;	payDateStart	缴费时间开始;payDateEnd	缴费时间结束;depositName	押金人;tel	联系方式;	status	状态 1.未退，2.已退;froms	来源（1.app,2.线下）'
-                },
-                {
-                    index:'5',
-                    item:'管家服务',
-                    gnm:'物品出门',
-                    field:'roomName	房屋信息;	applicantName	申请人姓名;	applicantTel	申请人手机号;actualTimeStart	实际出门时间开始;	actualTimeEnd	实际出门时间结束;name	物品名称(格式为: 电器,家具,纺织 使用‘,’分割);	status	状态(1.待出门，2.已出门，3.驳回申请);expectedTimeSort	预计出门时间排序（1.降序，2.升序）;actualTimeSort	实际出门时间排序（1.降序，2.升序）'
-                },
-                {
-                    index:'6',
-                    item:'管家服务',
-                    gnm:'报事报修',
-                    field:'code	报修单号;	repairman	报修人;	roomName	房屋信息;	froms	报修来源;distributor	分配人;	operator	维修人;repairDateStart	报修时间开始;repairDateEnd	报修时间结束;status 状态（1.待分配，2.已分配未接单，3.已分配处理中，4.已处理，5.已确认已完成，6.已关闭，7.已作废，8.已取消）'
-                },
-                {
-                    index:'7',
-                    item:'运营管理',
-                    gnm:'公告管理',
-                    field:'	title	公告标题;	pushObject	推送对象;	readingVolume	阅读量;status	状态;createName	创建人姓名;	updateDate	更新时间'
-                },
-                
-            ]
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '显示名称',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'showName'
+                    },
+                ]
+            },
+            table_row: [],
+            activeName: '0',
+            config: {
+                thead: [
+                    {
+                        label: '序号',
+                        type: 'index',
+                        width: '80'
+                    },
+                    {
+                        label: '显示名称',
+                        prop: 'showName',
+                        width: 'auto'
+                    },
+                    {
+                        label: '类型名称',
+                        prop: 'typeName',
+                        width: 'auto'
+                    },
+                    {
+                        label: '值',
+                        prop: 'showValue',
+                        width: 'auto',
+                    },
+                    {
+                        label: '排序',
+                        prop: 'sort',
+                        width: 'auto'
+                    },
+                    {
+                        label: '类型名称（中文）',
+                        prop: 'remarks',
+                        width: 'auto'
+                    },
+                ],
+                table_data: [],
+                url: 'dataDictionaryList',
+                search_item: [
+                    {
+                        type: 'Input',
+                        label: '类型名称（中文)',
+                        placeholder: '请输入',
+                        prop: 'remarks'
+                    },
+
+                    // Slot
+                ],
+                data: {
+                    pageNum: 1,
+                    size: 10
+                }
+            }
         }
     },
     methods: {
-        deleteRow(index, rows) {
-            rows.splice(index, 1)
-        }
-    }
+        add(data) {
+            if(data.length!=1){
+                this.$message({
+                    type:'error',
+                    message:'只能编辑一条数据'
+
+                })
+            }else{
+                this.add_vrisible = true
+            this.addForm.ruleForm.showName = data[0].showName
+            this.addForm.ruleForm.id = data[0].id
+            }
+        },
+        addClose() {
+            this.$refs.addForm.reset()
+            this.add_vrisible = false
+        },
+        addSubmit() {
+            let resData = {
+                ...this.addForm.ruleForm,
+                id:this.addForm.ruleForm.id
+            }
+            dataDictionaryUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
+        },
+        dateTimeChange(arr) {
+            this.addForm.ruleForm.openStartDate = arr[0]
+            this.addForm.ruleForm.openEndDate = arr[1]
+        },
+        // tabs切换
+        // handleClick(tab, event) {
+        //     let status = null
+        //     if (this.activeName != 0) {
+        //         status = this.activeName
+        //     } else {
+        //         status = null
+        //     }
+        //     const requestData = {
+        //         pageNum: 1,
+        //         size: 10,
+        //         status: status
+        //     }
+        //     this.$refs.table.requestData(requestData)
+        // },
+
+        // 表格选中
+        tableCheck(data) {
+            this.table_row = data
+        },
+        // 删除
+        del(data) {
+            if (data.length) {
+                let arr = []
+                for (let i = 0; i < this.table_row.length; i++) {
+                    arr.push(this.table_row[i].id)
+                }
+                this.$confirm('是否确认删除？删除不可恢复', '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    confirmButtonClass: 'confirmButton',
+                    cancelButtonClass: 'cancelButton'
+                })
+                    .then(() => {
+                        this.$refs.table.tableDelete(arr)
+                    })
+                    .catch((action) => {})
+            } else {
+                this.$message.error('请选中需要删除的数据')
+            }
+        },
+    },
 }
 </script>

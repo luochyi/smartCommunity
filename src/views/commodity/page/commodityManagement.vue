@@ -41,7 +41,7 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button @click="loading(table_row)">
+                                <button @click="sploading(table_row)">
                                     上架
                                 </button>
                                 <button @click="unloading(table_row)">
@@ -52,20 +52,242 @@
                         </template>
                     </VueTable>
                 </div>
-                <!-- 新增 -->
+                <Drawer
+                    drawerTitle="商品创建"
+                    @drawerClose="addClose"
+                    :drawerVrisible="add_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">填写商品信息</template>
+                            <template>
+                                <VueForm ref="addForm" :formObj="addForm">
+                                    <!-- Slot -->
+                                    <template slot="imgUrls">
+                                        <template>
+                                            <el-upload
+                                                :action="`${$baseUrl}upload/uploadShoppingGoods`"
+                                                :on-success="ImgeSuccess"
+                                                ref="myUpload1"
+                                                :file-list="imglist"
+                                                :on-exceed="handleExceed"
+                                                :limit="5"
+                                                accept=".jpg,.png,.JPG,.PNG"
+                                                :before-upload="
+                                                    beforeAvatarUpload
+                                                "
+                                            >
+                                                <el-button
+                                                    icon="el-icon-edit"
+                                                    size="small"
+                                                    >上传图片</el-button
+                                                >
+                                                <span
+                                                    style="
+                                                        margin-left: 10px;
+                                                        font-size: 12px;
+                                                        color: #444444;
+                                                    "
+                                                    >建议比例：3:2</span
+                                                >
+                                                <div
+                                                    slot="tip"
+                                                    class="el-upload__tip"
+                                                >
+                                                    <span
+                                                        >支持扩展名：png,jpg</span
+                                                    >
+                                                </div>
+                                            </el-upload>
+                                        </template>
+                                    </template>
+                                    <template v-slot:supplierId>
+                                        <el-select
+                                            v-model="
+                                                addForm.ruleForm.supplierId
+                                            "
+                                            :remote-method="remoteMethod"
+                                            @change="change"
+                                            @focus="sefocus"
+                                            :loading="loading"
+                                            remote
+                                            style="width: 240px"
+                                            filterable
+                                            placeholder="请选择"
+                                        >
+                                            <el-option
+                                                v-for="item in supplierOptions"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                    </template>
+                                    <!-- 商品分类 -->
+                                    <template v-slot:category>
+                                        <el-select
+                                            v-model="addForm.ruleForm.category"
+                                            :remote-method="remoteMethod"
+                                            @change="change"
+                                            @focus="sefocus"
+                                            :loading="loading"
+                                            remote
+                                            style="width: 240px"
+                                            filterable
+                                            placeholder="请选择"
+                                        >
+                                            <el-option
+                                                v-for="item in cateOptions"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                    </template>
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="addSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="addClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { shopGoodsLoading, shopGoodsUnloading } from '@/api/shop.js'
+import {
+    shopGoodsLoading,
+    shopGoodsUnloading,
+    shopSupplierList,
+    shopCategoryList,
+    shopGoodsInsert
+} from '@/api/shop.js'
 export default {
     data() {
         return {
             add_vrisible: false,
             addDate: null,
             table_row: [],
+            loading: false,
+            cateOptions: [],
+            supplierOptions: [],
+            addForm: {
+                ruleForm: {
+                    imgUrls: []
+                },
+                form_item: [
+                    {
+                        type: 'Slot',
+                        label: '所属大类',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'category',
+                        slotName: 'category'
+                    },
+                    {
+                        type: 'Select',
+                        label: '所属小类',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'categoryId',
+                        options: []
+                    },
+                    {
+                        type: 'Input',
+                        label: '商品标题',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'title'
+                    },
+                    {
+                        type: 'Input',
+                        label: '推荐语',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'recommend'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '供应商',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'supplierId',
+                        slotName: 'supplierId'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '商品详情',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'detail'
+                    },
+                    {
+                        type: 'Int',
+                        label: '售卖价',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'sellingPrice'
+                    },
+                    {
+                        type: 'Int',
+                        label: '划线价',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'markingPrice'
+                    },
+                    {
+                        type: 'Int',
+                        label: '库存',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'stock'
+                    },
+                    {
+                        type: 'Select',
+                        label: '状态',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'status',
+                        options: [
+                            {
+                                value: '1',
+                                label: '立即上架'
+                            },
+                            {
+                                value: '2',
+                                label: '手动上架'
+                            }
+                        ]
+                    },
+                    {
+                        type: 'Input',
+                        label: '到货时间说明',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'arrivalTime'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '图片上传',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'imgUrls',
+                        slotName: 'imgUrls'
+                    }
+                ]
+            },
             // 上传img文件
             imglist: [],
             activeName: '0',
@@ -145,11 +367,96 @@ export default {
         }
     },
     methods: {
-        add(){
-          this.$router.push('/commodity/commodityCreation')
+        getUserList(val) {
+            let reeData = {
+                pageNum: 1,
+                size: 20
+            }
+            this.loading = true
+            shopSupplierList(reeData).then((res) => {
+                console.log(res)
+                this.supplierOptions = res.tableList
+                this.loading = false
+            })
+            shopCategoryList({ parentId: 0 }).then((res) => {
+                // console.log(res)
+                this.cateOptions = res.data
+                // console.log(this.sysOptions);
+                this.loading = false
+            })
+        },
+        remoteMethod(val) {
+            this.getUserList(val)
+        },
+        sefocus() {
+            this.getUserList()
+        },
+        change(value) {
+            console.log(value) //sysUserList
+            this.addForm.form_item[1].options = []
+            let sData = {
+                parentId: value
+            }
+            shopCategoryList(sData).then((res) => {
+                console.log(res)
+                res.data.forEach((ele)=>{
+                    let obj = {
+                        value: ele.id,
+                        label: ele.name
+                    }
+                    this.addForm.form_item[1].options.push(obj)
+                })
+                console.log(this.addForm.form_item[1].options)
+                this.loading = false
+            })
+        },
+        //根据部门获取人员
+        sChange(value) {
+            console.log(value)
+            this.addForm.form_item[1].options = []
+            let sData = {
+                parentId: value
+            }
+            shopCategoryList(sData).then((res) => {
+                console.log(res)
+
+                res.tableList.forEach((element) => {
+                    let obj = {
+                        value: element.id,
+                        label: element.actualName
+                    }
+                    this.addForm.form_item[1].options.push(obj)
+                })
+                console.log(this.addForm.form_item[1].options)
+                this.loading = false
+            })
+        },
+        add() {
+            this.add_vrisible = true
+            // this.getUserList()
+        },
+        addClose() {
+            this.$refs.addForm.reset()
+            this.add_vrisible = false
+            this.$refs.myUpload1.clearFiles()
+        },
+        addSubmit() {
+            let resData = {
+                ...this.addForm.ruleForm
+            }
+            shopGoodsInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
         },
         //shangija
-        loading(data) {
+        sploading(data) {
             if (data.length > 1) {
                 this.$message.error('只能操作一条数据')
                 return
@@ -158,22 +465,22 @@ export default {
                 this.$message.error('请选择')
                 return
             } else {
-                if(data[0].status==1){
+                if (data[0].status == 1) {
                     this.$message({
                         message: '上架失败',
-                        type: 'error',
+                        type: 'error'
                     })
-                }else{
+                } else {
                     shopGoodsLoading({ id: data[0].id }).then((res) => {
-                    console.log(res)
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                    }
-                })
+                        console.log(res)
+                        if (res.status) {
+                            this.$message({
+                                message: res.message,
+                                type: 'success'
+                            })
+                            this.$refs.table.loadData()
+                        }
+                    })
                 }
             }
         },
@@ -238,6 +545,31 @@ export default {
         // 表格选中
         tableCheck(data) {
             this.table_row = data
+        },
+        // 图片上传成功
+        ImgeSuccess(res, file) {
+            this.addForm.ruleForm.imgUrls[0] = file.response.url
+        },
+        // 图片文件上传之前
+        beforeAvatarUpload(file) {
+            const isLt2M = file.size / 1024 / 1024 < 2
+            const isJPG = file.type === 'image/png'
+            const isPNG = file.type === 'image/jpeg'
+            if (!isJPG && !isPNG) {
+                this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!')
+            }
+            return (isJPG || isPNG) && isLt2M
+        },
+        //  上传限制提示
+        handleExceed(files, fileList) {
+            this.$message.warning(
+                `当前限制选择 5 个文件，本次选择了 ${
+                    files.length
+                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            )
         }
     }
 }

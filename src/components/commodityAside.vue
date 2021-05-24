@@ -79,11 +79,6 @@ export default {
           children: [
             {
               // Commodity creation
-              path: '/commodity/commodityCreation',
-              label: '商品创建'
-            },
-            {
-              // Commodity creation
               path: '/commodity/commodityManagement',
               label: '商品管理'
             },

@@ -175,11 +175,11 @@ export default {
               value: '/commodity/home',
               label: '首页',
             },
-            {
-              // Commodity creation
-              value: '/commodity/commodityCreation',
-              label: '商品创建'
-            },
+            // {
+            //   // Commodity creation
+            //   value: '/commodity/commodityCreation',
+            //   label: '商品创建'
+            // },
             {
               // Commodity creation
               value: '/commodity/commodityManagement',

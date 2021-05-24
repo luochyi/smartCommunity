@@ -47,6 +47,10 @@ Vue.prototype.$baseUrl = process.env.VUE_APP_API
 Vue.prototype.$ImgUrl = process.env.VUE_APP_Image_API
 Vue.config.productionTip = false
 
+Vue.filter("filterA", function(data, value) {
+    const obj = data.find((item) => item.showValue=== value);
+    return obj && obj.showName;
+});
 new Vue({
     router,
     store,

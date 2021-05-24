@@ -2,17 +2,17 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>设施设备检查</span>
+                <span>巡检记录</span>
             </div>
             <div class="content">
-                <div class="content-btn">
+                <!-- <div class="content-btn">
                     <el-button
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
                         >新增计划</el-button
                     >
-                </div>
+                </div> -->
 
                 <div class="">
                     <VueTable
@@ -20,7 +20,7 @@
                         :config="config"
                         @tableCheck="tableCheck"
                     >
-                        <template slot="tabs">
+                        <!-- <template slot="tabs">
                             <el-tabs
                                 v-model="activeName"
                                 @tab-click="handleClick"
@@ -38,21 +38,20 @@
                                     name="2"
                                 ></el-tab-pane>
                                 <el-tab-pane
-                                    label="已完成"
+                                    label="巡检中"
                                     name="3"
                                 ></el-tab-pane>
+                                <el-tab-pane
+                                    label="未巡检"
+                                    name="4"
+                                ></el-tab-pane>
                             </el-tabs>
-                        </template>
+                        </template> -->
                         <template slot="footer">
                             <div class="table-footer">
                                 <!-- <button>编辑</button> -->
-                                <button @click="open(table_row)">
-                                    启用
-                                </button>
-                                <button @click="stop(table_row)">
-                                    停用
-                                </button>
-                                <button @click="del(table_row)">删除</button>
+                                <!-- <button @click="isEnable(table_row)">启用/停用</button>
+                                <button @click="del(table_row)">删除</button> -->
                             </div>
                         </template>
                     </VueTable>
@@ -151,12 +150,11 @@
 
 <script>
 import {
+    inspectionPlanInsert,
+    inspectionRouteList,
     sysOrganizationFindAllDepartment,
     sysUserList,
-    facilitiesManageList,
-    facilitiesPlanInsert,inspectionRouteList,
-    facilitiesPlanOpen,
-    facilitiesPlanStop
+    inspectionPlanIsEnable
 } from '@/api/daily'
 export default {
     data() {
@@ -164,7 +162,6 @@ export default {
             add_vrisible: false,
             addDate: null,
             options: [],
-            ids:[],
             sysOptions: [],
             // inspector: [],
             loading: false,
@@ -174,34 +171,16 @@ export default {
                     code: '',
                     inspectionRouteId: null,
                     organizationId: null,
-                    isSort: '2',
-                    type: null
+                    isSort:'2'
                 },
                 form_item: [
                     {
-                        type: 'Select',
-                        label: '类型',
-                        placeholder: '请选择',
+                        type: 'Slot',
+                        label: '路线',
+                        placeholder: '请输入',
                         width: '50%',
-                        prop: 'type',
-                        options: [
-                            {
-                                value: 1,
-                                label: '设施'
-                            },
-                            {
-                                value: 2,
-                                label: '设备'
-                            }
-                        ]
-                    },
-                    {
-                        type: 'Select',
-                        label: '设施/设备名称',
-                        placeholder: '请选择',
-                        width: '50%',
-                        prop: 'facilitiesManageId',
-                        options: []
+                        prop: 'inspectionRouteId',
+                        slotName: 'inspectionRouteId'
                     },
                     {
                         type: 'Input',
@@ -220,26 +199,35 @@ export default {
                     },
                     {
                         type: 'Select',
-                        label: '检查人',
+                        label: '巡检人',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'examiner',
+                        prop: 'inspector',
                         options: []
                     },
                     {
                         type: 'DateTime',
-                        label: '计划开始时间',
+                        label: '开始时间',
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'planBeginDate'
                     },
-                    {
-                        type: 'Input',
-                        label: '持续时间',
-                        placeholder: '请输入',
-                        width: '50%',
-                        prop: 'spaceTime'
-                    },
+                    // {
+                    //     type: 'Select',
+                    //     label: '按顺序巡检',
+                    //     width: '100%',
+                    //     options: [
+                    //         {
+                    //             value: '1',
+                    //             label: '是'
+                    //         },
+                    //         {
+                    //             value: '2',
+                    //             label: '否'
+                    //         }
+                    //     ],
+                    //     prop: 'isSort'
+                    // },
                     {
                         type: 'Select',
                         label: '检查频率',
@@ -272,124 +260,105 @@ export default {
                         width: '80'
                     },
                     {
-                        label: '设施设备检查计划编号',
+                        label: '执行巡检编号',
                         prop: 'code',
                         width: 'auto'
                     },
                     {
-                        label: '设施/设备名称',
-                        prop: 'facilitiesName',
+                        label: '执行巡检名称',
+                        prop: 'name',
                         width: 'auto'
                     },
                     {
-                        label: '检查人姓名',
-                        prop: 'examinerName',
+                        label: '计划当次巡检开始时间',
+                        prop: 'beginDate',
                         width: 'auto'
                     },
                     {
-                        label: '检查人联系方式',
-                        prop: 'examinerTel',
+                        label: '计划当次巡检结束时间',
+                        prop: 'endDate',
                         width: 'auto'
                     },
                     {
-                        label: '任务状态',
+                        label: '实际当次巡检开始时间',
+                        prop: 'actualBeginDate',
+                        width: 'auto'
+                    },
+                    {
+                        label: '实际当次巡检结束时间',
+                        prop: 'actualEndDate',
+                        width: 'auto'
+                    },
+                    {
+                        label: '状态',
                         prop: 'status',
                         width: 'auto',
                         type: 'function',
-                        callback(row, prop) {
+                        callback: (row, prop) => {
                             switch (row.status) {
                                 case 1:
-                                    return '开启'
+                                    return '待巡检'
                                     break
                                 case 2:
-                                    return '停用'
+                                    return '已巡检'
+                                    break
+                                case 3:
+                                    return '巡检中'
+                                    break
+                                case 4:
+                                    return '未巡检'
                                     break
                             }
                         }
                     },
                     {
-                        label: '计划开始时间',
-                        prop: 'planBeginDate',
+                        label: '巡检人姓名',
+                        prop: 'inspectorName',
+                        width: 'auto'
+                    },{
+                        label: '巡检人手机号',
+                        prop: 'inspectorTel',
                         width: 'auto'
                     },
-                    {
-                        label: '单次持续时间（单位分钟）',
-                        prop: 'spaceTime',
-                        width: 'auto'
-                    },
-                    {
-                        label: '检查频率',
-                        prop: 'checkRateType',
-                        width: 'auto',
-                        type:'function',
-                        callback(row,prop){
-                          switch (row.checkRateType) {
-                            case 1:
-                              return '每天'
-                              break;
-                            case 2:
-                              return '每周'
-                              break;
-                              case 3:
-                              return '每月'
-                              break;
-                            default:
-                              break;
-                          }
-                        }
-                    },
-                    {
-                        label: '创建人',
-                        prop: 'createName',
-                        width: 'auto'
-                    }
-                    // {
-                    //     label: '照片资源信息集合',
-                    //     prop: 'detail',
-                    //     width: 'auto',
-                    // },
-                    // {
-                    //     label: '设施/设备检查报告',
-                    //     prop: 'detail',
-                    //     width: 'auto',
-                    // },
                 ],
                 table_data: [],
-                url: 'facilitiesPlanList',
+                url: 'inspectionPlanExecuteList',
                 search_item: [
                     {
-                        type: 'select',
-                        label: '类型',
-                        placeholder: '请输入',
-                        prop: 'type',
-                        options: [
-                            {
-                                value: 1,
-                                label: '设施'
-                            },
-                            {
-                                value: 2,
-                                label: '设备'
-                            }
-                        ]
-                    },
-                    {
                         type: 'Input',
-                        label: '检查计划编号',
+                        label: '巡检编号',
                         placeholder: '请输入',
                         prop: 'code'
                     },
                     {
                         type: 'Input',
-                        label: '设施/设备名称',
+                        label: '巡检人手机号',
                         placeholder: '请输入',
-                        prop: 'facilitiesName'
+                        prop: 'inspectorTel'
                     },
                     {
-                        type: 'Int',
-                        label: '检查人联系方式',
-                        placeholder: '请输入',
-                        prop: 'tel'
+                        type: 'select',
+                        label: '巡检状态',
+                        placeholder: '请选择',
+                        prop: 'inspectionStatus',
+                        options:[
+                            {
+                                value:1,
+                                label:'待巡检'
+                            },
+                            {
+                                value:2,
+                                label:'已巡检'
+                            },
+                            {
+                                value:3,
+                                label:'巡检中'
+                            },
+                            {
+                                value:4,
+                                label:'未巡检'
+                            },
+                        ]
                     },
 
                     // Slot
@@ -408,7 +377,7 @@ export default {
                 pageNum: 1,
                 size: 20
             }
-
+            
             this.loading = true
             inspectionRouteList(reeData).then((res) => {
                 console.log(res)
@@ -429,27 +398,29 @@ export default {
             this.getUserList()
         },
         change(value) {
-            console.log(value) //sysUserList
+            console.log(value)//sysUserList
+
+            
         },
         //根据部门获取人员
-        sChange(value) {
-            this.addForm.form_item[4].options = []
-            let sData = {
+        sChange(value){
+            this.addForm.form_item[3].options = []
+             let sData = {
                 pageNum: 1,
                 size: 100,
-                organizationId: value
-            }
-            sysUserList(sData).then((res) => {
+                organizationId:value
+             }
+             sysUserList(sData).then((res) => {
                 console.log(res)
-
-                res.tableList.forEach((element) => {
-                    let obj = {
-                        value: element.id,
-                        label: element.nickName
-                    }
-                    this.addForm.form_item[4].options.push(obj)
-                })
-                console.log(this.addForm.form_item[4].options)
+                
+                 res.tableList.forEach(element => {
+                     let obj = {
+                         value: element.id,
+                         label: element.nickName
+                     }
+                    this.addForm.form_item[3].options.push(obj)
+                });
+                console.log(this.addForm.form_item[3].options)
                 this.loading = false
             })
         },
@@ -465,7 +436,7 @@ export default {
             let resData = {
                 ...this.addForm.ruleForm
             }
-            facilitiesPlanInsert(resData).then((res) => {
+            inspectionPlanInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
@@ -521,55 +492,29 @@ export default {
                 this.$message.error('请选中需要删除的数据')
             }
         },
-        open(data){
-          console.log(data);
-          data.forEach(ele=>{
-            // console.log(obj);
-            this.ids.push(ele.id)
-            console.log(this.ids);
-          })
-          facilitiesPlanOpen({ids:this.ids}).then(res=>{
-            this.$message({
-                  message: res.message,
-                  type: 'success'
-                })
-          })
-          this.$refs.table.requestData()
-        },
-        stop(data){
-          console.log(data);
-          data.forEach(ele=>{
-            // console.log(obj);
-            this.ids.push(ele.id)
-            console.log(this.ids);
-          })
-          facilitiesPlanStop({ids:this.ids}).then(res=>{
-            this.$message({
-                  message: res.message,
-                  type: 'success'
-                })
-          })
-          this.$refs.table.requestData()
-        }
-    },
-    //监听设施设备分类从而获取设施设备名称
-    watch: {
-        'addForm.ruleForm.type': {
-            handler(newVal) {
-                this.addForm.form_item[1].options = []
-                console.log(newVal)
-                facilitiesManageList({ type: newVal }).then((res) => {
-                    console.log(res)
-                    res.tableList.forEach((ele) => {
-                        let obj = {
-                            value: ele.id,
-                            label: ele.name
-                        }
-                        this.addForm.form_item[1].options.push(obj)
+        isEnable(data) {
+            console.log(data[0].id);
+            if (data.length > 1) {
+                this.$message.error('只能操作一条数据')
+                return
+            }
+            if (!data.length) {
+                this.$message.error('请选择')
+                return
+            }else{
+                inspectionPlanIsEnable({id:data[0].id}).then((res) => {
+                     console.log(res)
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
                     })
-                })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
             }
         }
-    }
+    },
 }
 </script>

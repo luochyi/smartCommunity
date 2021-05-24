@@ -29,7 +29,7 @@
             </template> -->
             <template slot="footer">
               <div class="table-footer">
-                <!-- <button>编辑</button> -->
+                <button @click="detail(table_row)">编辑</button>
                 <button @click="del(table_row)">删除</button>
 
               </div>
@@ -46,37 +46,6 @@
               <template>
                 <VueForm ref="addForm"
                          :formObj='addForm'>
-                  <!-- Slot -->
-                  <template v-slot:date>
-                    <el-time-picker is-range
-                                    v-model="addDate"
-                                    range-separator="至"
-                                    @change='dateTimeChange'
-                                    value-format='HH:MM:SS'
-                                    start-placeholder="开始时间"
-                                    end-placeholder="结束时间"
-                                    placeholder="选择时间范围">
-                    </el-time-picker>
-                  </template>
-                  <template slot='imgUrls'>
-                    <template>
-                      <el-upload :action="`${$baseUrl}upload/uploadAnnouncement`"
-                                 :on-success="ImgeSuccess"
-                                 :file-list="imglist"
-                                 :on-exceed="handleExceed"
-                                 :limit="1"
-                                 accept=".jpg,.png,.JPG,.PNG"
-                                 :before-upload="beforeAvatarUpload">
-                        <el-button icon="el-icon-edit"
-                                   size="small">上传图片</el-button>
-                        <span style='margin-left:10px;font-size:12px;color:#444444'>建议比例：3:2</span>
-                        <div slot="tip"
-                             class="el-upload__tip">
-                          <span>支持扩展名：png,jpg</span>
-                        </div>
-                      </el-upload>
-                    </template>
-                  </template>
                 </VueForm>
               </template>
             </FromCard>
@@ -88,18 +57,39 @@
                     @click="addClose"><span>取消</span></button>
           </div>
         </Drawer>
-
+          <!-- detail -->
+      <Drawer drawerTitle="编辑区域"
+                @drawerClose="detailClose"
+                :drawerVrisible='detail_vrisible'>
+          <div style="padding:30px">
+            <FromCard>
+              <template slot="title">区域信息</template>
+              <template>
+                <VueForm ref="detailForm"
+                         :formObj='detailForm'>
+                </VueForm>
+              </template>
+            </FromCard>
+          </div>
+          <div slot="footer">
+            <button class="btn-orange"
+                    @click="detailSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
+            <button class="btn-gray"
+                    @click="detailClose"><span>取消</span></button>
+          </div>
+        </Drawer>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { hygieneAreaInsert } from '@/api/daily'
+import { hygieneAreaInsert,hygieneAreaFindById,hygieneAreaUpdate } from '@/api/daily'
 export default {
   data () {
     return {
       add_vrisible: false,
+      detail_vrisible: false,
       addDate: null,
       addForm: {
         ruleForm: {
@@ -113,32 +103,20 @@ export default {
             width: '100%',
             prop: 'name'
           },
-        //   {
-        //     type: 'Input',
-        //     label: '类型编号',
-        //     placeholder: '请输入',
-        //     width: '100%',
-        //     disabled: true,
-        //     prop: 'code'
-        //   },
-        //   {
-        //     type: 'Slot',
-        //     label: '图片上传',
-        //     placeholder: '请输入',
-        //     width: '100%',
-        //     prop: 'imgUrls',
-        //     slotName: 'imgUrls'
-        //   }
-        //   ,
-        //   {
-        //     type: 'Slot',
-        //     label: '开放时间',
-        //     placeholder: '请输入',
-        //     width: '100%',
-        //     prop: 'date',
-        //     slotName: 'date'
-        //   },
-
+        ]
+      },
+      detailForm: {
+        ruleForm: {
+          name: null,
+        },
+        form_item: [
+          {
+            type: 'Input',
+            label: '区域名称',
+            placeholder: '请输入',
+            width: '100%',
+            prop: 'name'
+          },
         ]
       },
       table_row: [],
@@ -226,6 +204,48 @@ export default {
         }
       })
     },
+    detail(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '只能编辑一条数据',
+                    type: 'error'
+                })
+            } else {
+                this.detail_vrisible = true
+                console.log(data[0].id)
+                this.detailForm.ruleForm.id = data[0].id
+                hygieneAreaFindById({ id: data[0].id }).then((res) => {
+                    console.log(res.data)
+                    this.detailForm.ruleForm.name = res.data.name
+                })
+                // this.detailForm.ruleForm
+            }
+        },
+        detailClose() {
+            this.$refs.detailForm.reset()
+            this.detail_vrisible = false
+        },
+        detailSubmit() {
+            let resData = {
+                ...this.detailForm.ruleForm,
+                id: this.detailForm.ruleForm.id
+                // code: this.addForm.ruleForm.code,
+                // name: this.addForm.ruleForm.name,
+                // openStartDate: this.openStartDate,
+                // openEndDate:  this.openEndDate,
+                // imgUrls:this.addForm.ruleForm.imgUrls,
+            }
+            hygieneAreaUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.detailClose()
+                }
+            })
+        },
     dateTimeChange (arr) {
       this.addForm.ruleForm.openStartDate = arr[0]
       this.addForm.ruleForm.openEndDate = arr[1]

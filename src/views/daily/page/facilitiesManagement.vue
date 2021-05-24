@@ -1,139 +1,168 @@
 <template>
     <div>
         <div class="main-content">
-            <div class="main-titel">
-                <span>设施设备管理</span>
-            </div>
-            <div class="content">
-                <div class="content-btn">
-                    <el-button
-                        class="init-button"
-                        @click="add()"
-                        icon="el-icon-plus"
-                        >新增设施/设备</el-button
-                    >
-                </div>
+            <el-tabs v-model="activeName1">
+                <el-tab-pane label="设施管理" name="first">
+                    <div class="content">
+                        <div class="content-btn">
+                            <el-button
+                                class="init-button"
+                                @click="add()"
+                                icon="el-icon-plus"
+                                >新增设施</el-button
+                            >
+                        </div>
 
-                <div class="">
-                    <VueTable
-                        ref="table"
-                        :config="config"
-                        @tableCheck="tableCheck"
-                    >
-                        <template slot="tabs">
-                            <el-tabs
-                                v-model="activeName"
-                                @tab-click="handleClick"
+                        <div class="">
+                            <VueTable
+                                ref="table"
+                                :config="config"
+                                @tableCheck="tableCheck"
                             >
-                                <el-tab-pane
-                                    label="全部"
-                                    name="0"
-                                ></el-tab-pane>
-                                <el-tab-pane
-                                    label="空置中"
-                                    name="1"
-                                ></el-tab-pane>
-                                <el-tab-pane
-                                    label="使用中"
-                                    name="2"
-                                ></el-tab-pane>
-                                <el-tab-pane
-                                    label="已停用"
-                                    name="3"
-                                ></el-tab-pane>
-                            </el-tabs>
-                        </template>
-                        <template slot="footer">
-                            <div class="table-footer">
-                                <!-- <button>编辑</button> -->
-                                <button @click="del(table_row)">删除</button>
-                            </div>
-                        </template>
-                    </VueTable>
-                </div>
-                <!-- 新增 -->
-                <Drawer
-                    drawerTitle="新增设施/设备"
-                    @drawerClose="addClose"
-                    :drawerVrisible="add_vrisible"
-                >
-                    <div style="padding: 30px">
-                        <FromCard>
-                            <template slot="title">基本信息</template>
-                            <template>
-                                <VueForm ref="addForm" :formObj="addForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
+                                <template slot="tabs">
+                                    <el-tabs
+                                        v-model="activeName"
+                                        @tab-click="handleClick"
+                                    >
+                                        <el-tab-pane
+                                            label="全部"
+                                            name="0"
+                                        ></el-tab-pane>
+                                        <el-tab-pane
+                                            label="空置中"
+                                            name="1"
+                                        ></el-tab-pane>
+                                        <el-tab-pane
+                                            label="使用中"
+                                            name="2"
+                                        ></el-tab-pane>
+                                        <el-tab-pane
+                                            label="已停用"
+                                            name="3"
+                                        ></el-tab-pane>
+                                    </el-tabs>
+                                </template>
+                                <template slot="footer">
+                                    <div class="table-footer">
+                                        <button @click="edit(table_row)">
+                                            编辑
+                                        </button>
+                                        <button @click="del(table_row)">
+                                            删除
+                                        </button>
+                                    </div>
+                                </template>
+                            </VueTable>
+                        </div>
+                        <!-- 新增 -->
+                        <Drawer
+                            :drawerTitle="drawerTitle"
+                            @drawerClose="addClose"
+                            :drawerVrisible="add_vrisible"
+                        >
+                            <div style="padding: 30px">
+                                <FromCard>
+                                    <template slot="title">基本信息</template>
+                                    <template>
+                                        <VueForm
+                                            ref="addForm"
+                                            :formObj="addForm"
                                         >
-                                        </el-time-picker>
-                                    </template>
-                                    <template v-slot:facilitiesCategoryId>
-                                        <el-select
-                                            v-model="
-                                                addForm.ruleForm
-                                                    .facilitiesCategoryId
-                                            "
-                                            :remote-method="remoteMethod"
-                                            @change="change"
-                                            @focus="sefocus"
-                                            :loading="loading"
-                                            remote
-                                            style="width: 240px"
-                                            filterable
-                                            placeholder="请选择"
-                                        >
-                                            <el-option
-                                                v-for="item in options"
-                                                :key="item.id"
-                                                :label="item.name"
-                                                :value="item.id"
+                                            <!-- Slot -->
+                                            <template v-slot:date>
+                                                <el-time-picker
+                                                    is-range
+                                                    v-model="addDate"
+                                                    range-separator="至"
+                                                    @change="dateTimeChange"
+                                                    value-format="HH:MM:SS"
+                                                    start-placeholder="开始时间"
+                                                    end-placeholder="结束时间"
+                                                    placeholder="选择时间范围"
+                                                >
+                                                </el-time-picker>
+                                            </template>
+                                            <template
+                                                v-slot:facilitiesCategoryId
                                             >
-                                            </el-option>
-                                        </el-select>
+                                                <el-select
+                                                    v-model="
+                                                        addForm.ruleForm
+                                                            .facilitiesCategoryId
+                                                    "
+                                                    :remote-method="
+                                                        remoteMethod
+                                                    "
+                                                    @change="change"
+                                                    @focus="sefocus"
+                                                    :loading="loading"
+                                                    remote
+                                                    style="width: 240px"
+                                                    filterable
+                                                    placeholder="请选择"
+                                                >
+                                                    <el-option
+                                                        v-for="item in options"
+                                                        :key="item.id"
+                                                        :label="item.name"
+                                                        :value="item.id"
+                                                    >
+                                                    </el-option>
+                                                </el-select>
+                                            </template>
+                                        </VueForm>
                                     </template>
-                                </VueForm>
-                            </template>
-                        </FromCard>
+                                </FromCard>
+                            </div>
+                            <div slot="footer">
+                                <button class="btn-orange" @click="addSubmit()">
+                                    <span>
+                                        <i class="el-icon-circle-check"></i
+                                        >提交</span
+                                    >
+                                </button>
+                                <button class="btn-gray" @click="addClose">
+                                    <span>取消</span>
+                                </button>
+                            </div>
+                        </Drawer>
                     </div>
-                    <div slot="footer">
-                        <button class="btn-orange" @click="addSubmit()">
-                            <span>
-                                <i class="el-icon-circle-check"></i>提交</span
-                            >
-                        </button>
-                        <button class="btn-gray" @click="addClose">
-                            <span>取消</span>
-                        </button>
-                    </div>
-                </Drawer>
-            </div>
+                </el-tab-pane>
+                <el-tab-pane label="设备管理" name="second"
+                    ><deviceManage></deviceManage>
+                </el-tab-pane>
+            </el-tabs>
         </div>
     </div>
 </template>
 
 <script>
-import { facilitiesManageInsert, facilitiesCategoryList } from '@/api/daily'
+import {
+    facilitiesManageInsert,
+    facilitiesCategoryList,
+    facilitiesManageFindDetailById,
+    facilitiesManageUpdate
+} from '@/api/daily'
+import deviceManage from './deviceManage.vue'
 export default {
+    components: {
+        deviceManage
+    },
     data() {
         return {
             add_vrisible: false,
+            drawerTitle: '',
             addDate: null,
+            activeName1: 'first',
             options: [],
             addForm: {
                 ruleForm: {
                     name: null,
                     code: '',
                     facilitiesCategoryId: null,
-                    address: null
+                    address: null,
+                    type: 1,
+                    id:null
                 },
                 form_item: [
                     {
@@ -188,7 +217,7 @@ export default {
                         prop: 'status',
                         width: 'auto',
                         type: 'function',
-                        callback(row, prop){
+                        callback(row, prop) {
                             switch (row.status) {
                                 case 1:
                                     return '空置中'
@@ -251,7 +280,8 @@ export default {
                 ],
                 data: {
                     pageNum: 1,
-                    size: 10
+                    size: 10,
+                    type: 1
                 }
             }
         }
@@ -265,11 +295,12 @@ export default {
             let reeData = {
                 pageNum: 1,
                 size: 20,
-                name: val
+                name: val,
+                type: 1
             }
             this.loading = true
             facilitiesCategoryList(reeData).then((res) => {
-                // console.log(res)
+                console.log(res)
                 this.options = res.tableList
                 this.loading = false
             })
@@ -283,7 +314,27 @@ export default {
         change(value) {
             console.log(value)
         },
+        edit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '请选择一条数据进行编辑',
+                    type: 'error'
+                })
+            } else {
+                this.add_vrisible = true
+                this.drawerTitle = '修改设施信息'
+                facilitiesManageFindDetailById({id:data[0].id}).then(res=>{
+                    console.log(res);
+                    this.addForm.ruleForm.name = res.data.detail.name
+                    this.addForm.ruleForm.code = res.data.detail.code
+                    this.addForm.ruleForm.facilitiesCategoryId = res.data.detail.facilitiesCategoryId
+                    this.addForm.ruleForm.address = res.data.detail.address
+                    this.addForm.ruleForm.id = res.data.detail.id
+                })
+            }
+        },
         add() {
+            this.drawerTitle = '新增设施信息'
             this.add_vrisible = true
             let random = Math.floor(Math.random() * 100000000)
             this.addForm.ruleForm.code = random
@@ -293,23 +344,24 @@ export default {
             this.add_vrisible = false
         },
         addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
-            let resData = {
+            if(this.drawerTitle == '修改设施信息'){
+                let resData = {
+                ...this.addForm.ruleForm,
+                id:this.addForm.ruleForm.id
+            }
+            facilitiesManageUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
+            }else{
+                let resData = {
                 ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
             }
             facilitiesManageInsert(resData).then((res) => {
                 if (res.status) {
@@ -321,6 +373,7 @@ export default {
                     this.addClose()
                 }
             })
+            }
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]

@@ -40,6 +40,7 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="release(table_row)">发布</button>
+                                <button @click="edit(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -56,20 +57,6 @@
                             <template slot="title">规程信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
                                 </VueForm>
                             </template>
                         </FromCard>
@@ -85,20 +72,88 @@
                         </button>
                     </div>
                 </Drawer>
+                <!-- edit -->
+                <Drawer
+                    drawerTitle="编辑模板"
+                    @drawerClose="editClose"
+                    :drawerVrisible="edit_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">规程信息</template>
+                            <template>
+                                <VueForm ref="editForm" :formObj="editForm">
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="editSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="editClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { regulationManagementInsert,regulationManagementRelease } from '@/api/daily'
+import { regulationManagementInsert,regulationManagementRelease ,regulationManagementFindById,regulationManagementUpdate} from '@/api/daily'
 export default {
     data() {
         return {
-            add_vrisible: false,
+            add_vrisible: false,edit_vrisible: false,
             addDate: null,
             addForm: {
                 ruleForm: {
+                },
+                rules: {
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '标题',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'title'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '内容',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'content'
+                    },
+                    {
+                        type: 'Select',
+                        label: '发布状态',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'status',
+                        options:[
+                            {
+                                value:'1',
+                                label:'已发布'
+                            },
+                            {
+                                value:'2',
+                                label:'未发布'
+                            },
+                        ]
+                    }
+                ]
+            },
+             editForm: {
+                ruleForm: {
+                    title:null,
+                    content:null,
+                    status:null
                 },
                 rules: {
                 },
@@ -249,6 +304,50 @@ export default {
                     })
                     this.$refs.table.loadData()
                     this.addClose()
+                }
+            })
+        },
+        edit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '只能编辑一条数据',
+                    type: 'error'
+                })
+            } else {
+                this.edit_vrisible = true
+                console.log(data[0].id)
+                this.editForm.ruleForm.id = data[0].id
+                regulationManagementFindById({ id: data[0].id }).then((res) => {
+                    console.log(res.data)
+                    this.editForm.ruleForm.title = res.data.title
+                    this.editForm.ruleForm.content = res.data.content
+                    // this.editForm.ruleForm.status = res.data.status
+                    if(res.data.status==1){
+                        this.editForm.ruleForm.status='已发布'
+                    }else{
+                        this.editForm.ruleForm.status='未发布'
+                    }
+                })
+                // this.detailForm.ruleForm
+            }
+        },
+        editClose() {
+            this.$refs.editForm.reset()
+            this.edit_vrisible = false
+        },
+        editSubmit() {
+            let resData = {
+                ...this.editForm.ruleForm,
+                id: this.editForm.ruleForm.id
+            }
+            regulationManagementUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.editClose()
                 }
             })
         },

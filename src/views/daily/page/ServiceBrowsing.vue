@@ -39,7 +39,7 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button @click="edit(table_row)">编辑</button> -->
+                                <button @click="edit(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -57,19 +57,6 @@
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
                                 </VueForm>
                             </template>
                         </FromCard>
@@ -85,20 +72,72 @@
                         </button>
                     </div>
                 </Drawer>
+                <!-- edit -->
+                <Drawer
+                    drawerTitle="修改服务"
+                    @drawerClose="editClose"
+                    :drawerVrisible="edit_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">服务信息</template>
+                            <template>
+                                <VueForm ref="editForm" :formObj="editForm">
+                                    <!-- Slot -->
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="editSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="editClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { serviceBrowsingInsert } from '@/api/daily'
+import { serviceBrowsingInsert,serviceBrowsingUpdate,serviceBrowsingFindById } from '@/api/daily'
 export default {
     data() {
         return {
             add_vrisible: false,
+            edit_vrisible: false,
             addDate: null,
             addForm: {
                 ruleForm: {
+                },
+                rules: {
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '服务名称',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'name'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '服务介绍',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'content'
+                    },
+                ]
+            },
+            editForm: {
+                ruleForm: {
+                    name:null,
+                    content:null
                 },
                 rules: {
                 },
@@ -188,6 +227,45 @@ export default {
                     })
                     this.$refs.table.loadData()
                     this.addClose()
+                }
+            })
+        },
+        //serviceBrowsingFindById
+        edit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '只能编辑一条数据',
+                    type: 'error'
+                })
+            } else {
+                this.edit_vrisible = true
+                console.log(data[0].id)
+                this.editForm.ruleForm.id = data[0].id
+                serviceBrowsingFindById({ id: data[0].id }).then((res) => {
+                    console.log(res.data)
+                    this.editForm.ruleForm.name = res.data.name
+                    this.editForm.ruleForm.content = res.data.content
+                })
+                // this.detailForm.ruleForm
+            }
+        },
+        editClose() {
+            this.$refs.editForm.reset()
+            this.edit_vrisible = false
+        },
+        editSubmit() {
+            let resData = {
+                ...this.editForm.ruleForm,
+                id: this.editForm.ruleForm.id
+            }
+            serviceBrowsingUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.editClose()
                 }
             })
         },

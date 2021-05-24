@@ -251,17 +251,17 @@ export default {
                         placeholder: '请输入',
                         prop: 'code'
                     },
-                    {
-                        type: 'select',
-                        label: '设施种类',
-                        placeholder: '请选择',
-                        options: [
-                            { value: 1, label: '乒乓球场' },
-                            { value: 2, label: '篮球场' },
-                            { value: 3, label: '网球场' }
-                        ],
-                        prop: 'facilitiesCategoryId' //需要获取设施分类中的主键id和名称
-                    },
+                    // {
+                    //     type: 'select',
+                    //     label: '设施种类',
+                    //     placeholder: '请选择',
+                    //     options: [
+                    //         { value: 1, label: '乒乓球场' },
+                    //         { value: 2, label: '篮球场' },
+                    //         { value: 3, label: '网球场' }
+                    //     ],
+                    //     prop: 'facilitiesCategoryId' //需要获取设施分类中的主键id和名称
+                    // },
                     {
                         type: 'Input',
                         label: '预约人',

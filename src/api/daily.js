@@ -16,11 +16,70 @@ export function facilitiesAppointmentInsert(data) {
         data: data
     })
 }
+
+export function facilitiesPlanInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: 'facilitiesPlan/insert',
+        data: data
+    })
+}
+// facilitiesPlan/open facilitiesPlan/stop
+export function facilitiesPlanOpen(data) {
+    return service.request({
+        method: 'POST',
+        url: 'facilitiesPlan/open',
+        data: data
+    })
+}
+export function facilitiesPlanStop(data) {
+    return service.request({
+        method: 'POST',
+        url: 'facilitiesPlan/stop',
+        data: data
+    })
+}
 export function facilitiesCategoryList(data) {
     return service.request({
         method: 'GET',
         url: '/facilitiesCategory/list',
         params: data
+    })
+}
+export function facilitiesManageList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/facilitiesManage/list',
+        params: data
+    })
+}
+//facilitiesManage/update
+export function facilitiesManageUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/facilitiesManage/update',
+        data: data
+    })
+}
+export function facilitiesManageFindDetailById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/facilitiesManage/findDetailById',
+        params: data
+    })
+}
+export function facilitiesCategoryFindDetailById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/facilitiesCategory/findDetailById',
+        params: data
+    })
+}
+export function facilitiesCategoryUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/facilitiesCategory/update',
+        data: data
     })
 }
 //设施预约-设施分类：添加设施分类信息
@@ -79,6 +138,20 @@ export function inspectionPointInsert(data) {
         data: data
     })
 }
+export function inspectionPointUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/inspectionPoint/update',
+        data: data
+    })
+}
+export function inspectionPointFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/inspectionPoint/findById',
+        params: data
+    })
+}
 export function inspectionPlanInsert(data) {
     return service.request({
         method: 'POST',
@@ -91,6 +164,21 @@ export function inspectionRouteInsert(data) {
         method: 'POST',
         url: '/inspectionRoute/insert',
         data: data
+    })
+}
+export function inspectionRouteUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/inspectionRoute/update',
+        data: data
+    })
+}
+//inspectionRoute/findById
+export function inspectionRouteFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/inspectionRoute/findById',
+        params: data
     })
 }
 // /inspectionRoute/list
@@ -116,6 +204,7 @@ export function inspectionPointList(data) {
         params: data
     })
 }
+
 //sysOrganization/findAllDepartment
 export function sysOrganizationFindAllDepartment(data) {
     return service.request({
@@ -155,7 +244,37 @@ export function inspectionPlanIsEnable(data) {
         params: data
     })
 }
-//keyManagement/insert
+//material/insert物料 materialList
+export function materialList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/material/list',
+        params: data
+    })
+}
+export function materialInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/material/insert',
+        data: data
+    })
+}
+export function materialUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/material/update',
+        data: data
+    })
+}
+//materialRecord/insert
+export function materialRecordInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/materialRecord/insert',
+        data: data
+    })
+}
+//keyManagement/insert keyBorrow/examine
 export function keyManagementInsert(data) {
     return service.request({
         method: 'POST',
@@ -163,8 +282,15 @@ export function keyManagementInsert(data) {
         data: data
     })
 }
+export function keyBorrowExamine(data) {
+    return service.request({
+        method: 'POST',
+        url: '/keyBorrow/examine',
+        data: data
+    })
+}
 //keyManagement/findById 
-export function keyManagementFindById (data) {
+export function keyManagementFindById(data) {
     return service.request({
         method: 'GET',
         url: '/keyManagement/findById',
@@ -224,7 +350,7 @@ export function greenTaskInsert(data) {
         data: data
     })
 }
-//greenArea/findById
+//greenArea/findById greenArea/update
 export function greenAreaFindById(data) {
     return service.request({
         method: 'GET',
@@ -232,7 +358,14 @@ export function greenAreaFindById(data) {
         params: data
     })
 }
-
+export function greenAreaUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/greenArea/update',
+        data: data
+    })
+}
+//卫生
 export function hygieneAreaInsert(data) {
     return service.request({
         method: 'POST',
@@ -254,6 +387,21 @@ export function hygieneTaskInsert(data) {
         data: data
     })
 }
+
+export function hygieneAreaFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/hygieneArea/findById',
+        params: data
+    })
+}
+export function hygieneAreaUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/hygieneArea/update',
+        data: data
+    })
+}
 //规程xinzeng & regulationManagement/release
 export function regulationManagementInsert(data) {
     return service.request({
@@ -269,6 +417,22 @@ export function regulationManagementRelease(data) {
         params: data
     })
 }
+export function regulationManagementFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/regulationManagement/findById',
+        params: data
+    })
+}
+export function regulationManagementUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/regulationManagement/update',
+        data: data
+    })
+}
+//serviceBrowsing/findById  serviceBrowsing/update
+
 export function serviceBrowsingInsert(data) {
     return service.request({
         method: 'POST',
@@ -276,7 +440,21 @@ export function serviceBrowsingInsert(data) {
         data: data
     })
 }
-//社区介绍
+export function serviceBrowsingUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/serviceBrowsing/update',
+        data: data
+    })
+}
+export function serviceBrowsingFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/serviceBrowsing/findById',
+        params: data
+    })
+}
+//社区介绍 communityIntroduction/findById communityIntroduction/update
 export function communityIntroductionInsert(data) {
     return service.request({
         method: 'POST',
@@ -284,11 +462,25 @@ export function communityIntroductionInsert(data) {
         data: data
     })
 }
-//介绍启用
-export function communityIntroductionEnable(data){
+export function communityIntroductionUpdate(data) {
     return service.request({
-        method:'GET',
-        url:'/communityIntroduction/enable',
-        params:data
+        method: 'POST',
+        url: '/communityIntroduction/update',
+        data: data
+    })
+}
+//介绍启用
+export function communityIntroductionEnable(data) {
+    return service.request({
+        method: 'GET',
+        url: '/communityIntroduction/enable',
+        params: data
+    })
+}
+export function communityIntroductionFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/communityIntroduction/findById',
+        params: data
     })
 }

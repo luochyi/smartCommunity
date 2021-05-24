@@ -247,6 +247,9 @@ export default {
                                 case 2:
                                     return '已完成'
                                     break;
+                                case 3:
+                                    return '未完成'
+                                    break;
                                 default:
                                     break;
                             }

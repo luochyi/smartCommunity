@@ -14,6 +14,9 @@
                             <el-tab-pane label="已还" name="2"></el-tab-pane>
                         </el-tabs>
                     </template>
+                    <template v-slot:borrowDate='slotData'>
+                        <div>{{Number(slotData.data.borrowDate/24).toFixed(1)+'天'}}</div>
+                    </template>
                     <template v-slot:remake="slotData">
                         <div>
                             <el-tooltip
@@ -62,7 +65,7 @@ export default {
                     { label: '出借时间', prop: 'beginDate', width: '130' },
                     { label: '归还时间', prop: 'endDate', width: '180' 
                     },
-                    { label: '出借时长', prop: 'borrowDate', width: '180' },
+                    { label: '出借时长', prop: 'borrowDate', width: '180' ,type:'slot',slotName:'borrowDate'},
                     {
                         label: '借取状态',
                         prop: 'borrowStatus',

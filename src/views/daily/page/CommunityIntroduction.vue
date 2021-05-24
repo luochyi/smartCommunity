@@ -23,6 +23,7 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="enable(table_row)">启用</button>
+                                <button @click="edit(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -39,26 +40,13 @@
                             <template slot="title">介绍内容</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
                                     <template slot="imgUrls">
                                         <template>
                                             <el-upload
                                                 :action="`${$baseUrl}upload/uploadCommunityIntroduction`"
                                                 :on-success="ImgeSuccess"
                                                 :file-list="imglist"
+                                                ref="myUpload1"
                                                 :on-exceed="handleExceed"
                                                 :limit="1"
                                                 accept=".jpg,.png,.JPG,.PNG"
@@ -105,6 +93,70 @@
                         </button>
                     </div>
                 </Drawer>
+                <!-- edit -->
+                <Drawer
+                    drawerTitle="修改介绍"
+                    @drawerClose="editClose"
+                    :drawerVrisible="edit_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">介绍内容</template>
+                            <template>
+                                <VueForm ref="editForm" :formObj="editForm">
+                                    <template slot="imgUrls">
+                                        <template>
+                                            <el-upload
+                                                :action="`${$baseUrl}upload/uploadCommunityIntroduction`"
+                                                :on-success="ImgeSuccess"
+                                                :file-list="imglist"
+                                                :on-exceed="handleExceed"
+                                                ref="myUpload"
+                                                :limit="1"
+                                                accept=".jpg,.png,.JPG,.PNG"
+                                                :before-upload="
+                                                    beforeAvatarUpload
+                                                "
+                                            >
+                                                <el-button
+                                                    icon="el-icon-edit"
+                                                    size="small"
+                                                    >修改图片</el-button
+                                                >
+                                                <span
+                                                    style="
+                                                        margin-left: 10px;
+                                                        font-size: 12px;
+                                                        color: #444444;
+                                                    "
+                                                    >不上传则不修改</span
+                                                >
+                                                <div
+                                                    slot="tip"
+                                                    class="el-upload__tip"
+                                                >
+                                                    <span
+                                                        >支持扩展名：png,jpg</span
+                                                    >
+                                                </div>
+                                            </el-upload>
+                                        </template>
+                                    </template>
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="editSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="editClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
@@ -113,16 +165,51 @@
 <script>
 import {
     communityIntroductionInsert,
-    communityIntroductionEnable
+    communityIntroductionEnable,
+    communityIntroductionUpdate,
+    communityIntroductionFindById
 } from '@/api/daily'
 export default {
     data() {
         return {
             add_vrisible: false,
+            edit_vrisible: false,
             addDate: null,
             addForm: {
                 ruleForm: {
+                    imgUrls: []
+                },
+                rules: {},
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '模版名称',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'name'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '图片上传',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'imgUrls',
+                        slotName: 'imgUrls'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '内容',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'content'
+                    }
+                ]
+            },
+            editForm: {
+                ruleForm: {
+                    name: null,
                     imgUrls: [],
+                    content: null
                 },
                 rules: {},
                 form_item: [
@@ -254,6 +341,7 @@ export default {
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
+            this.$refs.myUpload1.clearFiles()
         },
         addSubmit() {
             let resData = {
@@ -265,8 +353,64 @@ export default {
                         message: res.message,
                         type: 'success'
                     })
+                    console.log(resData)
                     this.$refs.table.loadData()
                     this.addClose()
+                }
+            })
+        },
+        edit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '只能编辑一条数据',
+                    type: 'error'
+                })
+            } else {
+                this.edit_vrisible = true
+                console.log(data[0].id)
+                this.editForm.ruleForm.id = data[0].id
+                communityIntroductionFindById({ id: data[0].id }).then(
+                    (res) => {
+                        console.log(res.data.imgList);
+                      if (res.data.imgList.length) {
+                            let obj = {
+                                name: res.data.imgList[0].url,
+                                url: res.data.imgList[0].url
+                            }
+                            this.editForm.ruleForm.imgUrls = [
+                                res.data.imgList[0].url
+                            ]
+                            this.$set(this.imglist, 0, obj)
+                        } else {
+                            this.editForm.ruleForm.imgUrls = []
+                        }
+                        this.editForm.ruleForm.name=res.data.name
+                        this.editForm.ruleForm.content=res.data.content
+                    }
+                )
+                // this.detailForm.ruleForm
+            }
+        },
+        editClose() {
+            this.$refs.editForm.reset()
+            this.edit_vrisible = false
+            this.$refs.myUpload.clearFiles()
+        },
+        editSubmit() {
+            
+            let resData = {
+                ...this.editForm.ruleForm,
+                id: this.editForm.ruleForm.id,
+                imgUrls: this.editForm.ruleForm.imgUrls
+            }
+            communityIntroductionUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.editClose()
                 }
             })
         },
@@ -277,6 +421,8 @@ export default {
         // 图片上传成功
         ImgeSuccess(res, file) {
             this.addForm.ruleForm.imgUrls[0] = file.response.url
+            this.editForm.ruleForm.imgUrls[0] = file.response.url
+            console.log(this.editForm.ruleForm.imgUrls);
         },
         // 图片文件上传之前
         beforeAvatarUpload(file) {

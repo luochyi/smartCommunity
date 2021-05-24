@@ -13,7 +13,7 @@
                 <span>巡检点</span>
             </div>
             <div class="content">
-                 <div class="qrcode" ref="qrCodeUrl" v-if="isShow"></div>
+                <div class="qrcode" ref="qrCodeUrl" v-if="isShow"></div>
                 <div class="content-btn">
                     <el-button
                         class="init-button"
@@ -22,7 +22,7 @@
                         >新增巡检点</el-button
                     >
                 </div>
-                
+
                 <div class="">
                     <VueTable
                         ref="table"
@@ -49,7 +49,13 @@
 
                         <template slot="footer">
                             <div class="table-footer">
-                                <button @click="creatQrCode()" @mouseleave="missQr()">查看二维码</button>
+                                <button
+                                    @click="creatQrCode()"
+                                    @mouseleave="missQr()"
+                                >
+                                    查看二维码
+                                </button>
+                                <button @click="edit(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -97,13 +103,55 @@
                         </button>
                     </div>
                 </Drawer>
+                <!-- edit -->
+                <Drawer
+                    drawerTitle="修改巡检点"
+                    @drawerClose="editClose"
+                    :drawerVrisible="edit_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">巡检点信息</template>
+                            <template>
+                                <VueForm ref="editForm" :formObj="editForm">
+                                    <!-- 检查项 -->
+                                    <template v-slot:itemsList>
+                                        <Button @click="addInt">添加</Button>
+                                        <div
+                                            v-for="(
+                                                item, index
+                                            ) in inspectionArr"
+                                            :key="index"
+                                        >
+                                            <el-input
+                                                v-model="item.name"
+                                                placeholder="请输入内容"
+                                                size="small"
+                                            ></el-input>
+                                        </div>
+                                    </template>
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="editSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="editClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { inspectionPointInsert } from '@/api/daily'
+import { inspectionPointInsert, inspectionPointUpdate ,inspectionPointFindById} from '@/api/daily'
 import QRCode from 'qrcodejs2'
 export default {
     data() {
@@ -116,6 +164,7 @@ export default {
             isShow: false,
             link: '',
             add_vrisible: false,
+            edit_vrisible: false,
             addDate: null,
             addForm: {
                 ruleForm: {
@@ -129,7 +178,44 @@ export default {
                         label: '编号',
                         width: '100%',
                         prop: 'code',
-                        disabled:true
+                        disabled: true
+                    },
+                    {
+                        type: 'Input',
+                        label: '名称',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'name'
+                    },
+                    // {
+                    //     type: 'Input',
+                    //     label: '巡检模式',
+                    //     disabled: true,
+                    //     width: '100%',
+                    //     prop: 'type'
+                    // },
+                    {
+                        type: 'Slot',
+                        label: '检查项',
+                        width: '50%',
+                        prop: 'itemsList',
+                        slotName: 'itemsList'
+                    }
+                ]
+            },
+            editForm: {
+                ruleForm: {
+                    name: null,
+                    code: null,
+                    type: '1'
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '编号',
+                        width: '100%',
+                        prop: 'code',
+                        disabled: true
                     },
                     {
                         type: 'Input',
@@ -205,32 +291,31 @@ export default {
     },
     methods: {
         creatQrCode() {
-            if(this.table_row.length>1){
+            if (this.table_row.length > 1) {
                 this.$message.error('只能查看一条')
                 return
-            }else{
-            // this.missQr()
-            this.isShow = !this.isShow
-            this.link = ''
-            this.link = this.table_row[0].code
-            console.log(this.link);
-            this.$nextTick(function () {
-                setTimeout(() => {
-                    let qrcode = new QRCode(this.$refs.qrCodeUrl, {
-                        text: this.link, //this.link, // 需要转换为二维码的内容
-                        width: 200,
-                        height: 200,
-                        colorDark: '#000000',
-                        colorLight: '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.H
-                    })
-                }, 100)
-            })
+            } else {
+                // this.missQr()
+                this.isShow = !this.isShow
+                this.link = ''
+                this.link = this.table_row[0].code
+                console.log(this.link)
+                this.$nextTick(function () {
+                    setTimeout(() => {
+                        let qrcode = new QRCode(this.$refs.qrCodeUrl, {
+                            text: this.link, //this.link, // 需要转换为二维码的内容
+                            width: 200,
+                            height: 200,
+                            colorDark: '#000000',
+                            colorLight: '#ffffff',
+                            correctLevel: QRCode.CorrectLevel.H
+                        })
+                    }, 100)
+                })
             }
         },
         missQr() {
-            this.isShow = false,
-            this.link=null
+            ;(this.isShow = false), (this.link = null)
         },
         addInt() {
             this.inspectionArr.push({
@@ -246,25 +331,13 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
             this.inspectionArr = [{ name: null }]
-            // if (this.dynamicValidateForm.domains.length == 0) {
-            //     return
-            // } else {
-            //     while (this.dynamicValidateForm.domains.length > 1) {
-            //         this.dynamicValidateForm.domains.splice(0, 1)
-            //         // 关闭抽屉清空检查项
-            //     }
-            // }
         },
         addSubmit() {
-            // console.log(this.addForm)
-            console.log(this.inspectionArr)
-            console.log(this.addForm.ruleForm)
             let resData = {
                 ...this.addForm.ruleForm,
-                type:this.addForm.ruleForm.type,
+                type: this.addForm.ruleForm.type,
                 itemsList: this.inspectionArr
             }
-            console.log(resData)
             inspectionPointInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
@@ -273,6 +346,47 @@ export default {
                     })
                     this.$refs.table.loadData()
                     this.addClose()
+                }
+            })
+        },
+        edit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '只能编辑一条数据',
+                    type: 'error'
+                })
+            } else {
+                this.edit_vrisible = true
+                console.log(data[0].id)
+                this.editForm.ruleForm.id = data[0].id
+                inspectionPointFindById({ id: data[0].id }).then((res) => {
+                    console.log(res.data)
+                    this.editForm.ruleForm.code = res.data.code
+                    this.editForm.ruleForm.name = res.data.name
+                    this.inspectionArr = res.data.checkItemsList
+                })
+            }
+        },
+        editClose() {
+            this.$refs.editForm.reset()
+            this.edit_vrisible = false
+            this.inspectionArr = [{ name: null }]
+        },
+        editSubmit() {
+            let resData = {
+                code:this.editForm.ruleForm.code,
+                name:this.editForm.ruleForm.name,
+                id: this.editForm.ruleForm.id,
+                itemsList: this.inspectionArr
+            }
+            inspectionPointUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.editClose()
                 }
             })
         },
