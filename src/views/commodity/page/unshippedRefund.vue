@@ -93,8 +93,8 @@ export default {
                         placeholder: '请选择',
                         width: '100%',
                         options: [
-                            { value: 5, label: '申请通过' },
-                            { value: 6, label: '申请驳回' }
+                            { value: 9, label: '申请通过' },
+                            { value: 10, label: '申请驳回' }
                         ],
                         prop: 'status'
                     },
@@ -233,7 +233,7 @@ export default {
                 this.$message.error('请选择')
                 return
             } else {
-                if (data[0].status !== 4) {
+                if (data[0].status !== 8) {
                     this.$message({
                         message: '该审核已结束',
                         type: 'error'

@@ -233,6 +233,14 @@ export function userArticleOutFindGoodsImgById(data) {
         params: data
     })
 }
+//article/insert
+export function articleInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/article/insert',
+        data: data
+    })
+}
 // 报事报修：添加报事报修信息
 export function reportRepairInsert(data) {
     return service.request({

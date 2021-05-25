@@ -56,12 +56,19 @@ const routes = [
                                 '@/views/comprehensive/company/page/functionAuthority'
                             ], resolve)
                     },
-                    //考勤记录attendanceRecord
+                    //考勤记录attendanceRecord attendanceApplication
                     {
                         path: '/company/attendanceRecord',
                         component: resolve =>
                             require([
                                 '@/views/comprehensive/company/page/attendanceRecord'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/attendanceApplication',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/attendanceApplication'
                             ], resolve)
                     },
                     //薪资管理salaryManagement
@@ -769,11 +776,20 @@ const routes = [
                             ], resolve)
                     },
                     {
-                        // 订单管理
+                        // 退换
                         path: '/commodity/unshippedRefund',
                         component: resolve =>
                             require([
                                 '@/views/commodity/page/unshippedRefund'
+                            ], resolve)
+                    },
+                    //shopEvaluationList评价
+                    {
+                        // 退换
+                        path: '/commodity/evaluationList',
+                        component: resolve =>
+                            require([
+                                '@/views/commodity/page/evaluationList'
                             ], resolve)
                     },
                     // {unshippedRefund

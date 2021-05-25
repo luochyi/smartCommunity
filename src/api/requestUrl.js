@@ -9,6 +9,8 @@ const requestUrl = {
     salaryList: 'salary/list',
     salaryListDelete: 'salary/delete',
     dataDictionaryList: 'dataDictionary/list',
+    attendanceRecordList:'attendanceRecord/list',
+    attendanceRecordLeaveList:'attendanceRecord/leaveList',
     //数据库
     dataBaseList: 'dataBase/list',
     dataBaseListDelete: 'dataBase/delete',
@@ -33,7 +35,7 @@ const requestUrl = {
     itemsOutListDelete: '/userArticleOut/delete',
     userDecorationList: '/userDecoration/list',
     userDecorationListDelete: '',
-
+    //设施设备
     facilitiesManageList: 'facilitiesManage/list',
     facilitiesCategoryList: '/facilitiesCategory/list',
     facilitiesCategoryListDelete: '/facilitiesCategory/delete',
@@ -50,9 +52,11 @@ const requestUrl = {
     inspectionRouteListDelete: 'inspectionRoute/falseDelete',
     inspectionPlanListDelete: 'inspectionPlan/falseDelete',
     inspectionPlanExecuteList:'inspectionPlan/executeList',
+    //物资物料
     materialList: 'material/list',
     materialListDelete: 'material/delete',
     materialRecordList: 'materialRecord/list',
+    //钥匙
     keyManagementList: '/keyManagement/list',
     keyManagementListDelete: '/keyManagement/delete',
     keyBorrowList: 'keyBorrow/list',
@@ -73,6 +77,8 @@ const requestUrl = {
     adviceListDelete: '/advice/falseDelete',
     visitorsList: '/visitors/list',
     visitorsListDelete: '/visitors/cancel',
+    //新访客
+    visitorsNewList:"visitorsNew/list",
     complaintPraiseList: '/complaintPraise/list',
     complaintPraiseListDelete: '/complaintPraise/falseDelete',
     reportRepairList: '/reportRepair/list',
@@ -89,6 +95,7 @@ const requestUrl = {
     workOrderTimeLimitListDelete: '/workOrderTimeLimit/delete',
     borrowList: '/borrow/list',
     articleList: '/article/list',
+    articleListDelete:'article/delete',
     ownersCommitteeList: '/ownersCommittee/list',
     ownersCommitteeListDelete: '/ownersCommittee/delete',
     voiceHousekeeperList: '/voiceHousekeeper/list',
@@ -120,9 +127,13 @@ const requestUrl = {
     electronicCommerceList: 'electronicCommerce/list',
     electronicCommerceListDelete: 'electronicCommerce/delete',
 
-
+    //客户访谈
+    interviewList:'interview/list',
+    interviewListDelete:'interview/delete',
+    //规程
     regulationManagementList: 'regulationManagement/list',
     regulationManagementListDelete: 'regulationManagement/delete',
+    //服务浏览
     serviceBrowsingList: 'serviceBrowsing/list',
     serviceBrowsingListDelete: 'serviceBrowsing/delete',
     //绿化
@@ -132,6 +143,7 @@ const requestUrl = {
     greenTaskListDelete: 'greenTask/delete',
     communityIntroductionList: 'communityIntroduction/list',
     communityIntroductionListDelete: 'communityIntroduction/delete',
+    //卫生
     hygieneAreaList: 'hygieneArea/list',
     hygieneAreaListDelete: 'hygieneArea/delete',
     hygieneTaskList: 'hygieneTask/list',
@@ -142,6 +154,8 @@ const requestUrl = {
     shopGoodsList: 'shop/goods/list',
     shopGoodsListDelete: 'shop/goods/delete',
     shopOrderList: 'shop/order/list',
-    shopRefundList: 'shop/refund/list'
+    shopRefundList: 'shop/refund/list',
+    //评价
+    shopEvaluationList:'shop/evaluation/list'
 }
 export default requestUrl

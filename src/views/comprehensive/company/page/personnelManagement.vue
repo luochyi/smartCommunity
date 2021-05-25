@@ -3,7 +3,7 @@
     <div class="main-content comprehensive">
 
       <div class="main-titel">
-        <span>人员管理</span>
+        <span>员工管理</span>
       </div>
       <div class="content"
            style="display:flex">

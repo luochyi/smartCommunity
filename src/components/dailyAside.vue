@@ -74,7 +74,7 @@ export default {
                 {
                     // Facility Booking facilitiesPlanExecuteList
                     path: '/butler/facilityBooking',
-                    label: '设施预约',
+                    label: '公共设施设备',
                     iconurl: require('@/assets/images/daily/ssyy_nor.png'),
                     iconisactive: require('@/assets/images/daily/ssyy_sel.png'),
                     isChildren: 1,
@@ -156,7 +156,7 @@ export default {
                     children: [
                         {
                             path: '/daily/keyManagement',
-                            label: '钥匙管理'
+                            label: '钥匙记录'
                         },
                         {
                             path: '/daily/keyExamine',

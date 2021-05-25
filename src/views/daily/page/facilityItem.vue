@@ -150,7 +150,7 @@
                                             <template slot="imgUrls">
                                                 <template>
                                                     <el-upload
-                                                        :action="`${$baseUrl}upload/uploadAnnouncement`"
+                                                        :action="`${$baseUrl}upload/uploadFacilitiesCategory`"
                                                         :on-success="
                                                             ImgeSuccess
                                                         "

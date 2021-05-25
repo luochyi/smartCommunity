@@ -1,20 +1,20 @@
 <template>
-  <div class="main-content">
-    <div class="main-titel">
-      <span>物品管理</span>
-    </div>
-    <div class="content">
-      <div class="content-btn">
-        <el-button class="init-button"
-                   icon="el-icon-plus"
-                   @click="addGoods">添加物品</el-button>
-      </div>
-      <div class="">
-
-        <VueTable ref="table"
-                  :config='config'
-                  @tableCheck="tableCheck">
-          <!-- <template slot="tabs">
+    <div class="main-content">
+        <div class="main-titel">
+            <span>物品管理</span>
+        </div>
+        <div class="content">
+            <div class="content-btn">
+                <el-button
+                    class="init-button"
+                    icon="el-icon-plus"
+                    @click="addGoods"
+                    >添加物品</el-button
+                >
+            </div>
+            <div class="">
+                <VueTable ref="table" :config="config" @tableCheck="tableCheck">
+                    <!-- <template slot="tabs">
             <el-tabs v-model="activeName"
                      @tab-click="handleClick">
               <el-tab-pane label="全部"
@@ -25,99 +25,244 @@
                            name="2"></el-tab-pane>
             </el-tabs>
           </template> -->
-          <template v-slot:imgUrls="slotData">
-            <div v-if="slotData.data.imgUrls.length">
-              <el-button class="init-text"
-                         type="text"
-                         @click="getPhotoView(slotData.data.imgUrls)">
-                <span>查看</span>
-              </el-button>
-            </div>
-            <div v-else>
-              -
-            </div>
-          </template>
-          <template slot="footer">
-            <div class="table-footer">
-              <button @click='editGoods(table_row)'>编辑</button>
-              <button @click="del(table_row)">删除</button>
-              <!-- <button>打印二维码</button> -->
-            </div>
-          </template>
-        </VueTable>
-      </div>
-
-      <Drawer :drawerTitle="addEidtTitle"
-              @drawerClose="addEidtClose"
-              :drawerVrisible='addEidt_vrisible'>
-        <div style="padding:30px">
-          <FromCard>
-            <template slot="title">基本信息</template>
-            <template>
-              <VueForm ref="addEidtFrom"
-                       @ruleSuccess='addEidtSuccess'
-                       :formObj='addEidtForm'>
-                <template slot='fileUrls'>
-                  <template>
-                    <el-upload :action="`${$baseUrl}upload/uploadArticle`"
-                               :on-success="voteImgeSuccess"
-                               :show-file-list="false"
-                               :before-upload="beforeAvatarUpload">
-                      <div class='sys-image'
-                           style='width:104px; height:104px'>
-                        <div v-if="!fileUrls">
-                          <i class="el-icon-plus"></i>
-                          <p>上传照片</p>
+                    <template v-slot:imgUrls="slotData">
+                        <div v-if="slotData.data.imgUrls.length">
+                            <el-button
+                                class="init-text"
+                                type="text"
+                                @click="getPhotoView(slotData.data.imgUrls)"
+                            >
+                                <span>查看</span>
+                            </el-button>
                         </div>
-                        <!-- editBool -->
-                        <div v-else>
-                          <el-image v-if="!editBool"
-                                    :src="`${$ImgUrl}/temp${fileUrls}`"
-                                    style="width: 104px; height: 104px"></el-image>
-                          <el-image v-else
-                                    :src="`${$ImgUrl}${fileUrls}`"
-                                    style="width: 104px; height: 104px"></el-image>
+                        <div v-else>-</div>
+                    </template>
+                    <template slot="footer">
+                        <div class="table-footer">
+                            <!-- <button @click="editGoods(table_row)">编辑</button> -->
+                            <button @click="del(table_row)">删除</button>
+                            <!-- <button>打印二维码</button> -->
                         </div>
+                    </template>
+                </VueTable>
+            </div>
 
-                      </div>
-                    </el-upload>
-                  </template>
-
-                </template>
-                <template slot='quantity'>
-                  <el-input-number v-model="addEidtForm.ruleForm.quantity"
-                                   controls-position="right"
-                                   :min="1"
-                                   :max="99"></el-input-number>
-                </template>
-
-              </VueForm>
-            </template>
-          </FromCard>
+            <Drawer
+                :drawerTitle="addEidtTitle"
+                @drawerClose="addEidtClose"
+                :drawerVrisible="addEidt_vrisible"
+            >
+                <div style="padding: 30px">
+                    <FromCard>
+                        <template slot="title">基本信息</template>
+                        <template>
+                            <VueForm ref="addEidtFrom" :formObj="addEidtForm">
+                                <template slot="fileUrls">
+                                    <template>
+                                        <el-upload
+                                            :action="`${$baseUrl}upload/uploadArticle`"
+                                            :on-success="voteImgeSuccess"
+                                            :show-file-list="false"
+                                            :before-upload="beforeAvatarUpload"
+                                        >
+                                            <div
+                                                class="sys-image"
+                                                style="
+                                                    width: 104px;
+                                                    height: 104px;
+                                                "
+                                            >
+                                                <div v-if="!fileUrls">
+                                                    <i class="el-icon-plus"></i>
+                                                    <p>上传照片</p>
+                                                </div>
+                                                <!-- editBool -->
+                                                <div v-else>
+                                                    <el-image
+                                                        v-if="!editBool"
+                                                        :src="`${$ImgUrl}/temp${fileUrls}`"
+                                                        style="
+                                                            width: 104px;
+                                                            height: 104px;
+                                                        "
+                                                    ></el-image>
+                                                    <el-image
+                                                        v-else
+                                                        :src="`${$ImgUrl}${fileUrls}`"
+                                                        style="
+                                                            width: 104px;
+                                                            height: 104px;
+                                                        "
+                                                    ></el-image>
+                                                </div>
+                                            </div>
+                                        </el-upload>
+                                    </template>
+                                </template>
+                                <template slot="quantity">
+                                    <el-input-number
+                                        v-model="VotingUserList.length"
+                                        controls-position="right"
+                                        :disabled="true"
+                                        :min="1"
+                                        :max="99"
+                                    ></el-input-number>
+                                </template>
+                                <!-- 物品 -->
+                                <template slot="articleDetailList">
+                                    <!-- <el-checkbox
+                                        v-model="imageShow"
+                                        label="图片"
+                                    ></el-checkbox>
+                                    <el-checkbox
+                                        v-model="telShow"
+                                        label="电话"
+                                    ></el-checkbox> -->
+                                    <div class="sysVote-box">
+                                        <div
+                                            class="sys-box"
+                                            v-for="(
+                                                item, index
+                                            ) in VotingUserList"
+                                            :key="index"
+                                        >
+                                            <div class="sys-title">
+                                                <span>物品{{ index + 1 }}</span>
+                                                <span
+                                                    v-if="
+                                                        VotingUserList.length ===
+                                                        index + 1
+                                                    "
+                                                    style="color: #fb4702"
+                                                    @click="addVotingUser"
+                                                    >添加物品</span
+                                                >
+                                                <span
+                                                    v-else
+                                                    style="color: #fb4702"
+                                                    @click="delVotingUser(item)"
+                                                    >删除</span
+                                                >
+                                            </div>
+                                            <div class="sys-item">
+                                                <template v-if="imageShow">
+                                                    <template>
+                                                        <el-upload
+                                                            :action="`${$baseUrl}upload/uploadVoteTitle`"
+                                                            :on-success="
+                                                                (res, file) =>
+                                                                    handleAvatarSuccess(
+                                                                        index,
+                                                                        res,
+                                                                        file
+                                                                    )
+                                                            "
+                                                            :show-file-list="
+                                                                false
+                                                            "
+                                                            :before-upload="
+                                                                beforeAvatarUpload
+                                                            "
+                                                        >
+                                                            <div
+                                                                class="sys-image"
+                                                            >
+                                                                <div
+                                                                    v-if="
+                                                                        !item
+                                                                            .fileUrls[0]
+                                                                    "
+                                                                >
+                                                                    <i
+                                                                        class="el-icon-plus"
+                                                                    ></i>
+                                                                    <p>
+                                                                        上传照片
+                                                                    </p>
+                                                                </div>
+                                                                <template
+                                                                    v-else
+                                                                >
+                                                                    <!-- 临时地址 -->
+                                                                    <el-image
+                                                                        v-if="
+                                                                            item.temporary
+                                                                        "
+                                                                        :src="`${$ImgUrl}/temp${item.fileUrls[0]}`"
+                                                                        style="
+                                                                            width: 80px;
+                                                                            height: 80px;
+                                                                        "
+                                                                    ></el-image>
+                                                                    <!-- 非临时地址 -->
+                                                                    <el-image
+                                                                        v-else
+                                                                        :src="`${$ImgUrl}${item.fileUrls[0]}`"
+                                                                        style="
+                                                                            width: 80px;
+                                                                            height: 80px;
+                                                                        "
+                                                                    ></el-image>
+                                                                </template>
+                                                            </div>
+                                                        </el-upload>
+                                                    </template>
+                                                </template>
+                                                <div class="sys-input">
+                                                    <el-input
+                                                        v-model="item.name"
+                                                        placeholder="物品明细名称"
+                                                    ></el-input>
+                                                    <el-input
+                                                        v-model="item.code"
+                                                        v-if="telShow"
+                                                        placeholder="物品单号"
+                                                    ></el-input>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </VueForm>
+                        </template>
+                    </FromCard>
+                </div>
+                <div slot="footer">
+                    <button class="btn-orange" @click="addEidtSubmit()">
+                        <span> <i class="el-icon-circle-check"></i>提交</span>
+                    </button>
+                    <button class="btn-gray" @click="addEidtClose">
+                        <span>取消</span>
+                    </button>
+                </div>
+            </Drawer>
         </div>
-        <div slot="footer">
-          <button class="btn-orange"
-                  @click="addEidtSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
-          <button class="btn-gray"
-                  @click="addEidtClose"><span>取消</span></button>
-        </div>
-      </Drawer>
+        <views-photo
+            :isVisible="photos_Visible"
+            :goodsImgsList="goodsImgsList"
+            @closeViews="getclose"
+        ></views-photo>
     </div>
-    <views-photo :isVisible="photos_Visible"
-                 :goodsImgsList="goodsImgsList"
-                 @closeViews="getclose"></views-photo>
-  </div>
 </template>
 <script>
 import viewsPhoto from '@/components/dialog/viewsPhoto'
-import { articleFindById } from '@/api/butler'
+import { articleFindById, articleInsert } from '@/api/butler'
 export default {
     data() {
         return {
             // 选中表格数据
             table_row: [],
+            imageShow: true,
+            telShow: true,
             editBool: false, //是否为编辑
             fileUrls: '',
+            VotingUserList: [
+                {
+                    fileUrls: [],
+                    name: null,
+                    code: null
+                }
+            ],
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
@@ -129,13 +274,6 @@ export default {
                         type: 'slot',
                         slotName: 'imgUrls'
                     },
-                    /**
-           *
-           *  prop: 'goodsImgUrls',
-            width: '180',
-            type: 'slot',
-            slotName: 'goodsImgUrls',
-           * */
                     { label: '数量', prop: 'quantity', width: 'auto' },
                     { label: '库存', prop: 'stock', width: 'auto' }
                     // { label: '物品状态', prop: 'status', width: 'auto' },
@@ -161,7 +299,8 @@ export default {
                     name: null,
                     fileUrls: [],
                     quantity: null,
-                    articleDetailList: null
+                    articleDetailList: []
+                    // sysVoteCandidateList: []
                 },
                 form_item: [
                     {
@@ -185,31 +324,39 @@ export default {
                         width: '100%',
                         prop: 'quantity',
                         slotName: 'quantity'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '添加物品',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'articleDetailList',
+                        slotName: 'articleDetailList'
                     }
-                ],
-                rules: {
-                    name: [
-                        {
-                            required: true,
-                            message: '请输入物品名称',
-                            trigger: 'blur'
-                        }
-                    ],
-                    // fileUrls: [
-                    //     {
-                    //         required: true,
-                    //         message: '请上传图片',
-                    //         trigger: 'change'
-                    //     }
-                    // ],
-                    quantity: [
-                        {
-                            required: true,
-                            message: '请输入数量',
-                            trigger: 'change'
-                        }
-                    ]
-                }
+                ]
+                // rules: {
+                //     name: [
+                //         {
+                //             required: true,
+                //             message: '请输入物品名称',
+                //             trigger: 'blur'
+                //         }
+                //     ],
+                //     // fileUrls: [
+                //     //     {
+                //     //         required: true,
+                //     //         message: '请上传图片',
+                //     //         trigger: 'change'
+                //     //     }
+                //     // ],
+                //     quantity: [
+                //         {
+                //             required: true,
+                //             message: '请输入数量',
+                //             trigger: 'change'
+                //         }
+                //     ]
+                // }
             },
             addEidtTitle: '',
             goodsImgsList: [],
@@ -220,6 +367,20 @@ export default {
         viewsPhoto
     },
     methods: {
+        addVotingUser() {
+            this.VotingUserList.push({
+                fileUrls: [],
+                name: null,
+                code: null
+            })
+        },
+
+        delVotingUser(item) {
+            let index = this.VotingUserList.indexOf(item)
+            if (index !== -1) {
+                this.VotingUserList.splice(index, 1)
+            }
+        },
         // 添加物品
         addGoods() {
             this.addEidtTitle = '添加物品'
@@ -240,11 +401,29 @@ export default {
                 console.log(result)
             })
         },
-        // vueForm 验证通过提交服务器
-        addEidtSuccess() {},
         // vueForm 验证提交
         addEidtSubmit() {
-            this.$refs.addEidtFrom.submitForm()
+            let resData = {
+                name: this.addEidtForm.ruleForm.name,
+                fileUrls: this.addEidtForm.ruleForm.fileUrls,
+                quantity: this.VotingUserList.length,
+                articleDetailList: this.VotingUserList
+            }
+            articleInsert(resData).then((res) => {
+                if (res.status == 200) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.addEidtClose()
+                    this.$refs.table.loadData()
+                } else if (res.status == 500) {
+                    this.$message({
+                        message: '添加失败',
+                        type: 'error'
+                    })
+                }
+            })
         },
         addEidtClose() {
             this.addEidt_vrisible = false
@@ -267,19 +446,24 @@ export default {
         onSubmit() {},
         // 删除
         del(data) {
-            let arr = []
-            for (let i = 0; i < this.table_row.length; i++) {
-                arr.push(this.table_row[i].id)
+            if (data.length) {
+                let arr = []
+                for (let i = 0; i < this.table_row.length; i++) {
+                    arr.push(this.table_row[i].id)
+                }
+                this.$confirm('是否确认删除？删除不可恢复', '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    confirmButtonClass: 'confirmButton',
+                    cancelButtonClass: 'cancelButton'
+                })
+                    .then(() => {
+                        this.$refs.table.tableDelete(arr)
+                    })
+                    .catch((action) => {})
+            } else {
+                this.$message.error('请选中需要删除的数据')
             }
-            this.$confirm('暂无', '删除', {
-                confirmButtonText: '确定',
-                // showCancelButton: false
-                cancelButtonText: '取消'
-                // confirmButtonClass: 'confirmButton',
-                // cancelButtonClass: 'cancelButton'
-            })
-                .then(() => {})
-                .catch((action) => {})
         },
         // 上传照片
         beforeAvatarUpload(file) {
@@ -300,6 +484,11 @@ export default {
             this.editBool = false
             // this.$set(this.reportRepairFrom.ruleForm.fileUrls)
             this.addEidtForm.ruleForm.fileUrls[0] = res.url
+        }, // 候选人文件上传成功
+        handleAvatarSuccess(index, res, file) {
+            this.VotingUserList[index].fileUrls.splice(0, 1, res.url)
+            this.VotingUserList[index].temporary = true
+            console.log(this.VotingUserList)
         }
         // 状态切换
         // handleClick (tab, event) {
@@ -316,10 +505,80 @@ export default {
         //   }
         //   this.$refs.table.requestData(requestData);
         // },
+    },
+    watch: {
+        drawerVrisible: {
+            handler(newValue) {
+                this.drawer_vrisible = newValue
+            }
+        },
+        // checkBoox 控制投票候选人列表内容是否有值
+        // 候选人图片
+        imageShow: {
+            handler(newValue) {
+                this.VotingUserList.map((item) => {
+                    item.fileUrls = []
+                })
+            }
+        },
+        // 候选人电话
+        telShow: {
+            handler(newValue) {
+                this.VotingUserList.map((item) => {
+                    item.tel = null
+                })
+            }
+        }
+        // 候选人名称
+        // nameShow: {
+        //   handler (newValue) {
+        //     this.VotingUserList.map(item => {
+        //       item.name = null
+        //     })
+        //   }
+        // },
     }
 }
 </script>
-<style scoped>
+<style scoped lang='scss'>
+.sysVote-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    .sys-box {
+        width: 340px;
+        height: 130px;
+        margin-right: 50px;
+        margin-bottom: 30px;
+        background: #f9f9f9;
+        border-radius: 4px;
+        padding: 12px;
+        .sys-title {
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            margin-bottom: 12px;
+            span {
+                font-size: 14px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #333333;
+            }
+        }
+        .sys-item {
+            display: flex;
+            align-content: space-between;
+            height: 80px;
+            .sys-input {
+                flex: 1;
+                display: flex;
+                flex-wrap: wrap;
+                align-content: space-between;
+            }
+        }
+    }
+}
 .sys-image {
     width: 80px;
     height: 80px;

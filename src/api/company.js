@@ -71,6 +71,22 @@ export function contractInsert(data) {
         data: data
     })
 }
+//attendanceRecord/cardReplacement
+export function attendanceRecordCardReplacement(data) {
+    return service.request({
+        method: 'GET',
+        url: '/attendanceRecord/cardReplacement',
+        params: data
+    })
+}
+//attendanceRecord/reviewer
+export function attendanceRecordReviewer(data) {
+    return service.request({
+        method: 'POST',
+        url: '/attendanceRecord/reviewer',
+        data: data
+    })
+}
 // 功能权限管理：查询所属角色下所有的员工信息 （包含条件搜索）
 export function functionAuthorityList(data) {
     return service.request({

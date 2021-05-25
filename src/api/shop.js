@@ -24,6 +24,14 @@ export function shopSupplierList(data){
         params: data
     })
 }
+//到货order/arrivalGoods
+export function orderArrivalGoods(data){
+    return service.request({
+        method:'POST',
+        url:'shop/order/arrivalGoods',
+        data: data
+    })
+}
 //分类'shop/category/list'
 export function shopCategoryList(data){
     return service.request({
@@ -40,6 +48,22 @@ export function shopCategoryUpdate(data){
         data: data
     })
 }
+// shop/category/delete shop/category/insert
+export function shopCategoryDelete(data){
+    return service.request({
+        method:'GET',
+        url:'shop/category/delete',
+        params: data
+    })
+}
+export function shopCategoryInsert(data){
+    return service.request({
+        method:'POST',
+        url:'shop/category/insert',
+        data: data
+    })
+}
+
 //商品管理 上架shop/goods/loading 下架shop/goods/unloading
 export function shopGoodsLoading(data){
     return service.request({

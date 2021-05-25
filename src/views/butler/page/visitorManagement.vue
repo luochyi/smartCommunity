@@ -4,7 +4,7 @@
     <div class="main-titel">
       <span>访客管理</span>
     </div>
-    <div class="tips">
+    <!-- <div class="tips">
       <p>
         <span class="el-icon-warning-outline"
               style="margin:0 12px"></span>
@@ -12,7 +12,7 @@
         <span style="color:rgba(251, 71, 2, 1)">{{countNew}}</span>
         户家庭申报访客通行
       </p>
-    </div>
+    </div> -->
     <div class="content">
       <!-- 查询重制 -->
       <div class="">
@@ -20,11 +20,14 @@
         <VueTable ref="table"
                   :config='config'
                   @tableCheck="tableCheck">
+                  <template v-slot:visitDateStart='slotData'>
+                      {{slotData.data.visitDateStart}}
+                  </template>
           <template slot="footer">
             <div class="table-footer">
               <!-- <button @click="edit(table_row)">编辑</button> -->
-              <button @click="record(table_row)">出入记录</button>
-              <button @click="toVoid(table_row)">作废</button>
+              <!-- <button @click="record(table_row)">出入记录</button>
+              <button @click="toVoid(table_row)">作废</button> -->
             </div>
           </template>
         </VueTable>
@@ -91,50 +94,52 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '房屋信息', prop: 'roomName', width: 'auto' },
+                    { label: '拜访房屋名称', prop: 'roomName', width: 'auto' },
                     // { label: '类型', prop: 'type', width: ' auto' },
                     { label: '访客姓名', prop: 'name', width: 'auto' },
                     { label: '访客电话', prop: 'tel', width: 'auto' },
-                    // { label: '访客性别', prop: 'sex', width: 'auto' },
+                    { label: '访客性别', prop: 'sex', width: 'auto' ,type:'function',
+                        callback:(row,prop)=>{
+                            switch (row.sex) {
+                                case 1:
+                                    return '男'
+                                    break;
+                                case 2:
+                                    return '女'
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    },
                     // { label: '是否开车', prop: 'isDrive', width: 'auto ' },
-                    { label: '车牌号', prop: 'carNum', width: '160' },
+                    { label: '访客车牌号', prop: 'carNumber', width: '160' },
                     {
-                        label: '预约到访时间',
-                        prop: 'expectedVisitDate',
+                        label: '预约到访日期',
+                        prop: 'visitDateStart',
                         width: '180',
-                        sortable: true
+                        type:'slot',
+                        slotName:'visitDateStart'
+                    },
+                    {
+                        label: '申请人',
+                        prop: 'createName',
+                        width: '180',
+                    },
+                    {
+                        label: '申请时间',
+                        prop: 'createDate',
+                        width: '180',
                     }
-                    // {
-                    //     label: '实际到访时间 ',
-                    //     prop: 'visitDate',
-                    //     width: '180',
-                    //     sortable: true
-                    // },
-                    // {
-                    //     label: '实际离开时间',
-                    //     prop: 'departureTime',
-                    //     width: '160'
-                    // },
-                    // {
-                    //     label: '通行证时效',
-                    //     prop: 'effectiveTime',
-                    //     width: '160'
-                    // },
-                    // {
-                    //     label: '通行状态',
-                    //     prop: 'visitorStatus',
-                    //     width: '130',
-                    //     sortable: true
-                    // }
                 ],
                 table_data: [],
                 search_item: [
-                    {
-                        type: 'Input',
-                        label: '房屋信息',
-                        placeholder: '楼栋-单元-房号',
-                        prop: 'roomName'
-                    },
+                    // {
+                    //     type: 'Input',
+                    //     label: '房屋信息',
+                    //     placeholder: '楼栋-单元-房号',
+                    //     prop: 'roomName'
+                    // },
 
                     {
                         type: 'Input',
@@ -154,23 +159,23 @@ export default {
                     //     ]
                     // },
                     {
-                        type: 'Input',
-                        label: '车牌号',
+                        type: 'Int',
+                        label: '访客手机号',
                         placeholder: '请输入',
-                        prop: 'carNum'
+                        prop: 'tel'
                     },
-                    {
-                        type: 'startDate',
-                        label: '预计到访时间开始',
-                        placeholder: '请输入',
-                        prop: 'expectedVisitDateStart'
-                    },
-                    {
-                        type: 'endDate',
-                        label: '预计到访时间结束',
-                        placeholder: '请输入',
-                        prop: 'expectedVisitDateEnd'
-                    }
+                    // {
+                    //     type: 'startDate',
+                    //     label: '预计到访时间开始',
+                    //     placeholder: '请输入',
+                    //     prop: 'expectedVisitDateStart'
+                    // },
+                    // {
+                    //     type: 'endDate',
+                    //     label: '预计到访时间结束',
+                    //     placeholder: '请输入',
+                    //     prop: 'expectedVisitDateEnd'
+                    // }
                     // , {
                     //   type: 'startDate',
                     //   label: '实际到访时间',
@@ -208,7 +213,7 @@ export default {
                     //     ]
                     // }
                 ],
-                url: 'visitorsList',
+                url: 'visitorsNewList',
                 data: {
                     pageNum: 1,
                     size: 10
@@ -327,17 +332,17 @@ export default {
             }
         }
     },
-    created() {
-        this.getTipsData()
-    },
+    // created() {
+    //     this.getTipsData()
+    // },
     methods: {
-        getTipsData() {
-            //  查询今日咨询条数
-            visitorsCountVisitorsNew().then((result) => {
-                console.log(result)
-                this.countNew = result.countNew
-            })
-        },
+        // getTipsData() {
+        //     //  查询今日咨询条数
+        //     visitorsCountVisitorsNew().then((result) => {
+        //         console.log(result)
+        //         this.countNew = result.countNew
+        //     })
+        // },
         tableCheck(arr) {
             this.table_row = arr
         },

@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>钥匙管理</span>
+                <span>钥匙记录</span>
             </div>
             <div class="content">
                 <div class="content-btn">

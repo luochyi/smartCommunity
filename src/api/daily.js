@@ -327,6 +327,14 @@ export function packageCollectionUpdate(data) {
         data: data
     })
 }
+//interview/insert客户访谈
+export function interviewInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/interview/insert',
+        data: data
+    })
+}
 //greenArea/insert
 export function greenAreaInsert(data) {
     return service.request({

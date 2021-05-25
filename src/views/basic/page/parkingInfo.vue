@@ -7,7 +7,7 @@
       <div class="content-btn">
         <el-button class="init-button"
                    @click="add()"
-                   icon="el-icon-plus">新增车辆</el-button>
+                   icon="el-icon-plus">新增车位</el-button>
         <!-- <el-button type="init-button2"
                    icon="el-icon-folder-add"
                    plain>批量导入</el-button>
@@ -146,7 +146,7 @@ export default {
       this.$refs.table.loadData()
     },
     add () {
-      this.drawerTitle = '新增车辆',
+      this.drawerTitle = '新增车位',
         this.drawer_vrisible = true;
     },
     handleClose () {

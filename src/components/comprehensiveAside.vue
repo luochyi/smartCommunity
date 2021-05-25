@@ -86,12 +86,9 @@ export default {
           children:[
             {
               path: '/company/personnelManagement',
-              label: '人员管理'
+              label: '员工管理'
             },
-            {
-              path: '/company/attendanceRecord',
-              label: '考勤记录管理'
-            },
+            
             {
               path: '/company/salaryManagement',
               label: '薪资管理'
@@ -102,6 +99,29 @@ export default {
             }
           ]
 
+        },
+        /**
+         * {
+              path: '/company/attendanceRecord',
+              label: '考勤记录管理'
+            },
+         */
+        {
+          path: '/company/attendance',
+          label: '考勤管理',
+          iconurl: require('@/assets/images/company/icon_comprehensive08_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive08_sel.png'),
+          isChildren: 1,
+           children:[
+             {
+              path: '/company/attendanceRecord',
+              label: '考勤记录'
+            },
+            {
+              path: '/company/attendanceApplication',
+              label: '申请记录'
+            },
+           ]
         },
         {
           path: '/company/trainManage',

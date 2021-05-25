@@ -141,33 +141,15 @@ export default {
           iconurl: require('@/assets/images/commodity/icon_shopping04_nor.png'),
           iconisactive: require('@/assets/images/commodity/icon_shopping04_sel.png'),
           isChildren: 0,
-          // children: [
-          //   {
-          //     //Unshipped refund
-          //     path: '/commodity/unshippedRefund',
-          //     label: '未发货退款'
-          //   },
-          //   {
-          //     // Shipped after sale
-          //     path: '/commodity/Shipped',
-          //     label: '已发货售后'
-          //   },
-          //   {
-          //     // Customer phone settings
-          //     path: '/commodity/phoneSet',
-          //     label: '客户电话设置'
-          //   },
-          //   {
-          //     //Request for service
-          //     path: '/commodity/requestService',
-          //     label: '服务请求'
-          //   },
-          //   {
-          //     //Fast refund assistant
-          //     path: '/commodity/refundAssistant',
-          //     label: '极速退款助手'
-          //   }
-          // ]
+        },
+        //evaluationList
+         {
+          // After sale
+          path: '/commodity/evaluationList',
+          label: '评价管理',
+          iconurl: require('@/assets/images/commodity/icon_shopping04_nor.png'),
+          iconisactive: require('@/assets/images/commodity/icon_shopping04_sel.png'),
+          isChildren: 0,
         },
         // {
         //   // community activity

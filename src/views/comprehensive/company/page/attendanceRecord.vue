@@ -1,169 +1,260 @@
 <template>
-    <div class="main-content">
-        <div class="main-titel">
-            <span>考勤记录</span>
-        </div>
-        <div class="content">
-            <div style="margin-top: 15px">
-                <el-input
-                    placeholder="请输入内容"
-                    v-model="input3"
-                    class="input-with-select"
-                >
-                    <el-select
-                        v-model="select"
-                        slot="prepend"
-                        placeholder="姓名"
-                    >
-                        <el-option label="姓名" value="1"></el-option>
-                        <el-option label="日期" value="2"></el-option>
-                        <el-option label="状态" value="3"></el-option>
-                    </el-select>
-                    <el-button slot="append" icon="el-icon-search"></el-button>
-                </el-input>
+    <div>
+        <div class="main-content">
+            <div class="main-titel">
+                <span>考勤记录</span>
             </div>
-            <template>
-                <el-table
-                    :data="tableData"
-                    style="width: 100%"
-                    max-height="700"
-                >
-                    <el-table-column fixed prop="index" label="序号" width="80">
-                    </el-table-column>
-                    <el-table-column prop="name" label="姓名" width="120">
-                    </el-table-column>
-                    <el-table-column prop="date" label="考勤日期" width="320">
-                    </el-table-column>
-                    <el-table-column prop="record" label="打卡记录" width="320">
-                    </el-table-column>
-                     <el-table-column prop="hour" label="工作时长" width="220">
-                    </el-table-column>
-                     <el-table-column prop="status" label="状态" width="220">
-                    </el-table-column>
-                    <el-table-column fixed="right" label="操作" width="120">
-                        <template slot-scope="scope">
-                            <el-button
-                                @click.native.prevent="
-                                    deleteRow(scope.$index, tableData)
-                                "
-                                type="text"
-                                size="small"
+            <div class="content">
+                 <download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="考勤记录.xls"
                             >
-                                删除
-                            </el-button>
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel>
+                <div class="">
+                    <VueTable
+                        ref="table"
+                        :config="config"
+                        @tableCheck="tableCheck"
+                    >
+                        <template slot="footer">
+                            <div class="table-footer">
+                                <button @click="cardReplacement(table_row)">
+                                    补卡
+                                </button>
+                               
+                                <!-- <button @click="isEnable(table_row)">启用/停用</button> -->
+                                <!-- <button @click="add(table_row)">编辑</button> -->
+                            </div>
                         </template>
-                    </el-table-column>
-                </el-table>
-            </template>
+                    </VueTable>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
+import {
+    attendanceRecordCardReplacement
+} from '@/api/company'
+// import func from 'vue-editor-bridge'
 export default {
     data() {
         return {
-            input1: '',
-            input2: '',
-            input3: '',
-            select: '',
-            tableData: [
-                {
-                    index:1,
-                    name:'王强',
-                    date:'2021-2-1',
-                    record:'8:30-17:30',
-                    hour:'9.0',
-                    status:'正常'
+            add_vrisible: false,
+            addDate: null,
+            options: [],
+            sysOptions: [],
+            loading: false,
+            addForm: {
+                ruleForm: {
+                    showName: null,
+                    id: null
                 },
-                {
-                    index:2,
-                    name:'马子博',
-                    date:'2021-2-1',
-                    record:'8:30-17:30',
-                    hour:'9.0',
-                    status:'正常'
-                },
-                {
-                    index:3,
-                    name:'刘晨晨',
-                    date:'2021-2-1',
-                    record:'8:30-17:30',
-                    hour:'9.0',
-                    status:'正常'
-                },
-                {
-                    index:4,
-                    name:'王强',
-                    date:'2021-2-2',
-                    record:'8:30-17:30',
-                    hour:'9.0',
-                    status:'正常'
-                },
-                {
-                    index:5,
-                    name:'马子博',
-                    date:'2021-2-2',
-                    record:'-',
-                    hour:'0.0',
-                    status:'请假'
-                },
-                {
-                    index:6,
-                    name:'陈诺',
-                    date:'2021-2-4',
-                    record:'12:00-17:30',
-                    hour:'5.0',
-                    status:'补打卡'
-                },
-                {
-                    index:7,
-                    name:'王强',
-                    date:'2021-2-4',
-                    record:'8:30-17:30',
-                    hour:'9.0',
-                    status:'正常'
-                },
-                {
-                    index:8,
-                    name:'王强',
-                    date:'2021-2-5',
-                    record:'8:30-17:30',
-                    hour:'9.0',
-                    status:'正常'
-                },
-                {
-                    index:9,
-                    name:'王强',
-                    date:'2021-2-6',
-                    record:'8:30-17:30',
-                    hour:'9.0',
-                    status:'正常'
-                },
-                {
-                    index:10,
-                    name:'马子博',
-                    date:'2021-2-7',
-                    record:'8:30-17:30',
-                    hour:'9.0',
-                    status:'正常'
-                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '显示名称',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'showName'
+                    }
+                ]
+            },
+            table_row: [],
+            activeName: '0',
+             json_fields: {
+                上班打卡时间: 'startClockDate',
+                下班打卡时间: 'endClockDate',
+                补卡时间:'cardReplacementDate',
+                补卡操作人:'operatorName',
+                打卡人姓名:'clockName',
+                打卡人手机号:'clockTel',
+                打卡日期:'createDate'
                 
-            ]
+            },
+            config: {
+                thead: [
+                    {
+                        label: '序号',
+                        type: 'index',
+                        width: '80'
+                    },
+                    {
+                        label: '打卡人姓名',
+                        prop: 'clockName',
+                        width: 'auto'
+                    },
+                    {
+                        label: '打卡人手机号',
+                        prop: 'clockTel',
+                        width: 'auto'
+                    },
+                    {
+                        label: '考勤日期',
+                        prop: 'createDate',
+                        width: 'auto'
+                    },
+                    {
+                        label: '上班打卡时间',
+                        prop: 'startClockDate',
+                        width: 'auto'
+                    },
+                    {
+                        label: '下班打卡时间',
+                        prop: 'endClockDate',
+                        width: 'auto'
+                    },
+                    {
+                        label: '补卡时间',
+                        prop: 'cardReplacementDate',
+                        width: 'auto'
+                    },
+                    {
+                        label: '补卡操作人',
+                        prop: 'operatorName',
+                        width: 'auto'
+                    }
+                ],
+                table_data: [],
+                url: 'attendanceRecordList',
+                search_item: [
+                    {
+                        type: 'Date',
+                        label: '考勤日期',
+                        placeholder: '请选择日期',
+                        prop: 'createDate'
+                    },
+                    {
+                        type: 'Int',
+                        label: '打卡人手机号',
+                        placeholder: '请输入',
+                        prop: 'clockTel'
+                    },
+                    {
+                        type: 'select',
+                        label: '状态',
+                        placeholder: '请输入',
+                        prop: 'status',
+                        options: [
+                            {
+                                value: 1,
+                                label: '未上班'
+                            },
+                            {
+                                value: 2,
+                                label: '未下班'
+                            }
+                        ]
+                    }
+                    // Slot
+                ],
+                data: {
+                    pageNum: 1,
+                    size: 10
+                }
+            }
         }
     },
     methods: {
-        deleteRow(index, rows) {
-            rows.splice(index, 1)
+        // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'attendanceRecordList',
+                data: {
+                    pageNum: 1,
+                    size: 100
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
+        //补卡
+        cardReplacement(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '请选择一条记录进行补卡',
+                    type: 'error'
+                })
+            }else if(data[0].cardReplacementDate !==null){
+                this.$message({
+                    message: '该记录不可补卡',
+                    type: 'error'
+                })
+            }
+             else if(data[0].endClockDate !==null){
+                this.$message({
+                    message: '该记录不可补卡',
+                    type: 'error'
+                })
+            }else {
+                attendanceRecordCardReplacement({ id: data[0].id }).then(
+                    (res) => {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.$refs.table.loadData()
+                    }
+                )
+            }
+        },
+        dateTimeChange(arr) {
+            this.addForm.ruleForm.openStartDate = arr[0]
+            this.addForm.ruleForm.openEndDate = arr[1]
+        },
+        tableCheck(data) {
+            this.table_row = data
+        },
+        // 删除
+        del(data) {
+            if (data.length) {
+                let arr = []
+                for (let i = 0; i < this.table_row.length; i++) {
+                    arr.push(this.table_row[i].id)
+                }
+                this.$confirm('是否确认删除？删除不可恢复', '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    confirmButtonClass: 'confirmButton',
+                    cancelButtonClass: 'cancelButton'
+                })
+                    .then(() => {
+                        this.$refs.table.tableDelete(arr)
+                    })
+                    .catch((action) => {})
+            } else {
+                this.$message.error('请选中需要删除的数据')
+            }
         }
     }
 }
 </script>
-<style>
-.el-select .el-input {
-    width: 130px;
-}
-.input-with-select .el-input-group__prepend {
-    background-color: #fff;
-}
-</style>

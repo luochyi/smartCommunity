@@ -28,6 +28,7 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="send(table_row)">发货</button>
+                                <button @click="arrival(table_row)">到货</button>
                             </div>
                         </template>
                     </VueTable>
@@ -44,7 +45,7 @@
 
 <script>
 import viewsPhoto from '@/components/dialog/viewsPhoto'
-import { shopOrderDeliverGoods } from '@/api/shop'
+import { shopOrderDeliverGoods ,orderArrivalGoods} from '@/api/shop'
 export default {
     components: {
         viewsPhoto
@@ -110,10 +111,10 @@ export default {
                                     return '申请退换货'
                                     break
                                 case 9:
-                                    return '申请通过'
+                                    return '申请退换货通过'
                                     break
                                 case 10:
-                                    return '申请驳回'
+                                    return '申请退换货驳回'
                                     break
                             }
                         }
@@ -144,8 +145,8 @@ export default {
                             { value: 4, label: '已收货' },
                             { value: 6, label: '已评价' },
                             { value: 8, label: '申请退换货' },
-                            { value: 9, label: '申请通过' },
-                            { value: 10, label: '申请驳回' },
+                            { value: 9, label: '申请退换货通过' },
+                            { value: 10, label: '申请退换货驳回' },
                         ],
                         prop: 'status'
                     },
@@ -190,6 +191,31 @@ export default {
                             message: res.message,
                             type: 'success'
                         })
+                         this.$refs.table.requestData()
+                    }
+                })
+            }
+        },
+        //到货 只有已发货状态才可以发货
+        arrival(data){
+            if(data.length!=1){
+                this.$message({
+                    type: 'error',
+                    message: '请选择一个订单到货'
+                })
+            }else if(data[0].status!=2){
+                this.$message({
+                    type: 'error',
+                    message: '该状态不可到货'
+                })
+            }else{
+                orderArrivalGoods({id:data[0].id}).then((res) => {
+                    if (res.status) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.$refs.table.requestData()
                     }
                 })
             }

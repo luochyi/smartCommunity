@@ -203,23 +203,8 @@ export default {
       this.add_vrisible = false
     },
     addSubmit () {
-      // this.add_vrisible = false
-      /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
       let resData = {
         ...this.addForm.ruleForm
-        // code: this.addForm.ruleForm.code,
-        // name: this.addForm.ruleForm.name,
-        // openStartDate: this.openStartDate,
-        // openEndDate:  this.openEndDate,
-        // imgUrls:this.addForm.ruleForm.imgUrls,
       }
       facilitiesCategoryInsert(resData).then(res => {
         if (res.status) {
