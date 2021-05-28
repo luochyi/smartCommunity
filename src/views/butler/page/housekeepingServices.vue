@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>业主app紧急报警记录</span>
+                <span>家政服务记录</span>
             </div>
             <div class="content">
                 <div class="">
@@ -149,20 +149,33 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '用户名称', prop: 'name', width: 'auto' },
-                    { label: '用户手机号', prop: 'tel', width: 'auto' },
-                    { label: '房产名称', prop: 'roomName', width: 'auto' },
-                    { label: '报警时间', prop: 'createDate', width: 'auto' },
+                    { label: '家政房产名称', prop: 'roomName', width: 'auto' },
+                    {
+                        label: '家政人数',
+                        prop: 'num',
+                        width: 'auto'
+                    },
+                    { label: '家政负责人名称', prop: 'leaderName', width: 'auto' },
+                    { label: '家政负责人手机号', prop: 'leaderTel', width: 'auto' },
+                    { label: '家政内容', prop: 'content', width: 'auto' },
+                    { label: '创建人名称', prop: 'createName', width: 'auto' },
+                    { label: '创建时间', prop: 'createDate', width: 'auto' },
                 ],
                 table_data: [],
-                url: 'alarmOneButtonAlarmList',
-                // search_item: [
-                //     {
-                //         type: 'Input',
-                //         label: '房屋名称',
-                //         placeholder: '请输入房屋名称（如1-1-101）',
-                //         prop: 'roomName'
-                //     },
+                url: 'housekeepingList',
+                search_item: [
+                    {
+                        type: 'Int',
+                        label: '家政负责人手机号',
+                        placeholder: '请输入手机号',
+                        prop: 'leaderTel'
+                    },
+                    {
+                        type: 'Input',
+                        label: '创建人名称',
+                        placeholder: '请输入创建人名称',
+                        prop: 'createName'
+                    }],
                 //     {
                 //         type: 'select',
                 //         label: '审核状态',

@@ -47,7 +47,7 @@
                                     </li>
                                 </ul>
                             </el-col>
-                            <el-col :span="4">
+                            <el-col :span="10">
                                 <ul style="margin-left: 30px">
                                     <li
                                         v-for="(item, index) in this

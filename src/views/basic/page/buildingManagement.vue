@@ -58,9 +58,10 @@ export default {
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '编号', prop: 'no', width: 'auto' },
+          { label: '楼栋号', prop: 'no', width: 'auto' },
           { label: '楼栋名称', prop: 'name', width: 'auto' },
-          { label: '楼栋ID', prop: 'code', width: 'auto' }
+          { label: '楼栋ID', prop: 'code', width: 'auto' },
+          { label: '导入编号', prop: 'id', width: 'auto' },
         ],
         url: 'buildList',
         data: {

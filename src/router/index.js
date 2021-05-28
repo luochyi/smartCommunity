@@ -140,6 +140,13 @@ const routes = [
                             ], resolve)
                     },
                     {
+                        path: '/company/appEmergencyAlarm',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/appEmergencyAlarm'
+                            ], resolve)
+                    },
+                    {
                         path: '/company/fireAlarm',
                         component: resolve =>
                             require([
@@ -607,7 +614,14 @@ const routes = [
                                 '@/views/butler/page/voiceButler'
                             ], resolve)
                     },
-                    
+                    {
+                        // 家政housekeepingServices
+                        path: '/butler/housekeepingServices',
+                        component: resolve =>
+                            require([
+                                '@/views/butler/page/housekeepingServices'
+                            ], resolve)
+                    },
                     
                 ]
             }

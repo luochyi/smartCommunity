@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-container class="home-container">
-      <el-header>
+      <el-header  :style="{backgroundColor: $store.state.bgColor}">
         <div class="header-logo">
           <div class="logo">
             <div>
@@ -21,7 +21,7 @@
           <div class="header-menu">
             <el-menu class="el-menu-demo"
                      :default-active="activeIndex"
-                     background-color="#1f293d"
+                      :style="{backgroundColor: $store.state.bgColor}"
                      text-color="#999999"
                      active-text-color="#ffffff"
                      mode="horizontal"

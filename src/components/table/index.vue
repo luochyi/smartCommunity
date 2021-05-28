@@ -13,7 +13,7 @@
       <slot name="tabs"></slot>
       <div class="content-table">
         <div style='width:100%;'>
-          <el-table style="width: 100%"
+          <el-table style="width: 100%;"
                     @selection-change="tableCheck"
                     v-loading="loading_table"
                     element-loading-text="拼命加载中"
@@ -21,6 +21,7 @@
                     highlight-current-row
                     :default-sort="{prop: 'date', order: 'descending'}"
                     :header-cell-style="{ background: '#F5F5F6', color: '#999999' }"
+                    :cell-style="{fontWeight:$store.state.fontWeight,}"
                     :data="table_config.table_data">
             <el-table-column v-if="table_config.checkbox"
                              type="selection"

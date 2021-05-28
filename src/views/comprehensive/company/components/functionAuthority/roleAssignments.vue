@@ -52,11 +52,11 @@
                          @click="search(null)">重置</el-button>
 
             </div>
-            <div>
+            <!-- <div>
               <el-button size="small"
                          @click="addEidtVrisible = true"
                          type="primary">添加 员工</el-button>
-            </div>
+            </div> -->
           </div>
           <div>
             <el-table :data="tableData"
@@ -66,6 +66,7 @@
                       size='small'
                       default-expand-all
                       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                      :cell-style="{fontWeight:$store.state.fontWeight,}"
                       :header-cell-style="{background:'#eef1f6',color:'#606266'}">
               <el-table-column prop="nickName"
                                label="昵称（系统名）"

@@ -8,87 +8,73 @@
                     </div></el-header
                 >
                 <el-main
-                    ><el-button @click="go"> 网络安全 </el-button>
-                    <el-table
-                        :data="tableData"
-                        height="800"
-                        border
-                        style="width: 100%"
-                    >
-                        <el-table-column prop="index" label="序号" width="180">
-                        </el-table-column>
-                        <el-table-column prop="name" label="设置" width="220">
-                        </el-table-column>
-                        <el-table-column label="操作" width="100">
-                            <template slot-scope="scope">
-                                <el-button
-                                    @click="handleClick(scope.row)"
-                                    type="text"
-                                    size="small"
-                                    >查看</el-button
-                                >
-                                <el-switch
-                                    v-model="scope.row.value"
-                                    active-color="#13ce66"
-                                    inactive-color="#ff4949"
-                                >
-                                </el-switch>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                    ><el-button @click="go" size="mini"> 网络安全 </el-button>
                 </el-main>
+                <div class="tbtb">
+                    <tr>
+                        <td  :style="{fontWeight:$store.state.fontWeight,}">序号</td>
+                        <td :style="{fontWeight:$store.state.fontWeight,}">功能</td>
+                        <td :style="{fontWeight:$store.state.fontWeight,}">设置</td>
+                    </tr>
+                    <!-- <tr>
+                        <td>1</td>
+                        <td>字体大小</td>
+                        <td>
+                            <el-switch
+                                v-model="value1"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                @change="changeSize"
+                            >
+                            </el-switch>
+                        </td>
+                    </tr> -->
+                    <tr>
+                        <td :style="{fontWeight:$store.state.fontWeight,}">1</td>
+                        <td :style="{fontWeight:$store.state.fontWeight,}">导航栏颜色切换</td>
+                        <td>
+                            <el-button @click="$store.commit('changeColor')"  type="primary">
+                                切换颜色
+                            </el-button>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td :style="{fontWeight:$store.state.fontWeight,}">2</td>
+                        <td :style="{fontWeight:$store.state.fontWeight,}">表单字体加粗</td>
+                        <td>
+                            <el-button @click="$store.commit('changeFont')"  type="primary">
+                                字体加粗设置
+                            </el-button>
+                        </td>
+                    </tr>
+                     <!-- <tr>
+                        <td>2</td>
+                        <td>表单字体大小</td>
+                        <td>
+                            <el-button @click="$store.commit('changeFont')"  type="primary">
+                                字体颜色设置
+                            </el-button>
+                        </td>
+                    </tr> -->
+                </div>
             </el-container>
         </el-card>
     </div>
 </template>
 
 <script>
+import store from '@/store'
 export default {
     data() {
         return {
-            tableData: [
-                {
-                    index: '1',
-                    name: '字体大小',
-                    value: true
-                },
-                {
-                    index: '2',
-                    name: '夜间模式',
-                    value: true
-                },
-                {
-                    index: '3',
-                    name: '繁简切换',
-                    value: true
-                },
-                {
-                    index: '4',
-                    name: '报警提示',
-                    value: true
-                },
-                {
-                    index: '5',
-                    name: '静音',
-                    value: false
-                },
-                {
-                    index: '6',
-                    name: '智能模式',
-                    value: true
-                },
-                {
-                    index: '8',
-                    name: '字体加粗',
-                    value: false
-                }
-            ]
         }
     },
-    methods:{
-        go(){
-            window.open('https://yundun.console.aliyun.com/?spm=a2c4g.11186623.2.6.a3d36db3ujQ449&p=cfwnext&accounttraceid=1e5a78659ff549d69976951dbe6b6c2apdru#/security/access/internet/inbound')
-        }
+    methods: {
+        go() {
+            window.open(
+                'https://yundun.console.aliyun.com/?spm=a2c4g.11186623.2.6.a3d36db3ujQ449&p=cfwnext&accounttraceid=1e5a78659ff549d69976951dbe6b6c2apdru#/security/access/internet/inbound'
+            )
+        },
     }
 }
 </script>
@@ -100,7 +86,14 @@ export default {
 .text {
     font-size: 14px;
 }
-
+.tbtb tr td {
+    width: 170px;
+    height: 80px;
+    border: 1px solid #feeeed;
+    font-size: 20px;
+    line-height: 80px;
+    text-align: center;
+}
 .item {
     margin-bottom: 18px;
 }

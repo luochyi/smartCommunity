@@ -42,6 +42,18 @@
                                         ></el-tab-pane>
                                     </el-tabs>
                                 </template>
+                                <template v-slot:doc="slotData">
+                                    <div
+                                        style="color: blue; cursor: pointer"
+                                        v-if="slotData.data.fileDocUrl"
+                                        @click="
+                                            download(slotData.data.fileDocUrl)
+                                        "
+                                    >
+                                        {{ slotData.data.fileDocName }}
+                                    </div>
+                                    <div v-else>无</div>
+                                </template>
                                 <template slot="footer">
                                     <div class="table-footer">
                                         <button @click="edit(table_row)">
@@ -82,6 +94,7 @@
                                                 >
                                                 </el-time-picker>
                                             </template>
+                                            <!-- 设施分类选择 -->
                                             <template
                                                 v-slot:facilitiesCategoryId
                                             >
@@ -109,6 +122,41 @@
                                                     >
                                                     </el-option>
                                                 </el-select>
+                                            </template>
+                                            <!-- 上传文件 -->
+                                            <template slot="fileDocUrl">
+                                                <template>
+                                                    <el-upload
+                                                        :action="`${$baseUrl}upload/uploadFacilitiesDoc`"
+                                                        :on-success="
+                                                            fileSuccess
+                                                        "
+                                                        :on-remove="wordRemove"
+                                                        :on-exceed="
+                                                            handleExceed
+                                                        "
+                                                        :file-list="wordList"
+                                                        accept=".doc,.DOC,.docx,.DOCX"
+                                                        :limit="1"
+                                                        :before-upload="
+                                                            beforeFileUpload
+                                                        "
+                                                    >
+                                                        <el-button
+                                                            icon="el-icon-edit"
+                                                            size="small"
+                                                            >上传文件</el-button
+                                                        >
+                                                        <div
+                                                            slot="tip"
+                                                            class="el-upload__tip"
+                                                        >
+                                                            <span
+                                                                >支持扩展名：doc,docx</span
+                                                            >
+                                                        </div>
+                                                    </el-upload>
+                                                </template>
                                             </template>
                                         </VueForm>
                                     </template>
@@ -155,6 +203,7 @@ export default {
             addDate: null,
             activeName1: 'first',
             options: [],
+            wordList: [],
             addForm: {
                 ruleForm: {
                     name: null,
@@ -162,7 +211,9 @@ export default {
                     facilitiesCategoryId: null,
                     address: null,
                     type: 1,
-                    id:null
+                    id: null,
+                    fileDocUrl: null,
+                    fileDocName: null
                 },
                 form_item: [
                     {
@@ -192,8 +243,23 @@ export default {
                         type: 'Input',
                         label: '设施地址',
                         placeholder: '请输入',
-                        width: '100%',
+                        width: '50%',
                         prop: 'address'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '上传文件',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'fileDocUrl',
+                        slotName: 'fileDocUrl'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '备注',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'remakes'
                     }
                 ]
             },
@@ -231,7 +297,15 @@ export default {
                             }
                         }
                     },
-                    { label: '添加时间', prop: 'createDate', width: '220' }
+                    { label: '添加时间', prop: 'createDate', width: '220' },
+                    {
+                        label: 'doc，docx下载',
+                        prop: 'fileDocUrl',
+                        width: 'auto',
+                        type: 'slot',
+                        slotName: 'doc'
+                    },
+                    { label: '备注', prop: 'remakes', width: '220' }
                 ],
                 table_data: [],
                 url: 'facilitiesManageList',
@@ -290,6 +364,28 @@ export default {
         this.getUserList()
     },
     methods: {
+        //下载文件
+        download(data) {
+            this.$confirm('是否下载文件?', '下载提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                // center: true
+            })
+                .then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '下载成功'
+                    })
+                    window.open(this.$ImgUrl + data)
+                })
+                .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消下载'
+                    })
+                })
+        },
         // 获取用户列表
         getUserList(val) {
             let reeData = {
@@ -323,14 +419,30 @@ export default {
             } else {
                 this.add_vrisible = true
                 this.drawerTitle = '修改设施信息'
-                facilitiesManageFindDetailById({id:data[0].id}).then(res=>{
-                    console.log(res);
-                    this.addForm.ruleForm.name = res.data.detail.name
-                    this.addForm.ruleForm.code = res.data.detail.code
-                    this.addForm.ruleForm.facilitiesCategoryId = res.data.detail.facilitiesCategoryId
-                    this.addForm.ruleForm.address = res.data.detail.address
-                    this.addForm.ruleForm.id = res.data.detail.id
-                })
+                facilitiesManageFindDetailById({ id: data[0].id }).then(
+                    (res) => {
+                        console.log(res)
+                        this.addForm.ruleForm.name = res.data.detail.name
+                        this.addForm.ruleForm.code = res.data.detail.code
+                        this.addForm.ruleForm.facilitiesCategoryId =
+                            res.data.detail.facilitiesCategoryId
+                        this.addForm.ruleForm.address = res.data.detail.address
+                        this.addForm.ruleForm.id = res.data.detail.id
+                        this.addForm.ruleForm.fileDocUrl =
+                            res.data.detail.fileDocUrl
+                        this.addForm.ruleForm.remakes = res.data.detail.remakes
+
+                        if (res.data.detail.fileDocUrl == null) {
+                            this.wordList = []
+                        } else {
+                            let obj = {
+                                name: res.data.detail.fileDocName,
+                                url: res.data.detail.fileDocUrl
+                            }
+                            this.$set(this.wordList, '0', obj)
+                        }
+                    }
+                )
             }
         },
         add() {
@@ -339,40 +451,72 @@ export default {
             let random = Math.floor(Math.random() * 100000000)
             this.addForm.ruleForm.code = random
         },
+        // word 文件上传成功
+        fileSuccess(res, file) {
+            this.addForm.ruleForm.fileDocUrl = file.response.url
+        },
+        // word 文件上传限制提示
+        handleExceed(files, fileList) {
+            this.$message.warning(
+                `当前限制选择 1 个文件，本次选择了 ${
+                    files.length
+                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            )
+        },
+        wordRemove() {
+            this.addForm.ruleForm.fileDocUrl = null
+        },
+        // word 文件上传之前
+        beforeFileUpload(file) {
+            console.log(file)
+            this.addForm.ruleForm.fileDocName = file.name
+            const isLt2M = file.size / 1024 / 1024 < 2
+            const fileType =
+                file.name.endsWith('.doc') || file.name.endsWith('.docx')
+            console.log(fileType)
+            if (!fileType) {
+                this.$message.error('上传头像图片只能是 doc/docx 格式!')
+            }
+            if (!isLt2M) {
+                this.$message.error('上传文件大小不能超过 2MB!')
+            }
+            return fileType && isLt2M
+        },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
+            this.wordList = []
         },
         addSubmit() {
-            if(this.drawerTitle == '修改设施信息'){
+            if (this.drawerTitle == '修改设施信息') {
                 let resData = {
-                ...this.addForm.ruleForm,
-                id:this.addForm.ruleForm.id
-            }
-            facilitiesManageUpdate(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
+                    ...this.addForm.ruleForm,
+                    id: this.addForm.ruleForm.id
                 }
-            })
-            }else{
+                facilitiesManageUpdate(resData).then((res) => {
+                    if (res.status) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.$refs.table.loadData()
+                        this.addClose()
+                    }
+                })
+            } else {
                 let resData = {
-                ...this.addForm.ruleForm
-            }
-            facilitiesManageInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
+                    ...this.addForm.ruleForm
                 }
-            })
+                facilitiesManageInsert(resData).then((res) => {
+                    if (res.status) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.$refs.table.loadData()
+                        this.addClose()
+                    }
+                })
             }
         },
         dateTimeChange(arr) {

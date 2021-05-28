@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>业主app紧急报警记录</span>
+                <span>管家app紧急报警记录</span>
             </div>
             <div class="content">
                 <div class="">
@@ -151,11 +151,11 @@ export default {
                     { label: '序号', type: 'index', width: '80' },
                     { label: '用户名称', prop: 'name', width: 'auto' },
                     { label: '用户手机号', prop: 'tel', width: 'auto' },
-                    { label: '房产名称', prop: 'roomName', width: 'auto' },
+                    { label: '部门名称', prop: 'organizationName', width: 'auto' },
                     { label: '报警时间', prop: 'createDate', width: 'auto' },
                 ],
                 table_data: [],
-                url: 'alarmOneButtonAlarmList',
+                url: 'alarmButlerOneButtonAlarmList',
                 // search_item: [
                 //     {
                 //         type: 'Input',

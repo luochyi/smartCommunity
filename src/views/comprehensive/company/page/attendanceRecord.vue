@@ -26,6 +26,9 @@
                         :config="config"
                         @tableCheck="tableCheck"
                     >
+                     <template v-slot:createDate="slotData">
+                        <div>{{ slotData.data.createDate|capitalize}}</div>
+                    </template>
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="cardReplacement(table_row)">
@@ -104,17 +107,31 @@ export default {
                     {
                         label: '考勤日期',
                         prop: 'createDate',
-                        width: 'auto'
+                        width: '180',
+                        type: 'slot',
+                        slotName: 'createDate'
                     },
                     {
                         label: '上班打卡时间',
                         prop: 'startClockDate',
-                        width: 'auto'
+                        width: 'auto',
+                        type:"function",
+                        callback:(row,prop)=>{
+                            if(row.startClockDate==null){
+                                return '未打卡'
+                            }
+                        }
                     },
                     {
                         label: '下班打卡时间',
                         prop: 'endClockDate',
-                        width: 'auto'
+                        width: 'auto',
+                        type:"function",
+                        callback:(row,prop)=>{
+                            if(row.endClockDate==null){
+                                return '未打卡'
+                            }
+                        }
                     },
                     {
                         label: '补卡时间',
@@ -255,6 +272,13 @@ export default {
                 this.$message.error('请选中需要删除的数据')
             }
         }
-    }
+    },
+     filters: {
+        capitalize: function (value) {
+            if (!value) return ''
+            value = value.toString()
+            return value.substring(0, 10)
+        }
+    },
 }
 </script>

@@ -181,7 +181,7 @@ export default {
           children: [
             {
               path: '/butler/loanManagement',
-              label: '借还管理'
+              label: '物品借还'
             },
             {
               // Item management
@@ -199,7 +199,15 @@ export default {
         //   iconisactive: require('@/assets/images/butler/icon_service14_sel.png'),
         //   isChildren: 0
         // }
-        
+        //housekeepingServices
+        {
+          // Report for repair
+          path: '/butler/housekeepingServices',
+          label: '家政服务',
+          iconurl: require('@/assets/images/butler/icon_service08_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service08_sel.png'),
+          isChildren: 0
+        },
       
         
       ],

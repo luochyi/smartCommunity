@@ -503,7 +503,14 @@ export default {
         this.$message.error('请选择');
         return
       }
-      activityManagementFindById({ id: this.table_row[0].id }).then(res => {
+      //进行中不可修改
+      if(data[0].status==2){
+        this.$message({
+          message:'该状态不可修改',
+          type:'error'
+        })
+      }
+      activityManagementFindById({ id:data[0].id }).then(res => {
         console.log(res)
         this.editID = res.id
 

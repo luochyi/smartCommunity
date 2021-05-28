@@ -104,12 +104,17 @@ export default {
             // },
             {
               value: '/butler/loanManagement',
-              label: '借还管理'
+              label: '物品借还'
             },
             {
               // Item management
               value: '/butler/itemManagemsent',
               label: '物品管理'
+            },
+            {
+              // Item management
+              value: '/butler/housekeepingServices',
+              label: '家政服务'
             }
             ,
             // {

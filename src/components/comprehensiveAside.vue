@@ -1,10 +1,10 @@
 <template>
   <div>
     <el-container>
-      <el-aside :width="isCollapse ? '58px' : '200px'">
+      <el-aside :width="isCollapse ? '58px' : '200px'"  :style="{backgroundColor: $store.state.bgColor}">
         <el-menu :default-active="activeIndex"
                  class="el-menu-vertical-demo"
-                 background-color="#1f293d"
+                  :style="{backgroundColor: $store.state.bgColor}"
                  text-color="#999999"
                  :collapse-transition="false"
                  active-text-color="#ffffff"
@@ -183,7 +183,12 @@ export default {
             {
               // Announcement management
               path: '/company/emergencyAlarm',
-              label: '紧急报警记录'
+              label: '业主端报警记录'
+            },
+             {
+              // Announcement management
+              path: '/company/appEmergencyAlarm',
+              label: '管家端报警记录'
             },
             {
               // Notification management

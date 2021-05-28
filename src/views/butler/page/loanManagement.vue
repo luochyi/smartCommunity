@@ -2,7 +2,7 @@
 <template>
     <div class="main-content">
         <div class="main-titel">
-            <span>借还管理</span>
+            <span>物品借还</span>
         </div>
         <div class="content">
             <div class="">

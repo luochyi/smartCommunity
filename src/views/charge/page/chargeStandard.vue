@@ -97,13 +97,15 @@
                     </div>
                 </div>
                 <div class="right_table">
-                    <!-- <VueTable ref="table"
+                    <el-button @click="enable(table_row)" size='small' style="margin-left:10px"  type="primary">物业收费标准明细启用/禁用</el-button>
+                    <VueTable ref="table"
                     :config='config'
                     @tableCheck="tableCheck">
-          </VueTable> -->
-                    <tableData :config="config" @clickrow="tableCheck">
-                    </tableData>
-                    <el-button @click="enable(table_row)" size='mini' >物业收费标准明细启用/禁用</el-button>
+                     
+          </VueTable>
+                    <!-- <tableData :config="config" @clickrow="tableCheck">
+                    </tableData> -->
+                   
                 </div>
             </div>
             <!-- 费用明细增加修改 -->
@@ -275,6 +277,12 @@ export default {
             input2: '',
             // 费用明细
             config: {
+                data: {
+                    pageNum: 1,
+                    size: 10,
+                    chargesTemplateId:null
+                },
+                url:'chargesTemplateDetailList',
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
                     { label: '费用名称', prop: 'name', width: 'auto' },
@@ -407,6 +415,7 @@ export default {
                             type: 'success',
                             message: res.message
                         })
+                        this.GetTableData(this.costList[this.costActive].id)
                     }
                     
                 )
@@ -493,16 +502,9 @@ export default {
         },
         // 获得版本对应费用明细
         GetTableData(id) {
-            let resData = {
-                pageNum: 1,
-                size: 10,
-                chargesTemplateId: id
-            }
-
-            chargesTemplateDetailList(resData).then((res) => {
-                this.config.table_data = res.tableList
-                this.config.loading = false
-            })
+            this.config.data.chargesTemplateId = id
+            this.$refs.table.loadData()
+()
         },
         // 删除费用版本名称
         deleteCost() {

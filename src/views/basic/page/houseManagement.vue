@@ -93,6 +93,7 @@ export default {
           { label: '房屋类型', prop: 'type', width: 'auto' ,type:'slot',slotName:'esType'},
           { label: '建筑面积', prop: 'constructionArea', width: 'auto' },
           { label: '室内面积', prop: 'indoorArea', width: 'auto' },
+          { label: '导入编号', prop: 'id', width: 'auto' },
         ],
         url: 'houseList',
         data: {

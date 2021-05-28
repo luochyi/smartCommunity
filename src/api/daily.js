@@ -106,6 +106,22 @@ export function userDecorationInvalid(data) {
         data: data
     })
 }
+//新版装修 审核userDecorationNew/examine
+export function userDecorationNewExamine(data) {
+    return service.request({
+        method: 'POST',
+        url: '/userDecorationNew/examine',
+        data: data
+    })
+}
+//装修指派完工检查人userDecorationNew/assign
+export function userDecorationNewAssign(data) {
+    return service.request({
+        method: 'POST',
+        url: '/userDecorationNew/assign',
+        data: data
+    })
+}
 // 业委会管理：添加业委会信息
 export function ownersCommitteeInsert(data) {
     return service.request({

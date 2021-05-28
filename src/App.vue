@@ -2,7 +2,7 @@
     <div id="app">
         <el-card class="box-card" v-if="isShow">
             <div slot="header" class="clearfix">
-                <span>火警警告</span>
+                <span>警告</span>
                 <el-button
                     style="float: right; padding: 3px 0"
                     type="text"
@@ -54,7 +54,7 @@ export default {
         getMessage: function (msg) {
             console.log(msg.data)
             this.alertMsg = msg.data
-            this.isShow = true
+            this.isShow = false
         },
         send: function (data) {
             this.socket.send(data)

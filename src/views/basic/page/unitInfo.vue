@@ -74,6 +74,7 @@ export default {
             type: "function",
             callback: (row, prop) => `${row.isElevator ? '有电梯' : '无电梯'}`
           },
+          { label: '导入编号', prop: 'id', width: 'auto' },
         ],
         loading: true,
         data: {

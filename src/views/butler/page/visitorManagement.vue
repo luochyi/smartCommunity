@@ -1,10 +1,10 @@
 
 <template>
-  <div class="main-content">
-    <div class="main-titel">
-      <span>访客管理</span>
-    </div>
-    <!-- <div class="tips">
+    <div class="main-content">
+        <div class="main-titel">
+            <span>访客管理</span>
+        </div>
+        <!-- <div class="tips">
       <p>
         <span class="el-icon-warning-outline"
               style="margin:0 12px"></span>
@@ -13,66 +13,80 @@
         户家庭申报访客通行
       </p>
     </div> -->
-    <div class="content">
-      <!-- 查询重制 -->
-      <div class="">
-        <!-- 头部输入框 -->
-        <VueTable ref="table"
-                  :config='config'
-                  @tableCheck="tableCheck">
-                  <template v-slot:visitDateStart='slotData'>
-                      {{slotData.data.visitDateStart}}
-                  </template>
-          <template slot="footer">
-            <div class="table-footer">
-              <!-- <button @click="edit(table_row)">编辑</button> -->
-              <!-- <button @click="record(table_row)">出入记录</button>
+        <div class="content">
+            <!-- 查询重制 -->
+            <div class="">
+                <!-- 头部输入框 -->
+                <VueTable ref="table" :config="config" @tableCheck="tableCheck">
+                    <template v-slot:visitDateStart="slotData">
+                        <div>{{ slotData.data.visitDateStart|capitalize}}</div>
+                    </template>
+                    <template slot="footer">
+                        <div class="table-footer">
+                            <!-- <button @click="edit(table_row)">编辑</button> -->
+                            <!-- <button @click="record(table_row)">出入记录</button>
               <button @click="toVoid(table_row)">作废</button> -->
-            </div>
-          </template>
-        </VueTable>
-        <Drawer drawerTitle="访客编辑"
-                @drawerClose="drawerClose"
-                :drawerVrisible='edit_vrisible'>
-          <div style="padding:30px">
-            <FromCard>
-              <template slot="title">基本信息</template>
-              <template>
-                <VueForm ref="childFrom"
-                         :formObj='reviseForm'></VueForm>
-              </template>
-            </FromCard>
-          </div>
-          <div slot="footer">
-            <button class="btn-orange"
-                    @click="onSubmit()"><span> <i class="el-icon-circle-check"></i>提交</span></button>
-            <button class="btn-gray"
-                    @click="drawerClose"><span>取消</span></button>
-          </div>
-        </Drawer>
+                        </div>
+                    </template>
+                </VueTable>
+                <Drawer
+                    drawerTitle="访客编辑"
+                    @drawerClose="drawerClose"
+                    :drawerVrisible="edit_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">基本信息</template>
+                            <template>
+                                <VueForm
+                                    ref="childFrom"
+                                    :formObj="reviseForm"
+                                ></VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="onSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="drawerClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
 
-        <Drawer drawerTitle="出入记录"
-                @drawerClose="drawerClose"
-                :drawerVrisible='recordVrisible'>
-          <div style="padding:30px">
-            <FromCard>
-              <template slot="title">出入记录</template>
-              <template>
-                <div style='margin:0 auto'>
-                  <tableData :config="recordConfig"></tableData>
-                </div>
-              </template>
-            </FromCard>
-          </div>
-          <div slot="footer">
-            <button class="btn-orange"
-                    @click="recordVrisible = false"><span>关闭</span></button>
-          </div>
-        </Drawer>
-        <!-- 出入记录 -->
-      </div>
+                <Drawer
+                    drawerTitle="出入记录"
+                    @drawerClose="drawerClose"
+                    :drawerVrisible="recordVrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">出入记录</template>
+                            <template>
+                                <div style="margin: 0 auto">
+                                    <tableData
+                                        :config="recordConfig"
+                                    ></tableData>
+                                </div>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button
+                            class="btn-orange"
+                            @click="recordVrisible = false"
+                        >
+                            <span>关闭</span>
+                        </button>
+                    </div>
+                </Drawer>
+                <!-- 出入记录 -->
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -98,17 +112,21 @@ export default {
                     // { label: '类型', prop: 'type', width: ' auto' },
                     { label: '访客姓名', prop: 'name', width: 'auto' },
                     { label: '访客电话', prop: 'tel', width: 'auto' },
-                    { label: '访客性别', prop: 'sex', width: 'auto' ,type:'function',
-                        callback:(row,prop)=>{
+                    {
+                        label: '访客性别',
+                        prop: 'sex',
+                        width: 'auto',
+                        type: 'function',
+                        callback: (row, prop) => {
                             switch (row.sex) {
                                 case 1:
                                     return '男'
-                                    break;
+                                    break
                                 case 2:
                                     return '女'
-                                    break;
+                                    break
                                 default:
-                                    break;
+                                    break
                             }
                         }
                     },
@@ -118,18 +136,18 @@ export default {
                         label: '预约到访日期',
                         prop: 'visitDateStart',
                         width: '180',
-                        type:'slot',
-                        slotName:'visitDateStart'
+                        type: 'slot',
+                        slotName: 'visitDateStart'
                     },
                     {
                         label: '申请人',
                         prop: 'createName',
-                        width: '180',
+                        width: '180'
                     },
                     {
                         label: '申请时间',
                         prop: 'createDate',
-                        width: '180',
+                        width: '180'
                     }
                 ],
                 table_data: [],
@@ -163,7 +181,7 @@ export default {
                         label: '访客手机号',
                         placeholder: '请输入',
                         prop: 'tel'
-                    },
+                    }
                     // {
                     //     type: 'startDate',
                     //     label: '预计到访时间开始',
@@ -335,6 +353,13 @@ export default {
     // created() {
     //     this.getTipsData()
     // },
+    filters: {
+        capitalize: function (value) {
+            if (!value) return ''
+            value = value.toString()
+            return value.substring(0, 10)
+        }
+    },
     methods: {
         // getTipsData() {
         //     //  查询今日咨询条数

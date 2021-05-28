@@ -2,6 +2,7 @@ const requestUrl = {
     // 综合服务
     alarmOneButtonAlarmList: 'alarm/oneButtonAlarmList',
     alarmFireAlarmList: 'alarm/fireAlarmList',
+    alarmButlerOneButtonAlarmList:'alarm/butlerOneButtonAlarmList',
     trainList: 'train/list',
     trainListDelete: 'train/delete',
     contractList: 'contract/list',
@@ -11,6 +12,8 @@ const requestUrl = {
     dataDictionaryList: 'dataDictionary/list',
     attendanceRecordList:'attendanceRecord/list',
     attendanceRecordLeaveList:'attendanceRecord/leaveList',
+    //提醒
+    remindList:'remind/list',
     //数据库
     dataBaseList: 'dataBase/list',
     dataBaseListDelete: 'dataBase/delete',
@@ -34,6 +37,7 @@ const requestUrl = {
     itemsOutList: '/userArticleOut/list',
     itemsOutListDelete: '/userArticleOut/delete',
     userDecorationList: '/userDecoration/list',
+    userDecorationNewList:'userDecorationNew/list',
     userDecorationListDelete: '',
     //设施设备
     facilitiesManageList: 'facilitiesManage/list',
@@ -99,6 +103,7 @@ const requestUrl = {
     ownersCommitteeList: '/ownersCommittee/list',
     ownersCommitteeListDelete: '/ownersCommittee/delete',
     voiceHousekeeperList: '/voiceHousekeeper/list',
+    housekeepingList:'housekeeping/list',
     // /vote/listDetailCandidate
     // /chargesTemplateDetail/list
     chargesTemplateDetailList: '/chargesTemplateDetail/list',

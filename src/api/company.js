@@ -24,6 +24,21 @@ export function sysOrganizationUpdate(data) {
         data: data
     })
 }
+//sysOrganization/stop停用部门 sysOrganization/recovery
+export function sysOrganizationStop(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysOrganization/stop',
+        params: data
+    })
+}
+export function sysOrganizationRecovery(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysOrganization/recovery',
+        params: data
+    })
+}
 //人员管理：查询所有的人员管理 包含条件搜索
 export function sysUserList(data) {
     return service.request({
@@ -37,6 +52,74 @@ export function sysUserFindById(data) {
     return service.request({
         method: 'GET',
         url: '/sysUser/findById',
+        params: data
+    })
+}
+//sysUser/insert新建员工
+export function sysUserInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/sysUser/insert',
+        data: data
+    })
+}
+//允许登录sysUser/allowLogins 禁止登录sysUser/disableLogins 恢复sysUser/recovery 停用sysUser/stop
+export function sysUserAllowLogins(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysUser/allowLogins',
+        params: data
+    })
+}
+export function sysUserDisableLogins(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysUser/disableLogins',
+        params: data
+    })
+}
+export function sysUserRecovery(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysUser/recovery',
+        params: data
+    })
+}
+export function sysUserStop(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysUser/stop',
+        params: data
+    })
+}
+//sysUser/resetPWD 重置密码
+export function sysUserResetPWD(data) {
+    return service.request({
+        method: 'POST',
+        url: '/sysUser/resetPWD',
+        data: data
+    })
+}
+//identity/listAll
+export function identityListAll(data) {
+    return service.request({
+        method: 'GET',
+        url: '/identity/listAll',
+        params: data
+    })
+}
+//sysUser/update   sysUser/falseDelete
+export function sysUserUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/sysUser/update',
+        data: data
+    })
+}
+export function sysUserFalseDelete(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysUser/falseDelete',
         params: data
     })
 }
@@ -143,6 +226,14 @@ export function dataBaseInsert(data) {
         data: data
     })
 }
+//提醒remind/insert
+export function remindInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/remind/insert',
+        data: data
+    })
+}
 // // 日常缴费：添加缴费信息（带有付款功能）【打印未做】
 // export function dailyPaymentInsert(data) {
 //     return service.request({
@@ -151,3 +242,11 @@ export function dataBaseInsert(data) {
 //         data: data
 //     })
 // }
+// 导入房屋
+export function uploadFileUploadEstateFile(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dataBase/insert',
+        data: data
+    })
+}

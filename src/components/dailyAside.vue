@@ -1,11 +1,11 @@
 <template>
     <div>
         <el-container>
-            <el-aside :width="isCollapse ? '58px' : '200px'">
+            <el-aside :width="isCollapse ? '58px' : '200px'"  :style="{backgroundColor: $store.state.bgColor}">
                 <el-menu
                     :default-active="activeIndex"
                     class="el-menu-vertical-demo"
-                    background-color="#2B2C4B"
+                     :style="{backgroundColor: $store.state.bgColor}"
                     text-color="#999999"
                     :collapse-transition="false"
                     active-text-color="#ffd04b"

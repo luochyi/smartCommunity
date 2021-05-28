@@ -7,6 +7,7 @@
               element-loading-spinner="el-icon-loading"
               highlight-current-row
               @selection-change="clickrow"
+              :cell-style="{fontWeight:$store.state.fontWeight,}"
               :header-cell-style="{ background: '#F5F5F6', color: '#999999' }">
       <el-table-column v-if="table_config.checkbox"
                        type="selection"

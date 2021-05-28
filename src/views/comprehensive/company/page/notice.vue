@@ -1,175 +1,374 @@
 <template>
-    <div class="main-content">
-        <div class="main-titel">
-            <span>提醒通知记录</span>
-        </div>
-        <div class="content">
-            <el-button size="mini">新增提醒</el-button>
-            <template>
-                <el-table
-                    :data="tableData"
-                    style="width: 100%"
-                    max-height="700"
-                >
-                    <el-table-column fixed prop="index" label="序号" width="80">
-                    </el-table-column>
-                    <el-table-column
-                        prop="item"
-                        label="部门"
-                        width="120"
+    <div>
+        <div class="main-content">
+            <div class="main-titel">
+                <span>提醒通知</span>
+            </div>
+            <div class="content">
+                <div class="content-btn">
+                    <el-button
+                        class="init-button"
+                        @click="add()"
+                        icon="el-icon-plus"
+                        >新增提醒</el-button
                     >
-                    </el-table-column>
-                    <el-table-column prop="content" label="通知内容" width="320">
-                    </el-table-column>
-                    <el-table-column prop="date" label="通知时间" width="200">
-                    </el-table-column>
-                    <el-table-column prop="name" label="添加人" width="120">
-                    </el-table-column>
-                    <el-table-column fixed="right" label="操作" width="120">
-                        <template slot-scope="scope">
-                            <el-button
-                                @click.native.prevent="
-                                    deleteRow(scope.$index, tableData)
-                                "
-                                type="text"
-                                size="small"
-                            >
-                                删除
-                            </el-button>
+                </div>
+
+                <div class="">
+                    <VueTable
+                        ref="table"
+                        :config="config"
+                        @tableCheck="tableCheck"
+                    >
+                        <template slot="footer">
+                            <div class="table-footer">
+                                <!-- <button @click="del(table_row)">删除</button> -->
+                            </div>
                         </template>
-                    </el-table-column>
-                </el-table>
-            </template>
+                    </VueTable>
+                </div>
+                <!-- 新增 -->
+                <Drawer
+                    drawerTitle="新增提醒"
+                    @drawerClose="addClose"
+                    :drawerVrisible="add_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">提醒内容</template>
+                            <template>
+                                <VueForm ref="addForm" :formObj="addForm">
+                                    <template v-slot:name>
+                                        <el-select
+                                            v-model="addForm.ruleForm.name"
+                                            :remote-method="remoteMethod"
+                                            @change="change"
+                                            @focus="sefocus"
+                                            :loading="loading"
+                                            remote
+                                            style="width: 240px"
+                                            filterable
+                                            placeholder="请选择"
+                                        >
+                                            <el-option
+                                                v-for="item in options"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                    </template>
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="addSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="addClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import { userResident } from '@/api/basic'
+import {remindInsert} from '@/api/company'
 export default {
     data() {
         return {
-            tableData: [
-                {
-                    index:1,
-                    item:'保洁部',
-                    name:'陈梅娟',
-                    sex:'女',
-                    tel:'137327113489',
-                    card:'416080100100225186',
-                    salary:'4000',
-                    baoxian:'960',
-                    date:'2020-4-18',
-                    content:'业委会及物业公司对以下情况零容忍处理，移送公安机关追究其相关的民事、刑事责任，并承担相应的经济赔偿'
+            add_vrisible: false,
+            options: [],
+            loading: false,
+            addForm: {
+                ruleForm: {
+                    name: null,
+                    tel: null,
+                    idType:null,
+                    idNumber:null,
+                    content: null,
+                    title:null,
+                    receiverAccount:null
                 },
-                {
-                    index:2,
-                    item:'保洁部',
-                    name:'陈梅娟',
-                    sex:'男',
-                    tel:'13754546653',
-                    card:'35453553543202251',
-                    salary:'4200',
-                    baoxian:'960',
-                    date:'2020-5-18',
-                    content:'业委会与物业公司根据业主大会决议定于20xx年5月6日进行小区封闭管理。小区大门道闸系统全面启用（地库有车位业主将另行发放感应卡进入，地库无车位车辆禁止出入）'
-                },
-                {
-                    index:3,
-                    item:'维修部',
-                    name:'陈梅娟',
-                    sex:'女',
-                    tel:'13345357746',
-                    card:'41606757349346786',
-                    salary:'4500',
-                    baoxian:'960',
-                    date:'2020-6-6',
-                    content:'搬家车辆请业主或租户提前一天与物业公司预约，安排车辆停放位置，及电梯的使用。地库无车位的业主，请自行安排车辆停放位置'
-                },
-                {
-                    index:4,
-                    item:'维修部',
-                    name:'陈梅娟',
-                    sex:'女',
-                    tel:'13770777234',
-                    card:'41654645654645654',
-                    salary:'4000',
-                    baoxian:'960',
-                    date:'2020-7-18',
-                    content:'小区路面已经全部实施录像监控，请广大业主及租户约束自身行为。配合并支持封闭小区的整顿工作，共同维护及营造良好的小区路面秩序'
-                },
-                {
-                    index:5,
-                    item:'保安部',
-                    name:'陈梅娟',
-                    sex:'男',
-                    tel:'177927312311',
-                    card:'6217211107001880725',
-                    salary:'3000',
-                    baoxian:'960',
-                    date:'2020-8-18',
-                    content:'感谢广大业主对业委会及物业公司工作的大力支持，给您带来的不便敬请谅解。'
-                },{
-                    index:6,
-                    item:'保安部',
-                    name:'柏路',
-                    sex:'男',
-                    tel:'17897897897',
-                    card:'622202090400481871',
-                    salary:'3000',
-                    baoxian:'960',
-                    date:'2020-9-18',
-                    content:'根据全国《物业管理条例》第四十七条、《上海市住宅物业管理规定》第二十二条"物业管理企业应当协助做好物业管理区域的安全防范工作"'
-                },
-                {
-                    index:7,
-                    item:'事业部',
-                    name:'柏路',
-                    sex:'女',
-                    tel:'18715687322',
-                    card:'6225321135601694188',
-                    salary:'6000',
-                    baoxian:'960',
-                    date:'2020-9-10',content:'目前是各类案件多发时期,务请妥善"择选"、"教育"和"监督"好您的"保姆"、"家政人员"、"司机"、"装修人员"等您单元所有雇佣人员及其的素质与行为'
-                },
-                {
-                    index:8,
-                    item:'事业部',
-                    name:'柏路',
-                    sex:'男',
-                    tel:'13588947544',
-                    card:'6214650166541712121',
-                    salary:'6200',
-                    baoxian:'960',
-                    date:'2020-10-28',content:"您外出或休息时,务请规范有效地进行家庭安全系统的设防和撤防及关妥您单元所有的门窗, 勿忘关闭水喉和煤气;"
-                },
-                {
-                    index:9,
-                    item:'招商部',
-                    name:'柏路',
-                    sex:'女',
-                    tel:'13478959485',
-                    card:'12005486667741143',
-                    salary:'4700',
-                    baoxian:'960',
-                    date:'2020-11-5',content:'家中务请不要存放过多的现金、贵重物品,现金和贵重物品务请格外关注、妥善存放与严加保管;'
-                },
-                {
-                    index:10,
-                    item:'招商部',
-                    name:'柏路',
-                    sex:'女',
-                    tel:'18702752342',
-                    card:'622319011018326498',
-                    salary:'5000',
-                    baoxian:'960',
-                    date:'2020-12-11',content:'如若您户外出时间较长,需我处配合关注,则请与我客户服务部事先取得联系,以便指派我物业保安加强对您单元周围作重点防范巡查;'
-                },
-            ]
+                form_item: [
+                    {
+                        type: 'Slot',
+                        label: '提醒用户',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'name',
+                        slotName: 'name'
+                    },
+                    {
+                        type: 'Input',
+                        label: '联系方式',
+                        placeholder: '请输入',
+                        width: '50%',
+                        disabled: true,
+                        prop: 'tel'
+                    },
+                    {
+                        type: 'Select',
+                        label: '证件类型',
+                        placeholder: '请输入',
+                        disabled: true,
+                        options: [
+                            { value: 1, label: '身份证' },
+                            { value: 2, label: '营业执照' }
+                        ],
+                        width: '50%',
+                        prop: 'idType'
+                    },
+                    {
+                        type: 'Input',
+                        label: '证件号码',
+                        placeholder: '请输入',
+                        disabled: true,
+                        width: '50%',
+                        prop: 'idNumber'
+                    },
+                    {
+                        type: 'Input',
+                        label: '提醒标题',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'title'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '提醒内容',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'content'
+                    },
+                ]
+            },
+            table_row: [],
+            // 上传img文件
+            imglist: [],
+            activeName: '0',
+            config: {
+                thead: [
+                    { label: '序号', type: 'index', width: '80' },
+                    {
+                        label: '标题',
+                        prop: 'title',
+                        width: '130'
+                    },
+                    {
+                        label: '内容',
+                        prop: 'content',
+                        width: '230'
+                    },
+                    {
+                        label: '发送时间',
+                        prop: 'sendDate',
+                        width: '230'
+                    },
+                    { label: '发送人姓名', prop: 'senderName', width: 'auto' },
+                    {
+                        label: '发送类型',
+                        prop: 'type',
+                        width: 'auto',
+                        type: 'function',
+                        callback(row, prop) {
+                            switch (row.type) {
+                                case 1:
+                                    return '系统广播'
+                                    break
+                                case 2:
+                                    return '管理员消息'
+                                    break
+                                default:
+                                    break
+                            }
+                        }
+                    },
+                    {
+                        label: '接收人姓名',
+                        prop: 'receiverAccountName',
+                        width: 'auto'
+                    },
+                    {
+                        label: '消息状态',
+                        prop: 'sendStatus',
+                        width: '130',
+                        type: 'function',
+                        callback(row, prop) {
+                            switch (row.sendStatus) {
+                                case 1:
+                                    return '未读'
+                                    break
+                                case 3:
+                                    return '已读'
+                                    break
+                                default:
+                                    break
+                            }
+                        }
+                    }
+                ],
+                table_data: [],
+                url: 'remindList',
+                search_item: [
+                    {
+                        type: 'Input',
+                        label: '标题',
+                        placeholder: '请输入',
+                        prop: 'title'
+                    },
+                    {
+                        type: 'select',
+                        label: '发送类型',
+                        placeholder: '请选择',
+                        prop: 'type',
+                        options: [
+                            {
+                                value: '1',
+                                label: '系统广播'
+                            },
+                            {
+                                value: '2',
+                                label: '管理员消息'
+                            }
+                        ]
+                    }
+                    // Slot
+                ],
+                data: {
+                    pageNum: 1,
+                    size: 10
+                }
+            }
         }
     },
     methods: {
-        deleteRow(index, rows) {
-            rows.splice(index, 1)
+        remoteMethod(val) {
+            let reeData = {
+                pageNum: 1,
+                size: 20,
+                name: val
+            }
+            this.loading = true
+            userResident(reeData).then((res) => {
+                this.options = res.tableList
+                this.loading = false
+
+                console.log(res)
+            })
+        },
+        sefocus() {
+            let reeData = {
+                pageNum: 1,
+                size: 20
+            }
+            this.loading = true
+            userResident(reeData).then((res) => {
+                this.options = res.tableList
+                let obj = {
+                    id: 0,
+                    idNumber: '',
+                    idType: '',
+                    name: '（空）',
+                    tel: ''
+                }
+                this.options.unshift(obj)
+                this.loading = false
+                console.log(this.options)
+            })
+        },
+        change(value) {
+            console.log(value)
+            this.options.map((item) => {
+                if (item.id === value) {
+                    this.addForm.ruleForm.tel = item.tel
+                    this.addForm.ruleForm.idType = item.idType
+                    this.addForm.ruleForm.idNumber = item.idNumber
+                    this.addForm.ruleForm.receiverAccount = value
+                }
+            })
+        },
+        drawerClose() {
+            this.drawer_vrisible = false
+            this.editId = null
+            this.$refs.childFroms.reset()
+            this.$refs.childFrom.reset()
+            this.$emit('handleClose', 'Close')
+        },
+        add() {
+            this.add_vrisible = true
+        },
+        addClose() {
+            this.$refs.addForm.reset()
+            this.add_vrisible = false
+        },
+        addSubmit() {
+            // this.addForm.ruleForm.interviewDate
+            let resData = {
+                ...this.addForm.ruleForm
+            }
+            remindInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
+        },
+        dateTimeChange(arr) {
+            this.addForm.ruleForm.openStartDate = arr[0]
+            this.addForm.ruleForm.openEndDate = arr[1]
+        },
+        // tabs切换
+        handleClick(tab, event) {
+            let status = null
+            if (this.activeName != 0) {
+                status = this.activeName
+            } else {
+                status = null
+            }
+            const requestData = {
+                pageNum: 1,
+                size: 10,
+                status: status
+            }
+            this.$refs.table.requestData(requestData)
+        },
+        // 表格选中
+        tableCheck(data) {
+            this.table_row = data
+        },
+        // 删除
+        del(data) {
+            if (data.length) {
+                let arr = []
+                for (let i = 0; i < this.table_row.length; i++) {
+                    arr.push(this.table_row[i].id)
+                }
+                this.$confirm('是否确认删除？删除不可恢复', '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    confirmButtonClass: 'confirmButton',
+                    cancelButtonClass: 'cancelButton'
+                })
+                    .then(() => {
+                        this.$refs.table.tableDelete(arr)
+                    })
+                    .catch((action) => {})
+            } else {
+                this.$message.error('请选中需要删除的数据')
+            }
         }
     }
 }
