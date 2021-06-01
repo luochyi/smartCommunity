@@ -227,9 +227,12 @@ export default {
                                     return '申请完工检查'
                                     break
                                 case 6:
-                                    return '检查通过'
+                                    return '完工检查中'
                                     break
                                 case 7:
+                                    return '检查通过'
+                                    break
+                                case 8:
                                     return '检查不通过'
                                     break
                             }
@@ -329,8 +332,9 @@ export default {
                             { label: '装修中', value: '2' },
                             { label: '装修驳回', value: '3' },
                             { label: '申请完工检查', value: '5' },
-                            { label: '检查通过', value: '6' },
-                            { label: '检查不通过', value: '7' }
+                            { label: '完工检查中', value: '6' },
+                            { label: '检查通过', value: '7' },
+                             { label: '检查不通过', value: '8' },
                         ]
                     }
                     // Slot
@@ -438,7 +442,7 @@ export default {
                 })
                 return
             }
-            if(data[0].status!=6){
+            if(data[0].status!=5){
                 this.$message({
                     type: 'error',
                     message: '该状态不可检查'

@@ -54,7 +54,7 @@ export default {
         getMessage: function (msg) {
             console.log(msg.data)
             this.alertMsg = msg.data
-            this.isShow = false
+            this.isShow = true
         },
         send: function (data) {
             this.socket.send(data)

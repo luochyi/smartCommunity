@@ -18,8 +18,8 @@
             <button @click="reviseOwnerDrawer(table_row)">修改</button>
             <button @click="del(table_row)">删除</button>
             <!-- <button>加入黑名单</button> -->
-            <!-- <button @click="linkHouseDrawer(table_row)">关联房屋</button>
-            <button @click="linkParkDrawer(table_row)">关联车位</button> -->
+            <button @click="linkHouseDrawer(table_row)">关联房屋</button>
+            <!-- <button @click="linkParkDrawer(table_row)">关联车位</button> -->
           </div>
         </template>
       </VueTable>
@@ -49,9 +49,9 @@
 <script>
 import addTenant from '@/views/basic/components/tenantFile/addTenant'
 import detailsOwner from '@/views/basic/components/ownersFile/detailsOwner'
-import reviseOwner from '@/views/basic/components/ownersFile/reviseOwner'
-import linkParking from '@/views/basic/components/ownersFile/linkParking'
-import linkHouse from '@/views/basic/components/ownersFile/linkHouse'
+import reviseOwner from '@/views/basic/components/tenantFile/reviseTenant'
+import linkParking from '@/views/basic/components/tenantFile/linkParking'
+import linkHouse from '@/views/basic/components/tenantFile/linkHouse'
 import {
     findParkingSpaceType,
     findParkingSpaceStatus,
@@ -229,6 +229,7 @@ export default {
         },
         addOwnerClose() {
             this.add_vrisible = false
+            this.$refs.table.loadData()
         },
         add() {
             this.drawer_vrisible = true

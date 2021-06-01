@@ -90,7 +90,7 @@
                                         <template slot="imgUrls">
                                             <template>
                                                 <el-upload
-                                                    :action="`${$baseUrl}upload/uploadAnnouncement`"
+                                                    :action="`${$baseUrl}upload/uploadShoppingCategory`"
                                                     :on-success="ImgeSuccess"
                                                     :file-list="imglist"
                                                     :on-exceed="handleExceed"

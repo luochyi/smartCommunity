@@ -15,13 +15,13 @@
                             style="width: 240px; margin: 10px 0"
                         ></el-input>
                         <div style="float: right; right: 100px">
-                            <!-- <el-button
+                            <el-button
                                 size="small"
-                                @click="addOrg()"
+                                @click="add()"
                                 type="primary"
                             >
                                 新增部门
-                            </el-button> -->
+                            </el-button>
                         </div>
                         <div>
                             <el-table
@@ -119,13 +119,23 @@
                                             size="small"
                                             >编辑</el-button
                                         >
-                                        <el-button type="text" size="small"
+                                        <el-button
+                                            type="text"
+                                            size="small"
                                             @click="stop(scope.row)"
                                             >停用</el-button
                                         >
-                                        <el-button type="text" size="small"
+                                        <el-button
+                                            type="text"
+                                            size="small"
                                             @click="recovery(scope.row)"
                                             >恢复</el-button
+                                        >
+                                        <el-button
+                                            type="text"
+                                            size="small"
+                                            @click="del(scope.row)"
+                                            >删除</el-button
                                         >
                                     </template>
                                 </el-table-column>
@@ -137,27 +147,78 @@
                        name="third"></el-tab-pane> -->
                 </el-tabs>
             </div>
-            <!-- 新增修改 -->
+            <!-- 新增 -->
+            <Drawer
+                drawerTitle="新增部门"
+                @drawerClose="addClose"
+                :drawerVrisible="add_vrisible"
+            >
+                <div style="padding: 30px">
+                    <FromCard>
+                        <template slot="title">部门信息</template>
+                        <template>
+                            <VueForm ref="addForm" :formObj="addForm">
+                                <template v-slot:leadingId>
+                                    <el-select
+                                        v-model="addForm.ruleForm.leadingId"
+                                        :remote-method="premoteMethod"
+                                        @change="pchange"
+                                        @focus="psefocus"
+                                        :loading="loading"
+                                        remote
+                                        style="width: 240px"
+                                        filterable
+                                        placeholder="请选择"
+                                    >
+                                        <el-option
+                                            v-for="item in options"
+                                            :key="item.id"
+                                            :label="item.actualName"
+                                            :value="item.id"
+                                        >
+                                        </el-option>
+                                    </el-select>
+                                </template>
+                                <template slot="sort">
+                                    <div>
+                                        <el-input-number
+                                            v-model="addForm.ruleForm.sort"
+                                            controls-position="right"
+                                            :min="1"
+                                            :max="10"
+                                        ></el-input-number>
+                                    </div>
+                                </template>
+                            </VueForm>
+                        </template>
+                    </FromCard>
+                </div>
+                <div slot="footer">
+                    <button class="btn-orange" @click="addSubmit()">
+                        <span> <i class="el-icon-circle-check"></i>提交</span>
+                    </button>
+                    <button class="btn-gray" @click="addClose">
+                        <span>取消</span>
+                    </button>
+                </div>
+            </Drawer>
+
+            <!-- 修改 -->
             <Drawer
                 :drawerTitle="drawerTitle"
-                @drawerClose="addEidtClose"
-                :drawerVrisible="addEidt_vrisible"
+                @drawerClose="editClose"
+                :drawerVrisible="edit_vrisible"
             >
                 <div style="padding: 30px">
                     <FromCard>
                         <template slot="title">基本信息</template>
                         <template>
-                            <VueForm
-                                ref="addEidtVueForm"
-                                :formObj="addEidtForm"
-                            >
+                            <VueForm ref="editVueForm" :formObj="editForm">
                                 <!-- parentList -->
                                 <template slot="parentId">
                                     <div v-if="parentList.length">
                                         <el-select
-                                            v-model="
-                                                addEidtForm.ruleForm.parentId
-                                            "
+                                            v-model="editForm.ruleForm.parentId"
                                             style="width: 240px"
                                             placeholder="请选择"
                                         >
@@ -184,7 +245,7 @@
                                 <template slot="sort">
                                     <div>
                                         <el-input-number
-                                            v-model="addEidtForm.ruleForm.sort"
+                                            v-model="editForm.ruleForm.sort"
                                             controls-position="right"
                                             :min="1"
                                             :max="10"
@@ -193,7 +254,7 @@
                                 </template>
                                 <template v-slot:leadingId>
                                     <el-select
-                                        v-model="addEidtForm.ruleForm.leadingId"
+                                        v-model="editForm.ruleForm.leadingId"
                                         :remote-method="remoteMethod"
                                         @change="change"
                                         @focus="sefocus"
@@ -218,10 +279,10 @@
                     </FromCard>
                 </div>
                 <div slot="footer">
-                    <button class="btn-orange" @click="addEidtSubmit()">
+                    <button class="btn-orange" @click="editSubmit()">
                         <span> <i class="el-icon-circle-check"></i>提交</span>
                     </button>
-                    <button class="btn-gray" @click="addEidtClose">
+                    <button class="btn-gray" @click="editClose">
                         <span>取消</span>
                     </button>
                 </div>
@@ -236,20 +297,97 @@ import {
     sysUserList,
     sysOrganizationUpdate,
     sysOrganizationStop,
-    sysOrganizationRecovery
+    sysOrganizationRecovery,
+    sysOrganizationInsert,
+    sysOrganizationDelete
 } from '@/api/company'
+import { userResident } from '@/api/basic'
 export default {
     data() {
         return {
-            addEidt_vrisible: false,
-            drawerTitle:'',
+            edit_vrisible: false,
+            drawerTitle: '',
             activeName: 'first',
             search: null, //搜索
             eidtId: null, //修改id
             loading: false, //加载动画
             tableData: [], //表格数据
             parentList: [], //上级部门列表
-            addEidtForm: {
+            add_vrisible: false,
+            options: [],
+            addForm: {
+                ruleForm: {
+                    name: null,
+                    parentId: null,
+                    leadingId: null,
+                    tel: null,
+                    remake: null,
+                    categoryId: null,
+                    sort:null
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '组织名称',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'name'
+                    },
+
+                    {
+                        type: 'Slot',
+                        label: '负责人',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'leadingId',
+                        slotName: 'leadingId'
+                    },
+                    {
+                        type: 'Input',
+                        label: '手机号',
+                        placeholder: '请输入',
+                        width: '50%',
+                        disabled: true,
+                        prop: 'tel'
+                    },
+                    {
+                        type: 'Select',
+                        label: '分类',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'categoryId',
+                        options: [
+                            { value: 2, label: '部门' },
+                            { value: 3, label: '工作组' }
+                        ]
+                    },
+                    {
+                        type: 'Select',
+                        label: '上级',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'parentId',
+                        options: []
+                    },
+                    {
+                        type: 'Slot',
+                        label: '排序',
+                        placeholder: '请输入',
+                        width: '50%',
+                        rows: 5,
+                        prop: 'sort',
+                        slotName: 'sort'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '备注',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'remake'
+                    }
+                ]
+            },
+            editForm: {
                 ruleForm: {
                     name: null,
                     parentId: null,
@@ -332,11 +470,8 @@ export default {
         this.getData()
     },
     methods: {
-      addOrg(){
-        this.addEidt_vrisible = true
-      },
-      //停用回复
-      recovery(data) {
+        //停用回复
+        recovery(data) {
             this.$confirm('是否恢复?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -349,7 +484,7 @@ export default {
                         message: '恢复成功'
                     })
                     sysOrganizationRecovery({ id: data.id }).then((res) => {
-                       this.getData()
+                        this.getData()
                     })
                 })
                 .catch(() => {
@@ -382,6 +517,91 @@ export default {
                     })
                 })
         },
+        del(data) {
+            this.$confirm('是否删除部门?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                // center: true
+            })
+                .then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功'
+                    })
+                    sysOrganizationDelete({ id: data.id }).then((res) => {
+                        this.getData()
+                    })
+                })
+                .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    })
+                })
+        },
+        add() {
+            this.add_vrisible = true
+        },
+        addClose() {
+            this.add_vrisible = false
+            this.$refs.addForm.reset()
+        },
+        addSubmit() {
+            let resData = {
+                ...this.addForm.ruleForm
+            }
+            sysOrganizationInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    
+                    this.addClose()
+                   this.getData()
+                }
+            })
+        },
+        premoteMethod(val) {
+            let reeData = {
+                pageNum: 1,
+                size: 20,
+                name: val
+            }
+            this.loading = true
+            sysUserList(reeData).then((res) => {
+                this.options = res.tableList
+                this.loading = false
+
+                console.log(res)
+            })
+        },
+        psefocus() {
+            let reeData = {
+                pageNum: 1,
+                size: 20
+            }
+            this.loading = true
+            sysUserList(reeData).then((res) => {
+                this.options = res.tableList
+                // let obj = {
+                //     id: 0,
+                //     tel: ''
+                // }
+                // this.options.unshift(obj)
+                this.loading = false
+                console.log(this.options)
+            })
+        },
+        pchange(value) {
+            console.log(value)
+            this.options.map((item) => {
+                if (item.id === value) {
+                    this.addForm.ruleForm.tel = item.tel
+                }
+            })
+        },
         // 负责人赛选
         remoteMethod(val) {
             this.getUserList(val)
@@ -394,16 +614,16 @@ export default {
             console.log(value)
         },
         // 关闭
-        addEidtClose() {
-            this.addEidt_vrisible = false
+        editClose() {
+            this.edit_vrisible = false
         },
         // 提交
-        addEidtSubmit() {
-            console.log(this.addEidtForm.ruleForm)
+        editSubmit() {
+            console.log(this.editForm.ruleForm)
             // 修改
             let resData = {
                 id: this.eidtId,
-                ...this.addEidtForm.ruleForm
+                ...this.editForm.ruleForm
             }
             sysOrganizationUpdate(resData).then((res) => {
                 if (res.status) {
@@ -411,7 +631,7 @@ export default {
                         message: res.message,
                         type: 'success'
                     })
-                    this.addEidtClose()
+                    this.editClose()
                     this.getData()
                 }
             })
@@ -422,16 +642,16 @@ export default {
             this.falseParentName = row.name
             sysOrganizationFindById({ id: row.id }).then((res) => {
                 this.eidtId = res.id
-                this.addEidtForm.ruleForm.name = res.name
-                this.addEidtForm.ruleForm.parentId = res.parentId
-                this.addEidtForm.ruleForm.leadingId = res.leadingId
-                this.addEidtForm.ruleForm.sort = res.sort
-                this.addEidtForm.ruleForm.remake = res.remake
-                this.addEidtForm.ruleForm.categoryId = res.categoryId
-                this.addEidtForm.ruleForm.leadingTel = res.leadingTel
+                this.editForm.ruleForm.name = res.name
+                this.editForm.ruleForm.parentId = res.parentId
+                this.editForm.ruleForm.leadingId = res.leadingId
+                this.editForm.ruleForm.sort = res.sort
+                this.editForm.ruleForm.remake = res.remake
+                this.editForm.ruleForm.categoryId = res.categoryId
+                this.editForm.ruleForm.leadingTel = res.leadingTel
                 this.parentList = res.parentList ? res.parentList : []
                 this.getUserList(res.actualName)
-                this.addEidt_vrisible = true
+                this.edit_vrisible = true
             })
         },
         // 表格数据
@@ -454,7 +674,7 @@ export default {
             })
         },
         //  树形表格过滤
-        handleTreeData(treeData, searchValuse) {
+        handleTreeData(treeData, searchValue) {
             if (!treeData || treeData.length === 0) {
                 return []
             }
@@ -498,6 +718,34 @@ export default {
                 this.ftable = this.treeTable()
             },
             immediate: true
+        },
+        //新增部门时候判断新增的部门类型去获取不同的上级
+        'addForm.ruleForm.categoryId': {
+            handler(newVal) {
+                console.log(newVal)
+                if (newVal == 2) {
+                    // this.addForm.ruleForm.parentId == 1
+                    let obj = {
+                        label: '广西印象物业服务有限责任公司',
+                        value: 1
+                    }
+                    this.addForm.form_item[4].options=[]
+                    this.$set(this.addForm.form_item[4].options, 0, obj)
+                } else {
+                    sysOrganizationList().then((res) => {
+                        //  this.addForm.form_item[4].options=[]
+                        // console.log(res[0].organizationList);
+                        res[0].organizationList.forEach(element => {
+                            let obj = {
+                                value:element.id,
+                                label:element.name
+                            }
+                            this.addForm.form_item[4].options.push(obj)
+                            console.log(this.addForm.form_item[4]);
+                        });
+                    })
+                }
+            }
         }
     }
 }

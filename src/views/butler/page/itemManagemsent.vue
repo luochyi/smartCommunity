@@ -39,7 +39,7 @@
                     </template>
                     <template slot="footer">
                         <div class="table-footer">
-                            <!-- <button @click="editGoods(table_row)">编辑</button> -->
+                            <button @click="editGoods(table_row)">编辑</button>
                             <button @click="del(table_row)">删除</button>
                             <!-- <button>打印二维码</button> -->
                         </div>
@@ -396,7 +396,7 @@ export default {
                 this.$message.error('请选择')
                 return
             }
-
+            this.addEidt_vrisible =true
             articleFindById({ id: data[0].id }).then((result) => {
                 console.log(result)
             })

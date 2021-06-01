@@ -6,7 +6,7 @@
             :drawerVrisible="drawer_vrisible"
         >
             <FromCard style="margin: 30px">
-                <span slot="title">基本信息1</span>
+                <span slot="title">基本信息</span>
                 <VueForm ref="childFrom" :formObj="fromjson"> </VueForm>
                 <template>
                     <div>
@@ -190,7 +190,7 @@
                                 </el-option>
                             </el-select>
                             <el-select
-                                v-model="item.hoursValue"
+                                v-model="item.buildingUnitEstateId"
                                 filterable
                                 size="small"
                                 style="width: 108px; margin-right: 16px"
@@ -204,14 +204,22 @@
                                 >
                                 </el-option>
                             </el-select>
-                                <el-date-picker
-                                change='getTime'
-                                v-model="value1"
-                                size="small"
-                                type="daterange"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
+                            <el-date-picker
+                                v-model="hoursArray[index].effectiveTimeStart"
+                                type="date"
+                                size="mini"
+                                change="getTime"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                placeholder="选择开始日期"
+                            >
+                            </el-date-picker>
+                            <el-date-picker
+                                v-model="hoursArray[index].effectiveTimeEnd"
+                                type="date"
+                                size="mini"
+                                @change="getTime"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                placeholder="选择结束日期"
                             >
                             </el-date-picker>
                         </div>
@@ -251,7 +259,7 @@
                             @change="(value) => parkingChange(value, index)"
                             filterable
                             style="margin-right: 16px"
-                            v-model="item.parkingValue"
+                            v-model="item.id"
                             placeholder="请输入"
                         >
                             <el-option
@@ -264,16 +272,23 @@
                         </el-select>
                         <!-- <el-select></el-select> -->
                         <el-date-picker
-                                v-model="value2"
-                                @change="getTime"
-                                size="small"
-                                type="daterange"
-                                value-format='yyyy-MM-dd'
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                            >
-                            </el-date-picker>
+                            v-model="parkingArray[index].effectiveTimeStart"
+                            type="date"
+                            size="mini"
+                            change="getTime"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            placeholder="选择开始日期"
+                        >
+                        </el-date-picker>
+                        <el-date-picker
+                            v-model="parkingArray[index].effectiveTimeEnd"
+                            type="date"
+                            size="mini"
+                            @change="getTime"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            placeholder="选择结束日期"
+                        >
+                        </el-date-picker>
                     </div>
                     <div>
                         <span style="font-size: 19px" @click="parkingAdd"
@@ -323,8 +338,6 @@ export default {
         return {
             // 楼栋 单元 房产
             buildOptions: [],
-            value1: null,
-            value2: null,
             hoursArray: [
                 {
                     buildValue: null,
@@ -333,7 +346,9 @@ export default {
                     unitOptions: [],
                     hoursOptions: [],
                     // 房产
-                    hoursValue: null
+                    buildingUnitEstateId: null,
+                    effectiveTimeStart: null,
+                    effectiveTimeEnd: null
                 }
             ],
             // 车位
@@ -342,9 +357,10 @@ export default {
             //
             parkingArray: [
                 {
-                    parkingValue: null,
-                    effectiveTimeStart:null,
-                    effectiveTimeEnd:null
+                    id: null,
+                    status: 2,
+                    effectiveTimeStart: null,
+                    effectiveTimeEnd: null
                 }
             ],
             // 亲属
@@ -437,11 +453,10 @@ export default {
         })
     },
     methods: {
-        getTime(data){
-            console.log(data);
-            this.parkingArray[0].effectiveTimeStart = data[0]
-            this.parkingArray[0].effectiveTimeEnd = data[1]
-            console.log( this.parkingArray);
+        getTime(data) {
+            console.log(data)
+            console.log(this.hoursArray)
+            console.log(this.parkingArray)
         },
         parkingChange(value, index) {
             this.$set(this.parkingList, index, value)
@@ -449,7 +464,7 @@ export default {
         },
         //  提交
         onSubmit() {
-            let result = this.hoursArray.map((i) => i.hoursValue)
+            let result = this.hoursArray
             for (let key in this.fromjson.ruleForm) {
                 if (!this.fromjson.ruleForm[key]) {
                     this.$message({
@@ -507,7 +522,7 @@ export default {
                 },
                 voRelativesList: table_data,
                 cpmResidentEstateList: result,
-                cpmParkingSpaceList: this.parkingList
+                cpmParkingSpaceList: this.parkingArray
             }
             console.log(resData)
             tenantInsert(resData).then((res) => {
@@ -522,16 +537,13 @@ export default {
         },
         // 弹窗关闭
         drawerClose() {
-            /****
-       *       parkingArray: [
-          {
-            parkingValue: null,
-          },
-        ],
-       * */
+            console.log(1)
             this.parkingArray = [
                 {
-                    parkingValue: null
+                    id: null,
+                    status: 2,
+                    effectiveTimeStart: null,
+                    effectiveTimeEnd: null
                 }
             ]
             this.tableData = []
@@ -557,7 +569,7 @@ export default {
                 unitOptions: [],
                 hoursOptions: [],
                 // 房屋
-                hoursValue: null
+                buildingUnitEstateId: null
             })
         },
         // 楼栋数据变化
@@ -565,7 +577,7 @@ export default {
             this.hoursArray[index].unitOptions = []
             this.hoursArray[index].hoursOptions = []
             this.hoursArray[index].unitValue = null
-            this.hoursArray[index].hoursValue = null
+            this.hoursArray[index].buildingUnitEstateId = null
             let resData = {
                 id: value
             }
@@ -576,7 +588,7 @@ export default {
         },
         // 单元数据变化
         unitChange(value, index) {
-            this.hoursArray[index].hoursValue = null
+            this.hoursArray[index].buildingUnitEstateId = null
             this.hoursArray[index].hoursOptions = []
             let resData = {
                 id: value
@@ -590,7 +602,10 @@ export default {
         },
         parkingAdd() {
             this.parkingArray.push({
-                parkingValue: null
+                id: null,
+                status: 2,
+                effectiveTimeStart: null,
+                effectiveTimeEnd: null
             })
         },
         parkingRemove(index) {

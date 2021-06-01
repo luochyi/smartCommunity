@@ -16,6 +16,22 @@ export function sysOrganizationFindById(data) {
         params: data
     })
 }
+//新增部门
+export function sysOrganizationInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/sysOrganization/insert',
+        data: data
+    })
+}
+//sysOrganization/delete
+export function sysOrganizationDelete(data) {
+    return service.request({
+        method: 'GET',
+        url: '/sysOrganization/delete',
+        params: data
+    })
+}
 // 组织架构管理：修改部门
 export function sysOrganizationUpdate(data) {
     return service.request({

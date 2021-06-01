@@ -14,7 +14,7 @@
     <div class="main-titel">
       <span>物品出门</span>
     </div>
-    <div class="tips">
+    <!-- <div class="tips">
       <p>
         <span class="el-icon-warning-outline"
               style="margin:0 12px"></span>
@@ -22,7 +22,7 @@
         <span style="color:rgba(251, 71, 2, 1)">{{countNow}}</span>
         户家庭发起装修，共计{{countPerformed}}户家庭未执行
       </p>
-    </div>
+    </div> -->
     <div class="content">
       <!-- 查询重制 -->
       <div class="">

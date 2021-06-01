@@ -296,6 +296,37 @@ export const userResidentUpdateRelatives = data => {
         data: data
     })
 }
+//修改业主房产信息 userResident/updateEstate
+export const userResidentUpdateEstate = data => {
+    return service.request({
+        method: 'POST',
+        url: '/userResident/updateEstate',
+        data: data
+    })
+}
+//tenant/updateRelatives
+export const tenantUpdateRelatives = data => {
+    return service.request({
+        method: 'POST',
+        url: '/tenant/updateRelatives',
+        data: data
+    })
+}
+//租客车位tenant/updateParkingSpace tenant/updateEstate
+export const tenantUpdateParkingSpace = data => {
+    return service.request({
+        method: 'POST',
+        url: '/tenant/updateParkingSpace',
+        data: data
+    })
+}
+export const tenantUpdateEstate = data => {
+    return service.request({
+        method: 'POST',
+        url: '/tenant/updateEstate',
+        data: data
+    })
+}
 export const cpmParkingSpaceInsert = data => {
     return service.request({
         method: 'POST',

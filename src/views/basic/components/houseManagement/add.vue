@@ -84,6 +84,7 @@ export default {
           type: null,
           constructionArea: null,
           indoorArea: null,
+          deviceNumber:null
         },
         rules: {
           buildingName: [
@@ -153,6 +154,13 @@ export default {
             prop: 'indoorArea',
             slotName: 'indoorArea'
           },
+          {
+            type: 'Int',
+            label: '对讲机设备号',
+            placeholder: '请输入',
+            width: '50%',
+            prop: 'deviceNumber'
+          },
         ]
       },
       froms: []
@@ -220,6 +228,7 @@ export default {
           type: this.fromjson.ruleForm.type,
           constructionArea: parseInt(this.fromjson.ruleForm.constructionArea),
           indoorArea: parseInt(this.fromjson.ruleForm.indoorArea),
+          deviceNumber:this.fromjson.ruleForm.deviceNumber
         },
         residentList: resList
       }

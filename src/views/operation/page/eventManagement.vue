@@ -184,7 +184,7 @@ export default {
           size: 10
         },
       },
-      addEidtTitle: '新增公告',
+      addEidtTitle: '新增活动',
       addEidt_vrisible: false,
       addEidtForm: {
         ruleForm: {
@@ -199,7 +199,7 @@ export default {
           activityEndTime: null,
           participantsNumber: null,
           chargesTemplateDetailId: null,
-          status: null,
+          status: 0,
           refund: null,
           name: null,
           tel: null
@@ -318,23 +318,6 @@ export default {
             placeholder: '请输入',
             prop: 'tel'
           },
-          {
-            type: 'Select',
-            label: '状态',
-            width: '50%',
-            placeholder: '请选择',
-            prop: 'status',
-            options: [
-              {
-                value: 1,
-                label: '未开始'
-              },
-              {
-                value: 2,
-                label: '进行中'
-              }
-            ]
-          }
         ]
       },
       activeName: '0',
@@ -452,18 +435,18 @@ export default {
     },
     // 提交
     addEidtSubmit () {
-      for (let key in this.addEidtForm.ruleForm) {
-        if (!this.addEidtForm.ruleForm[key]) {
-          let data = this.addEidtForm.form_item.find(item => key === item.prop)
-          this.$message.error(`请填写${data.label}`)
-          return
-        }
-      }
-      if (!this.addEidtForm.ruleForm.fileUrls.length) {
-        this.$message.error(`请上传图片`)
-        return
-      }
-      console.log(this.addEidtForm.ruleForm)
+      // for (let key in this.addEidtForm.ruleForm) {
+      //   if (!this.addEidtForm.ruleForm[key]) {
+      //     let data = this.addEidtForm.form_item.find(item => key === item.prop)
+      //     this.$message.error(`请填写${data.label}`)
+      //     return
+      //   }
+      // }
+      // if (!this.addEidtForm.ruleForm.fileUrls.length) {
+      //   this.$message.error(`请上传图片`)
+      //   return
+      // }
+      // console.log(this.addEidtForm.ruleForm)
       if (!this.editID) {
         activityManagementInsert(this.addEidtForm.ruleForm).then((res) => {
           if (res.status) {

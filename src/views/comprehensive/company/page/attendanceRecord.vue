@@ -5,7 +5,7 @@
                 <span>考勤记录</span>
             </div>
             <div class="content">
-                 <download-excel
+                 <div  style="width: 50px"><download-excel
                                 class="export-excel-wrapper"
                                 :fetch="fetchData"
                                 :fields="json_fields"
@@ -19,7 +19,7 @@
                                     plain
                                     >导出Excel</el-button
                                 >
-                            </download-excel>
+                            </download-excel></div>
                 <div class="">
                     <VueTable
                         ref="table"
