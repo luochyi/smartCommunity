@@ -186,6 +186,14 @@ export function attendanceRecordReviewer(data) {
         data: data
     })
 }
+//functionAuthority/updateRole给人员分配角色
+export function functionAuthorityUpdateRole(data) {
+    return service.request({
+        method: 'POST',
+        url: '/functionAuthority/updateRole',
+        data: data
+    })
+}
 // 功能权限管理：查询所属角色下所有的员工信息 （包含条件搜索）
 export function functionAuthorityList(data) {
     return service.request({

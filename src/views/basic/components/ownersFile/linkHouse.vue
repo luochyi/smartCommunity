@@ -126,7 +126,7 @@ export default {
     },
     data() {
         return {
-          estateIds:[],
+            estateIds: [],
             drawer_vrisible: false,
             buildOptions: [],
             hoursArray: [],
@@ -136,7 +136,8 @@ export default {
                     tel: null,
                     name: null,
                     idType: null,
-                    idNumber: null
+                    idNumber: null,
+                    id:null
                 },
                 form_item: [
                     {
@@ -177,24 +178,24 @@ export default {
     methods: {
         //  提交
         onSubmit() {
-          let resData={
-            userResident:this.fromjson.ruleForm,
-            estateIds:this.estateIds
-          }
-          userResidentUpdateEstate(resData).then(res=>{
-            if(res.status){
-              this.$message({
-                type:'success',
-                message:res.message
-              })
-              this.drawer_vrisible = false
-            }else{
-              this.$message({
-                type:'error',
-                message:'修改房屋失败'
-              })
+            let resData = {
+                userResident: this.fromjson.ruleForm,
+                estateIds: this.estateIds
             }
-          })
+            userResidentUpdateEstate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        type: 'success',
+                        message: res.message
+                    })
+                    this.drawerClose()
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '修改房屋失败'
+                    })
+                }
+            })
         },
         getData(id) {
             this.hoursArray = []
@@ -202,6 +203,7 @@ export default {
                 id: id
             }
             userResidentFindEstateById(resData).then((res) => {
+                this.estateIds = []
                 console.log(res)
                 for (
                     let i = 0;
@@ -209,15 +211,17 @@ export default {
                     i++
                 ) {
                     this.houseAdd()
-                    
+
                     this.hoursArray[i].hoursValue =
                         res.cpmBuildingUnitEstateIdList[i].roomNumber
                     this.hoursArray[i].unitValue =
                         res.cpmBuildingUnitEstateIdList[i].unitNo
                     this.hoursArray[i].buildValue =
                         res.cpmBuildingUnitEstateIdList[i].buildingNo
-                    
-                    this.estateIds.push(res.cpmBuildingUnitEstateIdList[i].estateId)
+
+                    this.estateIds.push(
+                        res.cpmBuildingUnitEstateIdList[i].estateId
+                    )
                 }
                 this.fromjson.ruleForm.tel = res.userResident.tel
                 this.fromjson.ruleForm.name = res.userResident.name

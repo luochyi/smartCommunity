@@ -394,7 +394,7 @@ export default {
                  res.tableList.forEach(element => {
                      let obj = {
                          value: element.id,
-                         label: element.nickName
+                         label: element.actualName
                      }
                     this.addForm.form_item[3].options.push(obj)
                 });

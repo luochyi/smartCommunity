@@ -43,7 +43,7 @@
                        @focus='parkFocus'
                        filterable
                        style="margin-right:16px"
-                       v-model="item.parkingValue"
+                       v-model="item.parkingSpaceCode"
                        placeholder="请输入">
               <el-option v-for="obj in parkingOptions"
                          :key="obj.value"
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { userResidentFindEstateById, userResidentFindParkingSpaceById, cpmParkingSpaceList } from '@/api/basic'
+import { userResidentFindEstateById, userResidentFindParkingSpaceById, cpmParkingSpaceList,userResidentUpdateParkingSpace} from '@/api/basic'
 export default {
   props: {
     drawerVrisible: {
@@ -94,10 +94,12 @@ export default {
       loading: false,
       drawer_vrisible: false,
       // 车位
+      cpmParkingSpaceIds:[],
       parkingOptions: [],
       parkingArray: [
         {
-          parkingValue: null,
+          parkingSpaceCode: null,
+          parkingSpaceId:null
         },
       ],
       // 基本信息
@@ -107,6 +109,7 @@ export default {
           name: null,
           idType: null,
           idNumber: null,
+          id:null
         },
         form_item: [
           {
@@ -129,7 +132,7 @@ export default {
           {
             type: 'span', width: '50%',
             label: '证件号码',
-            prop: 'idNumber'
+            prop: 'idNumber',
           }
         ]
       }
@@ -139,7 +142,8 @@ export default {
 
   },
   methods: {
-    parkChange () {
+    parkChange (index,value) {
+     this.cpmParkingSpaceIds[index] = value
     },
     // 车位模糊查询
     parkRemoteMethod (val) {
@@ -177,27 +181,55 @@ export default {
           })
         })
         this.loading = false
-        console.log(res)
+        // console.log(res)
       })
     },
     //  提交
     onSubmit () {
-      console.log(this.parkingOptions)
+      let resData = {
+        userResident:this.fromjson.ruleForm,
+        cpmParkingSpaceIds:this.cpmParkingSpaceIds
+      }
+      console.log(resData);
+      userResidentUpdateParkingSpace(resData).then(res=>{
+        if(res.status){
+          this.$message({
+            message:res.message,
+            type:'success'
+          })
+          this.drawerClose()
+        }else {
+                    this.$message({
+                        type: 'error',
+                        message: '修改车位失败'
+                    })
+                }
+      })
     },
     getData (id) {
       let resData = {
         id: id
       }
       userResidentFindParkingSpaceById(resData).then(res => {
+        console.log(res.cpmParkingSpaceIdList);
         this.fromjson.ruleForm.tel = res.userResident.tel
         this.fromjson.ruleForm.name = res.userResident.name
         this.fromjson.ruleForm.idType = res.userResident.idType
         this.fromjson.ruleForm.idNumber = res.userResident.idNumber
+        this.fromjson.ruleForm.id = res.userResident.id
+        this.parkingArray = res.cpmParkingSpaceIdList
+        console.log(this.parkingArray);
+      this.parkingArray.forEach(ele=>{
+        this.cpmParkingSpaceIds.push(ele.parkingSpaceId)
       })
+      console.log(this.cpmParkingSpaceIds);
+      })
+      
     },
     parkingAdd () {
       this.parkingArray.push({
-        parkingValue: null,
+        parkingSpaceCode: null,
+        parkingSpaceId:null
       })
     },
     parkingRemove (index) {

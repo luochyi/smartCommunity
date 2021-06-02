@@ -24,6 +24,7 @@
                                     <li
                                         v-for="(item, index) in this.options"
                                         :key="index"
+                                        :class="{red: changeRed == index}" @click="change(index)"
                                     >
                                         <span
                                             class="cateName"
@@ -150,6 +151,43 @@
                                 <template slot="title">填写分类名称</template>
                                 <template>
                                     <VueForm ref="editForm" :formObj="editForm">
+                                        <template slot="imgUrls">
+                                            <template>
+                                                <el-upload
+                                                    :action="`${$baseUrl}upload/uploadShoppingCategory`"
+                                                    :on-success="ImgeSuccess"
+                                                    :file-list="imglist"
+                                                    :on-exceed="handleExceed"
+                                                    :limit="1"
+                                                    accept=".jpg,.png,.JPG,.PNG"
+                                                    :before-upload="
+                                                        beforeAvatarUpload
+                                                    "
+                                                >
+                                                    <el-button
+                                                        icon="el-icon-edit"
+                                                        size="small"
+                                                        >上传图片</el-button
+                                                    >
+                                                    <span
+                                                        style="
+                                                            margin-left: 10px;
+                                                            font-size: 12px;
+                                                            color: #444444;
+                                                        "
+                                                        >建议比例：3:2</span
+                                                    >
+                                                    <div
+                                                        slot="tip"
+                                                        class="el-upload__tip"
+                                                    >
+                                                        <span
+                                                            >支持扩展名：png,jpg</span
+                                                        >
+                                                    </div>
+                                                </el-upload>
+                                            </template>
+                                        </template>
                                     </VueForm>
                                 </template>
                             </FromCard>
@@ -181,6 +219,7 @@ import {
 export default {
     data() {
         return {
+            changeRed: -1,
             edit_vrisible: false,
             add_vrisible: false,
             imglist: [],
@@ -201,6 +240,14 @@ export default {
                         placeholder: '请输入',
                         width: '100%',
                         prop: 'name'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '图片上传',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'imgUrls',
+                        slotName: 'imgUrls'
                     }
                 ]
             },
@@ -248,6 +295,9 @@ export default {
         this.getDate()
     },
     methods: {
+        change:function (index) {
+        this.changeRed=index;
+      },
         add() {
             this.add_vrisible = true
             this.addForm.form_item[0].options = [
@@ -295,14 +345,25 @@ export default {
             this.edit_vrisible = true
             this.editForm.ruleForm.name = data.name
             this.editForm.ruleForm.id = data.id
+            // this.editForm.ruleForm.imgUrls=data.imgList[0].url
+             if (data.imgList.length) {
+                            let obj = {
+                                name: data.imgList[0].url,
+                                url: data.imgList[0].url
+                            }
+                            this.editForm.ruleForm.imgUrls = [
+                                data.imgList[0].url
+                            ]
+                            this.$set(this.imglist, 0, obj)
+                        } else {
+                            this.editForm.ruleForm.imgUrls = []
+                        }
+            console.log(this.editForm.ruleForm);
         },
         getDate() {
             shopCategoryList({ parentId: 0 }).then((res) => {
                 console.log(res)
                 this.options = res.data
-                // this.options.forEach((item, index) => {
-                //     this.options[index].children = []
-                // })
             })
         },
         getChild(data) {
@@ -327,7 +388,8 @@ export default {
         editSubmit() {
             let resData = {
                 ...this.editForm.ruleForm,
-                id: this.editForm.ruleForm.id
+                id: this.editForm.ruleForm.id,
+                imgUrls: this.addForm.ruleForm.imgUrls,
             }
             shopCategoryUpdate(resData).then((res) => {
                 if (res.status) {
@@ -417,9 +479,6 @@ export default {
     cursor: pointer;
     padding: 10px;
 }
-.cateName:active {
-    color: red;
-} //激活：红色
 .creation_box {
     margin: 0;
     height: 100%;
@@ -430,4 +489,7 @@ export default {
     cursor: pointer;
     padding-right: 20px;
 }
+.red{
+    color: red;
+  }
 </style>

@@ -179,6 +179,14 @@ export function electronicCommerceCategoryInsert(data) {
         data: data
     })
 }
+//newsManagement/updateCrawling
+export function newsManagementUpdateCrawling(data) {
+    return service.request({
+        method: 'GET',
+        url: 'newsManagement/updateCrawling',
+        params: data
+    })
+}
 export function electronicCommerceCategoryUpdate(data) {
     return service.request({
         method: 'POST',

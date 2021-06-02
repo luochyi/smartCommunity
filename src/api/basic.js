@@ -304,6 +304,14 @@ export const userResidentUpdateEstate = data => {
         data: data
     })
 }
+//userResident/updateParkingSpace
+export const userResidentUpdateParkingSpace = data => {
+    return service.request({
+        method: 'POST',
+        url: '/userResident/updateParkingSpace',
+        data: data
+    })
+}
 //tenant/updateRelatives
 export const tenantUpdateRelatives = data => {
     return service.request({

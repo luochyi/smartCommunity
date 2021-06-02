@@ -45,6 +45,7 @@
                         </template> -->
                         <template slot="footer">
                             <div class="table-footer">
+                                 <button @click="getNews">获取最新资讯</button>
                                 <button @click="edit(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
@@ -231,7 +232,7 @@
 <script>
 import {
     newsManagementInsert,
-    newsCategoryManagementList,newsManagementFindById,newsManagementUpdate
+    newsCategoryManagementList,newsManagementFindById,newsManagementUpdate,newsManagementUpdateCrawling
 } from '@/api/operation'
 export default {
     data() {
@@ -396,6 +397,18 @@ export default {
         this.getUserList()
     },
     methods: {
+        getNews(){
+            newsManagementUpdateCrawling().then(res=>{
+                if(res.status){
+                    this.$message({
+                        message:res.message,
+                        type:'success'
+                    })
+                    this.$refs.table.loadData()
+                }
+            })
+        },
+        
         // 获取用户列表
         getUserList(val) {
             let reeData = {
