@@ -176,6 +176,7 @@
                         </Drawer>
                     </div>
                 </el-tab-pane>
+                <!-- 设备管理组件 -->
                 <el-tab-pane label="设备管理" name="second"
                     ><deviceManage></deviceManage>
                 </el-tab-pane>
@@ -194,6 +195,7 @@ import {
 import deviceManage from './deviceManage.vue'
 export default {
     components: {
+        // 注册组件
         deviceManage
     },
     data() {
@@ -410,6 +412,7 @@ export default {
         change(value) {
             console.log(value)
         },
+        // 编辑
         edit(data) {
             if (data.length != 1) {
                 this.$message({
@@ -445,6 +448,7 @@ export default {
                 )
             }
         },
+        // 新增设施时随机生成编号
         add() {
             this.drawerTitle = '新增设施信息'
             this.add_vrisible = true
@@ -487,7 +491,9 @@ export default {
             this.add_vrisible = false
             this.wordList = []
         },
+        // 提交表单
         addSubmit() {
+            // 判断是修改的表单还是新增，修改要传主键id
             if (this.drawerTitle == '修改设施信息') {
                 let resData = {
                     ...this.addForm.ruleForm,

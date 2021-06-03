@@ -31,13 +31,37 @@ service.interceptors.response.use(
     function(response) {
         const data = response.data
         // 未登录或登录失效
-        if (data == '{message=未登录, status=-1000}') {
-            ElementUI.Message.error('未登录')
+        if (data.code == '-1000') {
+            ElementUI.Message.error(data.message)
             setTimeout(() => {
                 router.replace({
                     path: '/Login'
                 })
             }, 500)
+
+            return response
+        }else if(data.code =='-1001'){
+            ElementUI.Message.error(data.message)
+
+            return response
+        }else if(data.code =='400'){
+            ElementUI.Message.error(data.message)
+
+            return response
+        }else if(data.code =='401'){
+            ElementUI.Message.error(data.message)
+
+            return response
+        }else if(data.code =='404'){
+            ElementUI.Message.error(data.message)
+
+            return response
+        }else if(data.code =='500'){
+            ElementUI.Message.error(data.message)
+
+            return response
+        }else if(data.code =='503'){
+            ElementUI.Message.error(data.message)
 
             return response
         }

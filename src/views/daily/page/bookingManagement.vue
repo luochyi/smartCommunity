@@ -313,7 +313,7 @@ export default {
         this.getUserList()
     },
     methods: {
-        // 获取用户列表
+        // 获取设备列表
         getUserList(val) {
             let reeData = {
                 pageNum: 1,
@@ -343,24 +343,10 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
+        // 新增预约提交
         addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
             let resData = {
                 ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
             }
             facilitiesAppointmentInsert(resData).then((res) => {
                 if (res.status) {

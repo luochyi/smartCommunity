@@ -403,6 +403,7 @@ export default {
             this.add_vrisible = false
              this.wordList = []
         },
+        // 提交判断是修改还是新增
         addSubmit() {
             if (this.drawerTitle == '修改设备信息') {
                 let resData = {

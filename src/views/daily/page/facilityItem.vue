@@ -147,6 +147,7 @@
                                                 >
                                                 </el-time-picker>
                                             </template>
+                                            <!-- 上传图片 -->
                                             <template slot="imgUrls">
                                                 <template>
                                                     <el-upload
@@ -375,24 +376,10 @@ export default {
             this.imglist = []
             this.addDate = ''
         },
+        // 新增提交
         addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
             let resData = {
                 ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
             }
             facilitiesCategoryInsert(resData).then((res) => {
                 if (res.status) {
@@ -406,6 +393,7 @@ export default {
                 }
             })
         },
+        // 编辑
         edit(data) {
             if (data.length != 1) {
                 this.$message({
@@ -451,6 +439,7 @@ export default {
             this.imglist = []
             this.addDate = ''
         },
+        //提交
         editSubmit() {
             let resData = {
                 ...this.editForm.ruleForm,
@@ -500,21 +489,6 @@ export default {
         handleClick(tab, event) {
             console.log(tab, event)
         },
-        // // tabs切换
-        // handleClick (tab, event) {
-        //   let status = null
-        //   if (this.activeName != 0) {
-        //     status = this.activeName
-        //   } else {
-        //     status = null
-        //   }
-        //   const requestData = {
-        //     pageNum: 1,
-        //     size: 10,
-        //     status: status
-        //   }
-        //   this.$refs.table.requestData(requestData);
-        // },
 
         // 表格选中
         tableCheck(data) {

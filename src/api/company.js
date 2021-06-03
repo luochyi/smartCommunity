@@ -158,8 +158,32 @@ export function salaryInsert(data) {
 export function functionAuthorityRoleList(data) {
     return service.request({
         method: 'GET',
-        url: '/functionAuthority/roleList',
+        url: '/sysRole/roleList',
         params: data
+    })
+}
+//sysRole/insertRole添加角色信息
+export function sysRoleInsertRole(data) {
+    return service.request({
+        method: 'POST',
+        url: '/sysRole/insertRole',
+        data: data
+    })
+}
+//sysRole/updateRole修改角色
+export function sysRoleUpdateRole(data) {
+    return service.request({
+        method: 'POST',
+        url: '/sysRole/updateRole',
+        data: data
+    })
+}
+//sysRole/deleteRole
+export function sysRoleDeleteRole(data) {
+    return service.request({
+        method: 'POST',
+        url: '/sysRole/deleteRole',
+        data: data
     })
 }
 //contract/insert合同

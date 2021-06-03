@@ -176,6 +176,11 @@
                     <div style="padding: 30px" class="role-box">
                         <FromCard>
                             <template slot="title">角色配置</template>
+                            <div class="infomation" style="margin-left: 30px">
+                                <span>昵称（系统名）：{{ nickName }}</span>
+                                <span>部门：{{ organizationName }}</span>
+                                <span>现有角色：{{ roleName }}</span>
+                            </div>
                             <template>
                                 <div style="padding: 7%">
                                     <div>
@@ -246,6 +251,9 @@ export default {
     },
     data() {
         return {
+            nickName: null,
+            organizationName: null,
+            roleName: null,
             tableData: [],
             roleList: [],
             editID: null,
@@ -267,16 +275,41 @@ export default {
         this.getOrganizationData()
     },
     methods: {
+        //分配角色
         edit(data) {
-            console.log(data)
+            //判断是否已有角色
+            if (data.roleId == null) {
+                this.checkArr=[]
+            } else {
+                        //判断是否多个角色
+                        let rid = Number(data.roleId)
+                        if (typeof rid != Number) {
+                            //遍历多个角色id转化为数字添加至checkArr中
+                            let res = data.roleId.split(',')
+                            res.forEach((element) => {
+                                let num = Number(element)
+                                this.checkArr.push(num)
+                            })
+                        } else {
+                            //单个角色id转为数字后直接添加
+                            this.checkArr.push(rid)
+                        }
+            }
+            console.log(this.checkArr)
             this.editID = data.id
+            //获取人员基本信息
+            this.nickName = data.nickName
+            this.organizationName = data.organizationName
+            this.roleName = data.roleName
             this.addEidtVrisible = true
         },
         addEidtClose() {
             this.addEidtVrisible = false
+            this.checkArr = []
         },
         onSubmit() {
             console.log(this.checkArr)
+            //接口请求参数roleId为','分隔的字符串形式
             let newArr = this.checkArr.toString()
             if (newArr == '') {
                 newArr = null
@@ -382,6 +415,11 @@ export default {
 }
 .box {
     margin: 20px;
+}
+.infomation span {
+    font-size: 16px;
+    line-height: 16px;
+    margin: 30px;
 }
 .lf {
     width: 20%;

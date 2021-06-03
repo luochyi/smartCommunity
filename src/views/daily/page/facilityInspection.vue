@@ -82,30 +82,7 @@
                                         >
                                         </el-time-picker>
                                     </template>
-                                    <template v-slot:inspectionRouteId>
-                                        <el-select
-                                            v-model="
-                                                addForm.ruleForm
-                                                    .inspectionRouteId
-                                            "
-                                            :remote-method="remoteMethod"
-                                            @change="change"
-                                            @focus="sefocus"
-                                            :loading="loading"
-                                            remote
-                                            style="width: 240px"
-                                            filterable
-                                            placeholder="请选择"
-                                        >
-                                            <el-option
-                                                v-for="item in options"
-                                                :key="item.id"
-                                                :label="item.name"
-                                                :value="item.id"
-                                            >
-                                            </el-option>
-                                        </el-select>
-                                    </template>
+                                    <!-- 选择部门 -->
                                     <template v-slot:sysOrganization>
                                         <el-select
                                             v-model="
@@ -172,7 +149,6 @@ export default {
                 ruleForm: {
                     name: null,
                     code: '',
-                    inspectionRouteId: null,
                     organizationId: null,
                     isSort: '2',
                     type: null
@@ -410,11 +386,7 @@ export default {
             }
 
             this.loading = true
-            inspectionRouteList(reeData).then((res) => {
-                console.log(res)
-                this.options = res.tableList
-                this.loading = false
-            })
+            // 获取部门列表
             sysOrganizationFindAllDepartment(reeData).then((res) => {
                 // console.log(res)
                 this.sysOptions = res.data
@@ -447,6 +419,7 @@ export default {
                         value: element.id,
                         label: element.nickName
                     }
+                    //给获取下拉框
                     this.addForm.form_item[4].options.push(obj)
                 })
                 console.log(this.addForm.form_item[4].options)
@@ -461,6 +434,7 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
+        // 提交
         addSubmit() {
             let resData = {
                 ...this.addForm.ruleForm
