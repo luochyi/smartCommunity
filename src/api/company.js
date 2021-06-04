@@ -170,6 +170,14 @@ export function sysRoleInsertRole(data) {
         data: data
     })
 }
+//sysRole/findByRoleId
+export function sysRoleFindByRoleId(data){
+    return service.request({
+        method: 'GET',
+        url: '/sysRole/findByRoleId',
+        params: data
+    })
+}
 //sysRole/updateRole修改角色
 export function sysRoleUpdateRole(data) {
     return service.request({

@@ -106,7 +106,12 @@
                             label="昵称（系统名）"
                             width="140"
                         ></el-table-column>
-                        <el-table-column prop="tel" width="140" label="电话">
+                        <el-table-column
+                            prop="actualName"
+                            label="真实姓名"
+                            width="130"
+                        ></el-table-column>
+                        <el-table-column prop="tel" width="130" label="电话">
                         </el-table-column>
                         <el-table-column
                             prop="organizationName"
@@ -122,7 +127,7 @@
                         </el-table-column>
                         <el-table-column
                             prop="status"
-                            width="100"
+                            width="80"
                             label="状态"
                             :formatter="statusVal"
                         >
@@ -181,7 +186,7 @@
                     <template>
                         <div class="pagination-box">
                             <div class="pagination-item">
-                                <p>当前1-3，共3条 <span>每页显示10条</span></p>
+                                <p>当前1-4，共4条 <span>每页显示10条</span></p>
                             </div>
                             <div class="pagination-item">
                                 <div class="block">
@@ -457,6 +462,7 @@ export default {
         })
     },
     methods: {
+        // 表格中status的值
         statusVal(row, column) {
             switch (row.status) {
                 case 1:
@@ -477,6 +483,7 @@ export default {
         },
         // 新建员工
         addPerson() {
+            this.addForm.form_item[4].placeholder = '请输入'
             this.add_vrisible = true
             this.drawerTitle = '新建员工'
             this.addForm.ruleForm.userCode = Math.floor(
@@ -526,6 +533,7 @@ export default {
             this.add_vrisible = true
             this.drawerTitle = '修改员工信息'
             this.addForm.form_item[4].disabled = true
+            this.addForm.form_item[4].placeholder = '密码'
             console.log(row)
             sysUserFindById({ id: row.id }).then((res) => {
                 console.log(res)
@@ -541,7 +549,7 @@ export default {
                 this.addForm.ruleForm.id = res.id
             })
         },
-        //恢复
+        //允许登录
         allowLogins(data) {
             this.$confirm('是否允许登录?', '提示', {
                 confirmButtonText: '确定',
@@ -565,6 +573,7 @@ export default {
                     })
                 })
         },
+        //禁止登录
         disableLogins(data) {
             this.$confirm('是否禁止登录?', '提示', {
                 confirmButtonText: '确定',
@@ -588,6 +597,7 @@ export default {
                     })
                 })
         },
+        // 恢复
         recovery(data) {
             this.$confirm('是否恢复?', '提示', {
                 confirmButtonText: '确定',
@@ -611,6 +621,7 @@ export default {
                     })
                 })
         },
+        // 停用账号
         stop(data) {
             this.$confirm('是否停用?', '提示', {
                 confirmButtonText: '确定',
@@ -634,6 +645,7 @@ export default {
                     })
                 })
         },
+        // 删除
         del(data) {
             this.$confirm('是否删除员工?', '提示', {
                 confirmButtonText: '确定',

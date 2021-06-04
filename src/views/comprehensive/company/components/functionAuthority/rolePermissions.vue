@@ -30,9 +30,22 @@
                                 :key="role.id"
                             >
                                 <span>{{ role.name }}</span>
-                                <div style="float:right" v-if="roleId===role.id">
-                                  <el-button type="success" size="mini" @click="edit(role.id)">编辑</el-button>
-                                  <el-button type="danger" size="mini" @click="del(role.id)">删除</el-button>
+                                <div
+                                    style="float: right"
+                                    v-if="roleId === role.id"
+                                >
+                                    <el-button
+                                        type="success"
+                                        size="mini"
+                                        @click="edit(role.id)"
+                                        >编辑</el-button
+                                    >
+                                    <el-button
+                                        type="danger"
+                                        size="mini"
+                                        @click="del(role.id)"
+                                        >删除</el-button
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -87,7 +100,7 @@
             </div>
             <!-- 新增 -->
             <Drawer
-                drawerTitle="新增角色"
+                :drawerTitle="drawerTitle"
                 @drawerClose="addClose"
                 :drawerVrisible="add_vrisible"
             >
@@ -120,6 +133,7 @@ import {
     functionAuthorityListJurisdiction,
     sysRoleInsertRole,
     sysRoleUpdateRole,
+    sysRoleFindByRoleId,
     sysRoleDeleteRole
 } from '@/api/company'
 export default {
@@ -131,8 +145,10 @@ export default {
     },
     data() {
         return {
+            drawerTitle: null,
             add_vrisible: false,
             roleList: [],
+            editId: null,
             roleId: null,
             checked: false,
             jurisdictionList: [],
@@ -150,11 +166,11 @@ export default {
                         placeholder: '请选择上级角色',
                         width: '50%',
                         prop: 'parentId',
-                        options:[
-                          {
-                            value:0,
-                            label:'无上级角色'
-                          }
+                        options: [
+                            {
+                                value: 0,
+                                label: '无上级角色'
+                            }
                         ]
                     },
                     {
@@ -163,62 +179,90 @@ export default {
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'name'
-                    },
-                    {
-                        type: 'Int',
-                        label: '角色编码',
-                        width: '100%',
-                        prop: 'code',
-                        disabled:true
                     }
+                    // {
+                    //     type: 'Int',
+                    //     label: '角色编码',
+                    //     width: '100%',
+                    //     prop: 'code',
+                    //     disabled:true
+                    // }
                 ]
             }
         }
     },
     created() {
         this.GetRoleList()
-        functionAuthorityRoleList().then(res=>{
-          console.log(res);
-          res.forEach(element => {
-            let obj = {
-              value:element.id,
-              label:element.name
-            }
-            this.addForm.form_item[0].options.push(obj)
-          });
+        functionAuthorityRoleList().then((res) => {
+            console.log(res)
+            res.forEach((element) => {
+                let obj = {
+                    value: element.id,
+                    label: element.name
+                }
+                this.addForm.form_item[0].options.push(obj)
+            })
         })
     },
     methods: {
+        // 新增随机生成code
         add() {
+            this.drawerTitle = '新增角色'
             this.add_vrisible = true
             let random = Math.floor(Math.random() * 100000000)
             this.addForm.ruleForm.code = random
+        },
+        // 编辑获取findbyid的数据
+        edit(data) {
+            this.editId = data
+            sysRoleFindByRoleId({ roleId: this.editId }).then((res) => {
+                this.addForm.ruleForm.name = res.data.name
+                this.addForm.ruleForm.code = res.data.code
+                this.addForm.ruleForm.parentId = res.data.parentId
+            })
+            this.drawerTitle = '修改角色信息'
+            this.add_vrisible = true
         },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
+        // 编辑新增提交
         addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
-            }
-            sysRoleInsertRole(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.addClose()
-                    this.GetRoleList()
+            if (this.drawerTitle == '新增角色') {
+                let resData = {
+                    ...this.addForm.ruleForm
                 }
-            })
+                sysRoleInsertRole(resData).then((res) => {
+                    if (res.status) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.addClose()
+                        this.GetRoleList()
+                    }
+                })
+            } else if (this.drawerTitle == '修改角色信息') {
+                let resData = {
+                    id: this.editId,
+                    parentId: this.addForm.ruleForm.parentId,
+                    name: this.addForm.ruleForm.name
+                }
+                sysRoleUpdateRole(resData).then((res) => {
+                    if (res.status) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.addClose()
+                        this.GetRoleList()
+                    }
+                })
+            }
         },
-        edit(data){
-          console.log(data);
-
-        },
-        del(data){
-          this.$confirm('是否删除角色?', '提示', {
+        del(data) {
+            this.$confirm('是否删除角色?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
