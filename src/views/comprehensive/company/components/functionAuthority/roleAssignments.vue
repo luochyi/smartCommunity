@@ -176,7 +176,7 @@
                     <div style="padding: 30px" class="role-box">
                         <FromCard>
                             <template slot="title">角色配置</template>
-                            <div class="infomation" style="margin-left: 30px">
+                            <div class="infomation" style="margin-left: 30px;padding-top:20px">
                                 <span>昵称（系统名）：{{ nickName }}</span>
                                 <span>部门：{{ organizationName }}</span>
                                 <span>现有角色：{{ roleName }}</span>

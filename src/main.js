@@ -7,6 +7,9 @@ import './assets/css/global.css'
 import './plugins/element.js'
 import './assets/css/style.scss'
 import JsonExcel from 'vue-json-excel'
+//echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 
 Vue.component('downloadExcel', JsonExcel)
 

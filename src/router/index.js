@@ -153,6 +153,13 @@ const routes = [
                                 '@/views/comprehensive/company/page/fireAlarm'
                             ], resolve)
                     },
+                    {
+                        path: '/company/echarts',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/echarts'
+                            ], resolve)
+                    }
                     
                 ]
             }

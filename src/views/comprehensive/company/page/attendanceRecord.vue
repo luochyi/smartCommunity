@@ -119,6 +119,8 @@ export default {
                         callback:(row,prop)=>{
                             if(row.startClockDate==null){
                                 return '未打卡'
+                            }else{
+                                return row.startClockDate
                             }
                         }
                     },
@@ -130,8 +132,26 @@ export default {
                         callback:(row,prop)=>{
                             if(row.endClockDate==null){
                                 return '未打卡'
+                            }else{
+                                return row.endClockDate
                             }
                         }
+                    },
+                    {
+                        label: '打卡状态',
+                        prop: 'clockStatus',
+                        width: 'auto',
+                        type:'function',
+                        callback:(row,prop)=>{
+                            if(row.endClockDate!=null){
+                                return '已打卡'
+                            }else if(row.cardReplacementDate!=null){
+                                return '已补卡'
+                            }else{
+                                return '未打卡'
+                            }
+                        }
+
                     },
                     {
                         label: '补卡时间',
@@ -163,15 +183,19 @@ export default {
                         type: 'select',
                         label: '状态',
                         placeholder: '请输入',
-                        prop: 'status',
+                        prop: 'clockStatus',
                         options: [
                             {
                                 value: 1,
-                                label: '未上班'
+                                label: '已打卡'
                             },
                             {
                                 value: 2,
-                                label: '未下班'
+                                label: '未打卡'
+                            },
+                            {
+                                value: 3,
+                                label: '已补卡'
                             }
                         ]
                     }
