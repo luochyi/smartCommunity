@@ -155,6 +155,14 @@ export function salaryInsert(data) {
         data: data
     })
 }
+// salary/update
+export function salaryUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/salary/update',
+        data: data
+    })
+}
 export function functionAuthorityRoleList(data) {
     return service.request({
         method: 'GET',

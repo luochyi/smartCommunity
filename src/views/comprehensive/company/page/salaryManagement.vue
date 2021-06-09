@@ -45,7 +45,7 @@
                         </template> -->
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button>编辑</button> -->
+                                <button @click="edit(table_row)">编辑</button>
                                 <!-- <button @click="isEnable(table_row)">启用/停用</button> -->
                                 <button @click="del(table_row)">删除</button>
                             </div>
@@ -54,7 +54,7 @@
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增薪资信息"
+                    :drawerTitle="drawerTitle"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
@@ -80,8 +80,7 @@
                                     <template v-slot:greenAreaId>
                                         <el-select
                                             v-model="
-                                                addForm.ruleForm
-                                                    .greenAreaId
+                                                addForm.ruleForm.greenAreaId
                                             "
                                             :remote-method="remoteMethod"
                                             @change="change"
@@ -145,17 +144,13 @@
 </template>
 
 <script>
-import {
-    sysOrganizationFindAllDepartment,
-    sysUserList,
-} from '@/api/daily'
-import {
-    salaryInsert,
-}from '@/api/company'
+import { sysOrganizationFindAllDepartment, sysUserList } from '@/api/daily'
+import { salaryInsert,salaryUpdate } from '@/api/company'
 // import func from 'vue-editor-bridge'
 export default {
     data() {
         return {
+            drawerTitle: null,
             add_vrisible: false,
             addDate: null,
             options: [],
@@ -163,10 +158,15 @@ export default {
             loading: false,
             addForm: {
                 ruleForm: {
+                    id: null,
                     greenAreaId: null,
                     content: null,
                     director: null,
-                    endDate:null
+                    endDate: null,
+                    wageCardNumber: null,
+                    salary: null,
+                    organizationId: null,
+                    salaryPerson: null
                 },
                 form_item: [
                     {
@@ -198,7 +198,7 @@ export default {
                         placeholder: '请输入',
                         width: '100%',
                         prop: 'salary'
-                    },
+                    }
                 ]
             },
             table_row: [],
@@ -224,12 +224,12 @@ export default {
                         label: '性别',
                         prop: 'sex',
                         width: 'auto',
-                        type:'function',
-                        callback:(row,prop)=>{
+                        type: 'function',
+                        callback: (row, prop) => {
                             if (row.sex == 1) {
                                 return '男'
-                            }else{
-                                return'女'
+                            } else {
+                                return '女'
                             }
                         }
                     },
@@ -247,7 +247,7 @@ export default {
                         label: '薪资',
                         prop: 'salary',
                         width: 'auto'
-                    },
+                    }
                 ],
                 table_data: [],
                 url: 'salaryList',
@@ -257,7 +257,7 @@ export default {
                         label: '部门',
                         placeholder: '请输入',
                         prop: 'organizationId',
-                        options:[]
+                        options: []
                     },
                     {
                         type: 'Int',
@@ -270,7 +270,7 @@ export default {
                         label: '工资卡号',
                         placeholder: '请输入',
                         prop: 'wageCardNumber'
-                    },
+                    }
 
                     // Slot
                 ],
@@ -281,30 +281,30 @@ export default {
             }
         }
     },
-    mounted(){
+    mounted() {
         let reeData = {
-                pageNum: 1,
-                size: 20,
-            }
-         sysOrganizationFindAllDepartment(reeData).then((res) => {
-                console.log(res)
-                res.data.forEach(element => {
-                    let obj = {
-                        value:element.id,
-                        label:element.name
-                    }
-                     this.config.search_item[0].options.push(obj)
-                });
-               
-                // console.log(this.sysOptions);
+            pageNum: 1,
+            size: 20
+        }
+        sysOrganizationFindAllDepartment(reeData).then((res) => {
+            console.log(res)
+            res.data.forEach((element) => {
+                let obj = {
+                    value: element.id,
+                    label: element.name
+                }
+                this.config.search_item[0].options.push(obj)
             })
+
+            // console.log(this.sysOptions);
+        })
     },
     methods: {
         // 获取用户列表
         getUserList(val) {
             let reeData = {
                 pageNum: 1,
-                size: 20,
+                size: 20
             }
             this.loading = true
             sysOrganizationFindAllDepartment(reeData).then((res) => {
@@ -321,33 +321,32 @@ export default {
             this.getUserList()
         },
         change(value) {
-            console.log(value)//sysUserList
-
-            
+            console.log(value) //sysUserList
         },
         //根据部门获取人员
-        sChange(value){
+        sChange(value) {
             this.addForm.form_item[1].options = []
-             let sData = {
+            let sData = {
                 pageNum: 1,
                 size: 100,
-                organizationId:value
-             }
-             sysUserList(sData).then((res) => {
+                organizationId: value
+            }
+            sysUserList(sData).then((res) => {
                 console.log(res)
-                
-                 res.tableList.forEach(element => {
-                     let obj = {
-                         value: element.id,
-                         label: element.actualName
-                     }
+
+                res.tableList.forEach((element) => {
+                    let obj = {
+                        value: element.id,
+                        label: element.actualName
+                    }
                     this.addForm.form_item[1].options.push(obj)
-                });
+                })
                 // console.log(this.addForm.form_item[3].options)
                 this.loading = false
             })
         },
         add() {
+            this.drawerTitle = '新增薪资信息'
             this.add_vrisible = true
             // this.getUserList()
         },
@@ -356,7 +355,8 @@ export default {
             this.add_vrisible = false
         },
         addSubmit() {
-            let resData = {
+            if(this.drawerTitle =='新增薪资信息'){
+                let resData = {
                 ...this.addForm.ruleForm
             }
             salaryInsert(resData).then((res) => {
@@ -369,6 +369,39 @@ export default {
                     this.addClose()
                 }
             })
+            }else if(this.drawerTitle=='修改薪资信息'){
+                let resData = {
+                id:this.addForm.ruleForm.id,
+                wageCardNumber:this.addForm.ruleForm.wageCardNumber,
+                salary:this.addForm.ruleForm.salary
+            }
+            salaryUpdate(resData).then(res=>{
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
+            }
+        },
+        edit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '请选择一条薪资进行修改',
+                    type: 'error'
+                })
+            } else {
+                this.drawerTitle = '修改薪资信息'
+                this.add_vrisible = true
+                this.addForm.ruleForm.organizationId = data[0].organizationName
+                this.addForm.ruleForm.salaryPerson = data[0].name
+                this.addForm.ruleForm.id = data[0].id
+                this.addForm.ruleForm.wageCardNumber = data[0].wageCardNumber
+                this.addForm.ruleForm.salary = data[0].salary
+            }
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
@@ -414,7 +447,7 @@ export default {
             } else {
                 this.$message.error('请选中需要删除的数据')
             }
-        },
-    },
+        }
+    }
 }
 </script>

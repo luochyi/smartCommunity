@@ -22,32 +22,52 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button @click="send(table_row)">发货</button>
-                                <button @click="arrival(table_row)">到货</button> -->
+                                <!-- <button @click="send(table_row)">发货</button> -->
+                                <button @click="reply(table_row)">回复</button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
+                <el-dialog
+                    title="评价回复"
+                    width="480px"
+                    top="40vh"
+                    @close="dialogclose()"
+                    :visible.sync="replyDialog"
+                >
+                    <div class="dialang-box">
+                        <el-input
+                            placeholder="客服回复内容"
+                            size="mini"
+                            type="textarea"
+                            v-model="replyContent"
+                            style="width: 423px; height: 32px"
+                        ></el-input>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button size="mini" @click="replyDialog = false"
+                            >取 消</el-button
+                        >
+                        <el-button size="mini" type="primary" @click="replyOk()"
+                            >确 定</el-button
+                        >
+                    </span>
+                </el-dialog>
             </div>
         </div>
-        <views-photo
-            :isVisible="photos_Visible"
-            :goodsImgsList="goodsImgsList"
-            @closeViews="getclose"
-        ></views-photo>
     </div>
 </template>
 
 <script>
 import viewsPhoto from '@/components/dialog/viewsPhoto'
-import { shopOrderDeliverGoods, orderArrivalGoods } from '@/api/shop'
+import { shopOrderDeliverGoods, orderArrivalGoods ,shopEvaluationReply} from '@/api/shop'
 export default {
-    components: {
-        viewsPhoto
-    },
     data() {
         return {
+            thatId:null,
             photos_Visible: false,
+            replyContent: null,
+            replyDialog: false,
             colors: ['#FB4702', '#FB4702', '#FB4702'],
             goodsImgsList: [],
             table_row: [],
@@ -87,7 +107,9 @@ export default {
                         width: 'auto'
                     },
                     { label: '评价人姓名', prop: 'createName', width: '100' },
-                    { label: '评价人手机号', prop: 'createTel', width: 'auto' }
+                    { label: '评价人手机号', prop: 'createTel', width: 'auto' },
+                    { label: '客户回复内容', prop: 'replyContent', width: 'auto' },
+                    { label: '客户回复时间', prop: 'replyDate', width: 'auto' }
                 ],
                 table_data: [],
                 url: 'shopEvaluationList',
@@ -99,7 +121,7 @@ export default {
                         options: [
                             { value: 1, label: '差评' },
                             { value: 2, label: '中评' },
-                            { value: 3, label: '好评' },
+                            { value: 3, label: '好评' }
                         ],
                         prop: 'score'
                     },
@@ -108,7 +130,17 @@ export default {
                         label: '客户手机号',
                         placeholder: '请输入手机号',
                         prop: 'tel'
-                    }
+                    },
+                    {
+                        type: 'select',
+                        label: '回复状态',
+                        placeholder: '请选择',
+                        options: [
+                            { value: 1, label: '已回复' },
+                            { value: 2, label: '未回复' },
+                        ],
+                        prop: 'replyStatus'
+                    },
                 ],
                 data: {
                     pageNum: 1,
@@ -118,60 +150,49 @@ export default {
         }
     },
     methods: {
-        getPhotoView(item) {
-            this.photos_Visible = true
-            // let resData = {
-            //   id: id,
-            // }
-            // userArticleOutFindGoodsImgById(resData).then(result => {
-            //   console.log(result)
-            this.goodsImgsList = item
-            // })
-        },
-        getclose() {
-            this.photos_Visible = false
-        },
-        send(data) {
+        //回复
+        reply(data) {
             if (data.length != 1) {
                 this.$message({
                     type: 'error',
-                    message: '请选择一个订单发货'
+                    message: '请选择一条评价回复'
                 })
             } else {
-                shopOrderDeliverGoods({ id: data[0].id }).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.requestData()
-                    }
-                })
+                console.log(data)
+                this.replyDialog = true
+                console.log(data)
+                this.thatId = data[0].id
             }
         },
-        //到货 只有已发货状态才可以发货
-        arrival(data) {
-            if (data.length != 1) {
+         // 回复提交
+        replyOk() {
+            if(this.replyContent==null){
                 this.$message({
                     type: 'error',
-                    message: '请选择一个订单到货'
+                    message: '回复不能为空'
                 })
-            } else if (data[0].status != 2) {
-                this.$message({
-                    type: 'error',
-                    message: '该状态不可到货'
-                })
-            } else {
-                orderArrivalGoods({ id: data[0].id }).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.requestData()
-                    }
-                })
+                return
             }
+            let resData = {
+                goodsAppointmentId: this.thatId,
+                replyContent: this.replyContent
+            }
+            console.log(resData)
+            shopEvaluationReply(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        type: 'success',
+                        message: res.message
+                    })
+                }
+            })
+            this.dialogclose()
+            this.$refs.table.loadData()
+        },
+        dialogclose() {
+            this.replyDialog = false
+            this.thatId = null
+            this.replyContent = null
         },
         tableCheck(data) {
             this.table_row = data

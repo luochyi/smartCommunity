@@ -95,3 +95,11 @@ export function shopRefundExamine(data){
         data: data
     })
 }
+//商城评价回复 shop/evaluation/reply
+export function shopEvaluationReply(data){
+    return service.request({
+        method:'POST',
+        url:'shop/evaluation/reply',
+        data: data
+    })
+}
