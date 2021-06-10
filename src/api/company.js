@@ -1,5 +1,41 @@
 import service from '../utils/request'
 import requestUrl from './requestUrl'
+
+
+
+// 首页数据大屏 
+//dataStatistics/findLastMonthPayCostDetail  后台配置大屏：查询上月物业缴费情况
+export function findLastMonthPayCostDetail(data){
+    return service.request({
+        method:'GET',
+        url:'/dataStatistics/findLastMonthPayCostDetail',
+        params:data
+    })
+}
+//dataStatistics/findPaymentStatistics  后台配置大屏：物业缴费统计（6个月内数据，不包含本月）
+export function findPaymentStatistics(data){
+    return service.request({
+        method:'GET',
+        url:'/dataStatistics/findPaymentStatistics',
+        params:data
+    })
+}
+//dataStatistics/findTodayEnvironmentalHealth 后台配置大屏：查询今日环境卫生任务情况
+export function findTodayEnvironmentalHealth(data){
+    return service.request({
+        method:'GET',
+        url:'/dataStatistics/findTodayEnvironmentalHealth',
+        params:data
+    })
+}
+//dataStatistics/findInspectionRecord 后台配置大屏：查询今日巡更记录
+export function findInspectionRecord(data){
+    return service.request({
+        method:'GET',
+        url:'/dataStatistics/findInspectionRecord',
+        params:data
+    })
+}
 // 组织架构管理：查询所有的组织架构信息
 export function sysOrganizationList(data) {
     return service.request({

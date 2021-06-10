@@ -157,7 +157,14 @@ export default {
                     type: 'error',
                     message: '请选择一条评价回复'
                 })
-            } else {
+                //没有回复时间和回复内容的评价才可以回复
+            } else if(data[0].replyContent!=null&&data[0].replyDate!=null){
+                 this.$message({
+                    type: 'error',
+                    message: '该评价已回复'
+                })
+            }
+            else {
                 console.log(data)
                 this.replyDialog = true
                 console.log(data)
@@ -189,6 +196,7 @@ export default {
             this.dialogclose()
             this.$refs.table.loadData()
         },
+        //回复框关闭
         dialogclose() {
             this.replyDialog = false
             this.thatId = null

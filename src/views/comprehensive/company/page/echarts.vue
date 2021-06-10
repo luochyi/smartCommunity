@@ -1,21 +1,70 @@
 <template>
     <div>
-        <div id="myChart" :style="{ width: '300px', height: '300px' }"></div>
+        <div class="main-content">
+            <el-container>
+                <el-aside width="541px">
+                    <div class="todoList">todoList</div>
+                </el-aside>
+                <el-container>
+                    <el-header height="400px">
+                        <div class="costCard">
+                            <el-card class="box-card">
+                                <el-row>
+                                    <el-col :span="8"
+                                        ><div class="lastMonthCost"></div
+                                    ></el-col>
+                                    <el-col :span="16"
+                                        ><div
+                                            id="myChart"
+                                            :style="{
+                                                width: '629px',
+                                                height: '254px'
+                                            }"
+                                        ></div
+                                    ></el-col>
+                                </el-row>
+                            </el-card>
+                        </div>
+                    </el-header>
+                    <el-main>
+                        <div class="mainCard">
+                            <div>
+                                <div class="task">task</div>
+                                <div class="inspect">inspect</div>
+                            </div>
+                            <div class="attend">attend</div>
+                        </div>
+                    </el-main>
+                </el-container>
+            </el-container>
+        </div>
     </div>
 </template>
 
 <script>
+import {
+    findLastMonthPayCostDetail,
+    findPaymentStatistics,
+    findTodayEnvironmentalHealth,
+    findInspectionRecord
+} from '@/api/company'
 export default {
     name: 'hello',
     data() {
         return {
             msg: 'Welcome to Your Vue.js App',
+            LastMonthPayCost: {
+                lastMonthPayPrice: null,
+                lastMonthUnpaidPrice: null,
+                lastMonthShouldPayPrice: null,
+                lastMonthUnpaidHouseholds: null
+            },
             xData: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子'],
             yData: [5, 20, 36, 10, 10, 20]
         }
     },
     mounted() {
-        this.drawLine()
+        this.drawLine(), this.getData()
     },
     methods: {
         drawLine() {
@@ -24,14 +73,14 @@ export default {
             // 绘制图表
             myChart.setOption({
                 title: {
-                    text: '标题',
+                    text: '半年内物业缴费统计',
                     link: 'http://localhost:3333/?#/company/orgManagement'
                 },
                 tooltip: {},
-                color: ['#64C7BF', '#73A0FA'],
+                color: ['#7BB0FF', '#FFD27B'],
                 legend: {
                     y: 'top',
-                    data: ['销量', '销量2']
+                    data: ['应缴纳费用', '实际缴纳费用']
                 },
                 xAxis: {
                     type: 'category',
@@ -70,45 +119,71 @@ export default {
                 },
                 series: [
                     {
-                        name: '销量1',
+                        name: '应缴纳费用',
                         type: 'bar', //柱状图bar 饼状图pie 折线图line
                         data: this.yData
-                        // markPoint: {
-                        //     data: [
-                        //         {
-                        //             type: 'max',
-                        //             name: '最大'
-                        //         },
-                        //         {
-                        //             type: 'min',
-                        //             name: '最小'
-                        //         }
-                        //     ]
-                        // }
                     },
                     {
-                        name: '销量2',
+                        name: '实际缴纳费用',
                         type: 'bar', //柱状图bar 饼状图pie 折线图line
                         data: this.yData
-                        // markPoint: {
-                        //     data: [
-                        //         {
-                        //             type: 'max',
-                        //             name: '最大'
-                        //         },
-                        //         {
-                        //             type: 'min',
-                        //             name: '最小'
-                        //         }
-                        //     ]
-                        // }
                     }
                 ]
+            })
+        },
+        getData() {
+            findLastMonthPayCostDetail().then((res) => {
+                console.log(res.data)
+                this.LastMonthPayCost.lastMonthPayPrice =
+                    res.data.lastMonthPayPrice
+                this.LastMonthPayCost.lastMonthUnpaidPrice =
+                    res.data.lastMonthUnpaidPrice
+                this.LastMonthPayCost.lastMonthShouldPayPrice =
+                    res.data.lastMonthShouldPayPrice
+                this.LastMonthPayCost.lastMonthUnpaidHouseholds =
+                    res.data.lastMonthUnpaidHouseholds
             })
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
+.todoList {
+    width: 541px;
+    height: 960px;
+}
+.costCard {
+    width: 1107px;
+    height: 390px;
+    /* display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; */
+}
+.lastMonthCost {
+    width: 200px;
+    height: 320px;
+    /* background-color: forestgreen; */
+}
+.mainCard {
+    height: 542px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.task {
+    width: 542px;
+    height: 201px;
+}
+.inspect {
+    width: 542px;
+    height: 321px;
+    margin-top: 20px;
+}
+.attend {
+    width: 542px;
+    height: 546px;
+    margin-top: 20px;
+}
 </style>

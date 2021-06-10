@@ -407,21 +407,6 @@ export default {
             this.addForm.ruleForm.openStartDate = arr[0]
             this.addForm.ruleForm.openEndDate = arr[1]
         },
-        // tabs切换
-        // handleClick(tab, event) {
-        //     let status = null
-        //     if (this.activeName != 0) {
-        //         status = this.activeName
-        //     } else {
-        //         status = null
-        //     }
-        //     const requestData = {
-        //         pageNum: 1,
-        //         size: 10,
-        //         status: status
-        //     }
-        //     this.$refs.table.requestData(requestData)
-        // },
 
         // 表格选中
         tableCheck(data) {
