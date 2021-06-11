@@ -107,9 +107,9 @@ export default {
             if (msg.data == '心跳正常') {
                 console.log(msg)
             } else {
-                // console.log(msg);
+                console.log(msg);
                 this.alertMsg = msg.data
-                this.isShow = false
+                this.isShow = true
             }
 
             this.reset()

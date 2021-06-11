@@ -609,10 +609,10 @@ export default {
             let resData = {
                 chargesTemplateId: this.costList[this.costActive].id,
                 name: this.costForm.ruleForm.name,
-                unitPrice: parseInt(this.costForm.ruleForm.unitPrice),
+                unitPrice: this.costForm.ruleForm.unitPrice,
                 marker: 1,
                 type: parseInt(this.costForm.ruleForm.type),
-                otherFee: parseInt(this.costForm.ruleForm.otherFee),
+                otherFee: this.costForm.ruleForm.otherFee,
                 additionalCostList: [{ cost: 1, name: '电器费用' }]
             }
             // id等于0 添加否则修改

@@ -50,6 +50,7 @@ Vue.prototype.$baseUrl = process.env.VUE_APP_API
 Vue.prototype.$ImgUrl = process.env.VUE_APP_Image_API
 Vue.config.productionTip = false
 Vue.prototype.$bus = new Vue()
+//过滤器
 Vue.filter("filterA", function(data, value) {
     const obj = data.find((item) => item.showValue=== value);
     return obj && obj.showName;
