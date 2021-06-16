@@ -447,6 +447,12 @@ const routes = [
                         path: '/charge/expenseBil',
                         component: resolve =>
                             require(['@/views/charge/page/expenseBil'], resolve)
+                    },
+                    //invoiceManagement发票
+                    {
+                        path: '/charge/invoiceManagement',
+                        component: resolve =>
+                            require(['@/views/charge/page/invoiceManagement'], resolve)
                     }
                 ]
             }

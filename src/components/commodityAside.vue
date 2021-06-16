@@ -147,8 +147,8 @@ export default {
           // After sale
           path: '/commodity/evaluationList',
           label: '评价管理',
-          iconurl: require('@/assets/images/commodity/icon_shopping04_nor.png'),
-          iconisactive: require('@/assets/images/commodity/icon_shopping04_sel.png'),
+          iconurl: require('@/assets/images/commodity/pjgl_nor.png'),
+          iconisactive: require('@/assets/images/commodity/pjgl_sel.png'),
           isChildren: 0,
         },
         // {

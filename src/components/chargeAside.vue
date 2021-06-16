@@ -108,7 +108,15 @@ export default {
               label: '费用账单'
             }
           ]
-        }
+        },
+        {
+          ///Users/aku/Desktop/smartCommunity/src/views/charge/page/invoiceManagement.vue
+          path: '/charge/invoiceManagement',
+          label: '票据管理',
+          iconurl: require('@/assets/images/charge/icon_charge03_nor.png'),
+          iconisactive: require('@/assets/images/charge/icon_charge03_sel.png'),
+          isChildren: 0
+        },
       ],
       isCollapse: false
     }

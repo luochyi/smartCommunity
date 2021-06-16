@@ -234,14 +234,14 @@ export default {
                         prop: 'detail'
                     },
                     {
-                        type: 'Int',
+                        type: 'Input',
                         label: '售卖价',
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'sellingPrice'
                     },
                     {
-                        type: 'Int',
+                        type: 'Input',
                         label: '划线价',
                         placeholder: '请输入',
                         width: '50%',

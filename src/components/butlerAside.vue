@@ -204,8 +204,8 @@ export default {
           // Report for repair
           path: '/butler/housekeepingServices',
           label: '家政服务',
-          iconurl: require('@/assets/images/butler/icon_service08_nor.png'),
-          iconisactive: require('@/assets/images/butler/icon_service08_sel.png'),
+          iconurl: require('@/assets/images/butler/jzfw_nor.png'),
+          iconisactive: require('@/assets/images/butler/jzfw_sel.png'),
           isChildren: 0
         },
       

@@ -132,8 +132,8 @@ export default {
                     // Business meeting management
                     path: '/daily/material',
                     label: '物资管理',
-                    iconurl: require('@/assets/images/daily/icon_service16_nor.png'),
-                    iconisactive: require('@/assets/images/daily/icon_service16_sel.png'),
+                    iconurl: require('@/assets/images/daily/wzgl_nor.png'),
+                    iconisactive: require('@/assets/images/daily/wzgl_sel.png'),
                     isChildren: 1,
                     children: [
                         {
@@ -177,16 +177,16 @@ export default {
                     // Business meeting management
                     path: '/daily/decorationManagement',
                     label: '装修管理',
-                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
-                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    iconurl: require('@/assets/images/daily/zxgl_nor.png'),
+                    iconisactive: require('@/assets/images/daily/zxgl_sel.png'),
                     isChildren: 0
                 },
                 {
                     // Business meeting management
                     path: '/daily/CustomerInterview',
                     label: '客户访谈',
-                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
-                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    iconurl: require('@/assets/images/daily/khft_nor.png'),
+                    iconisactive: require('@/assets/images/daily/khft_sel.png'),
                     isChildren: 0
                 },
                 {
@@ -201,29 +201,29 @@ export default {
                 {
                     path: '/daily/CommunityIntroduction',
                     label: '社区介绍',
-                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
-                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    iconurl: require('@/assets/images/daily/sqjs_nor.png'),
+                    iconisactive: require('@/assets/images/daily/sqjs_sel.png'),
                     isChildren: 0
                 },
                 {
                     path: '/daily/RegulationManagement',
                     label: '规程管理',
-                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
-                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    iconurl: require('@/assets/images/daily/gcgl_nor.png'),
+                    iconisactive: require('@/assets/images/daily/gcgl_sel.png'),
                     isChildren: 0
                 },
                 {
                     path: '/daily/ServiceBrowsing',
                     label: '服务浏览',
-                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
-                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    iconurl: require('@/assets/images/daily/fwll_nor.png'),
+                    iconisactive: require('@/assets/images/daily/fwll_sel.png'),
                     isChildren: 0
                 },
                 {
                     path: '/daily/greening',
                     label: '绿化管理',
-                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
-                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    iconurl: require('@/assets/images/daily/lhgl_nor.png'),
+                    iconisactive: require('@/assets/images/daily/lhgl_sel.png'),
                     isChildren: 1,
                     children: [
                         {
@@ -239,8 +239,8 @@ export default {
                 {
                     path: '/daily/health',
                     label: '卫生计划',
-                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
-                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    iconurl: require('@/assets/images/daily/wsgl_nor.png'),
+                    iconisactive: require('@/assets/images/daily/wsgl_sel.png'),
                     isChildren: 1,
                     children: [
                         {

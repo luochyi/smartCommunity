@@ -109,8 +109,8 @@ export default {
         {
           path: '/company/attendance',
           label: '考勤管理',
-          iconurl: require('@/assets/images/company/icon_comprehensive08_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive08_sel.png'),
+          iconurl: require('@/assets/images/company/kqgl_nor.png'),
+          iconisactive: require('@/assets/images/company/kqgl_sel.png'),
           isChildren: 1,
            children:[
              {
@@ -126,8 +126,8 @@ export default {
         {
           path: '/company/trainManage',
           label: '培训管理',
-          iconurl: require('@/assets/images/company/icon_comprehensive08_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive08_sel.png'),
+          iconurl: require('@/assets/images/company/pxgl_nor.png'),
+          iconisactive: require('@/assets/images/company/pxgl_sel.png'),
           isChildren: 0
         },
         {
@@ -162,15 +162,15 @@ export default {
         {
           path: '/company/databaseManagement',
           label: '数据库管理',
-          iconurl: require('@/assets/images/company/icon_comprehensive10_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive10_sel.png'),
+          iconurl: require('@/assets/images/company/sjkgl_nor.png'),
+          iconisactive: require('@/assets/images/company/sjkgl_sel.png'),
           isChildren: 0
         },
         {
           path: '/company/notice',
           label: '提醒通知',
-          iconurl: require('@/assets/images/company/icon_comprehensive10_nor.png'),
-          iconisactive: require('@/assets/images/company/icon_comprehensive10_sel.png'),
+          iconurl: require('@/assets/images/company/txtz_nor.png'),
+          iconisactive: require('@/assets/images/company/txtz_sel.png'),
           isChildren: 0
         },
         {

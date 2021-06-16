@@ -13,7 +13,9 @@
                 <el-main>
                     <div class="mainCard">
                         <div>
-                            <div class="task">task</div>
+                            <div class="task">
+                                <Task></Task>
+                            </div>
                             <div class="inspect">inspect</div>
                         </div>
                         <div class="attend">attend</div>
@@ -31,10 +33,12 @@ import {
 } from '@/api/company'
 import  LastMonthCost from '@/views/comprehensive/company/components/echarts/LastMonthPayCostDetail.vue'
 import todoList  from '@/views/comprehensive/company/components/echarts/todoList.vue'
+import Task  from '@/views/comprehensive/company/components/echarts/task.vue'
 export default {
     components: {
+        todoList,
         LastMonthCost,
-        todoList
+        Task
     },
     name: 'hello',
     data() {
