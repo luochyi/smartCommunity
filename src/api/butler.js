@@ -215,7 +215,21 @@ export function visitorsFindById(data) {
         params: data
     })
 }
-
+//门禁二维码doorQRCode/addQrCode  doorQRCode/removeQrCode
+export function AddQrCode(data) {
+    return service.request({
+        method: 'POST',
+        url: '/doorQRCode/addQrCode',
+        data: data
+    })
+}
+export function removeQrCode(data) {
+    return service.request({
+        method: 'POST',
+        url: '/doorQRCode/removeQrCode',
+        data: data
+    })
+}
 // 报事报修：查询报修详情(报事报修派单界面的报修详情内容，主界面报修详情 请查询 【工单管理：报修工单详情】)
 export function reportRepairFindRepairDetail(data) {
     return service.request({

@@ -111,6 +111,14 @@ export default {
           isChildren: 0
         },
         {
+          // 门禁
+          path: '/butler/doorQrCode',
+          label: '门禁二维码',
+          iconurl: require('@/assets/images/butler/icon_service06_nor.png'),
+          iconisactive: require('@/assets/images/butler/icon_service06_sel.png'),
+          isChildren: 0
+        },
+        {
           // Complaint and praise
           path: '/butler/complainPraise',
           label: '投诉表扬',

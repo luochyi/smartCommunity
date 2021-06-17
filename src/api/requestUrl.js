@@ -73,7 +73,9 @@ const requestUrl = {
     voteListDelete: '/vote/falseDelete',
     voteListDetailList: '/vote/listDetailCandidate',
     voteListVotePersonnel: '/vote/listVotePersonnel',
-
+    //doorQRCode/list
+    doorQRCodeList:'doorQRCode/list',
+    doorQRCodeListDelete:'doorQRCode/removeQrCode',
     // /vote/listVotePersonnel
     conveniencePhoneList: '/conveniencePhone/list',
     conveniencePhoneListDelete: 'conveniencePhone/delete',
@@ -106,6 +108,10 @@ const requestUrl = {
     housekeepingList:'housekeeping/list',
     // /vote/listDetailCandidate
     // /chargesTemplateDetail/list
+    //票据
+    paperList:'paper/list',
+    //票据删除
+    paperListDelete:'paper/delete',
     chargesTemplateDetailList: '/chargesTemplateDetail/list',
     chargesTemplateDetailListDelete: '/chargesTemplateDetail/list',
     dailyPaymentList: '/dailyPayment/list',

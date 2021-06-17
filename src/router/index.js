@@ -537,6 +537,14 @@ const routes = [
                             ], resolve)
                     },
                     {
+                        // 门禁二维码
+                        path: '/butler/doorQrCode',
+                        component: resolve =>
+                            require([
+                                '@/views/butler/page/doorQrCode'
+                            ], resolve)
+                    },
+                    {
                         // 投诉表扬
                         path: '/butler/complainPraise',
                         component: resolve =>

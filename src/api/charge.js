@@ -146,3 +146,19 @@ export function chargesTemplateDetailDelete(data) {
         data: data
     })
 }
+//paper/insert票据管理
+export function paperInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/paper/insert',
+        data: data
+    })
+}
+//领用票据paper/recipients
+export function paperRecipients(data) {
+    return service.request({
+        method: 'POST',
+        url: '/paper/recipients',
+        data: data
+    })
+}
