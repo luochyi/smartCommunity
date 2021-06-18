@@ -19,7 +19,7 @@
 export default {
     data() {
         return {
-            path: 'wss://test.kaidalai.cn/websocket/admin',
+            path: 'wss://test.kaidalai.cn/websocket/web/admin',
             socket: '',
             lockReconnect: false, //是否真正建立连接
             timeout: 40 * 1000, //40秒一次心跳

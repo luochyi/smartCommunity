@@ -14,7 +14,7 @@
                     >
                 </div>
                 <!-- 导出 -->
-                <div style="width: 50px">
+                <!-- <div style="width: 50px">
                     <download-excel
                         class="export-excel-wrapper"
                         :fetch="fetchData"
@@ -22,12 +22,12 @@
                         :before-finish="finishDownload"
                         name="考勤记录.xls"
                     >
-                        <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                        上面可以自定义自己的样式，还可以引用其他组件button
                         <el-button size="mini" icon="el-icon-folder-add" plain
                             >导出Excel</el-button
                         >
                     </download-excel>
-                </div>
+                </div> -->
                 <div class="">
                     <VueTable
                         ref="table"
@@ -125,10 +125,7 @@
 
                                     <template v-slot:rate>
                                         <el-input
-                                            v-model="
-                                                addForm.ruleForm
-                                                    .rate
-                                            "
+                                            v-model="addForm.ruleForm.rate"
                                             size="small"
                                             style="width: 240px"
                                             placeholder="请输入"
@@ -158,6 +155,44 @@
                 </Drawer>
             </div>
         </div>
+        <el-dialog
+            title="领用票据"
+            width="480px"
+            top="40vh"
+            @close="dialogclose()"
+            :visible.sync="getDialog"
+        >
+            <div class="dialang-box">
+                <div style="margin: 10px">
+                    领用人姓名：<el-input
+                        placeholder="请输入领用人姓名"
+                        size="small"
+                        v-model="recipient"
+                        style="width: 223px; height: 32px"
+                    >
+                    </el-input>
+                </div>
+                <div style="margin: 10px">
+                    领用人手机号：<el-input
+                        placeholder="请输入领用人手机号"
+                        size="small"
+                        maxlength="11"
+                        v-model="recipientsTel"
+                        @change="confirmTelephone"
+                        style="width: 223px; height: 32px"
+                    >
+                    </el-input>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button size="mini" @click="getDialog = false"
+                    >取 消</el-button
+                >
+                <el-button size="mini" type="primary" @click="getOk()"
+                    >确 定</el-button
+                >
+            </span>
+        </el-dialog>
         <!-- 查看图片组件 -->
         <!-- <views-photo
             :isVisible="photos_Visible"
@@ -169,17 +204,13 @@
 
 <script>
 // 引入查看照片组件
-import viewsPhoto from '@/components/dialog/viewsPhoto'
-import { DownloadExcel } from '@/plugins/DownloadExcel'
-import { paperRecipients } from '@/api/charge'
+// import viewsPhoto from '@/components/dialog/viewsPhoto'
+// import { DownloadExcel } from '@/plugins/DownloadExcel'
+import { paperRecipients, paperInsert } from '@/api/charge'
 import {
-    userCarFindById,
     cpmBuildingUnitFindAll,
     findByBuildingUnitId,
-    findByBuildingId,
-    findUserCarStatus,
-    userCarInsert,
-    cpmParkingSpaceList
+    findByBuildingId
 } from '@/api/basic'
 // import func from 'vue-editor-bridge'
 export default {
@@ -188,6 +219,11 @@ export default {
     // },
     data() {
         return {
+            //领用
+            recipient: null,
+            recipientsTel: null,
+            thatId: null,
+            getDialog: false,
             // 楼栋
             buildValue: null,
             buildOptions: [],
@@ -205,8 +241,8 @@ export default {
             loading: false,
             addForm: {
                 ruleForm: {
-                    rate:null,
-                    estateId:null
+                    rate: null,
+                    estateId: null
                 },
                 form_item: [
                     {
@@ -261,24 +297,32 @@ export default {
                         prop: 'name'
                     },
                     {
+                        type: 'Input',
+                        label: '总金额',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'totalPrice'
+                    },
+                    {
                         type: 'Slot',
                         label: '税率',
                         width: '50%',
                         prop: 'rate',
-                        slotName:'rate'
+                        slotName: 'rate'
                     },
                     {
                         type: 'Input',
                         label: '税额',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'taxation'
+                        prop: 'taxation',
+                        disabled: true
                     },
                     {
-                        type: 'Input',
+                        type: 'textarea',
                         label: '备注',
                         placeholder: '请输入',
-                        width: '50%',
+                        width: '100%',
                         prop: 'remake'
                     },
                     {
@@ -341,7 +385,7 @@ export default {
                         prop: 'drawer'
                     },
                     {
-                        type: 'Input',
+                        type: 'DateTime',
                         label: '开票时间',
                         placeholder: '请输入',
                         width: '50%',
@@ -352,15 +396,15 @@ export default {
             table_row: [],
             activeName: '0',
             // 导出模板
-            json_fields: {
-                上班打卡时间: 'startClockDate',
-                下班打卡时间: 'endClockDate',
-                补卡时间: 'cardReplacementDate',
-                补卡操作人: 'operatorName',
-                打卡人姓名: 'clockName',
-                打卡人手机号: 'clockTel',
-                打卡日期: 'createDate'
-            },
+            // json_fields: {
+            //     上班打卡时间: 'startClockDate',
+            //     下班打卡时间: 'endClockDate',
+            //     补卡时间: 'cardReplacementDate',
+            //     补卡操作人: 'operatorName',
+            //     打卡人姓名: 'clockName',
+            //     打卡人手机号: 'clockTel',
+            //     打卡日期: 'createDate'
+            // },
             config: {
                 thead: [
                     {
@@ -625,24 +669,24 @@ export default {
         })
     },
     methods: {
-        getPhotoView(item) {
-            this.photos_Visible = true
-            // let resData = {
-            //   id: id,
-            // }
-            // userArticleOutFindGoodsImgById(resData).then(result => {
-            //   console.log(result)
-            // this.goodsImgsList = item
-            // })
-        },
-        getclose() {
-            this.photos_Visible = false
-        },
+        // getPhotoView(item) {
+        //     this.photos_Visible = true
+        //     // let resData = {
+        //     //   id: id,
+        //     // }
+        //     // userArticleOutFindGoodsImgById(resData).then(result => {
+        //     //   console.log(result)
+        //     // this.goodsImgsList = item
+        //     // })
+        // },
+        // getclose() {
+        //     this.photos_Visible = false
+        // },
         // Excel导出
         async fetchData() {
             let Excel = []
             let params = {
-                // url: 'attendanceRecordList',
+                url: 'paperList',
                 data: {
                     pageNum: 1,
                     size: 100
@@ -674,32 +718,26 @@ export default {
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
+            this.buildValue = null
             this.wordList = []
         },
         // 提交
         addSubmit() {
-            if (this.addForm.ruleForm.fileDocUrl == null) {
-                this.$message({
-                    type: 'error',
-                    message: '请上传文件'
-                })
-            } else {
-                let resData = {
-                    ...this.addForm.ruleForm
-                }
-                contractInsert(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
+            let resData = {
+                ...this.addForm.ruleForm
             }
+            paperInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
         },
-         // 单元楼栋
+        // 单元楼栋
         unitData(value) {
             let resData = {
                 id: value
@@ -718,13 +756,59 @@ export default {
                 this.hoursOptions = res
             })
         },
-        dateTimeChange(arr) {
-            this.addForm.ruleForm.openStartDate = arr[0]
-            this.addForm.ruleForm.openEndDate = arr[1]
-        },
         tableCheck(data) {
             this.table_row = data
         },
+        get(data) {
+            if (data.length != 1) {
+                this.$message({
+                    type: 'error',
+                    message: '请选择一条票据领用'
+                })
+                return
+            }
+            if(data[0].status!=1){
+                this.$message({
+                    type: 'error',
+                    message: '该票据不可领用'
+                })
+                return
+            }
+            this.getDialog = true
+            console.log(data)
+            this.thatId = data[0].id
+        },
+        //验证手机号
+        confirmTelephone() {
+            if (!/^1[0-9]{10}$/.test(this.recipientsTel))
+                this.$message({
+                    type:'error',
+                    message:'请输入正确的手机号'
+                })
+        },
+        // 审核提交
+        getOk() {
+            let resData = {
+                id: this.thatId,
+                recipient: this.recipient,
+                recipientsTel: this.recipientsTel
+            }
+            console.log(resData)
+            paperRecipients(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        type: 'success',
+                        message: res.message
+                    })
+                    this.$refs.table.loadData()
+                }
+            })
+            this.getDialog = false
+            this.thatId = null
+            this.recipient = null
+            this.recipientsTel = null
+        },
+        dialogclose() {},
         // 删除
         del(data) {
             if (data.length) {
@@ -768,6 +852,39 @@ export default {
                 console.log(this.addForm.ruleForm.estateId)
             },
             deep: true
+        },
+        'addForm.ruleForm.rate': {
+            handler(newValue) {
+                console.log(this.addForm.ruleForm.rate)
+                console.log(this.addForm.ruleForm.totalPrice)
+                this.addForm.ruleForm.taxation =
+                    (this.addForm.ruleForm.rate *
+                        this.addForm.ruleForm.totalPrice) /
+                    100
+            }
+        },
+        'addForm.ruleForm.totalPrice': {
+            handler(newValue) {
+                console.log(this.addForm.ruleForm.rate)
+                console.log(this.addForm.ruleForm.totalPrice)
+                this.addForm.ruleForm.taxation =
+                    (this.addForm.ruleForm.rate *
+                        this.addForm.ruleForm.totalPrice) /
+                    100
+            }
+        },
+        'addForm.ruleForm.invoiceTitleType': {
+            handler(newValue) {
+                if (newValue == 2) {
+                    this.addForm.form_item[11].disabled = true
+                    this.addForm.form_item[12].disabled = true
+                    this.addForm.form_item[13].disabled = true
+                } else {
+                    this.addForm.form_item[11].disabled = false
+                    this.addForm.form_item[12].disabled = false
+                    this.addForm.form_item[13].disabled = false
+                }
+            }
         }
     },
     //过滤器 过滤日期
