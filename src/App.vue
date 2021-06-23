@@ -108,8 +108,8 @@ export default {
                 console.log(msg)
             } else {
                 console.log(msg);
-                this.alertMsg = msg.data
-                this.isShow = true
+                // this.alertMsg = msg.data
+                // this.isShow = true
             }
 
             this.reset()

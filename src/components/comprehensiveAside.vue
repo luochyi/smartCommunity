@@ -95,7 +95,7 @@ export default {
             },
             {
               path: '/company/contractManage',
-              label: '合同管理'
+              label: '员工合同'
             }
           ]
 

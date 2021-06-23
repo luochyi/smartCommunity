@@ -33,6 +33,10 @@ const requestUrl = {
     ownerListDelete: '/userResident/delete',
     tenantList: '/tenant/list',
     auditManagementList: '/auditManagement/list',
+    leaseList:'lease/list',
+    leaseListDelete:'lease/delete',
+    leaseContractList:'leaseContract/list',
+    leaseContractListDelete:'leaseContract/delete',
     // 管家服务
     itemsOutList: '/userArticleOut/list',
     itemsOutListDelete: '/userArticleOut/delete',

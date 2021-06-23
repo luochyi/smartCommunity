@@ -380,11 +380,28 @@ const routes = [
                             ], resolve)
                     },
                     {
-                        // 房屋管理
+                        // 审核
                         path: '/basic/auditManagement',
                         component: resolve =>
                             require([
                                 '@/views/basic/page/auditManagement'
+                            ], resolve)
+                    },
+                    //lease/insert
+                    {
+                        // 租赁管理
+                        path: '/basic/lease',
+                        component: resolve =>
+                            require([
+                                '@/views/basic/page/lease'
+                            ], resolve)
+                    },
+                    {
+                        // 租房合同
+                        path: '/basic/contractManage',
+                        component: resolve =>
+                            require([
+                                '@/views/basic/page/contractManage'
                             ], resolve)
                     }
                 ]

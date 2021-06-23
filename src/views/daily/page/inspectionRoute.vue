@@ -50,7 +50,7 @@
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <template v-slot:inspectionPonitId>
-                                        <Button @click="addInt">添加</Button>
+                                        <el-button size="mini" @click="addInt">添加</el-button>
                                         <div
                                             v-for="(
                                                 item, index
@@ -76,6 +76,7 @@
                                                 >
                                                 </el-option>
                                             </el-select>
+                                             <el-button size="mini" @click="delRow(index)">删除</el-button>
                                         </div>
                                     </template>
                                 </VueForm>
@@ -105,7 +106,7 @@
                             <template>
                                 <VueForm ref="editForm" :formObj="editForm">
                                     <template v-slot:inspectionPonitId>
-                                        <Button @click="addInt">添加</Button>
+                                        <el-button type="success" size="mini" @click="addInt">添加</el-button>
                                         <div
                                             v-for="(
                                                 item, index
@@ -131,6 +132,7 @@
                                                 >
                                                 </el-option>
                                             </el-select>
+                                            <el-button size="mini" @click="delRow(index)">删除</el-button>
                                         </div>
                                     </template>
                                 </VueForm>
@@ -165,9 +167,6 @@ export default {
     data() {
         return {
             inspectionArr: [
-                {
-                    inspectionPointId: null
-                }
             ],
             options: [],
             add_vrisible: false,
@@ -230,8 +229,8 @@ export default {
             editForm: {
                 ruleForm: {
                     name: null,
-                    spaceTime:null,
-                    describes:null
+                    spaceTime: null,
+                    describes: null
                 },
                 form_item: [
                     {
@@ -255,14 +254,14 @@ export default {
                         width: '100%',
                         prop: 'spaceTime'
                     },
-                    // {
-                    //     type: 'Slot',
-                    //     label: '巡检点',
-                    //     placeholder: '请输入',
-                    //     width: '50%',
-                    //     prop: 'pointRouteList',
-                    //     slotName: 'inspectionPonitId'
-                    // }
+                    {
+                        type: 'Slot',
+                        label: '巡检点',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'pointRouteList',
+                        slotName: 'inspectionPonitId'
+                    }
                 ]
             },
             table_row: [],
@@ -319,17 +318,21 @@ export default {
             }
         }
     },
-    created(){
+    created() {
         this.getUserList()
     },
     methods: {
+        delRow(data){
+            console.log(data);
+            this.inspectionArr.splice(data,1)
+        },
         addInt() {
             this.inspectionArr.push({
                 inspectionPointId: null
             })
         },
 
-        // 获取用户列表
+        // 获取列表
         getUserList(val) {
             let reeData = {
                 pageNum: 1,
@@ -362,12 +365,18 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
             this.inspectionArr = [
-                {
-                    inspectionPointId: null
-                }
             ]
         },
         addSubmit() {
+            for(let i=0;i<this.inspectionArr.length;i++){
+                if(this.inspectionArr[i].inspectionPointId ==null){
+                    this.$message({
+                        type:'error',
+                        message:'巡检点不能为空'
+                    })
+                    return
+                }
+            }
             let resData = {
                 ...this.addForm.ruleForm,
                 pointRouteList: this.inspectionArr
@@ -402,24 +411,40 @@ export default {
                     console.log(res.data)
                     this.editForm.ruleForm.describes = res.data.describes
                     this.editForm.ruleForm.name = res.data.name
-                    this.editForm.ruleForm.spaceTime= res.data.spaceTime
-                    this.inspectionArr = res.data.voRoutePointList
-                    
+                    this.editForm.ruleForm.spaceTime = res.data.spaceTime
+                    // this.inspectionArr = res.data.voRoutePointList
+                    let reslist = res.data.voRoutePointList
+                    for (let i = 0; i < reslist.length; i++) {
+                        this.inspectionArr.push({ inspectionPointId: null })
+                        this.$set(
+                            this.inspectionArr[i],
+                            'inspectionPointId',
+                            reslist[i].id
+                        )
+                    }
                 })
-                console.log(this.inspectionArr);
             }
         },
         editClose() {
             this.$refs.editForm.reset()
             this.edit_vrisible = false
-            this.inspectionArr = [{ inspectionPointId: null }]
+            this.inspectionArr = []
         },
         editSubmit() {
+            for(let i=0;i<this.inspectionArr.length;i++){
+                if(this.inspectionArr[i].inspectionPointId ==null){
+                    this.$message({
+                        type:'error',
+                        message:'巡检点不能为空'
+                    })
+                    return
+                }
+            }
             let resData = {
-                code:this.editForm.ruleForm.code,
-                name:this.editForm.ruleForm.name,
+                code: this.editForm.ruleForm.code,
+                name: this.editForm.ruleForm.name,
                 id: this.editForm.ruleForm.id,
-                spaceTime:this.editForm.ruleForm.spaceTime,
+                spaceTime: this.editForm.ruleForm.spaceTime,
                 pointRouteList: this.inspectionArr
             }
             inspectionRouteUpdate(resData).then((res) => {

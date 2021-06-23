@@ -404,8 +404,46 @@ export const auditManagementReviewResult = data => {
         data: data
     })
 }
-
-
+//租赁管理
+export const leaseInsert = data => {
+    return service.request({
+        method: 'POST',
+        url: '/lease/insert',
+        data: data
+    })
+}
+//lease/update
+export const leaseUpdate = data => {
+    return service.request({
+        method: 'POST',
+        url: '/lease/update',
+        data: data
+    })
+}
+//lease/findById
+export const leaseFindById = data => {
+    return service.request({
+        method: 'GET',
+        url: '/lease/findById',
+        params: data
+    })
+}
+//leaseContract/insert租赁合同
+export const leaseContractInsert = data => {
+    return service.request({
+        method: 'POST',
+        url: '/leaseContract/insert',
+        data: data
+    })
+}
+//leaseContract/enable合同模板启用/停用
+export const leaseContractEnable = data => {
+    return service.request({
+        method: 'GET',
+        url: '/leaseContract/enable',
+        params: data
+    })
+}
 // http://192.168.31.129:9001/cpmBuildingUnitEstate/findByBuildingUnitId
 // GET
 
