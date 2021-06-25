@@ -20,12 +20,17 @@
                         :config="config"
                         @tableCheck="tableCheck"
                     >
-                    <template v-slot:leaseDateStart="slotData">
-                        <div>{{ slotData.data.leaseDateStart|capitalize}}</div>
-                    </template>
-                     <template v-slot:leaseDateEnd="slotData">
-                        <div>{{ slotData.data.leaseDateEnd|capitalize}}</div>
-                    </template>
+                    <!-- 过滤租赁时间 只显示年月日 -->
+                        <template v-slot:leaseDateStart="slotData">
+                            <div>
+                                {{ slotData.data.leaseDateStart | capitalize }}
+                            </div>
+                        </template>
+                        <template v-slot:leaseDateEnd="slotData">
+                            <div>
+                                {{ slotData.data.leaseDateEnd | capitalize }}
+                            </div>
+                        </template>
                         <!-- <template slot="tabs">
                             <el-tabs
                                 v-model="activeName"
@@ -52,12 +57,52 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="edit(table_row)">编辑</button>
-                                <!-- <button @click="isEnable(table_row)">启用/停用</button> -->
+                                <button @click="audit(table_row)">审核</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
+                <!--审核装修信息-->
+                <el-dialog
+                    title="审核签署合同内容"
+                    width="480px"
+                    top="40vh"
+                    @close="dialogclose()"
+                    :visible.sync="auditDialog"
+                >
+                    <div class="dialang-box">
+                        <el-select
+                            v-model="optionsVal"
+                            placeholder="请选择办理状态"
+                            size="small"
+                            style="padding-bottom: 20px"
+                        >
+                            <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            >
+                            </el-option>
+                        </el-select>
+                        <el-input
+                            placeholder="请输入审核备注"
+                            size="mini"
+                            type="textarea"
+                            v-model="auditRemake"
+                            style="width: 423px; height: 32px"
+                        ></el-input>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button size="mini" @click="auditDialog = false"
+                            >取 消</el-button
+                        >
+                        <el-button size="mini" type="primary" @click="auditOk()"
+                            >确 定</el-button
+                        >
+                    </span>
+                </el-dialog>
                 <!-- 新增 -->
                 <Drawer
                     :drawerTitle="drawerTitle"
@@ -79,6 +124,7 @@
                                                 margin-right: 16px;
                                             "
                                             placeholder="幢"
+                                            @change="buildchange(buildValue)"
                                         >
                                             <el-option
                                                 v-for="item in buildOptions"
@@ -96,6 +142,7 @@
                                                 margin-right: 16px;
                                             "
                                             placeholder="单元"
+                                            @change="unitchange(unitValue)"
                                         >
                                             <el-option
                                                 v-for="item in unitOptions"
@@ -161,12 +208,27 @@ import {
     cpmBuildingUnitFindAll,
     findByBuildingUnitId,
     findByBuildingId,
-    UnitEstateFindById
+    UnitEstateFindById,
+    leaseReviewer
 } from '@/api/basic'
 // import func from 'vue-editor-bridge'
 export default {
     data() {
         return {
+            thatId: null,
+            options: [
+                {
+                    value: '4',
+                    label: '已驳回'
+                },
+                {
+                    value: '5',
+                    label: '待支付'
+                }
+            ],
+            auditDialog: false,
+            optionsVal: null,
+            auditRemake: null,
             drawerTitle: null,
             add_vrisible: false,
             // 楼栋
@@ -324,7 +386,6 @@ export default {
                         placeholder: '请选择',
                         width: '50%',
                         prop: 'leaseDateStart'
-                        
                     },
                     {
                         type: 'DateTime',
@@ -561,6 +622,18 @@ export default {
         })
     },
     methods: {
+        // 楼栋变化
+        buildchange(data) {
+            console.log(data)
+            this.unitData(data)
+            this.unitValue = null
+            this.hoursValue = null
+        },
+        // 单元变化
+        unitchange(data) {
+            this.hoursData(data)
+            this.hoursValue = null
+        },
         // 单元楼栋
         unitData(value) {
             let resData = {
@@ -580,6 +653,52 @@ export default {
                 this.hoursOptions = res
             })
         },
+        //审核
+        audit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    type: 'error',
+                    message: '请选择一条信息审核'
+                })
+                return
+            }
+            //只有审核中才能审核
+            if (data[0].status != 3) {
+                this.$message({
+                    type: 'error',
+                    message: '该状态不可审核'
+                })
+                return
+            }
+            this.auditDialog = true
+            console.log(data)
+            this.thatId = data[0].id
+        },
+        // 审核提交
+        auditOk() {
+            let resData = {
+                id: this.thatId,
+                status: this.optionsVal,
+                auditRemake: this.auditRemake
+            }
+            console.log(resData)
+            leaseReviewer(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        type: 'success',
+                        message: res.message
+                    })
+                }
+            })
+            this.auditDialog = false
+            this.thatId = null
+            this.optionsVal = null
+            this.rejectReason = null
+            this.$refs.table.loadData()
+        },
+        // 关闭审核框
+        dialogclose() {},
+        // 新增
         add() {
             this.drawerTitle = '新增租赁信息'
             this.add_vrisible = true
@@ -589,6 +708,8 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
             this.buildValue = null
+            this.unitValue = null
+            this.hoursValue = null
         },
         addSubmit() {
             if (this.drawerTitle == '新增租赁信息') {
@@ -631,6 +752,7 @@ export default {
             } else {
                 leaseFindById({ id: data[0].id }).then((res) => {
                     console.log(res)
+                    // 赋值
                     this.addForm.ruleForm.id = res.data.id
                     this.addForm.ruleForm.code = res.data.code
                     this.addForm.ruleForm.name = res.data.name
@@ -649,20 +771,16 @@ export default {
                     this.addForm.ruleForm.leaseDateStart =
                         res.data.leaseDateStart
                     this.addForm.ruleForm.leaseDateEnd = res.data.leaseDateEnd
-                    //编辑 房产信息
+                    //房产信息
                     this.buildValue = res.data.buildingId
-                    // this.unitValue = res.data.unitId
-                    // this.hoursValue = res.data.roomNumber
+                    this.unitValue = res.data.unitId
+                    this.hoursValue = res.data.estateId
+                    // 修改drawer
                     this.add_vrisible = true
                     this.drawerTitle = '修改租赁信息'
                 })
             }
         },
-        dateTimeChange(arr) {
-            this.addForm.ruleForm.openStartDate = arr[0]
-            this.addForm.ruleForm.openEndDate = arr[1]
-        },
-
         // 表格选中
         tableCheck(data) {
             this.table_row = data
@@ -689,18 +807,17 @@ export default {
             }
         }
     },
+    // 监听
     watch: {
         buildValue: {
             handler(newValue) {
                 this.unitData(newValue)
-                this.unitValue = null
             },
             deep: true
         },
         unitValue: {
             handler(newValue) {
                 this.hoursData(newValue)
-                this.hoursValue = null
             },
             deep: true
         },
@@ -720,12 +837,14 @@ export default {
             },
             deep: true
         }
-    },filters: {
+    },
+    //过滤租赁时间 只显示年月日
+    filters: {
         capitalize: function (value) {
             if (!value) return ''
             value = value.toString()
             return value.substring(0, 10)
         }
-    },
+    }
 }
 </script>

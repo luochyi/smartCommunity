@@ -428,6 +428,14 @@ export const leaseFindById = data => {
         params: data
     })
 }
+//lease/reviewer租赁审核
+export const leaseReviewer = data => {
+    return service.request({
+        method: 'POST',
+        url: '/lease/reviewer',
+        data: data
+    })
+}
 //leaseContract/insert租赁合同
 export const leaseContractInsert = data => {
     return service.request({

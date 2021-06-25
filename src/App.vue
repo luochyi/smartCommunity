@@ -1,16 +1,14 @@
 <template>
     <div id="app">
         <el-card class="box-card" v-if="isShow">
-            <div slot="header" class="clearfix">
-                <span>警告</span>
-                <el-button
-                    style="float: right; padding: 3px 0"
-                    type="text"
-                    @click="closeCard()"
-                    >关闭</el-button
-                >
+            <div><span style="top:10px;right:20px;position:absolute;fontSize:20px;color:#999999;cursor:pointer" @click="closeCard">X</span>
+                <div>
+                    <img :src="imgSrc" alt="">
+                </div>
+                <div class="title">{{title}}</div>
+                <div class="tips">{{tips}}</div>
+                <div class="text">{{ alertMsg }}</div>
             </div>
-            <div class="text">{{ alertMsg }}</div>
         </el-card>
         <router-view></router-view>
     </div>
@@ -27,7 +25,10 @@ export default {
             serverTimeoutObj: null, //心跳倒计时
             timeoutnum: null, //断开 重连倒计时
             alertMsg: '',
-            isShow: false
+            isShow: true,
+            title:'',
+            tips:'',
+            imgSrc:null,
         }
     },
     mounted() {
@@ -107,9 +108,19 @@ export default {
             if (msg.data == '心跳正常') {
                 console.log(msg)
             } else {
-                console.log(msg);
-                // this.alertMsg = msg.data
-                // this.isShow = true
+                console.log(msg)
+                //判断不同的报警内容
+                if(msg.data.indexOf('未处理工单')!= -1){
+                    this.title = '工单警报'
+                    this.tips='注意：'
+                    this.imgSrc = require('./assets/images/todoList.png')
+                }else{
+                    this.title = '紧急警报'
+                    this.tips='各单位注意：'
+                    this.imgSrc = require('./assets/images/sos.png')
+                }
+                this.alertMsg = msg.data
+                this.isShow = true
             }
 
             this.reset()
@@ -142,16 +153,36 @@ export default {
 .box-card {
     z-index: 999999;
     position: fixed;
-    left: 45%;
-    top: 40%;
-    width: 600px;
+    left: 35%;
+    top: 30%;
+    width: 460px;
     height: 400px;
-    background-color: red;
 }
 .text {
-    font-size: 30px;
-    line-height: 40px;
-    text-align: center;
-    align-items: center;
+    font-size: 18px;
+    line-height: 21px;
+    color: #333333;
+    margin: 15px;
+}
+.tips{
+    color: #000000;
+    font-size: 18px;
+    line-height: 21px;
+    margin-top: 15px;
+}
+.title{
+    font-weight: 600;
+    color: #000000;
+    font-size: 22px;
+    line-height: 30.6px;
+    margin-left: 155px;
+     margin-top: 15px;
+     
+}
+img {
+    width: 116px;
+    height: 116px;
+    margin-left:145px ;
+    margin-top: 30px;
 }
 </style>
