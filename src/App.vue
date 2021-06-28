@@ -25,7 +25,7 @@ export default {
             serverTimeoutObj: null, //心跳倒计时
             timeoutnum: null, //断开 重连倒计时
             alertMsg: '',
-            isShow: true,
+            isShow: false,
             title:'',
             tips:'',
             imgSrc:null,

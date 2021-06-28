@@ -87,6 +87,14 @@ export function shopOrderDeliverGoods(data){
         data: data
     })
 }
+//shop/refund/exchangeGoods
+export function refundExchangeGoods(data){
+    return service.request({
+        method:'GET',
+        url:'shop/refund/exchangeGoods',
+        params:data
+    })
+}
 //shop/refund/examine
 export function shopRefundExamine(data){
     return service.request({

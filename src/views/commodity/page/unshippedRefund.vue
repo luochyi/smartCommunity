@@ -28,6 +28,7 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="add(table_row)">审核</button>
+                                <button @click="change(table_row)">已换货</button>
                                 <!-- <button @click="del(table_row)">删除</button> -->
                             </div>
                         </template>
@@ -69,7 +70,7 @@
 
 <script>
 import viewsPhoto from '@/components/dialog/viewsPhoto'
-import { shopRefundExamine } from '@/api/shop'
+import { shopRefundExamine,refundExchangeGoods } from '@/api/shop'
 export default {
     components: {
         viewsPhoto
@@ -152,6 +153,31 @@ export default {
                         type: 'function',
                         callback: (row, prop) => {
                             switch (row.status) {
+                                case -3:
+                                    return '支付完成后全额退款'
+                                    break
+                                case -2:
+                                    return '交易创建并等待买家付款'
+                                    break
+                                case -1:
+                                    return '未付款交易超时关闭'
+                                    break
+                                case 1:
+                                    return '待发货'
+                                    break
+                                case 2:
+                                    return '已发货'
+                                    break
+                                case 3:
+                                    return '已到货'
+                                    break
+                                case 4:
+                                    return '已收货'
+                                    break
+
+                                case 6:
+                                    return '已评价'
+                                    break
                                 case 8:
                                     return '申请退换货'
                                     break
@@ -159,7 +185,16 @@ export default {
                                     return '申请通过'
                                     break
                                 case 10:
-                                    return '申请驳回'
+                                    return '申请退换货驳回'
+                                    break
+                                case 11:
+                                    return '换货中'
+                                    break
+                                case 12:
+                                    return '已换货'
+                                    break
+                                case 15:
+                                    return '交易结束并不可退款'
                                     break
                             }
                         }
@@ -196,9 +231,20 @@ export default {
                         label: '退换货状态',
                         placeholder: '请选择',
                         options: [
+                            { value: -3, label: '支付完成后全额退款' },
+                            { value: -2, label: '交易创建并等待买家付款' },
+                            { value: -1, label: '未付款交易超时关闭' },
+                            { value: 1, label: '待发货' },
+                            { value: 2, label: '已发货' },
+                            { value: 3, label: '已到货' },
+                            { value: 4, label: '已收货' },
+                            { value: 6, label: '已评价' },
                             { value: 8, label: '申请退换货' },
-                            { value: 9, label: '申请通过' },
-                            { value: 10, label: '申请驳回' }
+                            { value: 9, label: '申请退换货通过' },
+                            { value: 10, label: '申请退换货驳回' },
+                            { value: 11, label: '换货中' },
+                            { value: 12, label: '已换货' },
+                            { value: 15, label: '交易结束并不可退款' },
                         ],
                         prop: 'status'
                     }
@@ -211,6 +257,33 @@ export default {
         }
     },
     methods: {
+        change(data){
+             if (data.length > 1) {
+                this.$message.error('只能操作一条数据')
+                return
+            }
+            if (!data.length) {
+                this.$message.error('请选择')
+                return
+            } else {
+                if (data[0].status !== 11) {
+                    this.$message({
+                        message: '该状态不可操作',
+                        type: 'error'
+                    })
+                } else {
+                    refundExchangeGoods({id:data[0].id}).then(res=>{
+                        if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                }
+                    })
+                }
+            }
+        },
         getPhotoView(item) {
             this.photos_Visible = true
             // let resData = {

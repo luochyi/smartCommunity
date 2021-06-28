@@ -91,6 +91,15 @@ export default {
                         type: 'function',
                         callback: (row, prop) => {
                             switch (row.status) {
+                                case -3:
+                                    return '支付完成后全额退款'
+                                    break
+                                case -2:
+                                    return '交易创建并等待买家付款'
+                                    break
+                                case -1:
+                                    return '未付款交易超时关闭'
+                                    break
                                 case 1:
                                     return '待发货'
                                     break
@@ -98,7 +107,7 @@ export default {
                                     return '已发货'
                                     break
                                 case 3:
-                                    return '交易中'
+                                    return '已到货'
                                     break
                                 case 4:
                                     return '已收货'
@@ -111,10 +120,19 @@ export default {
                                     return '申请退换货'
                                     break
                                 case 9:
-                                    return '申请退换货通过'
+                                    return '申请通过'
                                     break
                                 case 10:
                                     return '申请退换货驳回'
+                                    break
+                                case 11:
+                                    return '换货中'
+                                    break
+                                case 12:
+                                    return '已换货'
+                                    break
+                                case 15:
+                                    return '交易结束并不可退款'
                                     break
                             }
                         }
@@ -139,14 +157,20 @@ export default {
                         label: '订单状态',
                         placeholder: '请选择',
                         options: [
+                            { value: -3, label: '支付完成后全额退款' },
+                            { value: -2, label: '交易创建并等待买家付款' },
+                            { value: -1, label: '未付款交易超时关闭' },
                             { value: 1, label: '待发货' },
                             { value: 2, label: '已发货' },
-                            { value: 3, label: '交易中' },
+                            { value: 3, label: '已到货' },
                             { value: 4, label: '已收货' },
                             { value: 6, label: '已评价' },
                             { value: 8, label: '申请退换货' },
                             { value: 9, label: '申请退换货通过' },
                             { value: 10, label: '申请退换货驳回' },
+                            { value: 11, label: '换货中' },
+                            { value: 12, label: '已换货' },
+                            { value: 15, label: '交易结束并不可退款' },
                         ],
                         prop: 'status'
                     },
