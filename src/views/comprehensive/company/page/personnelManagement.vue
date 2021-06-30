@@ -33,7 +33,7 @@
                             style="flex: 5"
                         >
                             <div>
-                                <span>员工名称：</span>
+                                <span>昵称：</span>
                                 <el-input
                                     placeholder="请输入内容"
                                     size="small"
@@ -443,7 +443,6 @@ export default {
                 { value: 1, label: '正常' },
                 { value: 2, label: '禁止登录' },
                 { value: 3, label: '停用' },
-                { value: 4, label: '停用' }
             ]
         }
     },

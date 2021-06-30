@@ -244,7 +244,7 @@ export default {
                             { value: 10, label: '申请退换货驳回' },
                             { value: 11, label: '换货中' },
                             { value: 12, label: '已换货' },
-                            { value: 15, label: '交易结束并不可退款' },
+                            { value: 15, label: '交易结束' },
                         ],
                         prop: 'status'
                     }

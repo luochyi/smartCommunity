@@ -467,9 +467,10 @@ export default {
         },
         // 上传照片
         beforeAvatarUpload(file) {
-            const isLt2M = file.size / 1024 / 1024 < 2
+            const isLt2M = file.size / 1024 /1024   <2
             const isJPG = file.type === 'image/png'
             const isPNG = file.type === 'image/jpeg'
+            console.log(file);
             if (!isJPG && !isPNG) {
                 this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
             }
