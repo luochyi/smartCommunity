@@ -12,6 +12,7 @@
         "core-js": "^3.6.5",
         "echarts": "^4.9.0",
         "element-ui": "^2.4.5",
+        "node-sass": "^4.14.1",
         "qrcodejs2": "0.0.2",
         "uuid": "^8.3.2",
         "vue": "^2.6.11",
@@ -22,10 +23,10 @@
     },
     "devDependencies": {
         "@vue/cli-plugin-babel": "~4.5.0",
-        "@vue/cli-plugin-eslint": "~4.5.0",
+        "@vue/cli-plugin-eslint": "^3.1.1",
         "@vue/cli-plugin-router": "~4.5.0",
         "@vue/cli-plugin-vuex": "~4.5.0",
-        "@vue/cli-service": "^3.12.1",
+        "@vue/cli-service": "^4.5.13",
         "@vue/eslint-config-standard": "^5.1.2",
         "babel-eslint": "^10.1.0",
         "eslint": "^6.7.2",
@@ -34,7 +35,6 @@
         "eslint-plugin-promise": "^4.2.1",
         "eslint-plugin-standard": "^4.0.0",
         "eslint-plugin-vue": "^6.2.2",
-        "node-sass": "^4.14.1",
         "sass-loader": "^10.0.3",
         "vue-cli-plugin-element": "^1.0.1",
         "vue-template-compiler": "^2.6.11"

@@ -219,11 +219,11 @@ export default {
             options: [
                 {
                     value: '4',
-                    label: '已驳回'
+                    label: '驳回'
                 },
                 {
                     value: '5',
-                    label: '待支付'
+                    label: '通过'
                 }
             ],
             auditDialog: false,

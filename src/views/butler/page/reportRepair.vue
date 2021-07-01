@@ -225,7 +225,7 @@
                 </div>
                 <div class="box">
                     <div class="title">
-                        <span>报修详情</span>
+                        <span>报修信息</span>
                     </div>
                     <!-- detailsData -->
                     <div class="box-item" v-if="detailsData.voRepair">
@@ -279,7 +279,7 @@
                         </div>
                         <div class="item">
                             <div class="span">
-                                <span>报修详情</span>
+                                <span>报修内容</span>
                             </div>
                             <div>
                                 <span>{{
@@ -577,7 +577,7 @@ export default {
     data() {
         return {
             colors: ['#FB4702', '#FB4702', '#FB4702'],
-            tabsName: '全部',
+            tabsName: '工单编号',
             // 费用明细
             handleConfig: {
                 thead: [
