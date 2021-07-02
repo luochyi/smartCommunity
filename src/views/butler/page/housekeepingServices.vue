@@ -5,6 +5,21 @@
                 <span>家政服务记录</span>
             </div>
             <div class="content">
+                 <div  style="width: 50px"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="家政服务记录.xls"
+                            >
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel></div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -101,6 +116,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import { auditManagementReviewResult } from '@/api/basic'
 export default {
     data() {
@@ -146,6 +162,16 @@ export default {
             // 上传img文件
             imglist: [],
             activeName: '0',
+            //表头
+                json_fields: {
+                家政房产名称:'roomName',
+                家政人数:'num',
+                家政负责人名称:'leaderName',
+                家政负责人手机号:'leaderTel',
+                家政内容:'content',
+                创建人名称:'createName',
+                创建时间:'createDate',
+            },
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
@@ -207,6 +233,35 @@ export default {
         }
     },
     methods: {
+        // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'housekeepingList',
+                data: {
+                    pageNum: 1,
+                    size: 100
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         add(data) {
             if (data.length > 1) {
                 this.$message.error('只能操作一条数据')

@@ -13,7 +13,21 @@
                         >新增计划</el-button
                     >
                 </div>
-
+                <div  style="width: 50px"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="设施设备检查记录.xls"
+                            >
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel></div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -127,6 +141,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import {
     sysOrganizationFindAllDepartment,
     sysUserList,
@@ -240,6 +255,17 @@ export default {
             },
             table_row: [],
             activeName: '0',
+            json_fields: {
+                设施设备检查计划编号:'code',
+                "设施/设备名称":'facilitiesName',
+                检查人姓名:'examinerName',
+                检查人联系方式:'examinerTel',
+                任务状态:'status',
+                计划开始时间:'planBeginDate',
+               "单次持续时间（单位分钟）":'spaceTime',
+               检查频率:'checkRateType',
+               创建人:'createName'
+            },
             config: {
                 thead: [
                     {
@@ -378,6 +404,35 @@ export default {
         }
     },
     methods: {
+        // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'facilitiesPlanList',
+                data: {
+                    pageNum: 1,
+                    size: 100
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         // 获取用户列表
         getUserList(val) {
             let reeData = {

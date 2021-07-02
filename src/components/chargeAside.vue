@@ -81,7 +81,7 @@ export default {
         {
           // Deposit management
           path: '/charge/depositManagement',
-          label: '押金管理',
+          label: '预缴管理',
           iconurl: require('@/assets/images/charge/icon_charge03_nor.png'),
           iconisactive: require('@/assets/images/charge/icon_charge03_sel.png'),
           isChildren: 0

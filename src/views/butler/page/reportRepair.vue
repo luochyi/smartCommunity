@@ -57,6 +57,21 @@
                         >新增报修</el-button
                     >
                 </div>
+                 <div  style="width: 50px"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="报事报修记录.xls"
+                            >
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel></div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -565,6 +580,7 @@
     </div>
 </template>
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import addEidt from '@/views/butler/components/reportRepair/addEidt'
 import Dispatch from '@/views/butler/components/reportRepair/Dispatch'
 import {
@@ -627,9 +643,24 @@ export default {
                         width: 'auto'
                     }
                 ],
+                
                 table_data: [],
                 loading: true,
                 checkbox: false
+            },
+            //表头
+                json_fields: {
+                报修单号:'code',
+                状态:'status',
+                房屋信息:'roomName',
+                报修人:'repairmanName',
+                报修人电话:'repairTel',
+                报修时间:'repairDate',
+                分配人:'distributorName',
+                维修人:'operatorName',
+                工单时限:'workOrderTimeLimit',
+                来源:'fromsName'
+
             },
             addEidtDrawerTitle: '',
             addEidt_vrisible: false, // 添加修改
@@ -831,7 +862,35 @@ export default {
         Dispatch
     },
     methods: {
-        //
+        // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'reportRepairList',
+                data: {
+                    pageNum: 1,
+                    size: 100
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         // 详情、
         onDetails(data) {
             if (data.length > 1) {

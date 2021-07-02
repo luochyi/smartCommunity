@@ -460,7 +460,21 @@ export default {
                     { label: '已缴金额', prop: 'paidPrice', width: '180' },
                     { label: '应收金额', prop: 'totalPrice', width: '180' },
                     { label: '待缴金额', prop: 'paymentPrice', width: '180' },
-                    { label: '状态', prop: 'status', width: '180' },
+                    { label: '状态', prop: 'status', width: '180',type:'function' ,
+                        callback:(row,prop)=>{
+                            switch(row.status){
+                                case 1:
+                                    return '未缴纳'
+                                    break;
+                                case 2:
+                                    return '部分缴纳'
+                                    break;
+                                case 3:
+                                    return '全部缴纳'
+                                    break;
+                            }
+                        }
+                    },
                     { label: '备注', prop: 'remake', width: '180' },
                     { label: '创建人', prop: 'createName', width: '180' },
                     { label: '更新时间', prop: 'updateDate', width: '180' }

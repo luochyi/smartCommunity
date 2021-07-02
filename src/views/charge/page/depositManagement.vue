@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div class="main-titel">
-      <span>押金管理</span>
+      <span>预缴管理</span>
     </div>
 
     <div class="content">
