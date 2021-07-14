@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>物资管理</span>
+                <span>物资盘点</span>
             </div>
             <div class="content">
                 <div class="content-btn">
@@ -10,7 +10,7 @@
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增物资</el-button
+                        >新增盘点</el-button
                     >
                 </div>
 
@@ -39,21 +39,21 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button @click="detail(table_row)">编辑</button>
-                                <button @click="del(table_row)">删除</button>
+                                <!-- <button @click="detail(table_row)">详情</button> -->
+                                <!-- <button @click="del(table_row)">删除</button> -->
                             </div>
                         </template>
                     </VueTable>
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增物资管理信息"
+                    drawerTitle="新增钥匙"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">物资信息</template>
+                            <template slot="title">钥匙信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
@@ -85,53 +85,17 @@
                         </button>
                     </div>
                 </Drawer>
-                <!-- detail -->
-                <Drawer
-                    drawerTitle="修改物资信息"
-                    @drawerClose="detailClose"
-                    :drawerVrisible="detail_vrisible"
-                >
-                    <div style="padding: 30px">
-                        <FromCard>
-                            <template slot="title">物资信息</template>
-                            <template>
-                                <VueForm ref="detailForm" :formObj="detailForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
-                                </VueForm>
-                            </template>
-                        </FromCard>
-                    </div>
-                    <div slot="footer">
-                        <button class="btn-orange" @click="detailSubmit()">
-                            <span>
-                                <i class="el-icon-circle-check"></i>提交</span
-                            >
-                        </button>
-                        <button class="btn-gray" @click="detailClose">
-                            <span>取消</span>
-                        </button>
-                    </div>
-                </Drawer>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { materialUpdate, materialInsert } from '@/api/daily'
+import {
+    keyManagementInsert,
+    keyManagementFindById,
+    keyManagementUpdate
+} from '@/api/daily'
 export default {
     data() {
         return {
@@ -140,37 +104,65 @@ export default {
             addDate: null,
             addForm: {
                 ruleForm: {
-                    name: null,
-                    unit:null
                 },
+                // rules: {
+                //     tel: [
+                //         // {
+                //         //     required: true,
+                //         //     message: '请输入手机号',
+                //         //     trigger: 'blur'
+                //         // },
+                //         {
+                //             min: 11,
+                //             max: 11,
+                //             message: '请输入正确的手机号',
+                //             trigger: 'blur'
+                //         }
+                //     ]
+                // },
                 form_item: [
                     {
                         type: 'Input',
-                        label: '物料名称',
+                        label: '设施名称',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'name'
+                        prop: 'facilityName'
                     },
                     {
                         type: 'Input',
-                        label: '单位',
+                        label: '钥匙数量',
+                        // disabled: true,
                         placeholder: '请输入',
-                        width: '50%',
-                        prop: 'unit'
+                        width: '100%',
+                        prop: 'num'
                     },
-                ]
-            },
-            detailForm: {
-                ruleForm: {
-                    name: null
-                },
-                form_item: [
                     {
                         type: 'Input',
-                        label: '物料名称',
+                        label: '对应位置',
+                        placeholder: '请选择',
+                        width: '100%',
+                        prop: 'correspondingPosition'
+                    },
+                    {
+                        type: 'Input',
+                        label: '存放位置',
                         placeholder: '请输入',
-                        width: '50%',
-                        prop: 'name'
+                        width: '100%',
+                        prop: 'storageLocation'
+                    },
+                    {
+                        type: 'Input',
+                        label: '管理人',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'administrator'
+                    },
+                    {
+                        type: 'Input',
+                        label: '管理人联系方式',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'tel'
                     }
                 ]
             },
@@ -181,19 +173,24 @@ export default {
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
-                    { label: '物料名称', prop: 'name', width: 'auto' },
-                    { label: '物料库存', prop: 'stock', width: 'auto' },
-                    { label: '单位', prop: 'unit', width: 'auto' },
+                    { label: '盘点期次', prop: 'periodTime', width: 'auto' },
+                    { label: '盘点种类数量', prop: 'speciesNum', width: 'auto' },
+                    { label: '盘点时间开始', prop: 'inventoryDateStart', width: 'auto' },
+                    {
+                        label: '盘点时间结束',
+                        prop: 'inventoryDateEnd',
+                        width: 'auto'
+                    },
                 ],
                 table_data: [],
-                url: 'materialList',
+                url: 'materialInventoryList',
                 search_item: [
                     {
                         type: 'Input',
-                        label: '物料名称',
+                        label: '盘点期次',
                         placeholder: '请输入',
-                        prop: 'name'
-                    }
+                        prop: 'periodTime'
+                    },
                     // Slot
                 ],
                 data: {
@@ -212,16 +209,6 @@ export default {
             this.add_vrisible = false
         },
         addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
             let resData = {
                 ...this.addForm.ruleForm
                 // code: this.addForm.ruleForm.code,
@@ -230,7 +217,7 @@ export default {
                 // openEndDate:  this.openEndDate,
                 // imgUrls:this.addForm.ruleForm.imgUrls,
             }
-            materialInsert(resData).then((res) => {
+            keyManagementInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
@@ -238,44 +225,6 @@ export default {
                     })
                     this.$refs.table.loadData()
                     this.addClose()
-                }
-            })
-        },
-        detail(data) {
-            if (data.length != 1) {
-                this.$message({
-                    message: '只能编辑一条数据',
-                    type: 'error'
-                })
-            } else {
-                this.detail_vrisible = true
-                console.log(data[0].id)
-                this.detailForm.ruleForm.id = data[0].id
-                this.detailForm.ruleForm.name = data[0].name
-            }
-        },
-        detailClose() {
-            this.$refs.detailForm.reset()
-            this.detail_vrisible = false
-        },
-        detailSubmit() {
-            let resData = {
-                ...this.detailForm.ruleForm,
-                id: this.detailForm.ruleForm.id
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
-            }
-            materialUpdate(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.detailClose()
                 }
             })
         },

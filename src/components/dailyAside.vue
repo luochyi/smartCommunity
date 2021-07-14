@@ -137,6 +137,10 @@ export default {
                     isChildren: 1,
                     children: [
                         {
+                            path: '/daily/materialInventory',
+                            label: '物料盘点'
+                        },
+                        {
                             path: '/daily/materialInOut',
                             label: '物料出入库'
                         },

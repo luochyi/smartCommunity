@@ -13,7 +13,21 @@
                         >新增任务</el-button
                     >
                 </div>
-
+                <div  style="width: 50px"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="卫生任务.xls"
+                            >
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel></div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -145,6 +159,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import {
     sysOrganizationFindAllDepartment,
     sysUserList,
@@ -213,6 +228,15 @@ export default {
             },
             table_row: [],
             activeName: '0',
+            //表头
+                json_fields: {
+                卫生区域名称:'hygieneAreaName',
+                工作内容:'content',
+                负责人名称:'directorName',
+                状态:'status',
+                截止时间:'endDate',
+                发布时间:'createDate',
+            },
             config: {
                 thead: [
                     {
@@ -328,6 +352,35 @@ export default {
         }
     },
     methods: {
+         // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'hygieneTaskList',
+                data: {
+                    pageNum: 1,
+                    size: 100
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         // 获取用户列表
         getUserList(val) {
             let reeData = {

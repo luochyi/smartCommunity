@@ -7,7 +7,7 @@
       <div class="cart-box">
         <div class="cart-item cart-item_l">
           <div class="item-headImg">
-            <img src="https://thirdqq.qlogo.cn/g?b=oidb&k=hyaFKtN1qiacRpXwh7aL5JQ&s=100&t=1600061487"
+            <img src="https://test.kaidalai.cn/static/img/homePage/homePage.png"
                  alt="">
           </div>
           <div class="item-txt">

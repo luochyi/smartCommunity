@@ -268,6 +268,14 @@ export function materialList(data) {
         params: data
     })
 }
+// materialRecord/findById
+export function materialRecordFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/materialRecord/findById',
+        params: data
+    })
+}
 export function materialInsert(data) {
     return service.request({
         method: 'POST',
@@ -290,6 +298,8 @@ export function materialRecordInsert(data) {
         data: data
     })
 }
+//materialInventory/list盘点
+
 //keyManagement/insert keyBorrow/examine
 export function keyManagementInsert(data) {
     return service.request({

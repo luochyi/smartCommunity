@@ -238,6 +238,11 @@ const routes = [
                         path:'/daily/materialManagement',
                         component:()=>import('@/views/daily/page/materialManagement')
                     },
+                    //materialInventory
+                    {
+                        path:'/daily/materialInventory',
+                        component:()=>import('@/views/daily/page/materialInventory')
+                    },
                     {
                         path:'/daily/packageCollection',
                         component:()=>import('@/views/daily/page/packageCollection')

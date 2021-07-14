@@ -64,6 +64,7 @@ const requestUrl = {
     materialList: 'material/list',
     materialListDelete: 'material/delete',
     materialRecordList: 'materialRecord/list',
+    materialInventoryList:'materialInventory/list',
     //钥匙
     keyManagementList: '/keyManagement/list',
     keyManagementListDelete: '/keyManagement/delete',
