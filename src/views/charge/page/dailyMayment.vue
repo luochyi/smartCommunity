@@ -91,6 +91,21 @@
                             @ruleSuccess="addRuleSuccess"
                             :formObj="addForm"
                         >
+                            <template v-slot:rate>
+                                        <el-input
+                                            v-model="addForm.ruleForm.rate"
+                                            size="small"
+                                            style="width: 240px"
+                                            placeholder="请输入"
+                                        >
+                                            <i
+                                                slot="suffix"
+                                                style="font-style: normal"
+                                                class="metre"
+                                                >%</i
+                                            >
+                                        </el-input>
+                                    </template>
                             <template v-slot:chargesTemplateDetailId>
                                 <el-select
                                     v-model="
@@ -269,7 +284,9 @@ export default {
                     unitPrice: null,
                     num: null,
                     dailyPaymentOrder: null,
-                    totalPrice: null
+                    totalPrice: null,
+                    rate:null,
+                    paymentTerm:null
                 },
                 form_item: [
                     {
@@ -334,6 +351,21 @@ export default {
                         // width: "100%"
                         width: '50%',
                         disabled: true
+                    },
+                    {
+                        type: 'Slot',
+                        label: '费率',
+                        width: '50%',
+                        prop: 'rate',
+                        slotName: 'rate'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '缴费期限',
+                        placeholder: '请选择',
+                        prop: 'paymentTerm',
+                        // width: "100%"
+                        width: '50%'
                     }
                 ],
                 rules: {
@@ -455,6 +487,7 @@ export default {
                             }
                         }
                     },
+                    { label: '计费单位', prop: 'type', width: '180' },
                     { label: '面积/用量/数量', prop: 'num', width: '180' },
                     { label: '费用金额', prop: 'costPrice', width: '180' },
                     { label: '已缴金额', prop: 'paidPrice', width: '180' },
@@ -476,6 +509,9 @@ export default {
                         }
                     },
                     { label: '备注', prop: 'remake', width: '180' },
+                    { label: '费率', prop: 'rate', width: '180' },
+                    { label: '缴费期限', prop: 'paymentTerm', width: '180' },
+                    { label: '滞纳金', prop: 'overdueFine', width: '180' },
                     { label: '创建人', prop: 'createName', width: '180' },
                     { label: '更新时间', prop: 'updateDate', width: '180' }
                 ],
@@ -727,7 +763,9 @@ export default {
                 endDate: this.addForm.ruleForm.endDate,
                 unitPrice: this.feeData.unitPrice,
                 type: this.feeData.type,
-                num: this.addForm.ruleForm.num
+                num: this.addForm.ruleForm.num,
+                rate:this.addForm.ruleForm.rate,
+                paymentTerm:this.addForm.ruleForm.paymentTerm
             }
             dailyPaymentInsert(resData).then((res) => {
                 console.log(res)
