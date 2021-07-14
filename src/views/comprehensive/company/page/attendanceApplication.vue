@@ -5,6 +5,21 @@
                 <span>请假/加班申请记录</span>
             </div>
             <div class="content">
+                <div  style="width: 50px"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="考勤申请记录.xls"
+                            >
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel></div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -75,6 +90,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import { sysOrganizationFindAllDepartment, sysUserList } from '@/api/daily'
 import {
     attendanceRecordReviewer
@@ -115,6 +131,18 @@ export default {
             },
             table_row: [],
             activeName: '0',
+            json_fields: {
+                申请人名称: 'createName',
+                申请人手机号: 'createTel',
+                '请假/加班原因':'reason',
+                类型:'type',
+                状态:'status',
+                '请假/加班开始时间':'startDate',
+                '请假/加班结束时间':'endDate',
+                审核人名称:'reviewerName',
+                 审核时间:'reviewerDate'
+                
+            },
             config: {
                 thead: [
                     {
@@ -257,6 +285,35 @@ export default {
         }
     },
     methods: {
+        // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'attendanceRecordLeaveList',
+                data: {
+                    pageNum: 1,
+                    size: 100
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         reviewer(data){
             if(data.length!=1){
                 this.$message({

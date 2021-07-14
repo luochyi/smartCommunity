@@ -8,8 +8,23 @@
                     icon="el-icon-plus"
                     >新增设备</el-button
                 >
+                
             </div>
-
+            <div  style="width: 50px"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="设备管理.xls"
+                            >
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel></div>
             <div class="">
                 <VueTable ref="table" :config="config" @tableCheck="tableCheck">
                     <template slot="tabs">
@@ -142,6 +157,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import {
     facilitiesManageInsert,
     facilitiesCategoryList,
@@ -218,6 +234,15 @@ export default {
             // 上传img文件
             imglist: [],
             activeName: '0',
+            json_fields: {
+                设备编号: 'code',
+                设备类型: 'facilitiesCategoryName',
+                设备名称:'name',
+                添加人:'createName',
+                设备状态:'status',
+                添加时间:'createDate',
+                备注:'remakes'
+            },
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
@@ -315,6 +340,36 @@ export default {
         this.getUserList()
     },
     methods: {
+         // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'facilitiesManageList',
+                data: {
+                    pageNum: 1,
+                    size: 100,
+                    type: 2
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         //下载文件
         download(data) {
             this.$confirm('是否下载文件?', '下载提示', {

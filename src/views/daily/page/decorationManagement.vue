@@ -5,6 +5,21 @@
                 <span>装修管理</span>
             </div>
             <div class="content">
+                <div  style="width: 50px"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="装修管理.xls"
+                            >
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel></div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -139,6 +154,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import {
     userDecorationNewExamine,
     sysOrganizationFindAllDepartment,
@@ -193,6 +209,23 @@ export default {
             // 上传img文件
             imglist: [],
             activeName: '0',
+            json_fields: {
+                房屋信息: 'roomName',
+                申请人名称: 'createName',
+                申请时间:'createDate',
+                装修状态:'status',
+                装修公司名称:'director',
+                装修负责人联系电话:'directorTel',
+                装修预计开始时间:'expectedBegin',
+                装修预计结束时间:'expectedEnd',
+                装修实际开始时间:'actualBegin',
+                装修实际结束时间:'actualEnd',
+                '装修通过/驳回原因':'rejectReason',
+                审核人名称:'reviewerName',
+                审核时间:'auditDate',
+                检查完工人名称:'trackerName',
+                最后一次完工检查是否合格:'isQualified'
+            },
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '70' },
@@ -347,6 +380,35 @@ export default {
         }
     },
     methods: {
+        // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'userDecorationNewList',
+                data: {
+                    pageNum: 1,
+                    size: 100,
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         getUserList(val) {
             let reeData = {
                 pageNum: 1,

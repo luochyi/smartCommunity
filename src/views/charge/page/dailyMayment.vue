@@ -372,7 +372,7 @@ export default {
                 form_item: [
                     {
                         type: 'span',
-                        label: '推送人姓名',
+                        label: '收费项目名称',
                         prop: 'name',
                         width: '100%'
                     },

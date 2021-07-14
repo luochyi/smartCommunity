@@ -135,7 +135,7 @@
                                 placeholder="请输入内容"></el-input>
                     </div>
                   </div>
-                  <div class="flex"
+                  <!-- <div class="flex"
                        style="margin:20px 0">
                     <div class="label">
                       <span>支付单号 </span>
@@ -146,7 +146,7 @@
                                 size="small"
                                 placeholder="请输入内容"></el-input>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -276,7 +276,6 @@ export default {
         dailyPaymentId: this.getData.id,
         dailyPaymentOrder: {
 
-          code: this.code,
           name: this.name,
           tel: this.tel,
           payType: this.payType,

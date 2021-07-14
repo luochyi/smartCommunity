@@ -5,6 +5,21 @@
                 <span>设施设备检查记录</span>
             </div>
             <div class="content">
+                  <div  style="width: 50px"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fields"
+                                :before-finish="finishDownload"
+                                name="设施设备检查记录.xls"
+                            >
+                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出Excel</el-button
+                                >
+                            </download-excel></div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -47,6 +62,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 export default {
     data() {
         return {
@@ -55,6 +71,17 @@ export default {
             loading: false,
             table_row: [],
             activeName: '0',
+             json_fields: {
+                检查执行记录编号: 'code',
+                分类名称: 'categoryName',
+                '设施/设备名称':'facilitiesName',
+                检查人姓名:'examinerName',
+                检查人联系方式:'examinerTel',
+                状态:'status',
+                '设施/设备情况':'situation',
+                '设施/设备检查报告':'detail',
+                '设施/设备实际检查时间':'checkDate',
+            },
             config: {
                 thead: [
                     {
@@ -112,7 +139,7 @@ export default {
                         width: 'auto',
                         type: 'function',
                         callback: (row, prop) => {
-                            switch (row.status) {
+                            switch (row.situation) {
                                 case 1:
                                     return '正常'
                                     break
@@ -200,6 +227,35 @@ export default {
         }
     },
     methods: {
+         // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'facilitiesPlanExecuteList',
+                data: {
+                    pageNum: 1,
+                    size: 100,
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         // tabs切换
         handleClick(tab, event) {
             let status = null

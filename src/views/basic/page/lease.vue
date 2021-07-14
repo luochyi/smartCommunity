@@ -13,14 +13,27 @@
                         >新增租赁信息</el-button
                     >
                 </div>
-
+                <div style="width: 50px">
+                    <download-excel
+                        class="export-excel-wrapper"
+                        :fetch="fetchData"
+                        :fields="json_fields"
+                        :before-finish="finishDownload"
+                        name="租赁管理.xls"
+                    >
+                        <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                        <el-button size="mini" icon="el-icon-folder-add" plain
+                            >导出Excel</el-button
+                        >
+                    </download-excel>
+                </div>
                 <div class="">
                     <VueTable
                         ref="table"
                         :config="config"
                         @tableCheck="tableCheck"
                     >
-                    <!-- 过滤租赁时间 只显示年月日 -->
+                        <!-- 过滤租赁时间 只显示年月日 -->
                         <template v-slot:leaseDateStart="slotData">
                             <div>
                                 {{ slotData.data.leaseDateStart | capitalize }}
@@ -201,6 +214,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import {
     leaseInsert,
     leaseUpdate,
@@ -397,6 +411,24 @@ export default {
                 ]
             },
             table_row: [],
+            json_fields: {
+                合同编号: 'code',
+                租户姓名: 'name',
+                性别: 'sex',
+                身份证号: 'idCard',
+                房产名称: 'roomName',
+                人才类型: 'type',
+                房屋户型: 'estateType',
+                '租金标准/月': 'rentStandard',
+                保证金: 'margin',
+                租赁开始时间: 'leaseDateStart',
+                租赁结束时间: 'leaseDateEnd',
+                办理状态: 'status',
+                审核人姓名: 'reviewerName',
+                审核时间: 'auditDate',
+                创建人姓名: 'createName',
+                创建时间: 'createDate'
+            },
             activeName: '0',
             config: {
                 thead: [
@@ -652,6 +684,35 @@ export default {
                 console.log(res)
                 this.hoursOptions = res
             })
+        },
+        // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'leaseList',
+                data: {
+                    pageNum: 1,
+                    size: 100
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
         },
         //审核
         audit(data) {
