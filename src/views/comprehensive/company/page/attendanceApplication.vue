@@ -135,8 +135,39 @@ export default {
                 申请人名称: 'createName',
                 申请人手机号: 'createTel',
                 '请假/加班原因':'reason',
-                类型:'type',
-                状态:'status',
+                类型:{
+                    field: 'type',
+                    callback: (value) => {
+                        switch (value) {
+                             case 1:
+                                    return '请假'
+                                    break
+                                case 2:
+                                    return '加班'
+                                    break
+                                default:
+                                    break
+                        }
+                    }
+                },
+                状态:{
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                    return '待审核'
+                                    break
+                                case 2:
+                                    return '审核通过'
+                                    break
+                                case 3:
+                                    return '审核驳回'
+                                    break
+                                default:
+                                    break
+                        }
+                    }
+                },
                 '请假/加班开始时间':'startDate',
                 '请假/加班结束时间':'endDate',
                 审核人名称:'reviewerName',

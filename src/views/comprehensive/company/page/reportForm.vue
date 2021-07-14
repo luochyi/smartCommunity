@@ -139,34 +139,6 @@ export default {
                     upload:'uploadFile/UploadGreenAreaFile'
                 },
             ],
-            json_fields: {
-                收费项目名称: 'name',
-                房屋信息: 'roomName',
-                计费开始时间: 'beginDate',
-                计费结束时间: 'endDate',
-                '计费单价/单位': 'unitPrice',
-                '面积/用量/数量': 'num',
-                费用金额: 'costPrice',
-                已缴金额: 'paidPrice',
-                应收金额: 'paidPrice',
-                待缴金额: 'paymentPrice',
-                状态: {
-                    field: 'status',
-                    callback: (value) => {
-                        switch (value) {
-                            case 1:
-                                return '已缴纳'
-                                break
-                            default:
-                                return '未缴纳'
-                        }
-                    }
-                },
-                创建人: 'createName',
-                更新时间: 'updateDate',
-
-                备注: 'remake'
-            },
             activeName: '0'
         }
     },

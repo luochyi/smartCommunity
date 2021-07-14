@@ -260,10 +260,39 @@ export default {
                 "设施/设备名称":'facilitiesName',
                 检查人姓名:'examinerName',
                 检查人联系方式:'examinerTel',
-                任务状态:'status',
+                任务状态:{
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                             case 1:
+                                    return '开启'
+                                    break
+                                case 2:
+                                    return '停用'
+                                    break
+                        }
+                    }
+                },
                 计划开始时间:'planBeginDate',
                "单次持续时间（单位分钟）":'spaceTime',
-               检查频率:'checkRateType',
+               检查频率:{
+                    field: 'checkRateType',
+                    callback: (value) => {
+                        switch (value) {
+                             case 1:
+                              return '每天'
+                              break;
+                            case 2:
+                              return '每周'
+                              break;
+                              case 3:
+                              return '每月'
+                              break;
+                            default:
+                              break;
+                        }
+                    }
+                },
                创建人:'createName'
             },
             config: {

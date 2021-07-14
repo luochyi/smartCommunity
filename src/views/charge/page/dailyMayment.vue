@@ -454,7 +454,9 @@ export default {
                 },
                 创建人: 'createName',
                 更新时间: 'updateDate',
-
+                费率:'rate',
+                缴费期限:'paymentTerm',
+                滞纳金:'overdueFine',
                 备注: 'remake'
             },
             activeName: '0',

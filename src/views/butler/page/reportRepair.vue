@@ -57,21 +57,20 @@
                         >新增报修</el-button
                     >
                 </div>
-                 <div  style="width: 50px"><download-excel
-                                class="export-excel-wrapper"
-                                :fetch="fetchData"
-                                :fields="json_fields"
-                                :before-finish="finishDownload"
-                                name="报事报修记录.xls"
-                            >
-                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
-                                <el-button
-                                    size="mini"
-                                    icon="el-icon-folder-add"
-                                    plain
-                                    >导出Excel</el-button
-                                >
-                            </download-excel></div>
+                <div style="width: 50px">
+                    <download-excel
+                        class="export-excel-wrapper"
+                        :fetch="fetchData"
+                        :fields="json_fields"
+                        :before-finish="finishDownload"
+                        name="报事报修记录.xls"
+                    >
+                        <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                        <el-button size="mini" icon="el-icon-folder-add" plain
+                            >导出Excel</el-button
+                        >
+                    </download-excel>
+                </div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -643,24 +642,69 @@ export default {
                         width: 'auto'
                     }
                 ],
-                
+
                 table_data: [],
                 loading: true,
                 checkbox: false
             },
             //表头
-                json_fields: {
-                报修单号:'code',
-                状态:'status',
-                房屋信息:'roomName',
-                报修人:'repairmanName',
-                报修人电话:'repairTel',
-                报修时间:'repairDate',
-                分配人:'distributorName',
-                维修人:'operatorName',
-                工单时限:'workOrderTimeLimit',
-                来源:'fromsName'
-
+            json_fields: {
+                报修单号: 'code',
+                状态: {
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '待分配'
+                                break
+                            case 2:
+                                return '已分配未接单'
+                                break
+                            case 3:
+                                return '已分配处理中'
+                                break
+                            case 4:
+                                return '已处理'
+                                break
+                            case 5:
+                                return '已分配处理中'
+                                break
+                            case 6:
+                                return '已关闭'
+                                break
+                            case 7:
+                                return '已作废'
+                                break
+                            case 8:
+                                return '已取消'
+                                break
+                            default:
+                                break
+                        }
+                    }
+                },
+                房屋信息: 'roomName',
+                报修人: 'repairmanName',
+                报修人电话: 'repairTel',
+                报修时间: 'repairDate',
+                分配人: 'distributorName',
+                维修人: 'operatorName',
+                工单时限: 'workOrderTimeLimit',
+                来源: {
+                    field: 'fromsName',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '业主来电'
+                                break
+                            case 2:
+                                return 'app提交'
+                                break
+                            default:
+                                break
+                        }
+                    }
+                }
             },
             addEidtDrawerTitle: '',
             addEidt_vrisible: false, // 添加修改
@@ -793,10 +837,10 @@ export default {
                         width: 'auto',
                         type: 'function',
                         callback(row, prop) {
-                            if(row.fromsName == 1){
-                              return '业主来电'
-                            }else if(row.fromsName ==2 ){
-                              return 'app提交'
+                            if (row.fromsName == 1) {
+                                return '业主来电'
+                            } else if (row.fromsName == 2) {
+                                return 'app提交'
                             }
                         }
                     }

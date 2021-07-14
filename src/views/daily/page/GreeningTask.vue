@@ -233,7 +233,24 @@ export default {
                 绿化区域名称:'greenAreaName',
                 工作内容:'content',
                 负责人名称:'directorName',
-                状态:'status',
+                状态: {
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                    return '待处理'
+                                    break;
+                                case 2:
+                                    return '已处理'
+                                    break;
+                                case 3:
+                                    return '未完成'
+                                    break;
+                                default:
+                                    break;
+                        }
+                    }
+                },
                 截止时间:'endDate',
                 发布时间:'createDate',
             },

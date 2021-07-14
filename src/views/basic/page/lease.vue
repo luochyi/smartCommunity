@@ -414,16 +414,70 @@ export default {
             json_fields: {
                 合同编号: 'code',
                 租户姓名: 'name',
-                性别: 'sex',
+                性别: {
+                    field:"sex",
+                     callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '男'
+                                break
+                            default:
+                                return '女'
+                        }
+                    }
+
+                },
                 身份证号: 'idCard',
                 房产名称: 'roomName',
-                人才类型: 'type',
+                人才类型: {
+                    field:"type",
+                     callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '一类人才'
+                                break
+                            case 2:
+                                return '二类人才'
+                                break
+                            default:
+                                return '三类人才'
+                        }
+                    }
+
+                },
                 房屋户型: 'estateType',
                 '租金标准/月': 'rentStandard',
                 保证金: 'margin',
                 租赁开始时间: 'leaseDateStart',
                 租赁结束时间: 'leaseDateEnd',
-                办理状态: 'status',
+                办理状态: {
+                    field:"status",
+                     callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                    return '待签署'
+                                    break
+                                case 2:
+                                    return '待提交'
+                                    break
+                                case 3:
+                                    return '审核中'
+                                    break
+                                case 4:
+                                    return '已驳回'
+                                    break
+                                case 5:
+                                    return '待支付'
+                                    break
+                                case 6:
+                                    return '已完成'
+                                    break
+                                default:
+                                    break
+                        }
+                    }
+
+                },
                 审核人姓名: 'reviewerName',
                 审核时间: 'auditDate',
                 创建人姓名: 'createName',

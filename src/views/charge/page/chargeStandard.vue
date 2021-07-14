@@ -87,7 +87,7 @@
                                 :fetch="fetchData"
                                 :fields="json_fields"
                                 :before-finish="finishDownload"
-                                name="日常缴费.xls"
+                                name="收费标准管理.xls"
                             >
                                 <el-button class="init-button" size="small"
                                     >导出Excel</el-button
@@ -349,6 +349,49 @@ export default {
             json_fields: {
                 费用名称: 'name',
                 '计费单价/单位': 'unitPrice',
+                费用类型名称:{
+                    field: 'marker',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                    return '物业管理费'
+                                    break
+                                case 2:
+                                    return '维修费'
+                                    break
+                                case 3:
+                                    return '装修押金'
+                                    break
+                                case 4:
+                                    return '活动报名费'
+                                    break
+                                case 5:
+                                    return '日常费用'
+                                    break
+                                case 6:
+                                    return '停车费'
+                                    break
+                                case 7:
+                                    return '有偿服务费'
+                                    break
+                                default:
+                                    break
+                        }
+                    }
+                },
+                物业收费标准明细状态:{
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 0:
+                                    return '未启用'
+                                    break
+                                case 1:
+                                    return '启用'
+                                    break
+                        }
+                    }
+                },
                 '附加/固定费用': 'otherFee',
                 创建人: 'createName',
                 更新日期: 'modifyDate'

@@ -77,8 +77,35 @@ export default {
                 '设施/设备名称':'facilitiesName',
                 检查人姓名:'examinerName',
                 检查人联系方式:'examinerTel',
-                状态:'status',
-                '设施/设备情况':'situation',
+                状态: {
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                    return '待完成'
+                                    break
+                                case 2:
+                                    return '已完成'
+                                    break
+                                case 3:
+                                    return '未完成'
+                                    break
+                        }
+                    }
+                },
+                '设施/设备情况':{
+                    field: 'situation',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                    return '正常'
+                                    break
+                                case 2:
+                                    return '异常'
+                                    break
+                        }
+                    }
+                },
                 '设施/设备检查报告':'detail',
                 '设施/设备实际检查时间':'checkDate',
             },

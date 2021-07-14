@@ -239,7 +239,22 @@ export default {
                 设备类型: 'facilitiesCategoryName',
                 设备名称:'name',
                 添加人:'createName',
-                设备状态:'status',
+                设备状态:{
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                    return '空置中'
+                                    break
+                                case 2:
+                                    return '使用中'
+                                    break
+                                case 3:
+                                    return '已停用'
+                                    break
+                        }
+                    }
+                },
                 添加时间:'createDate',
                 备注:'remakes'
             },

@@ -5,21 +5,20 @@
                 <span>装修管理</span>
             </div>
             <div class="content">
-                <div  style="width: 50px"><download-excel
-                                class="export-excel-wrapper"
-                                :fetch="fetchData"
-                                :fields="json_fields"
-                                :before-finish="finishDownload"
-                                name="装修管理.xls"
-                            >
-                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
-                                <el-button
-                                    size="mini"
-                                    icon="el-icon-folder-add"
-                                    plain
-                                    >导出Excel</el-button
-                                >
-                            </download-excel></div>
+                <div style="width: 50px">
+                    <download-excel
+                        class="export-excel-wrapper"
+                        :fetch="fetchData"
+                        :fields="json_fields"
+                        :before-finish="finishDownload"
+                        name="装修管理.xls"
+                    >
+                        <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                        <el-button size="mini" icon="el-icon-folder-add" plain
+                            >导出Excel</el-button
+                        >
+                    </download-excel>
+                </div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -113,7 +112,8 @@
                                     <template v-slot:sysOrganization>
                                         <el-select
                                             v-model="
-                                                inspectionForm.ruleForm.organizationId
+                                                inspectionForm.ruleForm
+                                                    .organizationId
                                             "
                                             :remote-method="remoteMethod"
                                             @change="sChange"
@@ -183,8 +183,8 @@ export default {
             auditDialog: false,
             inspectionForm: {
                 ruleForm: {
-                    organizationId:null,
-                    tracker:null
+                    organizationId: null,
+                    tracker: null
                 },
                 form_item: [
                     {
@@ -212,19 +212,60 @@ export default {
             json_fields: {
                 房屋信息: 'roomName',
                 申请人名称: 'createName',
-                申请时间:'createDate',
-                装修状态:'status',
-                装修公司名称:'director',
-                装修负责人联系电话:'directorTel',
-                装修预计开始时间:'expectedBegin',
-                装修预计结束时间:'expectedEnd',
-                装修实际开始时间:'actualBegin',
-                装修实际结束时间:'actualEnd',
-                '装修通过/驳回原因':'rejectReason',
-                审核人名称:'reviewerName',
-                审核时间:'auditDate',
-                检查完工人名称:'trackerName',
-                最后一次完工检查是否合格:'isQualified'
+                申请时间: 'createDate',
+                装修状态: {
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '装修申请中'
+                                break
+                            case 2:
+                                return '装修中'
+                                break
+                            case 3:
+                                return '装修驳回'
+                                break
+                            case 5:
+                                return '申请完工检查'
+                                break
+                            case 6:
+                                return '完工检查中'
+                                break
+                            case 7:
+                                return '检查通过'
+                                break
+                            case 8:
+                                return '检查不通过'
+                                break
+                        }
+                    }
+                },
+                装修公司名称: 'director',
+                装修负责人联系电话: 'directorTel',
+                装修预计开始时间: 'expectedBegin',
+                装修预计结束时间: 'expectedEnd',
+                装修实际开始时间: 'actualBegin',
+                装修实际结束时间: 'actualEnd',
+                '装修通过/驳回原因': 'rejectReason',
+                审核人名称: 'reviewerName',
+                审核时间: 'auditDate',
+                检查完工人名称: 'trackerName',
+                最后一次完工检查是否合格: {
+                    field: 'isQualified',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '合格'
+                                break
+                            case 2:
+                                return '不合格'
+                                break
+                            default:
+                                break
+                        }
+                    }
+                }
             },
             config: {
                 thead: [
@@ -367,7 +408,7 @@ export default {
                             { label: '申请完工检查', value: '5' },
                             { label: '完工检查中', value: '6' },
                             { label: '检查通过', value: '7' },
-                             { label: '检查不通过', value: '8' },
+                            { label: '检查不通过', value: '8' }
                         ]
                     }
                     // Slot
@@ -387,7 +428,7 @@ export default {
                 url: 'userDecorationNewList',
                 data: {
                     pageNum: 1,
-                    size: 100,
+                    size: 100
                 }
             }
             const data = await DownloadExcel(params, this)
@@ -462,7 +503,7 @@ export default {
                 })
                 return
             }
-            if(data[0].status!=1){
+            if (data[0].status != 1) {
                 this.$message({
                     type: 'error',
                     message: '该状态不可审核'
@@ -497,14 +538,14 @@ export default {
         },
         dialogclose() {},
         inspection(data) {
-            if(data.length!=1){
+            if (data.length != 1) {
                 this.$message({
                     type: 'error',
                     message: '请选择一条信息指派检查人'
                 })
                 return
             }
-            if(data[0].status!=5){
+            if (data[0].status != 5) {
                 this.$message({
                     type: 'error',
                     message: '该状态不可检查'
@@ -521,9 +562,9 @@ export default {
         inspectionSubmit() {
             let resData = {
                 ...this.inspectionForm.ruleForm,
-                id:this.thatId
+                id: this.thatId
             }
-            userDecorationNewAssign(resData).then(res=>{
+            userDecorationNewAssign(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         type: 'success',
@@ -531,8 +572,7 @@ export default {
                     })
                 }
             })
-            this.inspectionClose(),
-            this.thatId = null
+            this.inspectionClose(), (this.thatId = null)
             this.$refs.table.loadData()
         },
         // tabs切换

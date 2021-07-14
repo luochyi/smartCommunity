@@ -13,21 +13,20 @@
                         >新增计划</el-button
                     >
                 </div> -->
-                 <div  style="width: 50px"><download-excel
-                                class="export-excel-wrapper"
-                                :fetch="fetchData"
-                                :fields="json_fields"
-                                :before-finish="finishDownload"
-                                name="巡检记录.xls"
-                            >
-                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
-                                <el-button
-                                    size="mini"
-                                    icon="el-icon-folder-add"
-                                    plain
-                                    >导出Excel</el-button
-                                >
-                            </download-excel></div>
+                <div style="width: 50px">
+                    <download-excel
+                        class="export-excel-wrapper"
+                        :fetch="fetchData"
+                        :fields="json_fields"
+                        :before-finish="finishDownload"
+                        name="巡检记录.xls"
+                    >
+                        <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                        <el-button size="mini" icon="el-icon-folder-add" plain
+                            >导出Excel</el-button
+                        >
+                    </download-excel>
+                </div>
                 <div class="">
                     <VueTable
                         ref="table"
@@ -186,7 +185,7 @@ export default {
                     code: '',
                     inspectionRouteId: null,
                     organizationId: null,
-                    isSort:'2'
+                    isSort: '2'
                 },
                 form_item: [
                     {
@@ -268,16 +267,34 @@ export default {
             table_row: [],
             activeName: '0',
             //表头
-                json_fields: {
-                执行巡检编号:'code',
-                执行巡检名称:'name',
-                计划当次巡检开始时间:'beginDate',
-                计划当次巡检结束时间:'endDate',
-                实际当次巡检开始时间:'actualBeginDate',
-                实际当次巡检结束时间:'actualEndDate',
-                状态:'status',
-                巡检人姓名:'inspectorName',
-                巡检人手机号:'inspectorTel',
+            json_fields: {
+                执行巡检编号: 'code',
+                执行巡检名称: 'name',
+                计划当次巡检开始时间: 'beginDate',
+                计划当次巡检结束时间: 'endDate',
+                实际当次巡检开始时间: 'actualBeginDate',
+                实际当次巡检结束时间: 'actualEndDate',
+                状态: {
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '待巡检'
+                                break
+                            case 2:
+                                return '已巡检'
+                                break
+                            case 3:
+                                return '巡检中'
+                                break
+                            case 4:
+                                return '未巡检'
+                                break
+                        }
+                    }
+                },
+                巡检人姓名: 'inspectorName',
+                巡检人手机号: 'inspectorTel'
             },
             config: {
                 thead: [
@@ -342,11 +359,12 @@ export default {
                         label: '巡检人姓名',
                         prop: 'inspectorName',
                         width: 'auto'
-                    },{
+                    },
+                    {
                         label: '巡检人手机号',
                         prop: 'inspectorTel',
                         width: 'auto'
-                    },
+                    }
                 ],
                 table_data: [],
                 url: 'inspectionPlanExecuteList',
@@ -368,25 +386,25 @@ export default {
                         label: '巡检状态',
                         placeholder: '请选择',
                         prop: 'inspectionStatus',
-                        options:[
+                        options: [
                             {
-                                value:1,
-                                label:'待巡检'
+                                value: 1,
+                                label: '待巡检'
                             },
                             {
-                                value:2,
-                                label:'已巡检'
+                                value: 2,
+                                label: '已巡检'
                             },
                             {
-                                value:3,
-                                label:'巡检中'
+                                value: 3,
+                                label: '巡检中'
                             },
                             {
-                                value:4,
-                                label:'未巡检'
-                            },
+                                value: 4,
+                                label: '未巡检'
+                            }
                         ]
-                    },
+                    }
 
                     // Slot
                 ],
@@ -398,7 +416,7 @@ export default {
         }
     },
     methods: {
-         // Excel导出
+        // Excel导出
         async fetchData() {
             let Excel = []
             let params = {
@@ -433,7 +451,7 @@ export default {
                 pageNum: 1,
                 size: 20
             }
-            
+
             this.loading = true
             inspectionRouteList(reeData).then((res) => {
                 console.log(res)
@@ -454,28 +472,26 @@ export default {
             this.getUserList()
         },
         change(value) {
-            console.log(value)//sysUserList
-
-            
+            console.log(value) //sysUserList
         },
         //根据部门获取人员
-        sChange(value){
+        sChange(value) {
             this.addForm.form_item[3].options = []
-             let sData = {
+            let sData = {
                 pageNum: 1,
                 size: 100,
-                organizationId:value
-             }
-             sysUserList(sData).then((res) => {
+                organizationId: value
+            }
+            sysUserList(sData).then((res) => {
                 console.log(res)
-                
-                 res.tableList.forEach(element => {
-                     let obj = {
-                         value: element.id,
-                         label: element.nickName
-                     }
+
+                res.tableList.forEach((element) => {
+                    let obj = {
+                        value: element.id,
+                        label: element.nickName
+                    }
                     this.addForm.form_item[3].options.push(obj)
-                });
+                })
                 console.log(this.addForm.form_item[3].options)
                 this.loading = false
             })
@@ -549,7 +565,7 @@ export default {
             }
         },
         isEnable(data) {
-            console.log(data[0].id);
+            console.log(data[0].id)
             if (data.length > 1) {
                 this.$message.error('只能操作一条数据')
                 return
@@ -557,20 +573,20 @@ export default {
             if (!data.length) {
                 this.$message.error('请选择')
                 return
-            }else{
-                inspectionPlanIsEnable({id:data[0].id}).then((res) => {
-                     console.log(res)
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+            } else {
+                inspectionPlanIsEnable({ id: data[0].id }).then((res) => {
+                    console.log(res)
+                    if (res.status) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.$refs.table.loadData()
+                        this.addClose()
+                    }
+                })
             }
         }
-    },
+    }
 }
 </script>
