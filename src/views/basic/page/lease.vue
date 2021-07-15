@@ -472,6 +472,27 @@ export default {
                                 case 6:
                                     return '已完成'
                                     break
+                                case 11:
+                                    return '申请终止合同'
+                                    break
+                                case 12:
+                                    return '申请终止失败'
+                                    break
+                                case 13:
+                                    return '申请终止成功'
+                                    break
+                                case 14:
+                                    return '已支付剩余租金'
+                                    break
+                                case 15:
+                                    return '申请退还保证金'
+                                    break
+                                case 16:
+                                    return '申请退还保证金驳回'
+                                    break
+                                case 17:
+                                    return '申请退还保证金成功'
+                                    break
                                 default:
                                     break
                         }
@@ -592,6 +613,27 @@ export default {
                                     break
                                 case 6:
                                     return '已完成'
+                                    break
+                                case 11:
+                                    return '申请终止合同'
+                                    break
+                                case 12:
+                                    return '申请终止失败'
+                                    break
+                                case 13:
+                                    return '申请终止成功'
+                                    break
+                                case 14:
+                                    return '已支付剩余租金'
+                                    break
+                                case 15:
+                                    return '申请退还保证金'
+                                    break
+                                case 16:
+                                    return '申请退还保证金驳回'
+                                    break
+                                case 17:
+                                    return '申请退还保证金成功'
                                     break
                                 default:
                                     break
