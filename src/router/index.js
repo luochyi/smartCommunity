@@ -159,7 +159,15 @@ const routes = [
                             require([
                                 '@/views/comprehensive/company/page/echarts'
                             ], resolve)
+                    },
+                    {
+                        path: '/company/demo',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/demo'
+                            ], resolve)
                     }
+
                     
                 ]
             }
@@ -446,6 +454,14 @@ const routes = [
                         component: resolve =>
                             require([
                                 '@/views/charge/page/dailyMayment'
+                            ], resolve)
+                    },
+                    {
+                        // 计划
+                        path: '/charge/paymentScheme',
+                        component: resolve =>
+                            require([
+                                '@/views/charge/page/paymentScheme'
                             ], resolve)
                     },
                     {

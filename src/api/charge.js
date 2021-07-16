@@ -41,6 +41,21 @@ export function chargesTemplateDetailExport(data) {
         params: data
     })
 }
+//dailyPaymentPlan/insert   dailyPaymentPlan/update
+export function dailyPaymentPlanInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dailyPaymentPlan/insert',
+        data: data
+    })
+}
+export function dailyPaymentPlanUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/dailyPaymentPlan/update',
+        data: data
+    })
+}
 // 日常缴费：添加缴费信息（带有付款功能）【打印未做】
 export function dailyPaymentInsert(data) {
     return service.request({

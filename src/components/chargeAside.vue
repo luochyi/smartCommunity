@@ -79,6 +79,14 @@ export default {
           isChildren: 0
         },
         {
+          //paymentScheme
+          path: '/charge/paymentScheme',
+          label: '缴费计划',
+          iconurl: require('@/assets/images/charge/icon_charge02_nor.png'),
+          iconisactive: require('@/assets/images/charge/icon_charge02_sel.png'),
+          isChildren: 0
+        },
+        {
           // Deposit management
           path: '/charge/depositManagement',
           label: '预缴管理',

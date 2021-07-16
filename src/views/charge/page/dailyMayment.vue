@@ -489,7 +489,7 @@ export default {
                             }
                         }
                     },
-                    { label: '计费单位', prop: 'type', width: '180' },
+                    // { label: '计费单位', prop: 'type', width: '180' },
                     { label: '面积/用量/数量', prop: 'num', width: '180' },
                     { label: '费用金额', prop: 'costPrice', width: '180' },
                     { label: '已缴金额', prop: 'paidPrice', width: '180' },

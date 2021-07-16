@@ -4,6 +4,13 @@
             <el-aside width="541px">
                 <div class="todoList">
                     <todoList></todoList>
+                    <div>
+    <el-radio-group v-model="form.radio1">
+      <el-radio-button label="2">这是二</el-radio-button>
+      <el-radio-button label="3">这是三</el-radio-button>
+      <el-radio-button label="4">这是四</el-radio-button>
+    </el-radio-group>
+  </div>
                 </div>
             </el-aside>
             <el-container>
@@ -42,7 +49,11 @@ export default {
     },
     name: 'hello',
     data() {
-        return {}
+        return {
+            form:{
+                radio1: '4'
+            }
+        }
     },
     methods: {}
 }

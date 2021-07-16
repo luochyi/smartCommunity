@@ -120,6 +120,8 @@ const requestUrl = {
     chargesTemplateDetailList: '/chargesTemplateDetail/list',
     chargesTemplateDetailListDelete: '/chargesTemplateDetail/list',
     dailyPaymentList: '/dailyPayment/list',
+    dailyPaymentPlanList:"dailyPaymentPlan/list",
+    dailyPaymentPlanListDelete:"dailyPaymentPlan/delete",
     depositManagementList: '/depositManagement/list',
     workOrderCostList: '/workOrderCost/list',
     expenseBillList: '/expenseBill/list',
