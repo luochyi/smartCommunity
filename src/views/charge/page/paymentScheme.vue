@@ -130,56 +130,63 @@
                                     </template>
                                     <!-- Slot -->
                                     <template v-slot:hours>
-                                        <el-select
-                                            v-model="buildValue"
-                                            filterable
-                                            style="
-                                                width: 30%;
-                                                margin-right: 16px;
-                                            "
-                                            placeholder="幢"
-                                            @change="buildchange(buildValue)"
-                                        >
-                                            <el-option
-                                                v-for="item in buildOptions"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value"
+                                        <div v-if="drawerTitle=='新增缴费计划'">
+                                            <el-select
+                                                v-model="buildValue"
+                                                filterable
+                                                style="
+                                                    width: 30%;
+                                                    margin-right: 16px;
+                                                "
+                                                placeholder="幢"
+                                                @change="
+                                                    buildchange(buildValue)
+                                                "
                                             >
-                                            </el-option>
-                                        </el-select>
-                                        <el-select
-                                            v-model="unitValue"
-                                            filterable
-                                            style="
-                                                width: 30%;
-                                                margin-right: 16px;
-                                            "
-                                            placeholder="单元"
-                                            @change="unitchange(unitValue)"
-                                        >
-                                            <el-option
-                                                v-for="item in unitOptions"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value"
+                                                <el-option
+                                                    v-for="item in buildOptions"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.value"
+                                                >
+                                                </el-option>
+                                            </el-select>
+                                            <el-select
+                                                v-model="unitValue"
+                                                filterable
+                                                style="
+                                                    width: 30%;
+                                                    margin-right: 16px;
+                                                "
+                                                placeholder="单元"
+                                                @change="unitchange(unitValue)"
                                             >
-                                            </el-option>
-                                        </el-select>
-                                        <el-select
-                                            v-model="hoursValue"
-                                            filterable
-                                            style="width: 30%"
-                                            placeholder="房间号"
-                                        >
-                                            <el-option
-                                                v-for="item in hoursOptions"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value"
+                                                <el-option
+                                                    v-for="item in unitOptions"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.value"
+                                                >
+                                                </el-option>
+                                            </el-select>
+                                            <el-select
+                                                v-model="hoursValue"
+                                                filterable
+                                                style="width: 30%"
+                                                placeholder="房间号"
                                             >
-                                            </el-option>
-                                        </el-select>
+                                                <el-option
+                                                    v-for="item in hoursOptions"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.value"
+                                                >
+                                                </el-option>
+                                            </el-select>
+                                        </div>
+                                        <div v-else>
+                                            <el-input v-model='roominfo' disabled></el-input>
+                                        </div>
                                     </template>
                                     <template v-slot:date>
                                         <el-time-picker
@@ -257,21 +264,24 @@ export default {
             // 房屋
             hoursValue: null,
             hoursOptions: [],
-            addDate: null,
+            addDate: null, 
+            feeData: {},
             loading: false,
+            roominfo:null,
             addForm: {
                 ruleForm: {
-                   buildingUnitEstateId: null,
+                    id:null,
+                    buildingUnitEstateId: null,
                     chargesTemplateDetailId: null,
                     beginPlanDate: null,
                     endPlanDate: null,
                     unitPrice: null,
                     num: null,
                     costPrice: null,
-                    cycle:null,
-                    rate:null,
-                    paymentTime:null,
-                    remake:null
+                    cycle: null,
+                    rate: null,
+                    paymentTime: null,
+                    remake: null
                 },
                 form_item: [
                     {
@@ -335,11 +345,11 @@ export default {
                         prop: 'cycle',
                         // width: "100%"
                         width: '50%',
-                        options:[
+                        options: [
                             {
-                                label:'每月',
-                                value:1
-                            },
+                                label: '每月',
+                                value: 1
+                            }
                             // {
                             //     label:'每季度',
                             //     value:2
@@ -366,13 +376,13 @@ export default {
                         label: '缴费期限日期',
                         width: '50%',
                         prop: 'paymentTime',
-                        options:[]
+                        options: []
                     },
                     {
                         type: 'textarea',
                         label: '备注',
                         width: '100%',
-                        prop: 'remake',
+                        prop: 'remake'
                     }
                 ]
             },
@@ -531,19 +541,23 @@ export default {
                         label: '生成周期',
                         prop: 'cycle',
                         width: 'auto',
-                        type:'function',
-                        callback:(row,prop)=>{
-                            switch(row.cycle){
+                        type: 'function',
+                        callback: (row, prop) => {
+                            switch (row.cycle) {
                                 case 1:
-                                return '每月'
-                                break
+                                    return '每月'
+                                    break
                             }
                         }
                     },
                     {
                         label: '费率',
                         prop: 'rate',
-                        width: 'auto'
+                        width: 'auto',
+                        type:'function',
+                        callback:(row,prop)=>{
+                            return row.rate + "%"
+                        }
                     },
                     {
                         label: '缴费期限日期',
@@ -589,11 +603,11 @@ export default {
         cpmBuildingUnitFindAll().then((res) => {
             this.buildOptions = res
         })
-        for(let i=1;i<=28;i++){
-            console.log(i);
-            let obj ={
-                value:i,
-                label:i+'号'
+        for (let i = 1; i <= 28; i++) {
+            console.log(i)
+            let obj = {
+                value: i,
+                label: i + '号'
             }
             this.addForm.form_item[9].options.push(obj)
         }
@@ -677,8 +691,7 @@ export default {
                 let resData = {
                     ...this.addForm.ruleForm,
                     unitPrice: this.feeData.unitPrice,
-                    type: this.feeData.type,
-                    
+                    type: this.feeData.type
                 }
                 dailyPaymentPlanInsert(resData).then((res) => {
                     if (res.status) {
@@ -693,7 +706,9 @@ export default {
             } else if (this.drawerTitle == '修改缴费计划') {
                 let resData = {
                     id: this.addForm.ruleForm.id,
-                    ...this.addForm.ruleForm
+                    ...this.addForm.ruleForm,
+                    unitPrice: this.feeData.unitPrice,
+                    type: this.feeData.type
                 }
                 dailyPaymentPlanUpdate(resData).then((res) => {
                     if (res.status) {
@@ -715,15 +730,27 @@ export default {
                 })
             } else {
                 let res = data[0]
-                console.log(res);
-                return
-                    //房产信息
-                    this.buildValue = res.data.buildingId
-                    this.unitValue = res.data.unitId
-                    this.hoursValue = res.data.buildingUnitEstateId
-                    // 修改drawer
-                    this.add_vrisible = true
-                    this.drawerTitle = '修改缴费计划'
+                console.log(res)
+                    // this.addForm.ruleForm.buildingUnitEstateId  = res.
+                    this.addForm.ruleForm.id = res.id
+                    this.roominfo  = res.roomName
+                    this.addForm.ruleForm.chargesTemplateDetailId  = res.chargesTemplateDetailId
+                    this.addForm.ruleForm.beginPlanDate  = res.beginPlanDate
+                    this.addForm.ruleForm.endPlanDate  = res.endPlanDate
+                    this.feeData.unitPrice  = res.unitPrice
+                    this.addForm.ruleForm.num  = res.num
+                    this.addForm.ruleForm.costPrice  = res.costPrice
+                    this.addForm.ruleForm.cycle  = res.cycle
+                    this.addForm.ruleForm.rate  = res.rate
+                    this.addForm.ruleForm.paymentTime  = res.paymentTime
+                    this.addForm.ruleForm.remake  = res.remake
+                //房产信息
+                // this.buildValue = res.data.buildingId
+                // this.unitValue = res.data.unitId
+                // this.hoursValue = res.data.buildingUnitEstateId
+                // 修改drawer
+                this.add_vrisible = true
+                this.drawerTitle = '修改缴费计划'
             }
         },
         // 费用名称变化
@@ -786,6 +813,15 @@ export default {
                         newValue * this.feeData.unitPrice
                     ).toFixed(2)
                 }
+            },
+            immediate: true
+        },
+        'feeData.unitPrice': {
+            handler(newValue) {
+                console.log(newValue);
+                this.addForm.ruleForm.costPrice = (
+                        newValue * this.addForm.ruleForm.num
+                    ).toFixed(2)
             },
             immediate: true
         },
