@@ -44,8 +44,28 @@ export default {
           { label: '发布人昵称', prop: 'gambitNickName', width: '180' },
           { label: '发布人姓名', prop: 'gambitName', width: '180' },
           { label: '发布内容', prop: 'gambitContent', width: '380' },
-          { label: '是否公开', prop: 'isPublic', width: '110' },
-          { label: '是否可评论', prop: 'isRating', width: '110' },
+          { label: '是否公开', prop: 'isPublic', width: '110' ,type:"function",
+          callback:(row,prop)=>{
+            switch(row.isPublic){
+              case 1:
+                return '是'
+                break
+              case 0:
+                return '否'
+                break
+            }
+          }},
+          { label: '是否可评论', prop: 'isRating', width: '110' ,type:"function",
+          callback:(row,prop)=>{
+            switch(row.isRating){
+              case 1:
+                return '可以'
+                break
+              case 0:
+                return '不可以'
+                break
+            }
+          }},
           { label: '发布时间', prop: 'gambitCreateDate', width: '180', sortable: true },
           { label: '评论人昵称', prop: 'themeNickName', width: '180' },
           { label: '评论人姓名', prop: 'themeName', width: '110' },
@@ -53,7 +73,18 @@ export default {
           { label: '评论内容', prop: 'themeContent', width: '280' },
           { label: '点赞人数', prop: 'likeNum', width: '180', sortable: true },
           { label: '评论人数', prop: 'commentNum', width: '180', sortable: true },
-          { label: '状态', prop: 'isDelete', width: 'auto' }
+          { label: '是否删除', prop: 'isDelete', width: 'auto' ,
+          type:"function",
+          callback:(row,prop)=>{
+            switch(row.isDelete){
+              case 1:
+                return '非删'
+                break
+              case 0:
+                return '删除'
+                break
+            }
+          }}
         ],
         url: 'gambitThemeList',
         table_data: [],

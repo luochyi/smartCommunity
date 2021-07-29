@@ -71,6 +71,192 @@
                                         </el-time-picker>
                                     </template>
                                 </VueForm>
+                                <template>
+                                    <div>
+                                        <div class="hr"></div>
+                                        <div>
+                                            <div class="add">
+                                                <span @click="addMember"
+                                                    >添加成员</span
+                                                >
+                                            </div>
+                                            <div class="content-table">
+                                                <template>
+                                                    <el-table
+                                                        :data="tableData"
+                                                        highlight-current-row
+                                                        :header-cell-style="{
+                                                            background:
+                                                                '#F5F5F6',
+                                                            color: '#999999'
+                                                        }"
+                                                        style="width: 100%"
+                                                    >
+                                                        <el-table-column
+                                                            label="序号"
+                                                            width="80"
+                                                            type="index"
+                                                        >
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            prop="date"
+                                                            label="姓名"
+                                                        >
+                                                            <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <el-input
+                                                                    size="small"
+                                                                    v-model="
+                                                                        scope
+                                                                            .row
+                                                                            .name
+                                                                    "
+                                                                    placeholder="请输入"
+                                                                ></el-input>
+                                                            </template>
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            prop="name"
+                                                            label="手机号"
+                                                        >
+                                                            <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <el-input
+                                                                    size="small"
+                                                                    v-model="
+                                                                        scope
+                                                                            .row
+                                                                            .tel
+                                                                    "
+                                                                    placeholder="请输入"
+                                                                ></el-input>
+                                                            </template>
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            prop="address"
+                                                            label="身份"
+                                                        >
+                                                            <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <el-select
+                                                                    size="small"
+                                                                    v-model="
+                                                                        scope
+                                                                            .row
+                                                                            .identity
+                                                                    "
+                                                                    placeholder="请输入"
+                                                                >
+                                                                    <el-option
+                                                                        v-for="item in identityOptions"
+                                                                        :key="
+                                                                            item.value
+                                                                        "
+                                                                        :label="
+                                                                            item.label
+                                                                        "
+                                                                        :value="
+                                                                            item.value
+                                                                        "
+                                                                    >
+                                                                    </el-option>
+                                                                </el-select>
+                                                            </template>
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            label="证件类型"
+                                                        >
+                                                            <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <el-select
+                                                                    size="small"
+                                                                    v-model="
+                                                                        scope
+                                                                            .row
+                                                                            .idType
+                                                                    "
+                                                                    placeholder="请输入"
+                                                                >
+                                                                    <el-option
+                                                                        v-for="item in userOptions"
+                                                                        :key="
+                                                                            item.value
+                                                                        "
+                                                                        :label="
+                                                                            item.label
+                                                                        "
+                                                                        :value="
+                                                                            item.value
+                                                                        "
+                                                                    >
+                                                                    </el-option>
+                                                                </el-select>
+                                                            </template>
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            prop="address"
+                                                            width="220"
+                                                            label="证件号码"
+                                                        >
+                                                            <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <div
+                                                                    class="
+                                                                        column_flex
+                                                                    "
+                                                                >
+                                                                    <div
+                                                                        style="
+                                                                            flex: 1;
+                                                                        "
+                                                                    >
+                                                                        <el-input
+                                                                            size="small"
+                                                                            v-model="
+                                                                                scope
+                                                                                    .row
+                                                                                    .idNumber
+                                                                            "
+                                                                            placeholder="请输入"
+                                                                        ></el-input>
+                                                                    </div>
+                                                                    <div
+                                                                        @click="
+                                                                            deleteRow(
+                                                                                scope.$index,
+                                                                                tableData
+                                                                            )
+                                                                        "
+                                                                        v-if="
+                                                                            scope.$index !==
+                                                                            0
+                                                                        "
+                                                                        style="
+                                                                            padding-left: 10px;
+                                                                        "
+                                                                    >
+                                                                        <span
+                                                                            ><i
+                                                                                class="
+                                                                                    el-icon-delete
+                                                                                "
+                                                                            ></i
+                                                                        ></span>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </el-table-column>
+                                                    </el-table>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
                             </template>
                         </FromCard>
                     </div>
@@ -99,12 +285,12 @@ import {
 export default {
     data() {
         return {
+            tableData: [],
             add_vrisible: false,
             detail_vrisible: false,
             addDate: null,
             addForm: {
-                ruleForm: {
-                },
+                ruleForm: {},
                 // rules: {
                 //     tel: [
                 //         // {
@@ -120,51 +306,7 @@ export default {
                 //         }
                 //     ]
                 // },
-                form_item: [
-                    {
-                        type: 'Input',
-                        label: '设施名称',
-                        placeholder: '请输入',
-                        width: '50%',
-                        prop: 'facilityName'
-                    },
-                    {
-                        type: 'Input',
-                        label: '钥匙数量',
-                        // disabled: true,
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'num'
-                    },
-                    {
-                        type: 'Input',
-                        label: '对应位置',
-                        placeholder: '请选择',
-                        width: '100%',
-                        prop: 'correspondingPosition'
-                    },
-                    {
-                        type: 'Input',
-                        label: '存放位置',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'storageLocation'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'administrator'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人联系方式',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'tel'
-                    }
-                ]
+                form_item: []
             },
             table_row: [],
             // 上传img文件
@@ -174,13 +316,21 @@ export default {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
                     { label: '盘点期次', prop: 'periodTime', width: 'auto' },
-                    { label: '盘点种类数量', prop: 'speciesNum', width: 'auto' },
-                    { label: '盘点时间开始', prop: 'inventoryDateStart', width: 'auto' },
+                    {
+                        label: '盘点种类数量',
+                        prop: 'speciesNum',
+                        width: 'auto'
+                    },
+                    {
+                        label: '盘点时间开始',
+                        prop: 'inventoryDateStart',
+                        width: 'auto'
+                    },
                     {
                         label: '盘点时间结束',
                         prop: 'inventoryDateEnd',
                         width: 'auto'
-                    },
+                    }
                 ],
                 table_data: [],
                 url: 'materialInventoryList',
@@ -190,7 +340,7 @@ export default {
                         label: '盘点期次',
                         placeholder: '请输入',
                         prop: 'periodTime'
-                    },
+                    }
                     // Slot
                 ],
                 data: {
@@ -201,6 +351,15 @@ export default {
         }
     },
     methods: {
+        addMember() {
+            this.tableData.push({
+                name: null,
+                tel: null,
+                idType: null,
+                idNumber: null,
+                identity: null
+            })
+        },
         add() {
             this.add_vrisible = true
         },
@@ -276,3 +435,39 @@ export default {
     }
 }
 </script>
+
+<style scoped lang='scss'>
+.flex {
+    margin: 17px 0;
+    display: flex;
+    align-items: center;
+}
+.label-span {
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    width: 80px;
+}
+.add {
+    margin-bottom: 20px;
+
+    span {
+        cursor: pointer;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #fb4702;
+        line-height: 20px;
+    }
+}
+.hr {
+    margin: 30px 0;
+    height: 1px;
+    background: #e8e8e8;
+}
+.column_flex {
+    display: flex;
+    align-items: center;
+}
+</style>

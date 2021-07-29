@@ -436,6 +436,22 @@ export const leaseReviewer = data => {
         data: data
     })
 }
+//lease/reviewTerminationApplication
+export const reviewTerminationApplication = data => {
+    return service.request({
+        method: 'POST',
+        url: '/lease/reviewTerminationApplication',
+        data: data
+    })
+}
+//lease/reviewDepositRefundApplication
+export const reviewDepositRefundApplication = data => {
+    return service.request({
+        method: 'POST',
+        url: '/lease/reviewDepositRefundApplication',
+        data: data
+    })
+}
 //leaseContract/insert租赁合同
 export const leaseContractInsert = data => {
     return service.request({
@@ -452,6 +468,7 @@ export const leaseContractEnable = data => {
         params: data
     })
 }
+
 // http://192.168.31.129:9001/cpmBuildingUnitEstate/findByBuildingUnitId
 // GET
 

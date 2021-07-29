@@ -70,13 +70,15 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="edit(table_row)">编辑</button>
-                                <button @click="audit(table_row)">审核</button>
+                                <button @click="audit(table_row)">签署合同审核</button>
+                                <button @click="end(table_row)">合同终止审核</button>
+                                <button @click="refund(table_row)">保证金退还审核</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
-                <!--审核装修信息-->
+                <!--审核签署合同内容-->
                 <el-dialog
                     title="审核签署合同内容"
                     width="480px"
@@ -112,6 +114,88 @@
                             >取 消</el-button
                         >
                         <el-button size="mini" type="primary" @click="auditOk()"
+                            >确 定</el-button
+                        >
+                    </span>
+                </el-dialog>
+                 <!--终止合同-->
+                <el-dialog
+                    title="审核终止合同申请"
+                    width="480px"
+                    top="40vh"
+                    @close="dialogclose()"
+                    :visible.sync="endDialog"
+                >
+                    <div class="dialang-box">
+                        <el-select
+                            v-model="optionsVal"
+                            placeholder="请选择办理状态"
+                            size="small"
+                            style="padding-bottom: 20px"
+                        >
+                            <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            >
+                            </el-option>
+                        </el-select>
+                        <div style="marginBottom:10px">不再计租时间：{{notMeterRentDate}}</div>
+                        <div>剩余需结清房租（元）：{{requiredRent}}</div>
+                        <!-- <el-input
+                            placeholder="请输入审核备注"
+                            size="mini"
+                            type="textarea"
+                            v-model="auditRemake"
+                            style="width: 423px; height: 32px"
+                        ></el-input> -->
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button size="mini" @click="auditDialog = false"
+                            >取 消</el-button
+                        >
+                        <el-button size="mini" type="primary" @click="endOk()"
+                            >确 定</el-button
+                        >
+                    </span>
+                </el-dialog>
+                 <!--reviewDepositRefundApplication保证金退还-->
+                <el-dialog
+                    title="审核保证金退还申请"
+                    width="480px"
+                    top="40vh"
+                    @close="dialogclose()"
+                    :visible.sync="refundDialog"
+                >
+                    <div class="dialang-box">
+                        <el-select
+                            v-model="optionsVal"
+                            placeholder="请选择办理状态"
+                            size="small"
+                            style="padding-bottom: 20px"
+                        >
+                            <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            >
+                            </el-option>
+                        </el-select>
+                        <el-input
+                            placeholder="请输入审核备注"
+                            size="mini"
+                            type="textarea"
+                            v-model="depositRefundReviewRemake"
+                            style="width: 423px; height: 32px"
+                        ></el-input>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button size="mini" @click="refundDialog = false"
+                            >取 消</el-button
+                        >
+                        <el-button size="mini" type="primary" @click="refundOk()"
                             >确 定</el-button
                         >
                     </span>
@@ -223,12 +307,16 @@ import {
     findByBuildingUnitId,
     findByBuildingId,
     UnitEstateFindById,
-    leaseReviewer
+    leaseReviewer,
+    reviewTerminationApplication, 
+    reviewDepositRefundApplication //reviewDepositRefundApplication保证金退还
 } from '@/api/basic'
 // import func from 'vue-editor-bridge'
 export default {
     data() {
         return {
+            notMeterRentDate:null,
+            requiredRent:null,
             thatId: null,
             options: [
                 {
@@ -241,7 +329,10 @@ export default {
                 }
             ],
             auditDialog: false,
+            endDialog: false,
+            refundDialog: false,
             optionsVal: null,
+            depositRefundReviewRemake:null,
             auditRemake: null,
             drawerTitle: null,
             add_vrisible: false,
@@ -810,6 +901,81 @@ export default {
             const Loading = this.$loading()
             Loading.close()
         },
+        end(data){
+            /**
+             *  notMeterRentDate  不再计租时间
+                requiredRent  需结清房租
+             */
+            if (data.length != 1) {
+                this.$message({
+                    type: 'error',
+                    message: '请选择一条信息审核'
+                })
+                return
+            }
+            //只有审核中才能审核
+            if (data[0].status != 11) {
+                this.$message({
+                    type: 'error',
+                    message: '该状态不可审核'
+                })
+                return
+            }
+            leaseFindById({id:data[0].id}).then(res=>{
+                console.log(res);
+                this.notMeterRentDate = res.data.notMeterRentDate
+                this.requiredRent = res.data.requiredRent
+                console.log(this.notMeterRentDate);
+                this.options = []
+                this.options = [
+                    {
+                    value: '12',
+                    label: '申请终止驳回'
+                },
+                {
+                    value: '13',
+                    label: '申请终止通过'
+                }
+                ]
+                
+                 this.thatId = data[0].id
+            })
+            this.endDialog = true
+        },
+        refund(data){
+            /**
+             *  notMeterRentDate  不再计租时间
+                requiredRent  需结清房租
+             */
+            if (data.length != 1) {
+                this.$message({
+                    type: 'error',
+                    message: '请选择一条信息审核'
+                })
+                return
+            }
+            //只有审核中才能审核
+            if (data[0].status != 15) {
+                this.$message({
+                    type: 'error',
+                    message: '该状态不可审核'
+                })
+                return
+            }
+            this.thatId = data[0].id
+            this.options=[]
+            this.options = [
+                {
+                     value: '16',
+                    label: '申请退还保证金驳回'
+                },
+                {
+                     value: '17',
+                    label: '申请退还保证金成功'
+                }
+            ]
+            this.refundDialog = true
+        },
         //审核
         audit(data) {
             if (data.length != 1) {
@@ -831,6 +997,28 @@ export default {
             console.log(data)
             this.thatId = data[0].id
         },
+        endOk(){
+             let resData = {
+                id: this.thatId,
+                status: this.optionsVal,
+                notMeterRentDate:this.notMeterRentDate,
+                requiredRent:this.requiredRent
+            }
+            console.log(resData)
+            // return
+            reviewTerminationApplication(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        type: 'success',
+                        message: res.message
+                    })
+                }
+            })
+            this.endDialog = false
+            this.thatId = null
+            this.optionsVal = null
+            this.$refs.table.loadData()
+        },
         // 审核提交
         auditOk() {
             let resData = {
@@ -851,6 +1039,28 @@ export default {
             this.thatId = null
             this.optionsVal = null
             this.rejectReason = null
+            this.$refs.table.loadData()
+        },
+        // 审核提交
+        refundOk() {
+            let resData = {
+                id: this.thatId,
+                status: this.optionsVal,
+                depositRefundReviewRemake: this.depositRefundReviewRemake
+            }
+            console.log(resData)
+            reviewDepositRefundApplication(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        type: 'success',
+                        message: res.message
+                    })
+                }
+            })
+            this.refundDialog = false
+            this.thatId = null
+            this.optionsVal = null
+            this.depositRefundReviewRemake = null
             this.$refs.table.loadData()
         },
         // 关闭审核框
