@@ -47,43 +47,29 @@
                 </div>
                 <!-- 新增 -->
                 <Drawer
-                    drawerTitle="新增钥匙"
+                    drawerTitle="新增盘点"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">钥匙信息</template>
+                            <template slot="title">盘点信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
                                 </VueForm>
                                 <template>
                                     <div>
-                                        <div class="hr"></div>
+                                        
                                         <div>
                                             <div class="add">
-                                                <span @click="addMember"
-                                                    >添加成员</span
+                                                <span @click="addMaterial"
+                                                    >添加盘点项</span
                                                 >
                                             </div>
                                             <div class="content-table">
                                                 <template>
                                                     <el-table
-                                                        :data="tableData"
+                                                        :data="materialInventoryDetailList"
                                                         highlight-current-row
                                                         :header-cell-style="{
                                                             background:
@@ -99,26 +85,50 @@
                                                         >
                                                         </el-table-column>
                                                         <el-table-column
-                                                            prop="date"
-                                                            label="姓名"
+                                                            prop="name"
+                                                            label="物资名称"
                                                         >
                                                             <template
                                                                 slot-scope="scope"
                                                             >
-                                                                <el-input
+                                                                <el-select
                                                                     size="small"
+                                                                    @change="currStationChange"
                                                                     v-model="
                                                                         scope
                                                                             .row
                                                                             .name
                                                                     "
                                                                     placeholder="请输入"
-                                                                ></el-input>
+                                                                >
+                                                                     <el-option
+                                                                        v-for="item in materialOptions"
+                                                                        :key="
+                                                                            item.value
+                                                                        "
+                                                                        :label="
+                                                                            item.label
+                                                                        "
+                                                                        :value="
+                                                                            item.value
+                                                                        "
+                                                                    >
+                                                                    </el-option>
+                                                                </el-select>
                                                             </template>
                                                         </el-table-column>
                                                         <el-table-column
-                                                            prop="name"
-                                                            label="手机号"
+                                                            prop="shouldInventory"
+                                                            label="应有库存"
+                                                        >
+                                                           <div>{{this.stock}}</div>
+                                                        </el-table-column>
+                                                        <el-table-column prop="danwei" width="80" label="单位">
+                                                            <div>{{this.unit}}</div>
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            prop="actualInventory"
+                                                            label="实际库存"
                                                         >
                                                             <template
                                                                 slot-scope="scope"
@@ -128,79 +138,16 @@
                                                                     v-model="
                                                                         scope
                                                                             .row
-                                                                            .tel
+                                                                            .actualInventory
                                                                     "
                                                                     placeholder="请输入"
                                                                 ></el-input>
                                                             </template>
                                                         </el-table-column>
                                                         <el-table-column
-                                                            prop="address"
-                                                            label="身份"
-                                                        >
-                                                            <template
-                                                                slot-scope="scope"
-                                                            >
-                                                                <el-select
-                                                                    size="small"
-                                                                    v-model="
-                                                                        scope
-                                                                            .row
-                                                                            .identity
-                                                                    "
-                                                                    placeholder="请输入"
-                                                                >
-                                                                    <el-option
-                                                                        v-for="item in identityOptions"
-                                                                        :key="
-                                                                            item.value
-                                                                        "
-                                                                        :label="
-                                                                            item.label
-                                                                        "
-                                                                        :value="
-                                                                            item.value
-                                                                        "
-                                                                    >
-                                                                    </el-option>
-                                                                </el-select>
-                                                            </template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                            label="证件类型"
-                                                        >
-                                                            <template
-                                                                slot-scope="scope"
-                                                            >
-                                                                <el-select
-                                                                    size="small"
-                                                                    v-model="
-                                                                        scope
-                                                                            .row
-                                                                            .idType
-                                                                    "
-                                                                    placeholder="请输入"
-                                                                >
-                                                                    <el-option
-                                                                        v-for="item in userOptions"
-                                                                        :key="
-                                                                            item.value
-                                                                        "
-                                                                        :label="
-                                                                            item.label
-                                                                        "
-                                                                        :value="
-                                                                            item.value
-                                                                        "
-                                                                    >
-                                                                    </el-option>
-                                                                </el-select>
-                                                            </template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                            prop="address"
+                                                            prop="inventorySurplusLosses"
                                                             width="220"
-                                                            label="证件号码"
+                                                            label="盘盈/盘亏"
                                                         >
                                                             <template
                                                                 slot-scope="scope"
@@ -216,11 +163,12 @@
                                                                         "
                                                                     >
                                                                         <el-input
+                                                                            disabled
                                                                             size="small"
                                                                             v-model="
                                                                                 scope
                                                                                     .row
-                                                                                    .idNumber
+                                                                                    .inventorySurplusLosses
                                                                             "
                                                                             placeholder="请输入"
                                                                         ></el-input>
@@ -229,7 +177,7 @@
                                                                         @click="
                                                                             deleteRow(
                                                                                 scope.$index,
-                                                                                tableData
+                                                                                materialInventoryDetailList
                                                                             )
                                                                         "
                                                                         v-if="
@@ -278,17 +226,18 @@
 
 <script>
 import {
-    keyManagementInsert,
-    keyManagementFindById,
-    keyManagementUpdate
+    materialList
 } from '@/api/daily'
 export default {
     data() {
         return {
-            tableData: [],
+            materialInventoryDetailList: [],
             add_vrisible: false,
             detail_vrisible: false,
             addDate: null,
+            materialOptions: [],
+            stock:0,
+            unit:'个',
             addForm: {
                 ruleForm: {},
                 // rules: {
@@ -306,7 +255,29 @@ export default {
                 //         }
                 //     ]
                 // },
-                form_item: []
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '盘点期次',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'periodTime'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '盘点时间开始',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'inventoryDateStart'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '盘点时间结束',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'inventoryDateEnd'
+                    },
+                ]
             },
             table_row: [],
             // 上传img文件
@@ -351,41 +322,43 @@ export default {
         }
     },
     methods: {
-        addMember() {
-            this.tableData.push({
+        addMaterial() {
+            this.materialInventoryDetailList.push({
                 name: null,
-                tel: null,
-                idType: null,
-                idNumber: null,
-                identity: null
+                shouldInventory: null,
+                actualInventory: null,
+                inventorySurplusLosses: null
             })
         },
         add() {
             this.add_vrisible = true
+            this.materialOptions = []
+            // this.materialOptions
+            materialList().then(res=>{
+                console.log(res.tableList);
+                let material = res.tableList
+                material && material.forEach(ele => {
+                    let obj = {
+                        label:ele.name,
+                        value:ele.id
+                    }
+                    this.materialOptions.push(obj)
+                });
+            })
         },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
         addSubmit() {
+            console.log(this.materialInventoryDetailList,this.addForm.ruleForm);
             let resData = {
-                ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
+                periodTime :this.addForm.ruleForm.periodTime,
+                inventoryDateStart :this.addForm.ruleForm.inventoryDateStart,
+                inventoryDateEnd :this.addForm.ruleForm.inventoryDateEnd,
+                materialInventoryDetailList:this.materialInventoryDetailLists
             }
-            keyManagementInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+            console.log(resData);
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
@@ -407,6 +380,20 @@ export default {
             this.$refs.table.requestData(requestData)
         },
 
+        // 物资种类更换获取现存量，单位
+        async currStationChange(data){
+            console.log(data);
+            materialList().then(res=>{
+                res.tableList.forEach( ele =>{
+                    // console.log(ele); 
+                    if( data == ele.id){
+                        this.stock = ele.stock
+                        this.unit = ele.unit
+                        console.log(this.stock,this.unit);
+                    }
+                })
+            })
+        },
         // 表格选中
         tableCheck(data) {
             this.table_row = data
@@ -432,6 +419,8 @@ export default {
                 this.$message.error('请选中需要删除的数据')
             }
         }
+    },
+    watch:{
     }
 }
 </script>

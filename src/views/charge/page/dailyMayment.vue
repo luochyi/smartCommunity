@@ -497,22 +497,44 @@ export default {
                     { label: '待缴金额', prop: 'paymentPrice', width: '180' },
                     { label: '状态', prop: 'status', width: '180',type:'function' ,
                         callback:(row,prop)=>{
-                            switch(row.status){
-                                case 1:
-                                    return '未缴纳'
-                                    break;
-                                case 2:
-                                    return '部分缴纳'
-                                    break;
-                                case 3:
-                                    return '全部缴纳'
-                                    break;
+                            // switch(row.status){
+                            //     case 1:
+                            //         return '未缴纳'
+                            //         break;
+                            //     case 2:
+                            //         return '部分缴纳'
+                            //         break;
+                            //     case 3:
+                            //         return '全部缴纳'
+                            //         break;
+                            // }
+                            let timeDate = Math.round((new Date().getTime() - new Date(row.paymentTerm).getTime())/1000/60/60/24)  //到期时间
+                            if(timeDate>0 && row.status!=3){
+                                return '已欠费'
+                            }else if(row.status==3){
+                                return '全部缴纳'
+                            }else if(timeDate<0 && row.status==1){
+                                return '未缴纳'
+                            }else if(timeDate<0 && row.status==2){
+                                return '部分缴纳'
                             }
                         }
                     },
                     { label: '备注', prop: 'remake', width: '180' },
                     { label: '费率', prop: 'rate', width: '180' },
                     { label: '缴费期限', prop: 'paymentTerm', width: '180' },
+                    { label: '逾期天数', width: '180' ,type:'function',
+                    callback:(row,prop)=>{
+                        // console.log(new Date(row.paymentTerm).getTime()) 缴纳期限的时间戳
+                        let timeDate = Math.round((new Date().getTime() - new Date(row.paymentTerm).getTime())/1000/60/60/24)
+                        // timeDate = (当前时间 - 期限日期) 的天数
+                        if (timeDate < 0){
+                            return '还有' + Math.abs(timeDate) + '天到期'
+                        }else if(timeDate == 0){
+                            return '今天到期'
+                        }
+                        return '逾期' + timeDate + '天'
+                    }},
                     { label: '滞纳金', prop: 'overdueFine', width: '180' },
                     { label: '创建人', prop: 'createName', width: '180' },
                     { label: '更新时间', prop: 'updateDate', width: '180' }
@@ -581,7 +603,7 @@ export default {
     },
     mounted() {
         // 弹窗内下拉框
-        
+       console.log(new Date().getTime());
     },
     methods: {
         // Excel导出
