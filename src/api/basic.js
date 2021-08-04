@@ -10,6 +10,30 @@ export function GetTableData(params) {
         params: params.data
     })
 }
+//manageSysMessage/list
+export function manageSysMessageList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/manageSysMessage/list',
+        params: data
+    })
+}
+//manageSysMessage/read   manageSysMessageId
+export function manageSysMessageRead(data) {
+    return service.request({
+        method: 'GET',
+        url: '/manageSysMessage/read',
+        params: data
+    })
+}
+//manageSysMessage/allRead
+export function manageSysMessageAllRead(data) {
+    return service.request({
+        method: 'GET',
+        url: '/manageSysMessage/allRead',
+        params: data
+    })
+}
 // 获取table表格删除
 export function Delete(params) {
     return service.request({

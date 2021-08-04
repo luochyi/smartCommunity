@@ -29,6 +29,7 @@
                             v-for="item in headMenu"
                             :key="item.path">{{ item.label }}</el-menu-item>
               <el-button type="warning" class="exit" @click="exit">退出登录</el-button>
+              <i class="el-icon-message-solid notice" @click="noticeDrawer"></i>
             </el-menu>
           </div>
           <div></div>
@@ -44,13 +45,105 @@
         </div>
       </div>
     </el-container>
+    <el-drawer
+        title="消息列表"
+        :visible.sync="drawer"
+        :direction="direction"
+        :before-close="handleClose">
+
+        <div style="marginLeft:30px;marginBottom:10px">
+             <el-select v-model="sendType" placeholder="请选择消息类型" size="mini">
+                <el-option
+                  v-for="item in Typeoptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+             <el-input placeholder="请输入内容"
+                        v-model="sendContent"
+                        size="mini"
+                        style="width:300px;marginLeft:30px"
+                        clearable>
+            </el-input>
+        </div>
+        <div v-for="(item,index) in list" :key="index">
+          <el-card shadow="never" style="height:105px;fontSize:17px">
+            <el-row :gutter="20">
+              <el-col :span="2">
+                <img src="../assets/images/提示.png" alt="" class="noticeType" v-if="item.type!=7">
+                <img src="../assets/images/订单.png" alt="" class="noticeType" v-else>
+              </el-col>
+              <el-col :span="18">
+                <div>{{item.content}}</div>
+                <div style="color:#999999">{{item.sendDate}}</div>
+              </el-col>
+              <el-col :span="4">
+                <img :src="item.sendStatusPic" v-if="item.sendStatusPic" title="标记已读"
+                @mouseenter="green(index)" @mouseleave="gray(index)" @click="read(item.id)"
+                 style="weight:24px;height:24px;marginTop:17px;marginLeft:20px">
+                <div  style="color:#999999;marginTop:17px;marginLeft:17px" v-else>已读</div>
+              </el-col>
+            </el-row>
+          </el-card>
+        </div>
+        <el-card shadow="hover" style="height:60px;fontSize:18px;textAlign:center;">
+          <div style="display:flex;">
+            <span style="flex:1;cursor: pointer;" @click="getList()" :class="{'disabled':pageNum==1}">首页</span>
+            <span style="flex:1;cursor: pointer;" @click="getList(-1)" :class="{'disabled':pageNum==1}">上一页</span>
+            <span style="flex:1;cursor: pointer;" @click="getList(1)" :class="{'disabled':pageNum==pageCount}">下一页</span>
+          </div>
+        </el-card>
+        <el-card shadow="hover" 
+        style="height:65px;fontSize:16px;textAlign:center;color:#999999;cursor: pointer;"
+        @click.native="allread()"
+        >
+          一键已读
+        </el-card>
+      </el-drawer>
   </div>
 </template>
 
 <script>
+import {manageSysMessageList,manageSysMessageRead,manageSysMessageAllRead} from '../api/basic'
 export default {
+  inject:['reload'],
   data () {
     return {
+      sendType:null,
+      Typeoptions:[
+        {
+          label:'报事报修',
+          value:1
+        },{
+          label:'装修',
+          value:2
+        },{
+          label:'绿化任务',
+          value:3
+        },{
+          label:'卫生任务',
+          value:4
+        },{
+          label:'家政服务',
+          value:5
+        },{
+          label:'建议咨询',
+          value:6
+        },{
+          label:'订单',
+          value:7
+        }
+      ],
+      sendContent:null,
+      list:[
+        
+      ],
+      pageNum:null,
+      pageCount:null,//总页数
+      rowCount:null,//总页数
+      drawer: false,
+      direction: 'rtl',
       logoImg: require('../../src/assets/images/logo.png'),
       activeIndex: this.$route.path,
       headMenu: [
@@ -84,8 +177,121 @@ export default {
   },
   mounted () {
     this.getPath()
+    this.pageNum = 1
+    let resData ={
+      pageNum:this.pageNum,
+      size:5
+    }
+    manageSysMessageList(resData).then(res=>{
+      console.log(res);
+      this.rowCount=res.rowCount
+      this.pageCount = res.pageCount
+      res.tableList.forEach(item => {
+        if(item.sendStatus==1){
+          let obj = {
+          content:item.content,
+          sendDate:item.sendDate,
+          sendStatusPic:require("../assets/images/未读.png"),
+          type:item.type, // 消息类型（1.报事报修，2.装修，3.绿化任务，4.卫生任务,5.家政服务,6.建议咨询，7.订单）
+          id:item.id
+        }
+        this.list.push(obj)
+        }else{
+          let obj = {
+          content:item.content,
+          sendDate:item.sendDate,
+          type:item.type, // 消息类型（1.报事报修，2.装修，3.绿化任务，4.卫生任务,5.家政服务,6.建议咨询，7.订单）
+          id:item.id
+        }
+        this.list.push(obj)
+        }
+        // console.log(this.list);
+      });
+    })
   },
   methods: {
+    noticeDrawer(){
+      this.drawer = true
+    },
+    // 动态改变图片
+    green(i){
+      console.log(i);
+      this.list[i].sendStatusPic = require("../assets/images/已读.png")
+    },
+    gray(i){
+      console.log(i);
+      this.list[i].sendStatusPic = require("../assets/images/未读.png")
+    },
+    //标记已读
+    read(id){
+      console.log(id);
+      manageSysMessageRead({manageSysMessageId:id}).then(res=>{
+        console.log(res);
+        if(res.status){
+          this.$message({
+            type:'success',
+            message:res.message
+          })
+          // this.reload()
+          this.getList()
+        }
+      })
+    },
+    //一键已读
+    allread(){
+      manageSysMessageAllRead().then(res=>{
+        if(res.status){
+          this.$message({
+            type:'success',
+            message:res.message
+          })
+          this.reload()
+        }
+      })
+    },
+    handleClose(){
+      this.drawer = false
+    },
+    getList(num){
+      this.list = []
+      // 判断 如果是首页没有传参则跳转至第一页
+      if(num == undefined){
+        console.log('首页');
+        this.pageNum =1
+      }
+      else{
+        this.pageNum +=num
+      }
+      console.log(this.pageNum);
+      let resData ={
+      pageNum:this.pageNum,
+      size:5
+    }
+    manageSysMessageList(resData).then(res=>{
+      console.log(res);
+      res.tableList.forEach(item => {
+        if(item.sendStatus==1){
+          let obj = {
+          content:item.content,
+          sendDate:item.sendDate,
+          sendStatusPic:require("../assets/images/未读.png"),
+          type:item.type, // 消息类型（1.报事报修，2.装修，3.绿化任务，4.卫生任务,5.家政服务,6.建议咨询，7.订单）
+          id:item.id
+        }
+        this.list.push(obj)
+        }else{
+          let obj = {
+          content:item.content,
+          sendDate:item.sendDate,
+          type:item.type, // 消息类型（1.报事报修，2.装修，3.绿化任务，4.卫生任务,5.家政服务,6.建议咨询，7.订单）
+          id:item.id
+        }
+        this.list.push(obj)
+        }
+        console.log(this.list);
+      });
+    })
+    },
     exit(){
       window.sessionStorage.clear(),
       this.$router.push('/login')
@@ -119,6 +325,74 @@ export default {
       // 深度观察监听
       deep: true,
     },
+    sendType:{
+      handler(newV){
+        this.list = []
+        let resData={
+          type:newV,
+          size:5,
+          pageNum:this.pageNum
+        }
+        manageSysMessageList(resData).then(res=>{
+          res.tableList.forEach(item => {
+        if(item.sendStatus==1){
+          let obj = {
+          content:item.content,
+          sendDate:item.sendDate,
+          sendStatusPic:require("../assets/images/未读.png"),
+          type:item.type, // 消息类型（1.报事报修，2.装修，3.绿化任务，4.卫生任务,5.家政服务,6.建议咨询，7.订单）
+          id:item.id
+        }
+        this.list.push(obj)
+        }else{
+          let obj = {
+          content:item.content,
+          sendDate:item.sendDate,
+          type:item.type, // 消息类型（1.报事报修，2.装修，3.绿化任务，4.卫生任务,5.家政服务,6.建议咨询，7.订单）
+          id:item.id
+        }
+        this.list.push(obj)
+        }
+        // console.log(this.list);
+      });
+        })
+      },
+       deep: true,
+    },
+    sendContent:{
+      handler(newV){
+        this.list = []
+        let resData={
+          content:newV,
+          size:5,
+          pageNum:this.pageNum
+        }
+        manageSysMessageList(resData).then(res=>{
+          res.tableList.forEach(item => {
+        if(item.sendStatus==1){
+          let obj = {
+          content:item.content,
+          sendDate:item.sendDate,
+          sendStatusPic:require("../assets/images/未读.png"),
+          type:item.type, // 消息类型（1.报事报修，2.装修，3.绿化任务，4.卫生任务,5.家政服务,6.建议咨询，7.订单）
+          id:item.id
+        }
+        this.list.push(obj)
+        }else{
+          let obj = {
+          content:item.content,
+          sendDate:item.sendDate,
+          type:item.type, // 消息类型（1.报事报修，2.装修，3.绿化任务，4.卫生任务,5.家政服务,6.建议咨询，7.订单）
+          id:item.id
+        }
+        this.list.push(obj)
+        }
+        // console.log(this.list);
+      });
+        })
+      },
+       deep: true,
+    }
   },
 }
 </script>
@@ -128,6 +402,24 @@ export default {
     position: fixed !important;
     right: 200px; 
     top: 10px;
+}
+.notice{
+  position: fixed !important;
+  color:black;
+    z-index: 999;
+    font-size: 20px;
+    right: 500px; 
+    top: 20px;
+    cursor: pointer;
+}
+.noticeType{
+  height: 22px;
+  width: 22px;
+}
+.disabled{
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
 }
 .el-container {
     position: relative;

@@ -1,22 +1,40 @@
 <template>
     <div id="app">
         <el-card class="box-card" v-if="isShow">
-            <div><span style="top:10px;right:20px;position:absolute;fontSize:20px;color:#999999;cursor:pointer" @click="closeCard">X</span>
+            <div>
+                <span
+                    style="
+                        top: 10px;
+                        right: 20px;
+                        position: absolute;
+                        fontsize: 20px;
+                        color: #999999;
+                        cursor: pointer;
+                    "
+                    @click="closeCard"
+                    >X</span
+                >
                 <div>
-                    <img :src="imgSrc" alt="">
+                    <img :src="imgSrc" alt="" />
                 </div>
-                <div class="title">{{title}}</div>
-                <div class="tips">{{tips}}</div>
+                <div class="title">{{ title }}</div>
+                <div class="tips">{{ tips }}</div>
                 <div class="text">{{ alertMsg }}</div>
             </div>
         </el-card>
-        <router-view></router-view>
+        <router-view v-if="isRouterAlive"></router-view>
     </div>
 </template>
 <script>
 export default {
+    provide() {
+        return {
+            reload: this.reload
+        }
+    },
     data() {
         return {
+            isRouterAlive: true,
             path: 'wss://test.kaidalai.cn/websocket/web/admin',
             socket: '',
             lockReconnect: false, //是否真正建立连接
@@ -26,9 +44,9 @@ export default {
             timeoutnum: null, //断开 重连倒计时
             alertMsg: '',
             isShow: false,
-            title:'',
-            tips:'',
-            imgSrc:null,
+            title: '',
+            tips: '',
+            imgSrc: null
         }
     },
     mounted() {
@@ -37,6 +55,12 @@ export default {
     },
     components: {},
     methods: {
+        reload() {
+            this.isRouterAlive = false
+            this.$nextTick(function () {
+                this.isRouterAlive = true
+            })
+        },
         init: function () {
             if (typeof WebSocket === 'undefined') {
                 alert('您的浏览器不支持socket')
@@ -110,13 +134,13 @@ export default {
             } else {
                 console.log(msg)
                 //判断不同的报警内容
-                if(msg.data.indexOf('未处理工单')!= -1){
+                if (msg.data.indexOf('未处理工单') != -1) {
                     this.title = '工单警报'
-                    this.tips='注意：'
+                    this.tips = '注意：'
                     this.imgSrc = require('./assets/images/todoList.png')
-                }else{
+                } else {
                     this.title = '紧急警报'
-                    this.tips='各单位注意：'
+                    this.tips = '各单位注意：'
                     this.imgSrc = require('./assets/images/sos.png')
                 }
                 this.alertMsg = msg.data
@@ -164,25 +188,24 @@ export default {
     color: #333333;
     margin: 15px;
 }
-.tips{
+.tips {
     color: #000000;
     font-size: 18px;
     line-height: 21px;
     margin-top: 15px;
 }
-.title{
+.title {
     font-weight: 600;
     color: #000000;
     font-size: 22px;
     line-height: 30.6px;
     margin-left: 155px;
-     margin-top: 15px;
-     
+    margin-top: 15px;
 }
 img {
     width: 116px;
     height: 116px;
-    margin-left:145px ;
+    margin-left: 145px;
     margin-top: 30px;
 }
 </style>

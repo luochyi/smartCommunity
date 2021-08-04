@@ -121,10 +121,10 @@
                                                             prop="shouldInventory"
                                                             label="应有库存"
                                                         >
-                                                           <div>{{this.stock}}</div>
+                                                           <div>{{stock}}</div>
                                                         </el-table-column>
                                                         <el-table-column prop="danwei" width="80" label="单位">
-                                                            <div>{{this.unit}}</div>
+                                                            <div>{{unit}}</div>
                                                         </el-table-column>
                                                         <el-table-column
                                                             prop="actualInventory"
@@ -229,6 +229,7 @@ import {
     materialList
 } from '@/api/daily'
 export default {
+    inject:['reload'],
     data() {
         return {
             materialInventoryDetailList: [],
@@ -381,15 +382,17 @@ export default {
         },
 
         // 物资种类更换获取现存量，单位
-        async currStationChange(data){
+        currStationChange(data){
             console.log(data);
             materialList().then(res=>{
+                // console.log(res);
                 res.tableList.forEach( ele =>{
                     // console.log(ele); 
                     if( data == ele.id){
                         this.stock = ele.stock
                         this.unit = ele.unit
                         console.log(this.stock,this.unit);
+                    //    this.reload()
                     }
                 })
             })

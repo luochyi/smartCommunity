@@ -110,7 +110,7 @@ const requestUrl = {
     ownersCommitteeList: '/ownersCommittee/list',
     ownersCommitteeListDelete: '/ownersCommittee/delete',
     voiceHousekeeperList: '/voiceHousekeeper/list',
-    housekeepingList:'housekeeping/list',
+    housekeepingServiceList:'housekeepingService/list',
     // /vote/listDetailCandidate
     // /chargesTemplateDetail/list
     //票据
