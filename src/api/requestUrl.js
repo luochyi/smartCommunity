@@ -44,6 +44,8 @@ const requestUrl = {
     userDecorationNewList:'userDecorationNew/list',
     userDecorationListDelete: '',
     //设施设备
+    sysOperationsList:'sysOperations/list',
+    sysOperationsListDelete:'sysOperations/delete',
     facilitiesManageList: 'facilitiesManage/list',
     facilitiesCategoryList: '/facilitiesCategory/list',
     facilitiesCategoryListDelete: '/facilitiesCategory/delete',

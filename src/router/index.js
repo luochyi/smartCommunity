@@ -199,6 +199,11 @@ const routes = [
                         path:'/daily/facilitiesManagement',
                         component:()=>import('@/views/daily/page/facilitiesManagement')
                     },
+                    //sysOperations运维
+                    {
+                        path:'/daily/sysOperations',
+                        component:()=>import('@/views/daily/page/sysOperations')
+                   },
                     {
                          //预约管理
                          path:'/daily/bookingManagement',

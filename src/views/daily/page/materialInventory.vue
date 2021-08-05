@@ -93,7 +93,7 @@
                                                             >
                                                                 <el-select
                                                                     size="small"
-                                                                    @change="currStationChange"
+                                                                    @change="currStationChange(scope.row)"
                                                                     v-model="
                                                                         scope
                                                                             .row
@@ -121,10 +121,34 @@
                                                             prop="shouldInventory"
                                                             label="应有库存"
                                                         >
-                                                           <div>{{stock}}</div>
+                                                           <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <el-input
+                                                                    size="small"
+                                                                    v-model="
+                                                                        scope
+                                                                            .row
+                                                                            .shouldInventory
+                                                                    "
+                                                                    placeholder="请输入"
+                                                                ></el-input>
+                                                            </template>
                                                         </el-table-column>
-                                                        <el-table-column prop="danwei" width="80" label="单位">
-                                                            <div>{{unit}}</div>
+                                                        <el-table-column prop="danwei" width="120" label="单位">
+                                                           <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <el-input
+                                                                    size="small"
+                                                                    v-model="
+                                                                        scope
+                                                                            .row
+                                                                            .unit
+                                                                    "
+                                                                    placeholder="请输入"
+                                                                ></el-input>
+                                                            </template>
                                                         </el-table-column>
                                                         <el-table-column
                                                             prop="actualInventory"
@@ -237,8 +261,6 @@ export default {
             detail_vrisible: false,
             addDate: null,
             materialOptions: [],
-            stock:0,
-            unit:'个',
             addForm: {
                 ruleForm: {},
                 // rules: {
@@ -328,7 +350,8 @@ export default {
                 name: null,
                 shouldInventory: null,
                 actualInventory: null,
-                inventorySurplusLosses: null
+                inventorySurplusLosses: null,
+                unit:null,
             })
         },
         add() {
@@ -382,17 +405,15 @@ export default {
         },
 
         // 物资种类更换获取现存量，单位
-        currStationChange(data){
-            console.log(data);
+        currStationChange(a){
+            console.log(a);
+            return
             materialList().then(res=>{
                 // console.log(res);
                 res.tableList.forEach( ele =>{
                     // console.log(ele); 
                     if( data == ele.id){
-                        this.stock = ele.stock
-                        this.unit = ele.unit
-                        console.log(this.stock,this.unit);
-                    //    this.reload()
+                        this.materialInventoryDetailList[i].shouldInventory = ele.stock
                     }
                 })
             })

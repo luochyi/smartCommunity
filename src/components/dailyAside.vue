@@ -82,7 +82,10 @@ export default {
                         {
                             path: '/daily/facilitiesManagement',
                             label: '设施设备管理'
-                        }, {
+                        },  {
+                            path: '/daily/sysOperations',
+                            label: '运维管理'
+                        },{
                             path: '/daily/bookingManagement',
                             label: '预约管理'
                         },
