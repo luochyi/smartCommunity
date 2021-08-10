@@ -69,7 +69,7 @@
 export default {
     data() {
         return {
-            activeIndex: this.$route.path,
+            activeIndex: this.path,
             asideMenu: [
                 {
                     // Facility Booking facilitiesPlanExecuteList
@@ -275,7 +275,7 @@ export default {
     },
     watch: {
         $route(to, from) {
-            this.activeIndex = this.$route.path
+            this.activeIndex = this.path
         },
         activeIndex() {}
     }

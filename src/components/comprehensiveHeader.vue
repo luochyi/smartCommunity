@@ -329,7 +329,7 @@ export default {
       } else {
         this.activeIndex = this.$route.path
       }
-      console.log(this.$route.path)
+      console.log(this.path)
     },
     toAdmin () {
       this.$router.push('/overview')

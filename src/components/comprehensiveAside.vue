@@ -197,6 +197,13 @@ export default {
             }
           ]
         },
+        {
+          path: '/company/prohibitedKeywords',
+          label: '违禁字管理',
+          iconurl: require('@/assets/images/company/sjkgl_nor.png'),
+          iconisactive: require('@/assets/images/company/sjkgl_sel.png'),
+          isChildren: 0
+        },
         // {
         //   path: '/company/dataAuthority',
         //   label: '数据权限管理',

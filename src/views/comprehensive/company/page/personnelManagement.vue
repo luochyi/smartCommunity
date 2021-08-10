@@ -319,7 +319,7 @@ export default {
             filterText: '',
             Password: '', //密码
             prohibitLogin: false, //禁止登陆
-            resetPassword: false, //重置密码'
+            resetPassrword: false, //重置密码'
             pwdId: null,
             handleId: null, //操作id  用于编辑禁止登陆 重置密码、停用等
             // 表格数据

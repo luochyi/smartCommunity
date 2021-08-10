@@ -16,7 +16,22 @@ export function chargesTemplateDetailList(data) {
         params: data
     })
 }
-
+//expenseBill/refund
+export function expenseBillRefund(data) {
+    return service.request({
+        method: 'POST',
+        url: '/expenseBill/refund',
+        data: data
+    })
+}
+//dailyPayment/findEnableTempleDetail
+// export function dailyPaymentFindEnableTempleDetail(data) {
+//     return service.request({
+//         method: 'GET',
+//         url: '/dailyPayment/findEnableTempleDetail',
+//         params: data
+//     })
+// }
 // 日常缴费：查询已开启的收费标准明细信息(物业管理费和日常费用)
 export function dailyPaymentFindEnableTempleDetail(data) {
     return service.request({

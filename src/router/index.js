@@ -161,10 +161,10 @@ const routes = [
                             ], resolve)
                     },
                     {
-                        path: '/company/demo',
+                        path: '/company/prohibitedKeywords',
                         component: resolve =>
                             require([
-                                '@/views/comprehensive/company/page/demo'
+                                '@/views/comprehensive/company/page/prohibitedKeywords'
                             ], resolve)
                     }
 
@@ -490,6 +490,13 @@ const routes = [
                         path: '/charge/expenseBil',
                         component: resolve =>
                             require(['@/views/charge/page/expenseBil'], resolve)
+                    },//expenseBillDetailList
+                    {
+                        // 账单管理
+                        path: '/charge/expenseBillDetailList',
+                        name:'expenseBillDetailList',
+                        component: resolve =>
+                            require(['@/views/charge/page/expenseBillDetailList'], resolve)
                     },
                     //invoiceManagement发票
                     {

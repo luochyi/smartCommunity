@@ -549,14 +549,6 @@ export default {
                         value: '',
                         prop: 'workOrderTypeDetailId',
                         options: [
-                            {
-                                label: '水电费',
-                                value: '1'
-                            },
-                            {
-                                label: '车辆费',
-                                value: '2'
-                            }
                         ]
                     },
                     {
@@ -600,6 +592,18 @@ export default {
     },
     components: {
         Pay
+    },
+    created() {
+        dailyPaymentFindEnableTempleDetail().then(res=>{
+            console.log(res);
+            res.data.forEach(element => {
+                let obj ={
+                    value:element.id,
+                    label:element.name
+                }
+                this.config.search_item[0].options.push(obj)
+            });
+        })
     },
     mounted() {
         // 弹窗内下拉框

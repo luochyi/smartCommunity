@@ -407,14 +407,18 @@ export default {
         // 物资种类更换获取现存量，单位
         currStationChange(a){
             console.log(a);
-            return
             materialList().then(res=>{
                 // console.log(res);
                 res.tableList.forEach( ele =>{
                     // console.log(ele); 
-                    if( data == ele.id){
-                        this.materialInventoryDetailList[i].shouldInventory = ele.stock
-                    }
+                       for(let i=0;i<this.materialInventoryDetailList.length;i++){
+                           if(this.materialInventoryDetailList[i].id = ele.id){
+                               console.log(i);
+                               this.materialInventoryDetailList[i].stock = ele.stock
+                               console.log(this.materialInventoryDetailList);
+                           }
+                       }
+                    
                 })
             })
         },

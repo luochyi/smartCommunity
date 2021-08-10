@@ -588,7 +588,7 @@ export default {
         },
         // 提交
         addSubmit() {
-            if ((this.drawerTitle = '修改计划')) {
+            if (this.drawerTitle == '修改计划') {
                 let resData = {
                     ...this.addForm.ruleForm,
                     id: this.thatId
@@ -603,7 +603,7 @@ export default {
                         this.addClose()
                     }
                 })
-            } else if ((this.drawerTitle = '新增计划')) {
+            } else if (this.drawerTitle == '新增计划') {
                 let resData = {
                     ...this.addForm.ruleForm
                 }

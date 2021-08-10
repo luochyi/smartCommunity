@@ -12,6 +12,8 @@ const requestUrl = {
     dataDictionaryList: 'dataDictionary/list',
     attendanceRecordList:'attendanceRecord/list',
     attendanceRecordLeaveList:'attendanceRecord/leaveList',
+    prohibitedKeywordsList:'prohibitedKeywords/list',
+    prohibitedKeywordsListDelete:'prohibitedKeywords/delete',
     //提醒
     remindList:'remind/list',
     //数据库
@@ -126,7 +128,7 @@ const requestUrl = {
     dailyPaymentPlanListDelete:"dailyPaymentPlan/delete",
     depositManagementList: '/depositManagement/list',
     workOrderCostList: '/workOrderCost/list',
-    expenseBillList: '/expenseBill/list',
+    // expenseBillList: '/expenseBill/list',
     announcementManagementList: '/announcementManagement/list',
     announcementManagementListDelete: '/announcementManagement/delete',
     notificationManagementList: '/notificationManagement/list',
@@ -135,6 +137,8 @@ const requestUrl = {
     activityManagementListDelete: '/activityManagement/falseDelete',
     sponsorManagementList: '/sponsorManagement/list',
     sponsorManagementListDelete: '/sponsorManagement/falseDelete',
+    expenseBillList:"expenseBill/list",
+    expenseBillDetailList:"expenseBill/detailList",
     // List Delete
     //资讯
     newsCategoryManagementList: 'newsCategoryManagement/list',

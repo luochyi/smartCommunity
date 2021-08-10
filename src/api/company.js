@@ -350,3 +350,18 @@ export function uploadFileUploadEstateFile(data) {
         data: data
     })
 }
+//违禁
+export function prohibitedKeywordsInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/prohibitedKeywords/insert',
+        data: data
+    })
+}
+export function prohibitedKeywordsUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/prohibitedKeywords/update',
+        data: data
+    })
+}
