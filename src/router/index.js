@@ -64,6 +64,21 @@ const routes = [
                                 '@/views/comprehensive/company/page/attendanceRecord'
                             ], resolve)
                     },
+                    //attendanceTeam.vue
+                    {
+                        path: '/company/attendanceTeam',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/attendanceTeam'
+                            ], resolve)
+                    },
+                    {
+                        path: '/company/scheduling',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/scheduling'
+                            ], resolve)
+                    },
                     {
                         path: '/company/attendanceApplication',
                         component: resolve =>

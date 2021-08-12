@@ -39,11 +39,12 @@ export default {
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '话题标题', prop: 'title', width: '380' },
-          { label: '话题摘要', prop: 'summary', width: '180' },
+          { label: '发布内容', prop: 'gambitContent', width: '780' },
+         
           { label: '发布人昵称', prop: 'gambitNickName', width: '180' },
           { label: '发布人姓名', prop: 'gambitName', width: '180' },
-          { label: '发布内容', prop: 'gambitContent', width: '380' },
+           { label: '话题标题', prop: 'title', width: '380' },
+          { label: '话题摘要', prop: 'summary', width: '180' },
           { label: '是否公开', prop: 'isPublic', width: '110' ,type:"function",
           callback:(row,prop)=>{
             switch(row.isPublic){

@@ -312,8 +312,29 @@ export function materialRecordInsert(data) {
         data: data
     })
 }
-//materialInventory/list盘点
-
+//materialInventory/list盘点 materialInventory/insert
+export function materialInventoryInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/materialInventory/insert',
+        data: data
+    })
+}
+export function materialInventoryUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/materialInventory/update',
+        data: data
+    })
+}
+// materialInventory/findById
+export function materialInventoryFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/materialInventory/findById',
+        params: data
+    })
+}
 //keyManagement/insert keyBorrow/examine
 export function keyManagementInsert(data) {
     return service.request({

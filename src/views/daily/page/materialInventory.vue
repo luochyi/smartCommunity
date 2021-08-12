@@ -1,6 +1,41 @@
+<style lang="scss" scoped>
+.main {
+    margin: 20px;
+    .head-box {
+        background: #fff;
+        border-radius: 4px;
+        border: 1px solid #cfd0dd;
+        margin-bottom: 20px;
+        .titel {
+            line-height: 50px;
+            font-size: 16px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+            padding-left: 20px;
+            border-bottom: 1px solid #d8d8d8;
+        }
+    }
+    .box {
+        background: #fff;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 4px;
+        border: 1px solid #cfd0dd;
+
+        .title {
+            font-size: 14px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+    }
+}
+</style>
 <template>
     <div>
-        <div class="main-content">
+        <div class="main-content" v-show="handleChangeShow">
             <div class="main-titel">
                 <span>物资盘点</span>
             </div>
@@ -39,8 +74,8 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button @click="detail(table_row)">详情</button> -->
-                                <!-- <button @click="del(table_row)">删除</button> -->
+                                <button @click="detail(table_row)">详情</button>
+                                <!-- <button @click="edit(table_row)">修改</button> -->
                             </div>
                         </template>
                     </VueTable>
@@ -125,6 +160,7 @@
                                                                 slot-scope="scope"
                                                             >
                                                                 <el-input
+                                                                disabled
                                                                     size="small"
                                                                     v-model="
                                                                         scope
@@ -140,6 +176,7 @@
                                                                 slot-scope="scope"
                                                             >
                                                                 <el-input
+                                                                disabled
                                                                     size="small"
                                                                     v-model="
                                                                         scope
@@ -164,6 +201,8 @@
                                                                             .row
                                                                             .actualInventory
                                                                     "
+                                                                    @change="actualInventoryChanged(scope)"
+                                                                    onkeyup="value=value.replace(/[^\d]/g,'')" 
                                                                     placeholder="请输入"
                                                                 ></el-input>
                                                             </template>
@@ -245,20 +284,113 @@
                 </Drawer>
             </div>
         </div>
+        <div v-show="!handleChangeShow">
+            <div class="main details-box" v-if="!handleChangeShow">
+                <div class="head-box">
+                    <div class="titel">
+                        <span>盘点明细</span>
+                        <button     style="marginLeft:50px"
+                                    class="btn-orange"
+                                    @click="handleChangeShow = true"
+                                >
+                                    <span> 返回</span>
+                                </button>
+                    </div>
+                    <div class="content">
+                        <!-- detailData -->
+                    <div class="box-item">
+                        <div class="item">
+                            <div class="span">
+                                <span>盘点期次</span>
+                            </div>
+                            <div>
+                                <span>{{detailData.periodTime}}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="span">
+                                <span>盘点种类数量</span>
+                            </div>
+                            <div>
+                                <span>{{
+                                    detailData.speciesNum
+                                }}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="span">
+                                <span>盘点时间</span>
+                            </div>
+                            <div>
+                                <span>{{ detailData.inventoryDateStart}}-{{detailData.inventoryDateEnd}}</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    </div>
+                </div>
+                <div class="box">
+                             <template>
+                            <el-table
+                            :data="detailData.materialInventoryDetailList"
+                            style="width: 100%">
+                            <el-table-column
+                                type="index"
+                                label="序号"
+                                width="80">
+                            </el-table-column>
+                            <el-table-column
+                                prop="name"
+                                label="物资名称"
+                                width="130">
+                            </el-table-column>
+                            <el-table-column
+                                prop="shouldInventory"
+                                label="应有库存"
+                                width="130">
+                            </el-table-column>
+                            <el-table-column
+                                prop="unit"
+                                label="单位"
+                                width="100">
+                            </el-table-column>
+                            <el-table-column
+                                prop="actualInventory"
+                                label="实际库存"
+                                 width="130">
+                            </el-table-column>
+                            <el-table-column
+                                prop="inventorySurplusLosses"
+                                label="盘盈/盘亏"
+                                 width="130">
+                            </el-table-column>
+                            </el-table>
+                        </template>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import {
-    materialList
+    materialList,materialInventoryInsert,materialInventoryUpdate,materialInventoryFindById
 } from '@/api/daily'
 export default {
     inject:['reload'],
     data() {
         return {
+            detailData:{
+                periodTime:null,
+                speciesNum:null,
+                inventoryDateStart:null,
+                inventoryDateEnd:null,
+                materialInventoryDetailList:[]
+            },
+            handleChangeShow: false,
+
             materialInventoryDetailList: [],
             add_vrisible: false,
-            detail_vrisible: false,
             addDate: null,
             materialOptions: [],
             addForm: {
@@ -364,7 +496,7 @@ export default {
                 material && material.forEach(ele => {
                     let obj = {
                         label:ele.name,
-                        value:ele.id
+                        value:ele.name
                     }
                     this.materialOptions.push(obj)
                 });
@@ -380,9 +512,24 @@ export default {
                 periodTime :this.addForm.ruleForm.periodTime,
                 inventoryDateStart :this.addForm.ruleForm.inventoryDateStart,
                 inventoryDateEnd :this.addForm.ruleForm.inventoryDateEnd,
-                materialInventoryDetailList:this.materialInventoryDetailLists
+                materialInventoryDetailList:this.materialInventoryDetailList
             }
             console.log(resData);
+            materialInventoryInsert(resData).then(res=>{
+                if(res.status){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.$refs.table.requestData()
+                        this.add_vrisible = false
+                    }else{
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        })
+                    }
+            })
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
@@ -408,13 +555,14 @@ export default {
         currStationChange(a){
             console.log(a);
             materialList().then(res=>{
-                // console.log(res);
+                console.log(res);
                 res.tableList.forEach( ele =>{
                     // console.log(ele); 
                        for(let i=0;i<this.materialInventoryDetailList.length;i++){
-                           if(this.materialInventoryDetailList[i].id = ele.id){
+                           if(this.materialInventoryDetailList[i].name == ele.name){
                                console.log(i);
-                               this.materialInventoryDetailList[i].stock = ele.stock
+                               this.materialInventoryDetailList[i].shouldInventory = ele.stock
+                               this.materialInventoryDetailList[i].unit = ele.unit
                                console.log(this.materialInventoryDetailList);
                            }
                        }
@@ -422,31 +570,41 @@ export default {
                 })
             })
         },
+        // 实际库存改变时候计算
+        actualInventoryChanged(scope){
+            console.log(scope);
+            // 当前行的盘盈/亏 = 当前行的实际库存 - 应有库存
+            this.materialInventoryDetailList[scope.$index].inventorySurplusLosses = this.materialInventoryDetailList[scope.$index].actualInventory - this.materialInventoryDetailList[scope.$index].shouldInventory
+            
+        },
         // 表格选中
         tableCheck(data) {
             this.table_row = data
         },
-        // 删除
-        del(data) {
-            if (data.length) {
-                let arr = []
-                for (let i = 0; i < this.table_row.length; i++) {
-                    arr.push(this.table_row[i].id)
-                }
-                this.$confirm('是否确认删除？删除不可恢复', '删除', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    confirmButtonClass: 'confirmButton',
-                    cancelButtonClass: 'cancelButton'
+        detail(data){
+            if(data.length!=1){
+                this.$message({type:'error',message:'请选择一条数据查看'})
+            }else{
+                this.handleChangeShow = false
+                materialInventoryFindById({id:data[0].id}).then(res=>{
+                    console.log(res.data);
+                    let pddata = res.data
+                   this.detailData.inventoryDateEnd= pddata.inventoryDateEnd 
+                  this.detailData.inventoryDateStart = pddata.inventoryDateStart
+                   this.detailData.periodTime= pddata.periodTime
+                    this.detailData.speciesNum= pddata.speciesNum
+                    this.detailData.materialInventoryDetailList = pddata.voMaterialInventoryDetailList
+                    console.log(this.detailData);
                 })
-                    .then(() => {
-                        this.$refs.table.tableDelete(arr)
-                    })
-                    .catch((action) => {})
-            } else {
-                this.$message.error('请选中需要删除的数据')
             }
-        }
+        },
+        // edit(data){
+        //     if(data.length!=1){
+        //         this.$message({type:'error',message:'请选择一条数据修改'})
+        //     }else{
+                
+        //     }
+        // },
     },
     watch:{
     }
@@ -454,6 +612,28 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+.details-box {
+    .box-item {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #333333;
+        .item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            width: 50%;
+            .span {
+                width: 100px;
+                text-align: right;
+                margin-right: 20px;
+            }
+        }
+    }
+}
 .flex {
     margin: 17px 0;
     display: flex;

@@ -121,6 +121,14 @@ export default {
               path: '/company/attendanceApplication',
               label: '申请记录'
             },
+            {
+              path: '/company/attendanceTeam',
+              label: '考勤小组'
+            },
+            {
+              path: '/company/scheduling',
+              label: '排班计划'
+            },
            ]
         },
         {

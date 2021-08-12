@@ -12,6 +12,8 @@ const requestUrl = {
     dataDictionaryList: 'dataDictionary/list',
     attendanceRecordList:'attendanceRecord/list',
     attendanceRecordLeaveList:'attendanceRecord/leaveList',
+    attendanceTeamList:'attendanceTeam/list',
+    attendanceTeamListDelete:'attendanceTeam/delete',
     prohibitedKeywordsList:'prohibitedKeywords/list',
     prohibitedKeywordsListDelete:'prohibitedKeywords/delete',
     //提醒
