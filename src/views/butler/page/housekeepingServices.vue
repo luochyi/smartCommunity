@@ -182,10 +182,58 @@ export default {
                         width: 'auto'
                     },
                     { label: '房屋名称', prop: 'roomName', width: 'auto' },
-                    { label: '服务类型', prop: 'type', width: 'auto' },
+                    { label: '服务类型', prop: 'type', width: 'auto' ,type:'function',callback:(row,prop)=>{
+                        switch (row.type) {
+                            case 1:
+                                return '室内清洁'
+                                break;
+                            case 2:
+                                return '洗涤护理'
+                                break;
+                            default:
+                                break;
+                        }
+                    }},
                     { label: '服务内容', prop: 'content', width: 'auto' },
-                    { label: '状态', prop: 'status', width: 'auto' },
-                    { label: '完成情况', prop: 'completion', width: 'auto' },
+                    { label: '状态', prop: 'status', width: 'auto' ,type:'function',callback:(row,prop)=>{
+                        switch (row.status) {
+                            case 1:
+                                return '待派单'
+                                break;
+                            case 2:
+                                return '已派单'
+                                break;
+                            case 3:
+                                return '处理中'
+                                break;
+                            case 4:
+                                return '待支付'
+                                break;
+                            case 5:
+                                return '待评价'
+                                break;
+                            case 6:
+                                return '已完成'
+                                break;
+                            case 9:
+                                return '已取消'
+                                break;
+                            default:
+                                break;
+                        }
+                    }},
+                    { label: '完成情况', prop: 'completion', width: 'auto' ,type:'function',callback:(row,prop)=>{
+                        switch (row.completion) {
+                            case 1:
+                                return '未完成'
+                                break;
+                            case 2:
+                                return '已完成'
+                                break;
+                            default:
+                                break;
+                        }
+                    }},
                     { label: '处理人名称', prop: 'handlerName', width: 'auto' },
                     { label: '处理人电话', prop: 'handlerTel', width: 'auto' },
                     { label: '处理描述', prop: 'processDescription', width: 'auto' },
@@ -195,17 +243,58 @@ export default {
                 url: 'housekeepingServiceList',
                 search_item: [
                     {
-                        type: 'Int',
-                        label: '家政负责人手机号',
-                        placeholder: '请输入手机号',
-                        prop: 'leaderTel'
+                        type: 'select',
+                        label: '服务类型',
+                        placeholder: '选择服务类型',
+                        prop: 'type',
+                        options:[
+                            {
+                                label:'室内清洁',
+                                value:1
+                            },
+                            {
+                                label:'洗涤护理',
+                                value:2
+                            }
+                        ]
                     },
                     {
-                        type: 'Input',
-                        label: '创建人名称',
-                        placeholder: '请输入创建人名称',
-                        prop: 'createName'
-                    }],
+                        type: 'select',
+                        label: '状态',
+                        placeholder: '选择服务类型',
+                        prop: 'status',
+                        options:[
+                            {
+                                label:'待派单',
+                                value:1
+                            },
+                            {
+                                label:'已派单',
+                                value:2
+                            },
+                            {
+                                label:'处理中',
+                                value:3
+                            },
+                            {
+                                label:'待支付',
+                                value:4
+                            },
+                            {
+                                label:'待评价',
+                                value:5
+                            },
+                            {
+                                label:'已完成',
+                                value:6
+                            },
+                            {
+                                label:'已取消',
+                                value:9
+                            },
+                        ]
+                    },
+                    ],
                 //     {
                 //         type: 'select',
                 //         label: '审核状态',

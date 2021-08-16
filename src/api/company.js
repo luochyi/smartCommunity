@@ -262,6 +262,30 @@ export function attendanceRecordReviewer(data) {
         data: data
     })
 }
+// attendanceTeam/insert
+export function attendanceTeamInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/attendanceTeam/insert',
+        data: data
+    })
+}
+// attendanceTeam/findPeopleById
+export function attendanceTeamFindPeopleById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/attendanceTeam/findPeopleById',
+        params: data
+    })
+}
+// attendanceTeam/list
+export function attendanceTeamList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/attendanceTeam/list',
+        params: data
+    })
+}
 //functionAuthority/updateRole给人员分配角色
 export function functionAuthorityUpdateRole(data) {
     return service.request({

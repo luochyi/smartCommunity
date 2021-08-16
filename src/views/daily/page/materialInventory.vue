@@ -387,7 +387,7 @@ export default {
                 inventoryDateEnd:null,
                 materialInventoryDetailList:[]
             },
-            handleChangeShow: false,
+            handleChangeShow: true,
 
             materialInventoryDetailList: [],
             add_vrisible: false,
@@ -502,6 +502,9 @@ export default {
                 });
             })
         },
+        deleteRow (index, rows) {
+      rows.splice(index, 1);
+    },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false

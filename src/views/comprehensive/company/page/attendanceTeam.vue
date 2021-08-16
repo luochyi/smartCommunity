@@ -39,15 +39,14 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <button @click="detail(table_row)">编辑</button>
+                                <!-- <button @click="edit(table_row)">编辑</button> -->
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
-                <!-- 新增 -->
-                <Drawer
-                    drawerTitle="新增小组"
+               <Drawer
+                    :drawerTitle="drawerTitle"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
@@ -56,21 +55,148 @@
                             <template slot="title">小组信息</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
                                 </VueForm>
+                                <template>
+                                    <div>
+                                        
+                                        <div>
+                                            <div class="add">
+                                                <span @click="addPeople"
+                                                    >添加人员</span
+                                                >
+                                            </div>
+                                            <div class="content-table">
+                                                <template>
+                                                    <el-table
+                                                        :data="peopleDetailList"
+                                                        highlight-current-row
+                                                        :header-cell-style="{
+                                                            background:
+                                                                '#F5F5F6',
+                                                            color: '#999999'
+                                                        }"
+                                                        style="width: 100%"
+                                                    >
+                                                        <el-table-column
+                                                            label="序号"
+                                                            width="80"
+                                                            type="index"
+                                                        >
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            prop="name"
+                                                            label="人员名称"
+                                                        >
+                                                            <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <el-select
+                                                                    size="small"
+                                                                    @change="currStationChange(scope)"
+                                                                    v-model="
+                                                                        scope
+                                                                            .row
+                                                                            .name
+                                                                    "
+                                                                    placeholder="请输入"
+                                                                >
+                                                                     <el-option
+                                                                        v-for="(item,index) in peopleOptions"
+                                                                        :key="
+                                                                            index
+                                                                        "
+                                                                        :label="
+                                                                            item.label
+                                                                        "
+                                                                        :value="
+                                                                            item.value
+                                                                        "
+                                                                        :disabled="item.disabled"
+                                                                    >
+                                                                    </el-option>
+                                                                </el-select>
+                                                            </template>
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            prop="shouldInventory"
+                                                            label="职位"
+                                                        >
+                                                           <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <el-input
+                                                                disabled
+                                                                    size="small"
+                                                                    v-model="
+                                                                        scope
+                                                                            .row
+                                                                            .positionName
+                                                                    "
+                                                                    placeholder="请输入"
+                                                                ></el-input>
+                                                            </template>
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                            prop="inventorySurplusLosses"
+                                                            width="220"
+                                                            label="联系方式"
+                                                        >
+                                                            <template
+                                                                slot-scope="scope"
+                                                            >
+                                                                <div
+                                                                    class="
+                                                                        column_flex
+                                                                    "
+                                                                >
+                                                                    <div
+                                                                        style="
+                                                                            flex: 1;
+                                                                        "
+                                                                    >
+                                                                        <el-input
+                                                                            disabled
+                                                                            size="small"
+                                                                            v-model="
+                                                                                scope
+                                                                                    .row
+                                                                                    .tel
+                                                                            "
+                                                                            placeholder="请输入"
+                                                                        ></el-input>
+                                                                    </div>
+                                                                    <div
+                                                                        @click="
+                                                                            deleteRow(
+                                                                                scope.$index,
+                                                                                peopleDetailList
+                                                                            )
+                                                                        "
+                                                                        v-if="
+                                                                            scope.$index !==
+                                                                            0
+                                                                        "
+                                                                        style="
+                                                                            padding-left: 10px;
+                                                                        "
+                                                                    >
+                                                                        <span
+                                                                            ><i
+                                                                                class="
+                                                                                    el-icon-delete
+                                                                                "
+                                                                            ></i
+                                                                        ></span>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </el-table-column>
+                                                    </el-table>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
                             </template>
                         </FromCard>
                     </div>
@@ -85,46 +211,6 @@
                         </button>
                     </div>
                 </Drawer>
-                <!-- detail -->
-                <Drawer
-                    drawerTitle="编辑小组"
-                    @drawerClose="detailClose"
-                    :drawerVrisible="detail_vrisible"
-                >
-                    <div style="padding: 30px">
-                        <FromCard>
-                            <template slot="title">小组信息</template>
-                            <template>
-                                <VueForm ref="detailForm" :formObj="detailForm">
-                                    <!-- Slot -->
-                                    <template v-slot:date>
-                                        <el-time-picker
-                                            is-range
-                                            v-model="addDate"
-                                            range-separator="至"
-                                            @change="dateTimeChange"
-                                            value-format="HH:MM:SS"
-                                            start-placeholder="开始时间"
-                                            end-placeholder="结束时间"
-                                            placeholder="选择时间范围"
-                                        >
-                                        </el-time-picker>
-                                    </template>
-                                </VueForm>
-                            </template>
-                        </FromCard>
-                    </div>
-                    <div slot="footer">
-                        <button class="btn-orange" @click="detailSubmit()">
-                            <span>
-                                <i class="el-icon-circle-check"></i>提交</span
-                            >
-                        </button>
-                        <button class="btn-gray" @click="detailClose">
-                            <span>取消</span>
-                        </button>
-                    </div>
-                </Drawer>
             </div>
         </div>
     </div>
@@ -134,22 +220,25 @@
 import {
     keyManagementInsert,
     keyManagementFindById,
-    keyManagementUpdate
+    keyManagementUpdate,sysOrganizationFindAllDepartment
 } from '@/api/daily'
+import {
+    functionAuthorityList,attendanceTeamInsert,attendanceTeamList,attendanceTeamFindPeopleById
+} from '@/api/company'
 export default {
     data() {
         return {
+            drawerTitle:null,
+            peopleOptions:[],
+            peopleArr:[],
+            peopleDetailList: [],
             add_vrisible: false,
             detail_vrisible: false,
             addDate: null,
             addForm: {
                 ruleForm: {
-                    facilityName: null,
-                    num: null,
-                    correspondingPosition: null,
-                    storageLocation: null,
-                    administrator: null,
-                    tel: null
+                    name:null,
+                    organizationId:null
                 },
                 rules: {
                     tel: [
@@ -169,102 +258,20 @@ export default {
                 form_item: [
                     {
                         type: 'Input',
-                        label: '设施名称',
+                        label: '小组名称',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'facilityName'
+                        prop: 'name'
                     },
                     {
-                        type: 'Input',
-                        label: '钥匙数量',
+                        type: 'Select',
+                        label: '所属部门',
                         // disabled: true,
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'num'
-                    },
-                    {
-                        type: 'Input',
-                        label: '对应位置',
-                        placeholder: '请选择',
-                        width: '100%',
-                        prop: 'correspondingPosition'
-                    },
-                    {
-                        type: 'Input',
-                        label: '存放位置',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'storageLocation'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'administrator'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人联系方式',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'tel'
-                    }
-                ]
-            },
-            detailForm: {
-                ruleForm: {
-                    facilityName: null,
-                    num: null,
-                    correspondingPosition: null,
-                    storageLocation: null,
-                    administrator: null,
-                    tel: null
-                },
-                form_item: [
-                    {
-                        type: 'Input',
-                        label: '设施名称',
                         placeholder: '请输入',
                         width: '50%',
-                        prop: 'facilityName'
+                        prop: 'organizationId',
+                        options:[]
                     },
-                    {
-                        type: 'Input',
-                        label: '钥匙数量',
-                        // disabled: true,
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'num'
-                    },
-                    {
-                        type: 'Input',
-                        label: '对应位置',
-                        placeholder: '请选择',
-                        width: '100%',
-                        prop: 'correspondingPosition'
-                    },
-                    {
-                        type: 'Input',
-                        label: '存放位置',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'storageLocation'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'administrator'
-                    },
-                    {
-                        type: 'Input',
-                        label: '管理人联系方式',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'tel'
-                    }
                 ]
             },
             table_row: [],
@@ -306,8 +313,59 @@ export default {
             }
         }
     },
+    created(){
+        sysOrganizationFindAllDepartment().then(res=>{
+            console.log(res);
+            res.data.forEach(ele => {
+                let obj = {
+                    label: ele.name,
+                    value:ele.id
+                }
+                this.addForm.form_item[1].options.push(obj)
+            });
+        })
+    },
     methods: {
+        addPeople() {
+            this.peopleDetailList.push({
+                name: null,
+                positionName:null,
+                tel:null
+            })
+            console.log(this.peopleDetailList);
+        },
+        currStationChange(scope){
+            console.log(scope);
+            let index = scope.$index //table的index
+            functionAuthorityList().then(res=>{
+                res.tableList.forEach(ele=>{
+                    if(ele.id==scope.row.name){
+                        this.peopleDetailList[index].positionName = ele.positionName
+                        this.peopleDetailList[index].tel = ele.tel
+                    }
+                })
+            })
+            // 初始化一下
+            console.log(this.peopleDetailList);
+            for(let i = 0;i<this.peopleOptions.length;i++){
+                        this.peopleOptions[i].disabled=false
+                }
+            this.peopleArr=[]
+            // 已选择的人员push进peopleArr
+            this.peopleDetailList.forEach(ele=>{
+                this.peopleArr.push(ele.name)
+            })
+            // 如果已选择，则options中的被选择人员会被禁用
+            this.peopleArr.forEach(item=>{
+                for(let i = 0;i<this.peopleOptions.length;i++){
+                    if(this.peopleOptions[i].value == item){
+                        this.peopleOptions[i].disabled=true
+                    }
+                }
+            })
+        },
         add() {
+            this.drawerTitle = '新增小组'
             this.add_vrisible = true
         },
         addClose() {
@@ -315,25 +373,12 @@ export default {
             this.add_vrisible = false
         },
         addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
             let resData = {
-                ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
+                ...this.addForm.ruleForm,
+                teamMembers:this.peopleArr.toString()
             }
-            keyManagementInsert(resData).then((res) => {
+            console.log(resData);
+            attendanceTeamInsert(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
@@ -344,60 +389,30 @@ export default {
                 }
             })
         },
-        detail(data) {
+        edit(data) {
             if (data.length != 1) {
                 this.$message({
                     message: '只能编辑一条数据',
                     type: 'error'
                 })
             } else {
-                this.detail_vrisible = true
-                console.log(data[0].id)
-                this.detailForm.ruleForm.id = data[0].id
-                keyManagementFindById({ id: data[0].id }).then((res) => {
-                    console.log(res.data)
-                    this.detailForm.ruleForm.facilityName =
-                        res.data.facilityName
-                    this.detailForm.ruleForm.num = res.data.num
-                    this.detailForm.ruleForm.correspondingPosition =
-                        res.data.correspondingPosition
-                    this.detailForm.ruleForm.storageLocation =
-                        res.data.storageLocation
-                    this.detailForm.ruleForm.administrator =
-                        res.data.administrator
-                    this.detailForm.ruleForm.tel = res.data.tel
-                })
-                // this.detailForm.ruleForm
-            }
-        },
-        detailClose() {
-            this.$refs.detailForm.reset()
-            this.detail_vrisible = false
-        },
-        detailSubmit() {
-            let resData = {
-                ...this.detailForm.ruleForm,
-                id: this.detailForm.ruleForm.id
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
-            }
-            keyManagementUpdate(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
+                this.drawerTitle = '修改小组'
+                this.add_vrisible = true
+                attendanceTeamFindPeopleById({teamId:data[0].id}).then(res=>{
+                    console.log(res);
+                    res.data.forEach(ele=>{
+                            this.addForm.ruleForm.name = data[0].name
+                            this.addForm.ruleForm.organizationId = data[0].organizationId
+                            let obj ={
+                                name:ele.name,
+                                positionName:ele.identityName,
+                                tel:ele.tel
+                            }
+                            this.peopleDetailList.push(obj)
                     })
-                    this.$refs.table.loadData()
-                    this.detailClose()
-                }
-            })
-        },
-        dateTimeChange(arr) {
-            this.addForm.ruleForm.openStartDate = arr[0]
-            this.addForm.ruleForm.openEndDate = arr[1]
+                    console.log(this.peopleDetailList);
+                })
+            }
         },
         // tabs切换
         handleClick(tab, event) {
@@ -419,6 +434,9 @@ export default {
         tableCheck(data) {
             this.table_row = data
         },
+        deleteRow (index, rows) {
+      rows.splice(index, 1);
+    },
         // 删除
         del(data) {
             if (data.length) {
@@ -440,6 +458,85 @@ export default {
                 this.$message.error('请选中需要删除的数据')
             }
         }
+    },
+    watch:{
+        'addForm.ruleForm.organizationId':{
+            handler(newV){
+            this.peopleDetailList=[]
+            this.peopleOptions=[]
+                console.log(newV);
+            functionAuthorityList({organizationId:newV}).then(res=>{
+                console.log(res);
+                res.tableList.forEach(ele=>{
+                    let obj = {
+                    label: ele.actualName,
+                    value: ele.id,
+                    disabled:false
+                }
+                this.peopleOptions.push(obj)
+                
+                })
+            })
+            console.log(this.peopleOptions);
+            }
+        }
     }
 }
 </script>
+<style scoped lang='scss'>
+.details-box {
+    .box-item {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #333333;
+        .item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            width: 50%;
+            .span {
+                width: 100px;
+                text-align: right;
+                margin-right: 20px;
+            }
+        }
+    }
+}
+.flex {
+    margin: 17px 0;
+    display: flex;
+    align-items: center;
+}
+.label-span {
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    width: 80px;
+}
+.add {
+    margin-bottom: 20px;
+
+    span {
+        cursor: pointer;
+        font-size: 14px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #fb4702;
+        line-height: 20px;
+    }
+}
+.hr {
+    margin: 30px 0;
+    height: 1px;
+    background: #e8e8e8;
+}
+.column_flex {
+    display: flex;
+    align-items: center;
+}
+</style>
