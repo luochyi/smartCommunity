@@ -132,7 +132,18 @@ export default {
           label: '报事报修',
           iconurl: require('@/assets/images/butler/icon_service08_nor.png'),
           iconisactive: require('@/assets/images/butler/icon_service08_sel.png'),
-          isChildren: 0
+          isChildren: 1,
+          children: [
+            {
+              path: '/butler/reportRepair',
+              label: '报事报修'
+            },
+            {
+              // Item management
+              path: '/butler/engineeringMaintenance',
+              label: '工程维修'
+            }
+          ]
         },
         {
           // Questionnaire
@@ -156,7 +167,7 @@ export default {
             },
             {
               path: '/butler/subjectManagement',
-              label: '主题明细管理'
+              label: '动态管理'
             }
           ]
         },

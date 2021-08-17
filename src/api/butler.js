@@ -238,7 +238,14 @@ export function reportRepairFindRepairDetail(data) {
         params: data
     })
 }
-
+// repairEngineering/insert
+export function repairEngineeringInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/repairEngineering/insert',
+        data: data
+    })
+}
 // 查询物品照片
 export function userArticleOutFindGoodsImgById(data) {
     return service.request({
@@ -393,6 +400,21 @@ export function gambitThemeRecovery(data) {
         method: 'POST',
         url: '/gambitTheme/recovery',
         data: data
+    })
+}
+// 开启评论gambitTheme/enableComment    gambitTheme/enableTheme
+export function gambitThemeEnableComment(data) {
+    return service.request({
+        method: 'GET',
+        url: '/gambitTheme/enableComment',
+        params: data
+    })
+}
+export function gambitThemeEnableTheme(data) {
+    return service.request({
+        method: 'GET',
+        url: '/gambitTheme/enableTheme',
+        params: data
     })
 }
 // 工单设置

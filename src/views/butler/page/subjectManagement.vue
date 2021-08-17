@@ -12,7 +12,7 @@
 <template>
   <div class="main-content">
     <div class="main-titel">
-      <span>主题明细管理</span>
+      <span>动态管理</span>
     </div>
     <div class="content">
       <div class="">
@@ -23,6 +23,10 @@
             <div class="table-footer">
               <button @click="recovery(table_row)">恢复</button>
               <button @click="del(table_row)">删除</button>
+              <button @click="opensubmit(table_row)">开启/停止用户动态发布功能</button>
+              <button @click="opencomment(table_row)">开启/停止用户评论功能</button>
+              <!-- 开启/停止用户动态发布功能 -->
+              <!-- 开启/停止用户评论功能 -->
             </div>
           </template>
         </VueTable>
@@ -32,7 +36,7 @@
   </div>
 </template>
 <script>
-import { gambitThemeRecovery } from '@/api/butler'
+import { gambitThemeRecovery,gambitThemeEnableComment, gambitThemeEnableTheme} from '@/api/butler'
 export default {
   data () {
     return {
@@ -168,6 +172,28 @@ export default {
       this.table_row = arr
 
     },
+    opensubmit(){
+      gambitThemeEnableTheme().then(res=>{
+        if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+            }
+      })
+    },
+    opencomment(){
+      gambitThemeEnableComment().then(res=>{
+        if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+            }
+      })
+    },
     // 恢复
     recovery (data) {
       if (data.length) {
@@ -195,7 +221,7 @@ export default {
           })
         }).catch(action => { });
       } else {
-        this.$message.error('请选中需要删除的数据');
+        this.$message.error('请选择');
       }
     },
     // 删除

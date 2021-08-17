@@ -73,6 +73,8 @@
                                 <button @click="audit(table_row)">签署合同审核</button>
                                 <button @click="end(table_row)">合同终止审核</button>
                                 <button @click="refund(table_row)">保证金退还审核</button>
+                                <button @click="renewal(table_row)">续签</button>
+                                <button @click="alter(table_row)">变更</button>
                                 <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
@@ -292,6 +294,98 @@
                         </button>
                     </div>
                 </Drawer>
+                <!-- 续签 变更 -->
+                <Drawer
+                    :drawerTitle="nextdrawerTitle"
+                    @drawerClose="nextClose"
+                    :drawerVrisible="next_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">租赁信息</template>
+                            <template>
+                                <VueForm ref="nextForm" :formObj="nextForm">
+                                    <!-- Slot -->
+                                    <template v-slot:hours>
+                                        <el-select
+                                            v-model="buildValue"
+                                            filterable
+                                            style="
+                                                width: 30%;
+                                                margin-right: 16px;
+                                            "
+                                            placeholder="幢"
+                                            @change="buildchange(buildValue)"
+                                        >
+                                            <el-option
+                                                v-for="item in buildOptions"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.value"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                        <el-select
+                                            v-model="unitValue"
+                                            filterable
+                                            style="
+                                                width: 30%;
+                                                margin-right: 16px;
+                                            "
+                                            placeholder="单元"
+                                            @change="unitchange(unitValue)"
+                                        >
+                                            <el-option
+                                                v-for="item in unitOptions"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.value"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                        <el-select
+                                            v-model="hourValue"
+                                            filterable
+                                            style="width: 30%"
+                                            placeholder="房间号"
+                                        >
+                                            <el-option
+                                                v-for="item in hoursOptions"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.value"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                    </template>
+                                    <template v-slot:date>
+                                        <el-time-picker
+                                            is-range
+                                            v-model="addDate"
+                                            range-separator="至"
+                                            @change="dateTimeChange"
+                                            value-format="HH:MM:SS"
+                                            start-placeholder="开始时间"
+                                            end-placeholder="结束时间"
+                                            placeholder="选择时间范围"
+                                        >
+                                        </el-time-picker>
+                                    </template>
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="nextSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="nextClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
@@ -303,6 +397,7 @@ import {
     leaseInsert,
     leaseUpdate,
     leaseFindById,
+    leaseRenew,
     cpmBuildingUnitFindAll,
     findByBuildingUnitId,
     findByBuildingId,
@@ -336,6 +431,8 @@ export default {
             auditRemake: null,
             drawerTitle: null,
             add_vrisible: false,
+            nextdrawerTitle: null,
+            next_vrisible: false,
             // 楼栋
             buildValue: null,
             buildOptions: [],
@@ -344,9 +441,11 @@ export default {
             unitOptions: [],
             // 房屋
             hoursValue: null,
+            hourValue:null,
             hoursOptions: [],
             addDate: null,
             loading: false,
+            leaseParentId:null,
             addForm: {
                 ruleForm: {
                     id: null,
@@ -364,7 +463,8 @@ export default {
                     rentStandard: null,
                     margin: null,
                     leaseDateStart: null,
-                    leaseDateEnd: null
+                    leaseDateEnd: null,
+                    
                 },
                 form_item: [
                     {
@@ -499,6 +599,250 @@ export default {
                         width: '50%',
                         prop: 'leaseDateEnd'
                     }
+                ]
+            },
+            nextForm: {
+                ruleForm: {
+                    code: null,
+                    name: null,
+                    sex: null,
+                    idCard: null,
+                    tel: null,
+                    estateId: null,
+                    type: null,
+                    estateType: null,
+                    estateStructure: null,
+                    constructionArea: null,
+                    indoorArea: null,
+                    rentStandard: null,
+                    margin: null,
+                    leaseDateStart: null,
+                    leaseDateEnd: null,
+
+                    emergencyContact:null,
+                    emergencyContactNumber:null,
+                    correspondenceAddress:null,
+                    workUnits:null,
+                    payBank:null,
+                    bankAccountName:null,
+                    bankAccount:null,
+                    idCardFrontImgOldUrl:null,
+                    idCardBackImgOldUrl:null,
+                    idCardFrontImgNewUrl:null,
+                    idCardBackImgNewUrl:null,
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '合同编号',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'code'
+                    },
+                    {
+                        type: 'Input',
+                        label: '租户名称',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'name'
+                    },
+                    {
+                        type: 'Select',
+                        label: '性别',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'sex',
+                        options: [
+                            {
+                                value: 1,
+                                label: '男'
+                            },
+                            {
+                                value: 2,
+                                label: '女'
+                            }
+                        ]
+                    },
+                    {
+                        type: 'Input',
+                        label: '身份证号',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'idCard'
+                    },
+                    {
+                        type: 'Int',
+                        label: '手机号',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'tel'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '房屋信息',
+                        placeholder: '请输入',
+                        width: '70%',
+                        slotName: 'hours',
+                        prop: 'estateId'
+                    },
+                    {
+                        type: 'Select',
+                        label: '人才类型',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'type',
+                        options: [
+                            {
+                                value: 1,
+                                label: '一类人才'
+                            },
+                            {
+                                value: 2,
+                                label: '二类人才'
+                            },
+                            {
+                                value: 3,
+                                label: '三类人才'
+                            }
+                        ]
+                    },
+                    {
+                        type: 'Input',
+                        label: '房屋户型',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'estateType'
+                    },
+                    {
+                        type: 'Input',
+                        label: '房屋结构',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'estateStructure'
+                    },
+                    {
+                        type: 'Input',
+                        label: '建筑面积',
+                        placeholder: '请选择房屋信息',
+                        width: '50%',
+                        prop: 'constructionArea',
+                        disabled: true
+                    },
+                    {
+                        type: 'Input',
+                        label: '使用面积（室内面积）',
+                        placeholder: '请选择房屋信息',
+                        width: '50%',
+                        prop: 'indoorArea',
+                        disabled: true
+                    },
+                    {
+                        type: 'Input',
+                        label: '租金标准/月',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'rentStandard'
+                    },
+                    {
+                        type: 'Input',
+                        label: '保证金',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'margin'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '租赁开始时间',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'leaseDateStart'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '租赁结束时间',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'leaseDateEnd'
+                    },
+                    {
+                        type: 'Input',
+                        label: '紧急联系人',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'emergencyContact'
+                    },
+                    {
+                        type: 'Input',
+                        label: '紧急联系人电话',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'emergencyContactNumber'
+                    },
+
+                    {
+                        type: 'Input',
+                        label: '通讯地址',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'correspondenceAddress'
+                    },
+                    {
+                        type: 'Input',
+                        label: '工作单位',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'workUnits'
+                    },
+                    {
+                        type: 'Input',
+                        label: '代缴银行',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'payBank'
+                    },
+                    {
+                        type: 'Input',
+                        label: '代缴银行账户名',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'bankAccountName'
+                    },
+                    {
+                        type: 'Input',
+                        label: '代缴银行账户',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'bankAccount'
+                    },
+                    // {
+                    //     type: 'Input',
+                    //     label: '身份证照正面照片原路径',
+                    //     placeholder: '请输入',
+                    //     width: '50%',
+                    //     prop: 'idCardFrontImgOldUrl'
+                    // },
+                    // {
+                    //     type: 'Input',
+                    //     label: '身份证照正面照片原路径',
+                    //     placeholder: '请输入',
+                    //     width: '50%',
+                    //     prop: 'idCardBackImgOldUrl'
+                    // },
+                    // {
+                    //     type: 'Input',
+                    //     label: '身份证照正面照片新路径',
+                    //     placeholder: '请输入',
+                    //     width: '50%',
+                    //     prop: 'idCardFrontImgNewUrl'
+                    // },
+                    // {
+                    //     type: 'Input',
+                    //     label: '身份证照正面照片新路径',
+                    //     placeholder: '请输入',
+                    //     width: '50%',
+                    //     prop: 'idCardBackImgNewUrl'
+                    // },
+                    
                 ]
             },
             table_row: [],
@@ -847,11 +1191,13 @@ export default {
             this.unitData(data)
             this.unitValue = null
             this.hoursValue = null
+            this.hourValue = null
         },
         // 单元变化
         unitchange(data) {
             this.hoursData(data)
             this.hoursValue = null
+            this.hourValue = null
         },
         // 单元楼栋
         unitData(value) {
@@ -900,6 +1246,133 @@ export default {
         finishDownload() {
             const Loading = this.$loading()
             Loading.close()
+        },
+        // 续签   父类租赁主键id 正整数代表是续签租赁
+        renewal(data){
+            if (data.length != 1) {
+                this.$message({
+                    type: 'error',
+                    message: '请选择一条信息操作'
+                })
+                return
+            }
+             leaseFindById({ id: data[0].id }).then((res) => {
+                    console.log(res)
+                    // 赋值
+                    this.nextForm.ruleForm.id = res.data.id
+                    this.nextForm.ruleForm.code = res.data.code
+                    this.nextForm.ruleForm.name = res.data.name
+                    this.nextForm.ruleForm.sex = res.data.sex
+                    this.nextForm.ruleForm.idCard = res.data.idCard
+                    this.nextForm.ruleForm.tel = res.data.tel
+                    this.nextForm.ruleForm.type = res.data.type
+                    this.nextForm.ruleForm.estateType = res.data.estateType
+                    this.nextForm.ruleForm.estateStructure =
+                        res.data.estateStructure
+                    this.nextForm.ruleForm.constructionArea =
+                        res.data.constructionArea
+                    this.nextForm.ruleForm.indoorArea = res.data.indoorArea
+                    this.nextForm.ruleForm.rentStandard = res.data.rentStandard
+                    this.nextForm.ruleForm.margin = res.data.margin
+                    this.nextForm.ruleForm.leaseDateStart =
+                        res.data.leaseDateStart
+                    this.nextForm.ruleForm.leaseDateEnd = res.data.leaseDateEnd
+
+                    this.nextForm.ruleForm.emergencyContact = res.data.emergencyContact
+                    this.nextForm.ruleForm.emergencyContactNumber = res.data.emergencyContactNumber
+                    this.nextForm.ruleForm.correspondenceAddress = res.data.correspondenceAddress
+                    this.nextForm.ruleForm.workUnits = res.data.workUnits
+                    this.nextForm.ruleForm.payBank = res.data.payBank
+                    this.nextForm.ruleForm.correspondenceAddress = res.data.correspondenceAddress
+                    this.nextForm.ruleForm.workUnits = res.data.workUnits
+                    this.nextForm.ruleForm.payBank = res.data.payBank
+                    this.nextForm.ruleForm.bankAccountName = res.data.bankAccountName
+                    this.nextForm.ruleForm.bankAccount = res.data.bankAccount
+                    this.nextForm.ruleForm.idCardFrontImgOldUrl = res.data.idCardFrontFiles[0].url
+                    this.nextForm.ruleForm.idCardBackImgOldUrl = res.data.idCardBackFiles[0].url
+
+                    //房产信息
+                    this.buildValue = res.data.buildingId
+                    this.unitValue = res.data.unitId
+                    this.hourValue = res.data.estateId
+                    // 修改drawer
+                    this.next_vrisible = true
+                    this.nextdrawerTitle = '续签'
+                    // 修改 parentid
+                    this.leaseParentId = data[0].id
+                })
+        },
+        // 变更  父类租赁主键id 负整数代表是续签租赁 
+        alter(data){
+            if (data.length != 1) {
+                this.$message({
+                    type: 'error',
+                    message: '请选择一条信息操作'
+                })
+                return
+            }
+            leaseFindById({ id: data[0].id }).then((res) => {
+                    console.log(res)
+                    // 赋值
+                    this.nextForm.ruleForm.id = res.data.id
+                    this.nextForm.ruleForm.code = res.data.code
+                    this.nextForm.ruleForm.name = res.data.name
+                    this.nextForm.ruleForm.sex = res.data.sex
+                    this.nextForm.ruleForm.idCard = res.data.idCard
+                    this.nextForm.ruleForm.tel = res.data.tel
+                    this.nextForm.ruleForm.type = res.data.type
+                    this.nextForm.ruleForm.estateType = res.data.estateType
+                    this.nextForm.ruleForm.estateStructure =
+                        res.data.estateStructure
+                    this.nextForm.ruleForm.constructionArea =
+                        res.data.constructionArea
+                    this.nextForm.ruleForm.indoorArea = res.data.indoorArea
+                    this.nextForm.ruleForm.rentStandard = res.data.rentStandard
+                    this.nextForm.ruleForm.margin = res.data.margin
+                    this.nextForm.ruleForm.leaseDateStart =
+                        res.data.leaseDateStart
+                    this.nextForm.ruleForm.leaseDateEnd = res.data.leaseDateEnd
+
+                    this.nextForm.ruleForm.emergencyContact = res.data.emergencyContact
+                    this.nextForm.ruleForm.emergencyContactNumber = res.data.emergencyContactNumber
+                    this.nextForm.ruleForm.correspondenceAddress = res.data.correspondenceAddress
+                    this.nextForm.ruleForm.workUnits = res.data.workUnits
+                    this.nextForm.ruleForm.payBank = res.data.payBank
+                    this.nextForm.ruleForm.correspondenceAddress = res.data.correspondenceAddress
+                    this.nextForm.ruleForm.workUnits = res.data.workUnits
+                    this.nextForm.ruleForm.payBank = res.data.payBank
+                    this.nextForm.ruleForm.bankAccountName = res.data.bankAccountName
+                    this.nextForm.ruleForm.bankAccount = res.data.bankAccount
+                    this.nextForm.ruleForm.idCardFrontImgOldUrl = res.data.idCardFrontFiles[0].url
+                    this.nextForm.ruleForm.idCardBackImgOldUrl = res.data.idCardBackFiles[0].url
+
+                    //房产信息
+                    this.buildValue = res.data.buildingId
+                    this.unitValue = res.data.unitId
+                    this.hourValue = res.data.estateId
+                    // 修改drawer
+                    this.next_vrisible = true
+                    this.nextdrawerTitle = '变更'
+                    // 修改 parentid
+                    this.leaseParentId = - data[0].id
+                })
+        },
+        nextSubmit(){
+            let resData = {
+                ...this.nextForm.ruleForm,
+                leaseParentId :this.leaseParentId
+            }
+            console.log(resData);
+            leaseRenew(resData).then(res=>{
+                if (res.status) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.$refs.table.loadData()
+                        this.nextClose()
+                    }
+            })
         },
         end(data){
             /**
@@ -1078,10 +1551,19 @@ export default {
             this.unitValue = null
             this.hoursValue = null
         },
+        nextClose() {
+            this.$refs.nextForm.reset()
+            this.next_vrisible = false
+            this.buildValue = null
+            this.unitValue = null
+            this.hourValue = null
+            this.leaseParentId = null
+        },
         addSubmit() {
             if (this.drawerTitle == '新增租赁信息') {
                 let resData = {
-                    ...this.addForm.ruleForm
+                    ...this.addForm.ruleForm,
+                    leaseParentId:0
                 }
                 leaseInsert(resData).then((res) => {
                     if (res.status) {
@@ -1198,6 +1680,22 @@ export default {
                         this.addForm.ruleForm.constructionArea =
                             res.cpmBuildingUnitEstate.constructionArea
                         this.addForm.ruleForm.indoorArea =
+                            res.cpmBuildingUnitEstate.indoorArea
+                    }
+                })
+            },
+            deep: true
+        },
+        hourValue: {
+            handler(newValue) {
+                this.nextForm.ruleForm.estateId = newValue
+                console.log(this.nextForm.ruleForm.estateId)
+                UnitEstateFindById({ id: newValue }).then((res) => {
+                    console.log(res.cpmBuildingUnitEstate)
+                    if (res.cpmBuildingUnitEstate) {
+                        this.nextForm.ruleForm.constructionArea =
+                            res.cpmBuildingUnitEstate.constructionArea
+                        this.nextForm.ruleForm.indoorArea =
                             res.cpmBuildingUnitEstate.indoorArea
                     }
                 })

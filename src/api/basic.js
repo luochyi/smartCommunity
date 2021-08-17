@@ -492,7 +492,14 @@ export const leaseContractEnable = data => {
         params: data
     })
 }
-
+// lease/renew
+export const leaseRenew = data => {
+    return service.request({
+        method: 'POST',
+        url: '/lease/renew',
+        data: data
+    })
+}
 // http://192.168.31.129:9001/cpmBuildingUnitEstate/findByBuildingUnitId
 // GET
 

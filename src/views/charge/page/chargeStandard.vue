@@ -286,10 +286,29 @@ export default {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
                     { label: '费用名称', prop: 'name', width: 'auto' },
+                    // {
+                    //     label: '计费单价',
+                    //     prop: 'unitPrice',
+                    //     width: 'auto'
+                    // },
                     {
                         label: '计费单价/单位',
-                        prop: 'unitPrice',
-                        width: 'auto'
+                        prop: 'type',
+                        width: 'auto',
+                        type: 'function',
+                        callback(row, prop) {
+                            switch (row.type) {
+                                case 1:
+                                    return row.unitPrice+'元/月 平方米'
+                                    break
+                                case 2:
+                                    return row.unitPrice+'元/ 立方米'
+                                    break
+                                case 3:
+                                    return row.unitPrice+'元/ 次'
+                                    break
+                            }
+                        }
                     },
                     {
                         label: '费用类型名称',

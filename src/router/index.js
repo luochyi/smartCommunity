@@ -626,6 +626,14 @@ const routes = [
                             ], resolve)
                     },
                     {
+                        // 工程维修
+                        path: '/butler/engineeringMaintenance',
+                        component: resolve =>
+                            require([
+                                '@/views/butler/page/engineeringMaintenance'
+                            ], resolve)
+                    },
+                    {
                         // 问卷调查
                         path: '/butler/Questionnaire',
                         component: resolve =>

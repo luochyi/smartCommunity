@@ -100,6 +100,7 @@ const requestUrl = {
     complaintPraiseListDelete: '/complaintPraise/falseDelete',
     reportRepairList: '/reportRepair/list',
     reportRepairListDelete: '/dispatch/falseDelete',
+    repairEngineeringList:"repairEngineering/list",
     questionnaireList: '/questionnaire/list',
     questionnaireListDelete: '/questionnaire/falseDelete',
     gambitList: '/gambit/list',
