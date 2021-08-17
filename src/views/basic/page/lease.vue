@@ -626,10 +626,10 @@ export default {
                     payBank:null,
                     bankAccountName:null,
                     bankAccount:null,
-                    idCardFrontImgOldUrl:null,
-                    idCardBackImgOldUrl:null,
-                    idCardFrontImgNewUrl:null,
-                    idCardBackImgNewUrl:null,
+                    idCardFrontImgOldUrl:[],
+                    idCardBackImgOldUrl:[],
+                    idCardFrontImgNewUrl:[],
+                    idCardBackImgNewUrl:[],
                 },
                 form_item: [
                     {
@@ -1288,8 +1288,8 @@ export default {
                     this.nextForm.ruleForm.payBank = res.data.payBank
                     this.nextForm.ruleForm.bankAccountName = res.data.bankAccountName
                     this.nextForm.ruleForm.bankAccount = res.data.bankAccount
-                    this.nextForm.ruleForm.idCardFrontImgOldUrl = res.data.idCardFrontFiles[0].url
-                    this.nextForm.ruleForm.idCardBackImgOldUrl = res.data.idCardBackFiles[0].url
+                    this.nextForm.ruleForm.idCardFrontImgOldUrl.push(res.data.idCardFrontFiles[0].url)
+                    this.nextForm.ruleForm.idCardBackImgOldUrl.push(res.data.idCardBackFiles[0].url)
 
                     //房产信息
                     this.buildValue = res.data.buildingId
@@ -1343,8 +1343,8 @@ export default {
                     this.nextForm.ruleForm.payBank = res.data.payBank
                     this.nextForm.ruleForm.bankAccountName = res.data.bankAccountName
                     this.nextForm.ruleForm.bankAccount = res.data.bankAccount
-                    this.nextForm.ruleForm.idCardFrontImgOldUrl = res.data.idCardFrontFiles[0].url
-                    this.nextForm.ruleForm.idCardBackImgOldUrl = res.data.idCardBackFiles[0].url
+                    this.nextForm.ruleForm.idCardFrontImgOldUrl.push(res.data.idCardFrontFiles[0].url)
+                    this.nextForm.ruleForm.idCardBackImgOldUrl.push(res.data.idCardBackFiles[0].url)
 
                     //房产信息
                     this.buildValue = res.data.buildingId
