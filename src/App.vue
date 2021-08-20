@@ -144,7 +144,7 @@ export default {
                     this.imgSrc = require('./assets/images/sos.png')
                 }
                 this.alertMsg = msg.data
-                this.isShow = false
+                this.isShow = true
             }
 
             this.reset()
