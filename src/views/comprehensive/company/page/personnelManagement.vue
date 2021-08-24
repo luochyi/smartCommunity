@@ -81,6 +81,12 @@
                                 type="primary"
                                 >新建员工</el-button
                             >
+                            <el-button
+                                size="small"
+                                @click="addIdentity()"
+                                type="primary"
+                                >新建岗位</el-button
+                            >
                         </div>
                     </div>
                     <!-- 表格 -->
@@ -288,6 +294,31 @@
                         </button>
                     </div>
                 </Drawer>
+                <Drawer
+                    drawerTitle="新增岗位"
+                    @drawerClose="identityClose"
+                    :drawerVrisible="identity_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">基本信息</template>
+                            <template>
+                                <VueForm ref="identityForm" :formObj="identityForm">
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="identitySubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="identityClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
@@ -306,20 +337,23 @@ import {
     identityListAll,
     sysUserFindById,
     sysUserUpdate,
-    sysUserFalseDelete
+    sysUserFalseDelete,
+    identityInsert
 } from '@/api/company'
 import { sysOrganizationFindAllDepartment } from '@/api/daily'
 export default {
+    inject:['reload'],
     data() {
         return {
             sysOptions: [],
             add_vrisible: false,
+            identity_vrisible:false,
             loading: false,
             drawerTitle: null,
             filterText: '',
             Password: '', //密码
             prohibitLogin: false, //禁止登陆
-            resetPassrword: false, //重置密码'
+            resetPassword: false, //重置密码'
             pwdId: null,
             handleId: null, //操作id  用于编辑禁止登陆 重置密码、停用等
             // 表格数据
@@ -430,6 +464,28 @@ export default {
                     }
                 ]
             },
+            identityForm: {
+                ruleForm: {
+                    name: null,
+                    remakes: null,
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '职位名称',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'name'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '岗位职责',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'remakes'
+                    },
+                ]
+            },
             currentPage: 1,
             limit: 10,
             pageCount: null,
@@ -489,10 +545,31 @@ export default {
                 Math.random() * 100000000
             )
         },
+        addIdentity(){
+            this.identity_vrisible = true
+        },
+        identitySubmit(){
+            let resData = {
+                name:this.identityForm.ruleForm.name,
+                remakes:this.identityForm.ruleForm.remakes,
+                parentId:0
+            }
+        identityInsert(resData).then(res=>{
+            if (res.status) {
+                this.$message({message:'添加成功',type:'success'})
+                this.identityClose()
+                this.reload()
+            }
+        })
+        },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
             this.addForm.form_item[4].disabled = false
+        },
+        identityClose(){
+            this.$refs.identityForm.reset()
+            this.identity_vrisible = false
         },
         addSubmit() {
             if (this.drawerTitle == '新建员工') {

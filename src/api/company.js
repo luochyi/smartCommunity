@@ -115,6 +115,14 @@ export function sysUserInsert(data) {
         data: data
     })
 }
+// identity/insert
+export function identityInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/identity/insert',
+        data: data
+    })
+}
 //允许登录sysUser/allowLogins 禁止登录sysUser/disableLogins 恢复sysUser/recovery 停用sysUser/stop
 export function sysUserAllowLogins(data) {
     return service.request({

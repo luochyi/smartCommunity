@@ -14,6 +14,20 @@
       </p>
     </div> -->
         <div class="content">
+            <div style="width: 50px">
+                    <download-excel
+                        class="export-excel-wrapper"
+                        :fetch="fetchData"
+                        :fields="json_fields"
+                        :before-finish="finishDownload"
+                        name="访客记录.xls"
+                    >
+                        <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
+                        <el-button size="mini" icon="el-icon-folder-add" plain
+                            >导出Excel</el-button
+                        >
+                    </download-excel>
+                </div>
             <!-- 查询重制 -->
             <div class="">
                 <!-- 头部输入框 -->
@@ -90,6 +104,7 @@
 </template>
 
 <script>
+import { DownloadExcel } from '@/plugins/DownloadExcel'
 import {
     visitorsCancel,
     visitorsFindById,
@@ -105,6 +120,35 @@ export default {
             countNew: 0,
             // 选中表格数据
             table_row: [],
+            json_fields: {
+                拜访房屋名称: 'roomName',
+                访客姓名: 'name',
+                访客电话: 'tel',
+                访客性别: {
+                    field: 'sex',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '男'
+                                break
+                            case 2:
+                                return '女'
+                                break
+                        }
+                    }
+                },
+                访客车牌号: 'carNumber',
+                预约到访日期: {
+                    field: 'visitDateStart',
+                    callback: (value) => {
+                        if(value){
+                          return value.substring(0, 10)
+                        }
+                    }
+                },
+                申请人: 'createName',
+                申请时间: 'createDate'
+            },
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
@@ -361,6 +405,35 @@ export default {
         }
     },
     methods: {
+        // Excel导出
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'visitorsNewList',
+                data: {
+                    pageNum: 1,
+                    size: 100
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
+        // Excel进度
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
         // getTipsData() {
         //     //  查询今日咨询条数
         //     visitorsCountVisitorsNew().then((result) => {
