@@ -342,8 +342,29 @@ export default {
                     {
                         label: '维修类别',
                         prop: 'type',
-                        width: 'auto'
+                        width: 'auto',
+                        type:'function',
+                        callback:(row,prop)=>{
+                            switch (row.type) {
+                                case 1:
+                                    return '消防'
+                                    break;
+                                case 2:
+                                    return '弱电'
+                                    break;
+                                case 3:
+                                    return '强电'
+                                    break;
+                                case 4:
+                                    return '排风'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            }
                     },
+                            // 【运维管理】
+                            // 维修类别：1.消防，2.弱电，3.强电，4.排风
                     {
                         label: '维修人姓名',
                         prop: 'people',
@@ -380,10 +401,14 @@ export default {
                                 case 3:
                                     return '未修复'
                                     break
+                                case 4:
+                                    return '已更换'
+                                    break
                                 default:
                                     break
                             }
                         }
+                        // 维修结果：1.已修复，2.部分损坏，3.未修复，4.已更换
                     },
                     {
                         label: '维修用时（时）',
