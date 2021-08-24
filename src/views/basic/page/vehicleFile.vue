@@ -165,7 +165,11 @@ export default {
                     idType: null,
                     idNumber: null,
                     status: null,
-                    cpmParkingSpaceList:null
+                    cpmParkingSpaceList:null,
+                    type: null,
+                    brand: null,
+                    model: null,
+                    color: null,
                 },
                 form_item: [
                     {
@@ -230,7 +234,111 @@ export default {
                         width: '70%',
                         slotName: 'hours',
                         prop: 'hours'
-                    }
+                    },
+                    {
+                        type: 'Select',
+                        label: '车辆类型',
+                        placeholder: '请输入',
+                        options: [
+                            {
+                                label:'私家车',
+                                value:1
+                            },
+                            {
+                                label:'货车',
+                                value:2
+                            },
+                            {
+                                label:'大巴',
+                                value:3
+                            },
+                            {
+                                label:'牵引汽车',
+                                value:4
+                            },
+                            {
+                                label:'其他',
+                                value:5
+                            },
+                        ],
+                        width: '50%',
+                        prop: 'type'
+                    },
+                    {
+                        type: 'Input',
+                        label: '车辆品牌',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'brand'
+                    },
+                    {
+                        type: 'Input',
+                        label: '车辆型号',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'model'
+                    },
+                    {
+                        type: 'Select',
+                        label: '车辆颜色',
+                        placeholder: '请输入',
+                        options: [
+                            {
+                                label:'红',
+                                value:1
+                            },
+                            {
+                                label:'橙',
+                                value:2
+                            },
+                            {
+                                label:'黄',
+                                value:3
+                            },
+                            {
+                                label:'绿',
+                                value:4
+                            },
+                            {
+                                label:'青',
+                                value:5
+                            },
+                            {
+                                label:'蓝',
+                                value:6
+                            },
+                            {
+                                label:'紫',
+                                value:7
+                            },
+                            {
+                                label:'黑',
+                                value:8
+                            },
+                            {
+                                label:'白',
+                                value:9
+                            },
+                            {
+                                label:'灰',
+                                value:10
+                            },
+                            {
+                                label:'金',
+                                value:11
+                            },
+                            {
+                                label:'磨砂',
+                                value:12
+                            },
+                            {
+                                label:'其他',
+                                value:13
+                            },
+                        ],
+                        width: '50%',
+                        prop: 'color'
+                    },
                 ],
                 rules: {
                     code: [
@@ -318,7 +426,76 @@ export default {
                             
                             }
                         }},
-                    { label: '证件号码', prop: 'idNumber', width: 'auto' }
+                    { label: '证件号码', prop: 'idNumber', width: 'auto' },
+                    { label: '车辆类型', prop: 'type', width: 'auto',type:'function',callback:(row,prop)=>{
+                        switch (row.type) {
+                            case 1:
+                                return '私家车'
+                                break;
+                            case 2:
+                                return '货车'
+                                break;
+                            case 3:
+                                return '大巴'
+                                break;
+                            case 4:
+                                return '牵引汽车'
+                                break;
+                            case 5:
+                                return '其他'
+                                break;
+                            default:
+                                break;
+                        }
+                    } },
+                    { label: '车辆品牌', prop: 'brand', width: 'auto' },
+                    { label: '车辆型号', prop: 'model', width: 'auto' },
+                    { label: '车辆颜色', prop: 'color', width: 'auto' ,type:'function',callback:(row,prop)=>{
+                        switch (row.color) {
+                            case 1:
+                                return '红'
+                                break;
+                            case 2:
+                                return '橙'
+                                break;
+                            case 3:
+                                return '黄'
+                                break;
+                            case 4:
+                                return '绿'
+                                break;
+                            case 5:
+                                return '青'
+                                break;
+                            case 6:
+                                return '蓝'
+                                break;
+                            case 7:
+                                return '紫'
+                                break;
+                            case 8:
+                                return '黑'
+                                break;
+                            case 9:
+                                return '白'
+                                break;
+                            case 10:
+                                return '灰'
+                                break;
+                            case 11:
+                                return '金'
+                                break;
+                            case 12:
+                                return '磨砂'
+                                break;
+                            case 13:
+                                return '其他'
+                                break;
+                            default:
+                                break;
+                        }
+                    }},
+
                 ],
                 url: 'vehicleList',
                 data: {
@@ -380,6 +557,10 @@ export default {
                 idType: this.addEidtForm.ruleForm.idType,
                 idNumber: this.addEidtForm.ruleForm.idNumber,
                 status: this.addEidtForm.ruleForm.status,
+                type: this.addEidtForm.ruleForm.type,
+                brand: this.addEidtForm.ruleForm.brand,
+                model: this.addEidtForm.ruleForm.status,
+                color: this.addEidtForm.ruleForm.status,
                 parkingSpaceId: 1
             }
             userCarInsert(resData).then((res) => {
