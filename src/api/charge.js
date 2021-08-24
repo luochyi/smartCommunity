@@ -10,7 +10,7 @@ export function chargesTemplateList(data) {
 }
 // /chargesTemplateDetail/list
 export function chargesTemplateDetailList(data) {
-    return service.request({
+return service.request({
         method: 'GET',
         url: '/chargesTemplateDetail/list',
         params: data
@@ -100,6 +100,34 @@ export function depositManagementRefund(data) {
     return service.request({
         method: 'POST',
         url: '/depositManagement/refund',
+        data: data
+    })
+} 
+    // advancePayment/refund    refundPrice   estateId
+/**
+ * 
+ * @param {*} data 
+ * @returns 
+ */
+export function advancePaymentRefund(data) {
+    return service.request({
+        method: 'POST',
+        url: '/advancePayment/refund',
+        data: data
+    })
+}
+/**
+ * 预缴充值、退款
+ * @param {int} estateId
+ * @param {string} name
+ * @param {int} tel
+ * @param {double} payPrice
+ * @returns 
+ */
+export function advancePaymentRecharge(data) {
+    return service.request({
+        method: 'POST',
+        url: '/advancePayment/recharge',
         data: data
     })
 }

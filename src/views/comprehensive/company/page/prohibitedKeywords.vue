@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>违禁字管理</span>
+                <span>屏蔽管理</span>
             </div>
             <div class="content">
                 <div class="content-btn">
@@ -10,7 +10,7 @@
                         class="init-button"
                         @click="add()"
                         icon="el-icon-plus"
-                        >新增违禁字</el-button
+                        >新增内容</el-button
                     >
                 </div>
                 <!-- <div  style="width: 50px"><download-excel
@@ -79,7 +79,7 @@
                 >
                     <div style="padding: 30px">
                         <FromCard>
-                            <template slot="title">违禁字</template>
+                            <template slot="title">屏蔽字</template>
                             <template>
                                 <VueForm ref="addForm" :formObj="addForm">
                                     <!-- Slot -->
@@ -265,7 +265,7 @@ export default {
             return data
         },
         add() {
-            this.drawerTitle = '新增违禁字'
+            this.drawerTitle = '新增屏蔽字'
             this.add_vrisible = true
             // this.getUserList()
         },
@@ -276,7 +276,7 @@ export default {
                     type:'error'
                 })
             } else {
-                this.drawerTitle = '修改违禁字'
+                this.drawerTitle = '修改屏蔽字'
                 this.add_vrisible = true
                 // this.getUserList()
                 this.addForm.ruleForm.keywords = data[0].keywords
@@ -291,7 +291,7 @@ export default {
         },
         // 提交
         addSubmit() {
-            if (this.drawerTitle == '修改违禁字') {
+            if (this.drawerTitle == '修改屏蔽字') {
                 let resData = {
                     ...this.addForm.ruleForm,
                     id: this.thatId
@@ -306,7 +306,7 @@ export default {
                         this.addClose()
                     }
                 })
-            } else if (this.drawerTitle == '新增违禁字') {
+            } else if (this.drawerTitle == '新增屏蔽字') {
                 let resData = {
                     ...this.addForm.ruleForm
                 }

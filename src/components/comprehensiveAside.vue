@@ -207,7 +207,7 @@ export default {
         },
         {
           path: '/company/prohibitedKeywords',
-          label: '违禁字管理',
+          label: '屏蔽管理',
           iconurl: require('@/assets/images/company/sjkgl_nor.png'),
           iconisactive: require('@/assets/images/company/sjkgl_sel.png'),
           isChildren: 0

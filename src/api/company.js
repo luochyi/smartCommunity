@@ -286,6 +286,22 @@ export function attendanceTeamList(data) {
         params: data
     })
 }
+// attendanceSchedulingPlan/enable
+export function attendanceSchedulingPlanEnable(data) {
+    return service.request({
+        method: 'GET',
+        url: '/attendanceSchedulingPlan/enable',
+        params: data
+    })
+}
+// attendanceSchedulingPlan/insert
+export function attendanceSchedulingPlanInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/attendanceSchedulingPlan/insert',
+        data: data
+    })
+}
 //functionAuthority/updateRole给人员分配角色
 export function functionAuthorityUpdateRole(data) {
     return service.request({

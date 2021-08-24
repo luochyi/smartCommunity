@@ -14,6 +14,8 @@ const requestUrl = {
     attendanceRecordLeaveList:'attendanceRecord/leaveList',
     attendanceTeamList:'attendanceTeam/list',
     attendanceTeamListDelete:'attendanceTeam/delete',
+    attendanceSchedulingPlanList:'attendanceSchedulingPlan/list',
+    attendanceSchedulingPlanListDelect:'attendanceSchedulingPlan/delete',
     prohibitedKeywordsList:'prohibitedKeywords/list',
     prohibitedKeywordsListDelete:'prohibitedKeywords/delete',
     //提醒
@@ -142,6 +144,7 @@ const requestUrl = {
     sponsorManagementListDelete: '/sponsorManagement/falseDelete',
     expenseBillList:"expenseBill/list",
     expenseBillDetailList:"expenseBill/detailList",
+    advancePaymentList:'advancePayment/list',
     // List Delete
     //资讯
     newsCategoryManagementList: 'newsCategoryManagement/list',

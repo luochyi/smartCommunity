@@ -10,7 +10,7 @@
         <VueTable ref="table"
                   :config='config'
                   @tableCheck="tableCheck">
-          <template slot="tabs">
+          <!-- <template slot="tabs">
             <el-tabs v-model="activeName"
                      @tab-click="handleClick">
               <el-tab-pane label="全部"
@@ -20,9 +20,10 @@
               <el-tab-pane label="已退"
                            name="2"></el-tab-pane>
             </el-tabs>
-          </template>
+          </template> -->
           <template slot="footer">
             <div class="table-footer">
+              <button @click="refund(table_row)">充值</button>
               <button @click="refund(table_row)">退款</button>
               <!-- <button>修改</button> -->
             </div>
@@ -68,42 +69,14 @@ export default {
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '费用名称', prop: 'chargesTemplateDetailName', width: '180' },
-          { label: '交易号', prop: 'orderCode', width: '180' },
-          { label: '房屋信息', prop: 'roomName', width: '180' },
-          { label: '押金人姓名', prop: 'depositName', width: '180' },
-          { label: '押金人联系方式', prop: 'tel', width: '180' },
-          { label: '缴费时间', prop: 'payDate', width: '180' },
-          { label: '押金金额', prop: 'depositPrice', width: '180' },
-          { label: '状态', prop: 'status', width: '180' },
-          { label: '来源', prop: 'froms', width: '180' },
-          { label: '支付方式', prop: 'payType', width: '180' },
-          { label: '装修开始时间', prop: 'renovationDateStart', width: '180' },
-          { label: '装修结束时间', prop: 'renovationDateEnd', width: '180' },
-          { label: '备注', prop: 'remake', width: '280' },
-          { label: '创建人', prop: 'createName', width: '180' },
-          { label: '更新时间', prop: 'updateDate', width: '180' },
+          { label: '房屋信息', prop: 'roomName', width: 'auto' },
+          { label: '住户姓名', prop: 'residentName', width: 'auto' },
+          { label: '预缴金额', prop: 'advancePaymentPrice', width: 'auto' },
+          { label: '最近充值时间', prop: 'nearDate', width: 'auto' },
         ],
         table_data: [],
-        url: 'depositManagementList',
+        url: 'advancePaymentList',
         search_item: [
-          {
-            type: 'select',
-            label: '费用名称',
-            placeholder: '请选择',
-            value: '',
-            prop: 'chargesTemplateDetailId',
-            options: [
-              {
-                label: '水电费',
-                value: '1'
-              },
-              {
-                label: '车辆费',
-                value: '2'
-              }
-            ],
-          },
           {
             type: 'Input',
             label: '房屋信息',
@@ -111,45 +84,10 @@ export default {
             prop: 'roomName'
           },
           {
-            type: 'startDate',
-            label: '计费时间',
-            placeholder: '请选择开始日期',
-            prop: 'payDateStart'
-          },
-          {
-            type: 'endDate',
-            label: '计费时间',
-            placeholder: '请选择结束日期',
-            prop: 'payDateEnd'
-          },
-          {
-            type: 'select',
-            label: '来源',
-            placeholder: '请选择',
-            value: '',
-            prop: 'froms',
-            options: [
-              {
-                label: '线下',
-                value: '1'
-              },
-              {
-                label: 'app',
-                value: '2'
-              }
-            ],
-          },
-          {
             type: 'Input',
-            label: '押金人',
-            placeholder: '请选择',
-            prop: 'depositName'
-          },
-          {
-            type: 'Input',
-            label: '联系方式',
+            label: '住户名称',
             placeholder: '请输入',
-            prop: 'tel'
+            prop: 'residentName'
           },
 
           // 房屋信息
