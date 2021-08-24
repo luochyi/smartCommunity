@@ -74,9 +74,11 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button @click="detail(table_row)">详情</button> -->
+                                <button @click="detail(table_row)">详情</button>
                                 <button @click="del(table_row)">删除</button>
-                                <button @click="enable(table_row)">开启/关闭</button>
+                                <button @click="enable(table_row)">
+                                    开启/关闭
+                                </button>
                             </div>
                         </template>
                     </VueTable>
@@ -95,7 +97,6 @@
                                 </VueForm>
                                 <template>
                                     <div>
-                                        
                                         <div>
                                             <div class="add">
                                                 <span @click="addWorkingdays"
@@ -105,7 +106,9 @@
                                             <div class="content-table">
                                                 <template>
                                                     <el-table
-                                                        :data="sysAttendanceSchedulingPlanDetails"
+                                                        :data="
+                                                            sysAttendanceSchedulingPlanDetails
+                                                        "
                                                         highlight-current-row
                                                         :header-cell-style="{
                                                             background:
@@ -121,7 +124,7 @@
                                                         >
                                                         </el-table-column> -->
                                                         <el-table-column
-                                                            prop="workingday"
+                                                            prop="workingDays"
                                                             label="工作日"
                                                             width="130"
                                                         >
@@ -130,14 +133,18 @@
                                                             >
                                                                 <el-select
                                                                     size="small"
-                                                                    @change="currStationChange(scope.row)"
+                                                                    @change="
+                                                                        currStationChange(
+                                                                            scope.row
+                                                                        )
+                                                                    "
                                                                     v-model="
                                                                         scope
                                                                             .row
-                                                                            .workingday
+                                                                            .workingDays
                                                                     "
                                                                 >
-                                                                     <el-option
+                                                                    <el-option
                                                                         v-for="item in WorkingdaysOptions"
                                                                         :key="
                                                                             item.value
@@ -157,16 +164,22 @@
                                                             prop="firstTimeStart"
                                                             label="第一时段开始"
                                                         >
-                                                           <template
+                                                            <template
                                                                 slot-scope="scope"
                                                             >
-                                                                 <el-time-picker
+                                                                <el-time-picker
+                                                                    value-format="HH:mm:ss"
                                                                     size="mini"
-                                                                    style="width:150px"
-                                                                    v-model="scope
+                                                                    style="
+                                                                        width: 150px;
+                                                                    "
+                                                                    v-model="
+                                                                        scope
                                                                             .row
-                                                                            .firstTimeStart"
-                                                                    placeholder="选择开始时间">
+                                                                            .firstTimeStart
+                                                                    "
+                                                                    placeholder="选择开始时间"
+                                                                >
                                                                 </el-time-picker>
                                                             </template>
                                                         </el-table-column>
@@ -174,16 +187,22 @@
                                                             prop="firstTimeEnd"
                                                             label="第一时段结束"
                                                         >
-                                                           <template
+                                                            <template
                                                                 slot-scope="scope"
                                                             >
-                                                                 <el-time-picker
+                                                                <el-time-picker
+                                                                    value-format="HH:mm:ss"
                                                                     size="mini"
-                                                                    style="width:150px"
-                                                                    v-model="scope
+                                                                    style="
+                                                                        width: 150px;
+                                                                    "
+                                                                    v-model="
+                                                                        scope
                                                                             .row
-                                                                            .firstTimeEnd"
-                                                                    placeholder="选择结束时间">
+                                                                            .firstTimeEnd
+                                                                    "
+                                                                    placeholder="选择结束时间"
+                                                                >
                                                                 </el-time-picker>
                                                             </template>
                                                         </el-table-column>
@@ -191,16 +210,22 @@
                                                             prop="secondTimeStart"
                                                             label="第二时段开始"
                                                         >
-                                                           <template
+                                                            <template
                                                                 slot-scope="scope"
                                                             >
-                                                                 <el-time-picker
+                                                                <el-time-picker
+                                                                    value-format="HH:mm:ss"
                                                                     size="mini"
-                                                                    style="width:150px"
-                                                                    v-model="scope
+                                                                    style="
+                                                                        width: 150px;
+                                                                    "
+                                                                    v-model="
+                                                                        scope
                                                                             .row
-                                                                            .secondTimeStart"
-                                                                    placeholder="选择开始时间">
+                                                                            .secondTimeStart
+                                                                    "
+                                                                    placeholder="选择开始时间"
+                                                                >
                                                                 </el-time-picker>
                                                             </template>
                                                         </el-table-column>
@@ -221,14 +246,20 @@
                                                                             flex: 1;
                                                                         "
                                                                     >
-                                                                       <el-time-picker
-                                                                    size="mini"
-                                                                    style="width:150px"
-                                                                    v-model="scope
-                                                                            .row
-                                                                            .secondTimeEnd"
-                                                                    placeholder="选择结束时间">
-                                                                </el-time-picker>
+                                                                        <el-time-picker
+                                                                            value-format="HH:mm:ss"
+                                                                            size="mini"
+                                                                            style="
+                                                                                width: 150px;
+                                                                            "
+                                                                            v-model="
+                                                                                scope
+                                                                                    .row
+                                                                                    .secondTimeEnd
+                                                                            "
+                                                                            placeholder="选择结束时间"
+                                                                        >
+                                                                        </el-time-picker>
                                                                     </div>
                                                                     <div
                                                                         @click="
@@ -262,206 +293,264 @@
                                         </div>
                                     </div>
                                 </template>
-                                <FromCard style="marginTop:20px;">
+                                <FromCard style="margintop: 20px">
                                     <template slot="title">例外情况</template>
                                     <template>
-                                    <div>
-                                        
                                         <div>
-                                            <div class="add">
-                                                <span @click="adddays"
-                                                    >添加日期</span
-                                                >
-                                            </div>
-                                            <div class="content-table">
-                                                <template>
-                                                    <el-table
-                                                        :data="sysAttendanceSchedulingPlanExceptionList"
-                                                        highlight-current-row
-                                                        :header-cell-style="{
-                                                            background:
-                                                                '#F5F5F6',
-                                                            color: '#999999'
-                                                        }"
-                                                        style="width: 100%"
+                                            <div>
+                                                <div class="add">
+                                                    <span @click="adddays"
+                                                        >添加日期</span
                                                     >
-                                                        <el-table-column
-                                                            label="序号"
-                                                            width="60"
-                                                            type="index"
+                                                </div>
+                                                <div class="content-table">
+                                                    <template>
+                                                        <el-table
+                                                            :data="
+                                                                sysAttendanceSchedulingPlanExceptionList
+                                                            "
+                                                            highlight-current-row
+                                                            :header-cell-style="{
+                                                                background:
+                                                                    '#F5F5F6',
+                                                                color: '#999999'
+                                                            }"
+                                                            style="width: 100%"
                                                         >
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                            prop="dateRange"
-                                                            label="日期区间"
-                                                            width="162"
-                                                        >
-                                                            <template
-                                                                slot-scope="scope"
+                                                            <el-table-column
+                                                                label="序号"
+                                                                width="60"
+                                                                type="index"
                                                             >
-                                                               <el-date-picker
-                                                                    v-model="scope.row.dateRange"
-                                                                    type="date"
-                                                                    size='mini'
-                                                                    style="width:135px"
-                                                                    placeholder="选择日期">
-                                                                    </el-date-picker>
-                                                            </template>
-                                                        </el-table-column>
-                                                        
-                                                        <el-table-column
-                                                            prop="type"
-                                                            label="类型"
-                                                            width="120"
-                                                        >
-                                                           <template
-                                                                slot-scope="scope"
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                prop="dateRange"
+                                                                label="日期区间"
+                                                                width="162"
                                                             >
-                                                            <el-select size="small" v-model="scope.row.type">
-                                                                <el-option
-                                                                        v-for="item in typeOptions"
-                                                                        :key="
-                                                                            item.value
-                                                                        "
-                                                                        :label="
-                                                                            item.label
-                                                                        "
-                                                                        :value="
-                                                                            item.value
-                                                                        "
-                                                                    ></el-option>
-                                                            </el-select>
-                                                            </template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                            prop="firstTimeStart"
-                                                            label="第一时段开始"
-                                                            width="162"
-                                                        >
-                                                           <template
-                                                                slot-scope="scope"
-                                                            >
-                                                                 <el-time-picker
-                                                                    size="mini"
-                                                                    style="width:120px"
-                                                                    @change="timechange(scope)"
-                                                                    v-model="scope
-                                                                            .row
-                                                                            .firstTimeStart"
-                                                                    placeholder="选择开始时间">
-                                                                </el-time-picker>
-                                                            </template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                            prop="firstTimeEnd"
-                                                            label="第一时段结束"
-                                                            width="162"
-                                                        >
-                                                           <template
-                                                                slot-scope="scope"
-                                                            >
-                                                                 <el-time-picker
-                                                                    size="mini"
-                                                                    style="width:120px"
-                                                                    @change="timechange(scope)"
-                                                                    v-model="scope
-                                                                            .row
-                                                                            .firstTimeEnd"
-                                                                    placeholder="选择结束时间">
-                                                                </el-time-picker>
-                                                            </template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                            prop="secondTimeStart"
-                                                            label="第二时段开始"
-                                                            width="162"
-                                                        >
-                                                           <template
-                                                                slot-scope="scope"
-                                                            >
-                                                                 <el-time-picker
-                                                                    size="mini"
-                                                                    style="width:120px"
-                                                                    @change="timechange(scope)"
-                                                                    v-model="scope
-                                                                            .row
-                                                                            .secondTimeStart"
-                                                                    placeholder="选择开始时间">
-                                                                </el-time-picker>
-                                                            </template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                            prop="secondTimeEnd"
-                                                            label="第二时段结束"
-                                                            width="182"
-                                                        >
-                                                            <template
-                                                                slot-scope="scope"
-                                                            >
-                                                                <div
-                                                                    class="
-                                                                        column_flex
-                                                                    "
+                                                                <template
+                                                                    slot-scope="scope"
                                                                 >
-                                                                    <div
+                                                                    <el-date-picker
+                                                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                                                        v-model="
+                                                                            scope
+                                                                                .row
+                                                                                .dateRange
+                                                                        "
+                                                                        type="date"
+                                                                        size="mini"
                                                                         style="
-                                                                            flex: 1;
+                                                                            width: 135px;
+                                                                        "
+                                                                        placeholder="选择日期"
+                                                                    >
+                                                                    </el-date-picker>
+                                                                </template>
+                                                            </el-table-column>
+
+                                                            <el-table-column
+                                                                prop="type"
+                                                                label="类型"
+                                                                width="120"
+                                                            >
+                                                                <template
+                                                                    slot-scope="scope"
+                                                                >
+                                                                    <el-select
+                                                                        size="small"
+                                                                        v-model="
+                                                                            scope
+                                                                                .row
+                                                                                .type
                                                                         "
                                                                     >
-                                                                       <el-time-picker
-                                                                    size="mini"
-                                                                    style="width:120px"
-                                                                    v-model="scope
-                                                                            .row
-                                                                            .secondTimeEnd"
-                                                                    placeholder="选择结束时间">
-                                                                </el-time-picker>
-                                                                    </div>
-                                                                    <div
-                                                                        @click="
-                                                                            deleteRow(
-                                                                                scope.$index,
-                                                                                sysAttendanceSchedulingPlanExceptionList
+                                                                        <el-option
+                                                                            v-for="item in typeOptions"
+                                                                            :key="
+                                                                                item.value
+                                                                            "
+                                                                            :label="
+                                                                                item.label
+                                                                            "
+                                                                            :value="
+                                                                                item.value
+                                                                            "
+                                                                        ></el-option>
+                                                                    </el-select>
+                                                                </template>
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                prop="firstTimeStart"
+                                                                label="第一时段开始"
+                                                                width="162"
+                                                            >
+                                                                <template
+                                                                    slot-scope="scope"
+                                                                >
+                                                                    <el-time-picker
+                                                                        value-format="HH:mm:ss"
+                                                                        size="mini"
+                                                                        style="
+                                                                            width: 120px;
+                                                                        "
+                                                                        @change="
+                                                                            timechange(
+                                                                                scope
                                                                             )
                                                                         "
-                                                                        v-if="
-                                                                            scope.$index !==
-                                                                            0
+                                                                        v-model="
+                                                                            scope
+                                                                                .row
+                                                                                .firstTimeStart
                                                                         "
+                                                                        placeholder="选择开始时间"
+                                                                    >
+                                                                    </el-time-picker>
+                                                                </template>
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                prop="firstTimeEnd"
+                                                                label="第一时段结束"
+                                                                width="162"
+                                                            >
+                                                                <template
+                                                                    slot-scope="scope"
+                                                                >
+                                                                    <el-time-picker
+                                                                        value-format="HH:mm:ss"
+                                                                        size="mini"
                                                                         style="
-                                                                            padding-left: 10px;
+                                                                            width: 120px;
+                                                                        "
+                                                                        @change="
+                                                                            timechange(
+                                                                                scope
+                                                                            )
+                                                                        "
+                                                                        v-model="
+                                                                            scope
+                                                                                .row
+                                                                                .firstTimeEnd
+                                                                        "
+                                                                        placeholder="选择结束时间"
+                                                                    >
+                                                                    </el-time-picker>
+                                                                </template>
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                prop="secondTimeStart"
+                                                                label="第二时段开始"
+                                                                width="162"
+                                                            >
+                                                                <template
+                                                                    slot-scope="scope"
+                                                                >
+                                                                    <el-time-picker
+                                                                        value-format="HH:mm:ss"
+                                                                        size="mini"
+                                                                        style="
+                                                                            width: 120px;
+                                                                        "
+                                                                        @change="
+                                                                            timechange(
+                                                                                scope
+                                                                            )
+                                                                        "
+                                                                        v-model="
+                                                                            scope
+                                                                                .row
+                                                                                .secondTimeStart
+                                                                        "
+                                                                        placeholder="选择开始时间"
+                                                                    >
+                                                                    </el-time-picker>
+                                                                </template>
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                prop="secondTimeEnd"
+                                                                label="第二时段结束"
+                                                                width="182"
+                                                            >
+                                                                <template
+                                                                    slot-scope="scope"
+                                                                >
+                                                                    <div
+                                                                        class="
+                                                                            column_flex
                                                                         "
                                                                     >
-                                                                        <span
-                                                                            ><i
-                                                                                class="
-                                                                                    el-icon-delete
+                                                                        <div
+                                                                            style="
+                                                                                flex: 1;
+                                                                            "
+                                                                        >
+                                                                            <el-time-picker
+                                                                                value-format="HH:mm:ss"
+                                                                                size="mini"
+                                                                                style="
+                                                                                    width: 120px;
                                                                                 "
-                                                                            ></i
-                                                                        ></span>
+                                                                                v-model="
+                                                                                    scope
+                                                                                        .row
+                                                                                        .secondTimeEnd
+                                                                                "
+                                                                                placeholder="选择结束时间"
+                                                                            >
+                                                                            </el-time-picker>
+                                                                        </div>
+                                                                        <div
+                                                                            @click="
+                                                                                deleteRow(
+                                                                                    scope.$index,
+                                                                                    sysAttendanceSchedulingPlanExceptionList
+                                                                                )
+                                                                            "
+                                                                            v-if="
+                                                                                scope.$index !==
+                                                                                0
+                                                                            "
+                                                                            style="
+                                                                                padding-left: 10px;
+                                                                            "
+                                                                        >
+                                                                            <span
+                                                                                ><i
+                                                                                    class="
+                                                                                        el-icon-delete
+                                                                                    "
+                                                                                ></i
+                                                                            ></span>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </template>
-                                                        </el-table-column>
-                                                        <el-table-column
-                                                            prop="remakes"
-                                                            label="备注"
-                                                            width="120"
-                                                        >
-                                                           <template
-                                                                slot-scope="scope"
+                                                                </template>
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                prop="remakes"
+                                                                label="备注"
+                                                                width="120"
                                                             >
-                                                            <el-input v-model="scope.row.remakes" size="mini"></el-input>
-                                                            </template>
-                                                        </el-table-column>
-                                                    </el-table>
-                                                </template>
+                                                                <template
+                                                                    slot-scope="scope"
+                                                                >
+                                                                    <el-input
+                                                                        v-model="
+                                                                            scope
+                                                                                .row
+                                                                                .remakes
+                                                                        "
+                                                                        size="mini"
+                                                                    ></el-input>
+                                                                </template>
+                                                            </el-table-column>
+                                                        </el-table>
+                                                    </template>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </template>
+                                    </template>
                                 </FromCard>
-                                
                             </template>
                         </FromCard>
                     </div>
@@ -482,84 +571,156 @@
             <div class="main details-box" v-if="!handleChangeShow">
                 <div class="head-box">
                     <div class="titel">
-                        <span>盘点明细</span>
-                        <button     style="marginLeft:50px"
-                                    class="btn-orange"
-                                    @click="handleChangeShow = true"
-                                >
-                                    <span> 返回</span>
-                                </button>
+                        <span>排班明细</span>
+                        <button
+                            style="marginleft: 50px"
+                            class="btn-orange"
+                            @click="handleChangeShow = true"
+                        >
+                            <span> 返回</span>
+                        </button>
                     </div>
                     <div class="content">
                         <!-- detailData -->
-                    <div class="box-item">
-                        <div class="item">
-                            <div class="span">
-                                <span>盘点期次</span>
+                        <div class="box-item">
+                            <div class="item">
+                                <div class="span">
+                                    <span>小组名称</span>
+                                </div>
+                                <div>
+                                    <span>{{ detailData.name }}</span>
+                                </div>
                             </div>
-                            <div>
-                                <span>{{detailData.periodTime}}</span>
+                            <div class="item">
+                                <div class="span">
+                                    <span>关联小组</span>
+                                </div>
+                                <div>
+                                    <span>{{ detailData.teamName }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="span">
+                                    <span>所属部门名称</span>
+                                </div>
+                                <div>
+                                    <span>{{
+                                        detailData.organizationName
+                                    }}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="item">
-                            <div class="span">
-                                <span>盘点种类数量</span>
-                            </div>
-                            <div>
-                                <span>{{
-                                    detailData.speciesNum
-                                }}</span>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="span">
-                                <span>盘点时间</span>
-                            </div>
-                            <div>
-                                <span>{{ detailData.inventoryDateStart}}-{{detailData.inventoryDateEnd}}</span>
-                            </div>
-                        </div>
-                        
-                    </div>
                     </div>
                 </div>
                 <div class="box">
-                             <template>
-                            <el-table
-                            :data="detailData.sysAttendanceSchedulingPlanDetails"
-                            style="width: 100%">
-                            <el-table-column
+                    <template>
+                        <el-table
+                            :data="
+                                detailData.sysAttendanceSchedulingPlanDetailVoList
+                            "
+                            style="width: 100%"
+                        >
+                            <!-- <el-table-column
                                 type="index"
                                 label="序号"
                                 width="80">
+                            </el-table-column> -->
+                            <el-table-column
+                                prop="workingDays"
+                                :formatter="dateFormat"
+                                label="工作日"
+                                width="130"
+                            >
                             </el-table-column>
                             <el-table-column
-                                prop="name"
-                                label="物资名称"
-                                width="130">
+                                prop="firstTimeStart"
+                                label="第一时段开始"
+                                width="130"
+                            >
                             </el-table-column>
                             <el-table-column
-                                prop="shouldInventory"
-                                label="应有库存"
-                                width="130">
+                                prop="firstTimeEnd"
+                                label="第一时段结束"
+                                width="130"
+                            >
                             </el-table-column>
                             <el-table-column
-                                prop="unit"
-                                label="单位"
-                                width="100">
+                                prop="secondTimeStart"
+                                label="第二时段开始"
+                                width="130"
+                            >
                             </el-table-column>
                             <el-table-column
-                                prop="actualInventory"
-                                label="实际库存"
-                                 width="130">
+                                prop="secondTimeEnd"
+                                label="第二时段结束"
+                                width="130"
+                            >
+                            </el-table-column>
+                        </el-table>
+                    </template>
+                </div>
+                <div class="box">
+                    <div>例外情况</div>
+                    <template>
+                        <el-table
+                            :data="
+                                detailData.sysAttendanceSchedulingPlanExceptionVOList
+                            "
+                            style="width: 100%"
+                        >
+                            <!-- <el-table-column
+                                type="index"
+                                label="序号"
+                                width="80">
+                            </el-table-column> -->
+                            <el-table-column
+                                prop="dateRange"
+                                label="日期"
+                                width="130"
+                            >
                             </el-table-column>
                             <el-table-column
-                                prop="inventorySurplusLosses"
-                                label="盘盈/盘亏"
-                                 width="130">
+                                prop="firstTimeStart"
+                                label="第一时段开始"
+                                width="130"
+                            >
                             </el-table-column>
-                            </el-table>
-                        </template>
+                            <el-table-column
+                                prop="firstTimeEnd"
+                                label="第一时段结束"
+                                width="100"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                prop="secondTimeStart"
+                                label="第二时段开始"
+                                width="130"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                prop="secondTimeEnd"
+                                label="第二时段结束"
+                                width="130"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                prop="type"
+                                label="类型"
+                                width="130"
+                            >
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.type===1">休假</span>
+                                <span v-else-if="scope.row.type===2">上班</span>
+                            </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="remakes"
+                                label="备注"
+                                width="130"
+                            >
+                            </el-table-column>
+                        </el-table>
+                    </template>
                 </div>
             </div>
         </div>
@@ -568,64 +729,67 @@
 
 <script>
 import {
-    attendanceTeamList,attendanceSchedulingPlanInsert,attendanceSchedulingPlanEnable
+    attendanceTeamList,
+    attendanceSchedulingPlanInsert,
+    attendanceSchedulingPlanEnable,
+    attendanceSchedulingPlanFindById
 } from '@/api/company'
 export default {
-    inject:['reload'],
+    inject: ['reload'],
     data() {
         return {
-            detailData:{
-                periodTime:null,
-                speciesNum:null,
-                inventoryDateStart:null,
-                inventoryDateEnd:null,
-                sysAttendanceSchedulingPlanDetails:[]
+            detailData: {
+                name: null,
+                teamName: null,
+                organizationName: null,
+                sysAttendanceSchedulingPlanDetailVoList: [],
+                sysAttendanceSchedulingPlanExceptionVOList: []
             },
             handleChangeShow: true,
 
-            typeOptions:[
-                {label:'休假',value:1},
-                {label:'上班',value:2},
+            typeOptions: [
+                { label: '休假', value: 1 },
+                { label: '上班', value: 2 }
             ],
             sysAttendanceSchedulingPlanDetails: [],
-            sysAttendanceSchedulingPlanExceptionList:[],
+            sysAttendanceSchedulingPlanExceptionList: [],
             add_vrisible: false,
             addDate: null,
             WorkingdaysOptions: [
                 {
-                    label:'周日',
-                    value:1
+                    label: '周日',
+                    value: 1
                 },
                 {
-                    label:'周一',
-                    value:2
+                    label: '周一',
+                    value: 2
                 },
                 {
-                    label:'周二',
-                    value:3
+                    label: '周二',
+                    value: 3
                 },
                 {
-                    label:'周三',
-                    value:4
+                    label: '周三',
+                    value: 4
                 },
                 {
-                    label:'周四',
-                    value:5
+                    label: '周四',
+                    value: 5
                 },
                 {
-                    label:'周五',
-                    value:6
+                    label: '周五',
+                    value: 6
                 },
                 {
-                    label:'周六',
-                    value:7
-                },
+                    label: '周六',
+                    value: 7
+                }
             ],
             addForm: {
                 ruleForm: {
-                    name:null,
-                    teamId:null,
-                    status:2
+                    name: null,
+                    teamId: null,
+                    status: 2
                 },
                 // rules: {
                 //     tel: [
@@ -656,10 +820,8 @@ export default {
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'teamId',
-                        options:[
-
-                        ]
-                    },
+                        options: []
+                    }
                 ]
             },
             table_row: [],
@@ -679,17 +841,17 @@ export default {
                         label: '状态',
                         prop: 'status',
                         width: 'auto',
-                        type:'function',
-                        callback:(row,prop)=>{
+                        type: 'function',
+                        callback: (row, prop) => {
                             switch (row.status) {
                                 case 1:
                                     return '启用'
-                                    break;
+                                    break
                                 case 2:
                                     return '停用'
-                                    break;
+                                    break
                                 default:
-                                    break;
+                                    break
                             }
                         }
                     },
@@ -707,8 +869,7 @@ export default {
                         label: '创建人名称',
                         prop: 'createName',
                         width: 'auto'
-                    },
-                    
+                    }
                 ],
                 table_data: [],
                 url: 'attendanceSchedulingPlanList',
@@ -724,10 +885,11 @@ export default {
                         label: '状态',
                         placeholder: '请输入',
                         prop: 'status',
-                        options:[
-                            {label:"启用",value:1}, {label:"停用",value:2},
+                        options: [
+                            { label: '启用', value: 1 },
+                            { label: '停用', value: 2 }
                         ]
-                    },
+                    }
                     // Slot
                 ],
                 data: {
@@ -740,11 +902,11 @@ export default {
     methods: {
         addWorkingdays() {
             this.sysAttendanceSchedulingPlanDetails.push({
-                workingday: null,
+                workingDays: null,
                 firstTimeStart: null,
                 firstTimeEnd: null,
-                secondTimeStart:null,
-                secondTimeEnd: null,
+                secondTimeStart: null,
+                secondTimeEnd: null
             })
         },
         adddays() {
@@ -754,62 +916,88 @@ export default {
                 type: null,
                 firstTimeStart: null,
                 firstTimeEnd: null,
-                secondTimeStart:null,
-                secondTimeEnd: null,
+                secondTimeStart: null,
+                secondTimeEnd: null
             })
         },
         add() {
-            this.addForm.form_item[1].options=[]
+            this.addForm.form_item[1].options = []
             this.add_vrisible = true
-            attendanceTeamList().then(res=>{
-                console.log(res.tableList);
-                res.tableList&&res.tableList.forEach(element => {
-                    let obj ={
-                        value:element.id,
-                        label:element.name
-                    }
-                    this.addForm.form_item[1].options.push(obj)
-                });
-            }
-            )
+            attendanceTeamList().then((res) => {
+                console.log(res.tableList)
+                res.tableList &&
+                    res.tableList.forEach((element) => {
+                        let obj = {
+                            value: element.id,
+                            label: element.name
+                        }
+                        this.addForm.form_item[1].options.push(obj)
+                    })
+            })
         },
-        deleteRow (index, rows) {
-      rows.splice(index, 1);
-    },
+        deleteRow(index, rows) {
+            rows.splice(index, 1)
+        },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
         addSubmit() {
-            console.log(this.sysAttendanceSchedulingPlanDetails);
-             console.log(this.sysAttendanceSchedulingPlanExceptionList);
+            console.log(this.sysAttendanceSchedulingPlanDetails)
+            console.log(this.sysAttendanceSchedulingPlanExceptionList)
             let resData = {
-                name:this.addForm.ruleForm.name,
-                teamId:this.addForm.ruleForm.teamId,
-                status:this.addForm.ruleForm.status,
-                sysAttendanceSchedulingPlanDetails:[],
-                sysAttendanceSchedulingPlanExceptionList:[]
+                name: this.addForm.ruleForm.name,
+                teamId: this.addForm.ruleForm.teamId,
+                status: this.addForm.ruleForm.status,
+                sysAttendanceSchedulingPlanDetails:
+                    this.sysAttendanceSchedulingPlanDetails,
+                sysAttendanceSchedulingPlanExceptionList:
+                    this.sysAttendanceSchedulingPlanExceptionList
             }
-            console.log(resData);
+            console.log(resData)
             // return
-            attendanceSchedulingPlanInsert(resData).then(res=>{
-                if(res.status){
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.requestData()
-                        this.add_vrisible = false
-                    }else{
-                        this.$message({
-                            message: res.message,
-                            type: 'error'
-                        })
-                    }
+            attendanceSchedulingPlanInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.requestData()
+                    this.add_vrisible = false
+                } else {
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    })
+                }
             })
         },
-        timechange(arr){
-            console.log(arr);
+        dateFormat(row,col){
+            switch (row.workingDays) {
+                case 1:
+                    return '周日'
+                    break;
+                case 2:
+                    return '周一'
+                    break;
+                case 3:
+                    return '周二'
+                    break;
+                case 4:
+                    return '周三'
+                    break;
+                case 5:
+                    return '周四'
+                    break;
+                case 6:
+                    return '周五'
+                    break;
+                case 7:
+                    return '周六'
+                    break;
+                default:
+                    break;
+            }
         },
         // tabs切换
         handleClick(tab, event) {
@@ -828,8 +1016,8 @@ export default {
         },
 
         // 物资种类更换获取现存量，单位
-        currStationChange(a){
-            console.log(a);
+        currStationChange(a) {
+            console.log(a)
         },
         // 表格选中
         tableCheck(data) {
@@ -855,53 +1043,57 @@ export default {
                 this.$message.error('请选中需要删除的数据')
             }
         },
-        enable(data){
-            if(data.length!=1){
-                this.$message({message:'请选择一条数据开启',type:'error'})
+        enable(data) {
+            if (data.length != 1) {
+                this.$message({ message: '请选择一条数据开启', type: 'error' })
             }
-            attendanceSchedulingPlanEnable({id:data[0].id}).then(res=>{
-                if(res.status){
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.requestData()
-                        this.add_vrisible = false
-                    }else{
-                        this.$message({
-                            message: res.message,
-                            type: 'error'
-                        })
-                    }
+            attendanceSchedulingPlanEnable({ id: data[0].id }).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.requestData()
+                    this.add_vrisible = false
+                } else {
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    })
+                }
             })
         },
-        // detail(data){
-        //     if(data.length!=1){
-        //         this.$message({type:'error',message:'请选择一条数据查看'})
-        //     }else{
-        //         this.handleChangeShow = false
-        //         WorkingdaysInventoryFindById({id:data[0].id}).then(res=>{
-        //             console.log(res.data);
-        //             let pddata = res.data
-        //            this.detailData.inventoryDateEnd= pddata.inventoryDateEnd 
-        //           this.detailData.inventoryDateStart = pddata.inventoryDateStart
-        //            this.detailData.periodTime= pddata.periodTime
-        //             this.detailData.speciesNum= pddata.speciesNum
-        //             this.detailData.sysAttendanceSchedulingPlanDetails = pddata.vosysAttendanceSchedulingPlanDetails
-        //             console.log(this.detailData);
-        //         })
-        //     }
-        // },
+        detail(data) {
+            if (data.length != 1) {
+                this.$message({ type: 'error', message: '请选择一条数据查看' })
+            } else {
+                this.handleChangeShow = false
+                attendanceSchedulingPlanFindById({ id: data[0].id }).then(
+                    (res) => {
+                        console.log(res.data)
+                        let detaildata = res.data
+                        this.detailData.name = detaildata.name
+                        this.detailData.teamName = detaildata.teamName
+                        this.detailData.organizationName =
+                            detaildata.organizationName
+                        this.detailData.sysAttendanceSchedulingPlanDetailVoList =
+                            detaildata.sysAttendanceSchedulingPlanDetailVoList
+                        this.detailData.sysAttendanceSchedulingPlanExceptionVOList =
+                            detaildata.sysAttendanceSchedulingPlanExceptionVOList
+                        console.log(this.detailData)
+                    }
+                )
+            }
+        }
         // edit(data){
         //     if(data.length!=1){
         //         this.$message({type:'error',message:'请选择一条数据修改'})
         //     }else{
-                
+
         //     }
         // },
     },
-    watch:{
-    }
+    watch: {}
 }
 </script>
 

@@ -302,6 +302,14 @@ export function attendanceSchedulingPlanInsert(data) {
         data: data
     })
 }
+export function attendanceSchedulingPlanFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/attendanceSchedulingPlan/findById',
+        params: data
+    })
+}
+
 //functionAuthority/updateRole给人员分配角色
 export function functionAuthorityUpdateRole(data) {
     return service.request({
