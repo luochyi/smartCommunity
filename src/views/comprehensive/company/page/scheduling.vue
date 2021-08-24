@@ -593,31 +593,31 @@ export default {
             addDate: null,
             WorkingdaysOptions: [
                 {
-                    label:'周一',
+                    label:'周日',
                     value:1
                 },
                 {
-                    label:'周二',
+                    label:'周一',
                     value:2
                 },
                 {
-                    label:'周三',
+                    label:'周二',
                     value:3
                 },
                 {
-                    label:'周四',
+                    label:'周三',
                     value:4
                 },
                 {
-                    label:'周五',
+                    label:'周四',
                     value:5
                 },
                 {
-                    label:'周六',
+                    label:'周五',
                     value:6
                 },
                 {
-                    label:'周日',
+                    label:'周六',
                     value:7
                 },
             ],
