@@ -80,6 +80,8 @@ const requestUrl = {
     //包裹
     packageCollectionList: 'packageCollection/list',
     packageCollectionListDelete: '/packageCollection/delete',
+    securityManagementList:'securityManagement/list',
+    securityManagementListDelete:'securityManagement/delete',
 
     userDecorationList: 'userDecoration/list',
     voteList: '/vote/list',

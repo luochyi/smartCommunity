@@ -553,3 +553,33 @@ export function communityIntroductionFindById(data) {
         params: data
     })
 }
+// 、、securityManagement/insert
+export function securityManagementInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/securityManagement/insert',
+        data: data
+    })
+}
+export function securityManagementUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/securityManagement/update',
+        data: data
+    })
+}
+export function securityManagementList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/securityManagement/list',
+        params: data
+    })
+}
+//securityManagement/findAllCreateName
+export function securityManagementFindAllCreateName(data) {
+    return service.request({
+        method: 'GET',
+        url: '/securityManagement/findAllCreateName',
+        params: data
+    })
+}

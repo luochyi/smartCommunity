@@ -335,6 +335,10 @@ const routes = [
                     {
                         path:'/daily/HealthArea',
                         component:()=>import('@/views/daily/page/HealthArea')
+                    },
+                    {
+                        path:'/daily/safeManage',
+                        component:()=>import('@/views/daily/page/safeManage')
                     }
                 ]
             }

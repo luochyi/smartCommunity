@@ -259,7 +259,14 @@ export default {
                             label: '卫生区域'
                         }
                     ]
-                }
+                },
+                 {
+                    path: '/daily/safeManage',
+                    label: '安全管理',
+                    iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
+                    iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
+                    isChildren: 0
+                },
             ],
             isCollapse: false
         }
