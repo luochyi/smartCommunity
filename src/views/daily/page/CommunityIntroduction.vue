@@ -48,7 +48,7 @@
                                                 :file-list="imglist"
                                                 ref="myUpload1"
                                                 :on-exceed="handleExceed"
-                                                :limit="1"
+                                                :limit="10"
                                                 accept=".jpg,.png,.JPG,.PNG"
                                                 :before-upload="
                                                     beforeAvatarUpload
@@ -112,7 +112,7 @@
                                                 :file-list="imglist"
                                                 :on-exceed="handleExceed"
                                                 ref="myUpload"
-                                                :limit="1"
+                                                :limit="10"
                                                 accept=".jpg,.png,.JPG,.PNG"
                                                 :before-upload="
                                                     beforeAvatarUpload
@@ -371,16 +371,22 @@ export default {
                 this.editForm.ruleForm.id = data[0].id
                 communityIntroductionFindById({ id: data[0].id }).then(
                     (res) => {
+                        console.log(res);
                         console.log(res.data.imgList);
                       if (res.data.imgList.length) {
-                            let obj = {
-                                name: res.data.imgList[0].url,
-                                url: res.data.imgList[0].url
+                          res.data.imgList.forEach(element => {
+                              let obj = {
+                                name: element.url,
+                                url: element.url
                             }
-                            this.editForm.ruleForm.imgUrls = [
-                                res.data.imgList[0].url
-                            ]
-                            this.$set(this.imglist, 0, obj)
+                            // this.$set(this.imglist, 0, obj)
+                            this.imglist.push(obj)
+                          });
+                            
+                            // this.editForm.ruleForm.imgUrls = [
+                            //     res.data.imgList[0].url
+                            // ]
+                            // this.$set(this.imglist, 0, obj)
                         } else {
                             this.editForm.ruleForm.imgUrls = []
                         }
@@ -420,8 +426,8 @@ export default {
         },
         // 图片上传成功
         ImgeSuccess(res, file) {
-            this.addForm.ruleForm.imgUrls[0] = file.response.url
-            this.editForm.ruleForm.imgUrls[0] = file.response.url
+            this.addForm.ruleForm.imgUrls.push(file.response.url)
+            this.editForm.ruleForm.imgUrls.push(file.response.url)
             console.log(this.editForm.ruleForm.imgUrls);
         },
         // 图片文件上传之前
@@ -440,7 +446,7 @@ export default {
         //  上传限制提示
         handleExceed(files, fileList) {
             this.$message.warning(
-                `当前限制选择 1 个文件，本次选择了 ${
+                `当前限制选择 10 个文件，本次选择了 ${
                     files.length
                 } 个文件，共选择了 ${files.length + fileList.length} 个文件`
             )
