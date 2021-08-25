@@ -230,7 +230,16 @@ export default {
                     type: 1,
                     id: null,
                     fileDocUrl: null,
-                    fileDocName: null
+                    fileDocName: null,
+                    brand: null,
+                    procurementCosts: null,
+                    purchasingManufacturer: null,
+                    manufacturerPhone: null,
+                    warrantyPeriodYears: null,
+                    warrantyPeriodMonths: null,
+                    validityStart: null,
+                    validityEnd: null,
+                    remakes:null
                 },
                 form_item: [
                     {
@@ -262,6 +271,62 @@ export default {
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'address'
+                    },
+                    {
+                        type: 'Input',
+                        label: '设施品牌',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'brand'
+                    },
+                    {
+                        type: 'Input',
+                        label: '采购费用',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'procurementCosts'
+                    },
+                    {
+                        type: 'Input',
+                        label: '采购厂家',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'purchasingManufacturer'
+                    },
+                    {
+                        type: 'Input',
+                        label: '厂家电话',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'manufacturerPhone'
+                    },
+                    {
+                        type: 'Int',
+                        label: '质保期限-年',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'warrantyPeriodYears'
+                    },
+                    {
+                        type: 'Int',
+                        label: '质保期限-月',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'warrantyPeriodMonths'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '设施有效期开始',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'validityStart'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '设施有效期结束',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'validityEnd'
                     },
                     {
                         type: 'Slot',
@@ -339,6 +404,14 @@ export default {
                         }
                     },
                     { label: '添加时间', prop: 'createDate', width: '220' },
+                    { label: '设施品牌', prop: 'brand', width: '220' },
+                    { label: '采购费用', prop: 'procurementCosts', width: '220' },
+                    { label: '采购厂家', prop: 'purchasingManufacturer', width: '220' },
+                    { label: '厂家电话', prop: 'manufacturerPhone', width: '220' },
+                    { label: '质保期限-年', prop: 'warrantyPeriodYears', width: '220' },
+                    { label: '质保期限-月', prop: 'warrantyPeriodMonths', width: '220' },
+                    { label: '设施有效期开始', prop: 'validityStart', width: '220' },
+                    { label: '设施有效期结束', prop: 'validityEnd', width: '220' },
                     {
                         label: 'doc，docx下载',
                         prop: 'fileDocUrl',
@@ -503,7 +576,14 @@ export default {
                         this.addForm.ruleForm.fileDocUrl =
                             res.data.detail.fileDocUrl
                         this.addForm.ruleForm.remakes = res.data.detail.remakes
-
+                        this.addForm.ruleForm.brand = res.data.detail.brand
+                        this.addForm.ruleForm.procurementCosts = res.data.detail.procurementCosts
+                        this.addForm.ruleForm.purchasingManufacturer = res.data.detail.purchasingManufacturer
+                        this.addForm.ruleForm.manufacturerPhone = res.data.detail.manufacturerPhone
+                        this.addForm.ruleForm.warrantyPeriodYears = res.data.detail.warrantyPeriodYears
+                        this.addForm.ruleForm.warrantyPeriodMonths = res.data.detail.warrantyPeriodMonths
+                        this.addForm.ruleForm.validityStart = res.data.detail.validityStart
+                        this.addForm.ruleForm.validityEnd = res.data.detail.validityEnd
                         if (res.data.detail.fileDocUrl == null) {
                             this.wordList = []
                         } else {
