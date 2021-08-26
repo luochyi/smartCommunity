@@ -67,6 +67,20 @@
                         </FromCard>
                         <FromCard style="marginTop:20px">
                           <template slot="title">评论列表</template>
+                          <el-table :data="gambitThemeFindCommentByTheme">
+                              <el-table-column prop="createName" label="评论人" width="200px"></el-table-column>
+                              <el-table-column prop="createDate" label="评论时间"></el-table-column>
+                              <el-table-column prop="content" label="评论内容"></el-table-column>
+                              <el-table-column
+                                label="删除评论">
+                                <template slot-scope="scope">
+                                  <el-button
+                                    size="mini"
+                                    type="danger"
+                                    @click="handleDelete(scope.row)">Delete</el-button>
+                                </template>
+                              </el-table-column>
+                          </el-table>
                         </FromCard>
                     </div>
                     <div slot="footer">
@@ -80,12 +94,13 @@
   </div>
 </template>
 <script>
-import { gambitThemeRecovery,gambitThemeEnableComment, gambitThemeEnableTheme,gambitThemeList} from '@/api/butler'
+import { gambitThemeRecovery,gambitThemeEnableComment, gambitThemeEnableTheme,gambitThemeList,gambitThemeFindCommentByThemeId,gambitThemeDeleteCommentByCommentId} from '@/api/butler'
 export default {
   data () {
     return {
       drawer_details: false,
-      detailList:{
+      gambitThemeFindCommentByTheme:[],// 评论列表 table data
+      detailList:{  //详情数据
         gambitName:null,
         gambitContent:null,
         img:[],
@@ -121,8 +136,6 @@ export default {
            { label: '点赞人数', prop: 'likeNum', width: '180', sortable: true },
           { label: '评论人数', prop: 'commentNum', width: '180', sortable: true },
             { label: '发布时间', prop: 'gambitCreateDate', width: '180', sortable: true },
-          
-          
         ],
         url: 'gambitThemeList',
         table_data: [],
@@ -145,7 +158,6 @@ export default {
             placeholder: '请输入',
             prop: 'title'
           },
-
           {
             type: 'Input',
             label: '发布人姓名',
@@ -201,10 +213,31 @@ export default {
     }
   },
   methods: {
+    // 获取评论
+    getList(id){
+      gambitThemeFindCommentByThemeId({themeId:id}).then(res=>{
+        console.log(res);
+        this.gambitThemeFindCommentByTheme = res.data
+        // console.log(this.gambitThemeFindCommentByTheme);
+      })
+    },
+    // 删除评论
+    handleDelete(that){
+      console.log(that.id);
+      gambitThemeDeleteCommentByCommentId({commentId:that.id}).then(res=>{
+        if(res.status){
+          this.$message({type:'success',message:res.message})
+          // console.log(this.table_row);
+          // 删除评论后再获取一次评论
+          this.getList(this.table_row[0].id)
+        }
+      })
+    },
     tableCheck (arr) {
       this.table_row = arr
 
     },
+    // 查看详情
     detail(data){
       if(data.length!=1){
         this.$message({message:'请选择一条数据查看'})
@@ -228,8 +261,10 @@ export default {
           }
         });
       })
-      
+      // 获取评论
+      this.getList(data[0].id)
     },
+    // 开启停用动态发布
     opensubmit(){
       gambitThemeEnableTheme().then(res=>{
         if (res.status) {
@@ -241,6 +276,7 @@ export default {
             }
       })
     },
+    // 开启停用评论发布
     opencomment(){
       gambitThemeEnableComment().then(res=>{
         if (res.status) {

@@ -12,7 +12,8 @@
                                 >新增设施</el-button
                             >
                         </div>
-                        <div  style="width: 50px"><download-excel
+                        <div style="width: 50px">
+                            <download-excel
                                 class="export-excel-wrapper"
                                 :fetch="fetchData"
                                 :fields="json_fields"
@@ -26,7 +27,8 @@
                                     plain
                                     >导出Excel</el-button
                                 >
-                            </download-excel></div>
+                            </download-excel>
+                        </div>
                         <div class="">
                             <VueTable
                                 ref="table"
@@ -75,6 +77,9 @@
                                         </button>
                                         <button @click="del(table_row)">
                                             删除
+                                        </button>
+                                        <button @click="maintain(table_row)">
+                                            查看保养记录
                                         </button>
                                     </div>
                                 </template>
@@ -163,7 +168,9 @@
                                                         >
                                                         <div
                                                             slot="tip"
-                                                            class="el-upload__tip"
+                                                            class="
+                                                                el-upload__tip
+                                                            "
                                                         >
                                                             <span
                                                                 >支持扩展名：doc,docx</span
@@ -184,6 +191,28 @@
                                     >
                                 </button>
                                 <button class="btn-gray" @click="addClose">
+                                    <span>取消</span>
+                                </button>
+                            </div>
+                        </Drawer>
+                        <Drawer
+                            :drawerVrisible="drawer_maintain"
+                            @drawerClose="getClose"
+                            drawerTitle="新增保养记录"
+                        >
+                            <div style="padding: 30px">
+                                <FromCard>
+                                    <template slot="title">基本信息</template>
+                                    <div
+                                        style="fontsize: 16px; lineheight: 20px"
+                                    ></div>
+                                </FromCard>
+                                <FromCard style="margintop: 20px">
+                                    <template slot="title">保养情况</template>
+                                </FromCard>
+                            </div>
+                            <div slot="footer">
+                                <button class="btn-gray" @click="getClose">
                                     <span>取消</span>
                                 </button>
                             </div>
@@ -215,6 +244,7 @@ export default {
     },
     data() {
         return {
+            drawer_maintain: false,
             add_vrisible: false,
             drawerTitle: '',
             addDate: null,
@@ -239,7 +269,7 @@ export default {
                     warrantyPeriodMonths: null,
                     validityStart: null,
                     validityEnd: null,
-                    remakes:null
+                    remakes: null
                 },
                 form_item: [
                     {
@@ -352,26 +382,26 @@ export default {
             json_fields: {
                 设施编号: 'code',
                 设施类型: 'facilitiesCategoryName',
-                设施名称:'name',
-                添加人:'createName',
-                设施状态:{
+                设施名称: 'name',
+                添加人: 'createName',
+                设施状态: {
                     field: 'status',
                     callback: (value) => {
                         switch (value) {
                             case 1:
-                                    return '空置中'
-                                    break
-                                case 2:
-                                    return '使用中'
-                                    break
-                                case 3:
-                                    return '已停用'
-                                    break
+                                return '空置中'
+                                break
+                            case 2:
+                                return '使用中'
+                                break
+                            case 3:
+                                return '已停用'
+                                break
                         }
                     }
                 },
-                添加时间:'createDate',
-                备注:'remakes'
+                添加时间: 'createDate',
+                备注: 'remakes'
             },
             config: {
                 thead: [
@@ -405,13 +435,41 @@ export default {
                     },
                     { label: '添加时间', prop: 'createDate', width: '220' },
                     { label: '设施品牌', prop: 'brand', width: '220' },
-                    { label: '采购费用', prop: 'procurementCosts', width: '220' },
-                    { label: '采购厂家', prop: 'purchasingManufacturer', width: '220' },
-                    { label: '厂家电话', prop: 'manufacturerPhone', width: '220' },
-                    { label: '质保期限-年', prop: 'warrantyPeriodYears', width: '220' },
-                    { label: '质保期限-月', prop: 'warrantyPeriodMonths', width: '220' },
-                    { label: '设施有效期开始', prop: 'validityStart', width: '220' },
-                    { label: '设施有效期结束', prop: 'validityEnd', width: '220' },
+                    {
+                        label: '采购费用',
+                        prop: 'procurementCosts',
+                        width: '220'
+                    },
+                    {
+                        label: '采购厂家',
+                        prop: 'purchasingManufacturer',
+                        width: '220'
+                    },
+                    {
+                        label: '厂家电话',
+                        prop: 'manufacturerPhone',
+                        width: '220'
+                    },
+                    {
+                        label: '质保期限-年',
+                        prop: 'warrantyPeriodYears',
+                        width: '220'
+                    },
+                    {
+                        label: '质保期限-月',
+                        prop: 'warrantyPeriodMonths',
+                        width: '220'
+                    },
+                    {
+                        label: '设施有效期开始',
+                        prop: 'validityStart',
+                        width: '220'
+                    },
+                    {
+                        label: '设施有效期结束',
+                        prop: 'validityEnd',
+                        width: '220'
+                    },
                     {
                         label: 'doc，docx下载',
                         prop: 'fileDocUrl',
@@ -478,7 +536,7 @@ export default {
         this.getUserList()
     },
     methods: {
-         // Excel导出   type判断设施还是设备
+        // Excel导出   type判断设施还是设备
         async fetchData() {
             let Excel = []
             let params = {
@@ -530,6 +588,17 @@ export default {
                     })
                 })
         },
+        // 保养maintain
+        maintain(data) {
+            if (data.length != 1) {
+                this.$message({ message: '请选择一条数据查看' })
+                return
+            }
+            this.drawer_maintain = true
+        },
+        getClose(data) {
+            this.drawer_maintain = false
+        },
         // 获取用户列表
         getUserList(val) {
             let reeData = {
@@ -577,13 +646,20 @@ export default {
                             res.data.detail.fileDocUrl
                         this.addForm.ruleForm.remakes = res.data.detail.remakes
                         this.addForm.ruleForm.brand = res.data.detail.brand
-                        this.addForm.ruleForm.procurementCosts = res.data.detail.procurementCosts
-                        this.addForm.ruleForm.purchasingManufacturer = res.data.detail.purchasingManufacturer
-                        this.addForm.ruleForm.manufacturerPhone = res.data.detail.manufacturerPhone
-                        this.addForm.ruleForm.warrantyPeriodYears = res.data.detail.warrantyPeriodYears
-                        this.addForm.ruleForm.warrantyPeriodMonths = res.data.detail.warrantyPeriodMonths
-                        this.addForm.ruleForm.validityStart = res.data.detail.validityStart
-                        this.addForm.ruleForm.validityEnd = res.data.detail.validityEnd
+                        this.addForm.ruleForm.procurementCosts =
+                            res.data.detail.procurementCosts
+                        this.addForm.ruleForm.purchasingManufacturer =
+                            res.data.detail.purchasingManufacturer
+                        this.addForm.ruleForm.manufacturerPhone =
+                            res.data.detail.manufacturerPhone
+                        this.addForm.ruleForm.warrantyPeriodYears =
+                            res.data.detail.warrantyPeriodYears
+                        this.addForm.ruleForm.warrantyPeriodMonths =
+                            res.data.detail.warrantyPeriodMonths
+                        this.addForm.ruleForm.validityStart =
+                            res.data.detail.validityStart
+                        this.addForm.ruleForm.validityEnd =
+                            res.data.detail.validityEnd
                         if (res.data.detail.fileDocUrl == null) {
                             this.wordList = []
                         } else {

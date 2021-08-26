@@ -402,6 +402,22 @@ export function gambitFindById(data) {
         params: data
     })
 }
+// gambitTheme/findCommentByThemeId
+export function gambitThemeFindCommentByThemeId(data) {
+    return service.request({
+        method: 'GET',
+        url: '/gambitTheme/findCommentByThemeId',
+        params: data
+    })
+}
+// gambitTheme/deleteCommentByCommentId
+export function gambitThemeDeleteCommentByCommentId(data) {
+    return service.request({
+        method: 'GET',
+        url: '/gambitTheme/deleteCommentByCommentId',
+        params: data
+    })
+}
 // 主题明细管理：批量恢复主题明细信息
 export function gambitThemeRecovery(data) {
     return service.request({
