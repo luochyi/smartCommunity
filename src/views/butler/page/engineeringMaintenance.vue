@@ -17,6 +17,9 @@
                   @tableCheck="tableCheck">
           <template slot="footer">
             <div class="table-footer">
+              <button @click="detail(table_row)">
+                详情
+              </button>
               <!-- <button @click='edit(table_row)'>编辑</button>
               <button @click="del(table_row)">删除</button> -->
 
@@ -318,7 +321,13 @@ export default {
       this.ownersCommitteeTitle = ' 添加工程维修'
       this.ownersCommittee_vrisible = true;
     },
-
+    detail(data){
+      if(data.length!=1){
+        this.$message({message:'请选择一条数据查看'})
+        return
+      }
+      this.$router.push({ path:'/butler/engineeringMaintenanceDetail',query:{id:data[0].id}})
+    },
     // 修改 弹窗显示
     edit (data) {
       if (data.length) {

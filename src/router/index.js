@@ -638,6 +638,15 @@ const routes = [
                             ], resolve)
                     },
                     {
+                        // 工程维修
+                        path: '/butler/engineeringMaintenanceDetail',
+                        component: resolve =>
+                            require([
+                                '@/views/butler/components/engineeringMaintenance/engineeringMaintenanceDetail'
+                            ], resolve)
+                    },
+                    // /Users/apple/Desktop/smartCommunity1/src/views/butler/components/engineeringMaintenance/engineeringMaintenanceDetail.vue
+                    {
                         // 问卷调查
                         path: '/butler/Questionnaire',
                         component: resolve =>

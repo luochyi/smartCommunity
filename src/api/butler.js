@@ -246,6 +246,14 @@ export function repairEngineeringInsert(data) {
         data: data
     })
 }
+//repairEngineering/findById
+export function repairEngineeringFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/repairEngineering/findById',
+        params: data
+    })
+}
 // 查询物品照片
 export function userArticleOutFindGoodsImgById(data) {
     return service.request({
@@ -414,6 +422,13 @@ export function gambitThemeEnableTheme(data) {
     return service.request({
         method: 'GET',
         url: '/gambitTheme/enableTheme',
+        params: data
+    })
+}
+export function gambitThemeList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/gambitTheme/list',
         params: data
     })
 }
