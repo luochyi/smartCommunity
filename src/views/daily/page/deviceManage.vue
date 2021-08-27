@@ -51,6 +51,9 @@
                         <div class="table-footer">
                             <button @click="edit(table_row)">编辑</button>
                             <button @click="del(table_row)">删除</button>
+                            <button @click="maintain(table_row)">
+                                            查看保养记录
+                                        </button>
                         </div>
                     </template>
                 </VueTable>
@@ -152,6 +155,85 @@
                     </button>
                 </div>
             </Drawer>
+            <Drawer
+                            :drawerVrisible="drawer_maintain"
+                            @drawerClose="getClose"
+                            drawerTitle="新增保养记录"
+                        >
+                            <div style="padding: 30px">
+                                <FromCard>
+                                    <template slot="title">基本信息</template>
+                                    <div
+                                        style="fontsize: 16px; lineheight: 20px"
+                                    >
+                                        <el-row>
+                                            <el-col :span="5">名称：{{basicInfo.name}}</el-col>
+                                            <el-col :span="5">设备编号：{{basicInfo.code}}</el-col>
+                                        </el-row>
+                                    </div>
+                                </FromCard>
+                                <FromCard style="marginTop:20px">
+                                    <template slot="title">保养情况</template>
+                                    <el-button size="mini"  type="primary" @click="addmaintain()">新增保养</el-button>
+                                    <el-table :data="maintainList">
+                                        <el-table-column prop="checkDate" label="检查日期"></el-table-column>
+                                        <el-table-column prop="status" label="设备状况"></el-table-column>
+                                        <el-table-column prop="administrator" label="管理人"></el-table-column>
+                                        <el-table-column prop="details" label="详情"></el-table-column>
+                                        <el-table-column label="操作">
+                                            <template slot-scope="scope">
+                                                <el-button
+                                                size="mini"
+                                                 type="danger" icon="el-icon-delete" circle
+                                                @click="handleDelete(scope.row)"></el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <el-table :data="addList" v-if="thisadd" :show-header="false">
+                                        <el-table-column prop="checkDate" label="检查日期" width="200">
+                                            <template slot-scope="scope">
+                                                <el-date-picker
+                                                    v-model="scope.row.checkDate"
+                                                    type="date"
+                                                    size="mini"
+                                                    value-format="yyyy-MM-dd hh:mm:ss"
+                                                     style="width:150px"
+                                                    placeholder="选择日期">
+                                                    </el-date-picker>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column prop="status" label="设备状况">
+                                            <template slot-scope="scope">
+                                                <el-input v-model="scope.row.status" size="mini" placeholder="设备状况"></el-input>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column prop="administrator" label="管理人">
+                                            <template slot-scope="scope">
+                                                <el-input v-model="scope.row.administrator" size="mini" placeholder="管理人"></el-input>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column prop="details" label="详情">
+                                            <template slot-scope="scope">
+                                                <el-input v-model="scope.row.details" size="mini" placeholder="详情"></el-input>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column label="操作">
+                                            <template slot-scope="scope">
+                                                <el-button
+                                                size="mini"
+                                                 type="success" icon="el-icon-check" circle
+                                                @click="sub(scope.row)"></el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                </FromCard>
+                            </div>
+                            <div slot="footer">
+                                <button class="btn-gray" @click="getClose">
+                                    <span>取消</span>
+                                </button>
+                            </div>
+                        </Drawer>
         </div>
     </div>
 </template>
@@ -162,11 +244,20 @@ import {
     facilitiesManageInsert,
     facilitiesCategoryList,
     facilitiesManageFindDetailById,
-    facilitiesManageUpdate
+    facilitiesManageUpdate,
+    facilitiesMaintenanceRecordList,// 查询所有保养记录
+    facilitiesMaintenanceRecordInsert,
+    facilitiesMaintenanceRecordDelete
 } from '@/api/daily'
 export default {
     data() {
         return {
+            basicInfo:{},
+            maintainList:[],tabelstatus:false,
+            addList:[{checkDate:null,status:null,administrator:null,details:null}],
+            thisadd:false,
+            drawer_maintain: false,
+
             drawerTitle: '',
             add_vrisible: false,
             addDate: null,
@@ -478,6 +569,65 @@ export default {
                         message: '已取消下载'
                     })
                 })
+        },
+        // 获取保养列表
+        getmaintainlist(){
+            facilitiesMaintenanceRecordList({facilitiesManageId:this.facilitiesManageId}).then(res=>{
+                 this.maintainList = res.data
+             })
+        },
+        // 保养maintain
+        maintain(data) {
+            if (data.length != 1) {
+                this.$message({ message: '请选择一条数据查看' })
+                return
+            }
+            this.drawer_maintain = true
+            console.log(data[0]);
+            this.facilitiesManageId = data[0].id
+            this.basicInfo.name = data[0].name
+             this.basicInfo.code = data[0].code
+             this.getmaintainlist()
+        },
+        // 新增保养
+        addmaintain(){
+            this.thisadd  = true
+        },
+        // 删除保养
+        handleDelete(row){
+           facilitiesMaintenanceRecordDelete({ids:[row.id]}).then(res=>{
+               console.log(res);
+               if(res.status){
+                   this.$message({message:res.message,type:'success'})
+                   this.getmaintainlist()
+               }
+           })
+        },
+        // 提交新增保养
+        sub(row){
+            console.log(row);
+            let resData = {
+                facilitiesManageId:this.facilitiesManageId,
+                checkDate:row.checkDate,
+                status:row.status,
+                administrator:row.administrator,
+                details:row.details,
+            }
+            facilitiesMaintenanceRecordInsert(resData).then(res=>{
+               if(res.status){
+                   this.$message({type:'success',message:res.message})
+                   this.thisadd  = false
+                   this.getmaintainlist()
+                   this.addList=[{checkDate:null,status:null,administrator:null,details:null}]
+               }
+            })
+        }, 
+        // 关闭drawer
+        getClose(data) {
+            this.drawer_maintain = false
+            this.facilitiesManageId = null
+            this.thisadd  = false
+            this.addList=[{checkDate:null,status:null,administrator:null,details:null}]
         },
         // 获取用户列表
         getUserList(val) {

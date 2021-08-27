@@ -522,6 +522,12 @@ const routes = [
                         path: '/charge/invoiceManagement',
                         component: resolve =>
                             require(['@/views/charge/page/invoiceManagement'], resolve)
+                    },
+                    // MeterReading
+                    {
+                        path: '/charge/MeterReading',
+                        component: resolve =>
+                            require(['@/views/charge/page/MeterReading'], resolve)
                     }
                 ]
             }

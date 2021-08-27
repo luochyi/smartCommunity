@@ -279,6 +279,35 @@
                                             </el-option>
                                         </el-select>
                                     </template>
+                                    <template v-slot:upload>
+                                        <!-- uploadBusinessSysUserResume   file-->
+                                        <el-upload
+                                                :action="`${$baseUrl}upload/uploadBusinessSysUserResume`"
+                                                :on-success="fileSuccess"
+                                                :on-remove="wordRemove"
+                                                :on-exceed="handleExceed"
+                                                :file-list="wordList"
+                                                accept=".pdf,.PDF,.jpg,.png,.JPG,.PNG"
+                                                :limit="1"
+                                                :before-upload="
+                                                    beforeFileUpload
+                                                "
+                                            >
+                                                <el-button
+                                                    icon="el-icon-edit"
+                                                    size="small"
+                                                    >上传文件</el-button
+                                                >
+                                                <div
+                                                    slot="tip"
+                                                    class="el-upload__tip"
+                                                >
+                                                    <span
+                                                        >支持扩展名：pdf,jpg,png</span
+                                                    >
+                                                </div>
+                                            </el-upload>
+                                    </template>
                                 </VueForm>
                             </template>
                         </FromCard>
@@ -345,6 +374,7 @@ export default {
     inject:['reload'],
     data() {
         return {
+            wordList: [],
             sysOptions: [],
             add_vrisible: false,
             identity_vrisible:false,
@@ -376,7 +406,8 @@ export default {
                     userCode: null,
                     positionId: null,
                     entryDate: null,
-                    id: null
+                    id: null,
+                    imgUrls: [],
                 },
                 form_item: [
                     {
@@ -461,7 +492,22 @@ export default {
                         placeholder: '请选择日期',
                         width: '50%',
                         prop: 'entryDate'
-                    }
+                    },
+                    {
+                        type: 'textarea',
+                        label: '工作内容',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'remake'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '工作简历',
+                        placeholder: '请选择日期',
+                        width: '100%',
+                        prop: 'imgUrls',
+                        slotName:'upload'
+                    },
                 ]
             },
             identityForm: {
@@ -517,6 +563,39 @@ export default {
         })
     },
     methods: {
+        // word 文件上传成功
+        fileSuccess(res, file) {
+            this.addForm.ruleForm.imgUrls[0] = file.response.url
+        },
+        // word 文件上传限制提示
+        handleExceed(files, fileList) {
+            this.$message.warning(
+                `当前限制选择 1 个文件，本次选择了 ${
+                    files.length
+                } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+            )
+        },
+        // 移出
+        wordRemove() {
+            this.addForm.ruleForm.fileDocUrl = []
+        },
+        // word 文件上传之前
+        beforeFileUpload(file) {
+            console.log(file)
+            this.addForm.ruleForm.fileDocName = file.name
+            const isLt2M = file.size / 1024 / 1024 < 20
+            const fileType =
+                file.name.endsWith('.pdf') || file.name.endsWith('.PDF')||file.name.endsWith('.jpg') || file.name.endsWith('.jpg')||file.name.endsWith('.png') || file.name.endsWith('.PNG')
+            console.log(fileType)
+            if (!fileType) {
+                this.$message.error('上传文件只能是 pdf/jpg/png 格式!')
+            }
+            if (!isLt2M) {
+                this.$message.error('上传文件大小不能超过 20MB!')
+            }
+            return fileType && isLt2M
+        },  
+
         // 表格中status的值
         statusVal(row, column) {
             switch (row.status) {
@@ -566,6 +645,7 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
             this.addForm.form_item[4].disabled = false
+            this.wordList=[]
         },
         identityClose(){
             this.$refs.identityForm.reset()
@@ -623,6 +703,17 @@ export default {
                 this.addForm.ruleForm.positionId = res.positionId
                 this.addForm.ruleForm.entryDate = res.entryDate
                 this.addForm.ruleForm.id = res.id
+                this.addForm.ruleForm.remake = res.remake
+                this.wordList.push(res.imgList[0].url)
+                if (res.imgList.length === 0) {
+                            this.wordList = []
+                        } else {
+                            let obj = {
+                                name: res.imgList[0].url,
+                                url: res.imgList[0].url
+                            }
+                            this.$set(this.wordList, '0', obj)
+                        }
             })
         },
         //允许登录

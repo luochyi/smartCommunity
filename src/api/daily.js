@@ -75,6 +75,28 @@ export function facilitiesManageUpdate(data) {
         data: data
     })
 }
+//facilitiesMaintenanceRecordList    facilitiesMaintenanceRecord/insert facilitiesMaintenanceRecord/delete
+export function facilitiesMaintenanceRecordList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/facilitiesMaintenanceRecord/list',
+        params: data
+    })
+}
+export function facilitiesMaintenanceRecordInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/facilitiesMaintenanceRecord/insert',
+        data: data
+    })
+}
+export function facilitiesMaintenanceRecordDelete(data) {
+    return service.request({
+        method: 'POST',
+        url: '/facilitiesMaintenanceRecord/delete',
+        data: data
+    })
+}
 export function facilitiesManageFindDetailById(data) {
     return service.request({
         method: 'GET',

@@ -125,9 +125,17 @@ export default {
           iconisactive: require('@/assets/images/charge/icon_charge03_sel.png'),
           isChildren: 0
         },
+        {
+          path: '/charge/MeterReading',
+          label: '抄表收费',
+          iconurl: require('@/assets/images/charge/icon_charge03_nor.png'),
+          iconisactive: require('@/assets/images/charge/icon_charge03_sel.png'),
+          isChildren: 0
+        },
       ],
       isCollapse: false
     }
+    // MeterReading
   },
   mounted () {
     console.log(this.activeIndex)

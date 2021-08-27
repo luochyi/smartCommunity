@@ -220,3 +220,11 @@ export function paperRecipients(data) {
         data: data
     })
 }
+// meterReadingRecord/updateRemakes 抄表备注
+export function meterReadingRecordUpdateRemakes(data) {
+    return service.request({
+        method: 'POST',
+        url: '/meterReadingRecord/updateRemakes',
+        data: data
+    })
+}

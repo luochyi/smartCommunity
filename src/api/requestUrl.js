@@ -147,6 +147,7 @@ const requestUrl = {
     expenseBillList:"expenseBill/list",
     expenseBillDetailList:"expenseBill/detailList",
     advancePaymentList:'advancePayment/list',
+    meterReadingRecordList:'meterReadingRecord/list',
     // List Delete
     //资讯
     newsCategoryManagementList: 'newsCategoryManagement/list',
