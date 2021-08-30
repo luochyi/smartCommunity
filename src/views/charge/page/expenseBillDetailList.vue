@@ -599,6 +599,6 @@ export default {
 }
 .choosed{
     color:  #FB4702;
-;
+
 }
 </style>
