@@ -29,6 +29,9 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <!-- <button @click="check(table_row)">查看明细</button> -->
+                                <button @click="createShareBill(table_row)">
+                                    生成公摊账单
+                                </button>
                                 <button @click="remakes(table_row)">
                                     添加备注
                                 </button>
@@ -56,6 +59,79 @@
                         </div>
                     </el-dialog>
                 </div>
+                <Drawer
+                    drawerTitle="生成公摊账单"
+                    @drawerClose="DrawerClose"
+                    :drawerVrisible="drawer_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">基本信息</template>
+                            <template>
+                                <VueForm
+                                    ref="childFroms"
+                                    :formObj="billForm"
+                                >
+                                <template v-slot:rate>
+                                        <el-input
+                                            v-model="billForm.ruleForm.rate"
+                                            size="small"
+                                            style="width: 240px"
+                                            placeholder="请输入"
+                                        >
+                                            <i
+                                                slot="suffix"
+                                                style="font-style: normal"
+                                                class="metre"
+                                                >%</i
+                                            >
+                                        </el-input>
+                                    </template>
+                                <template v-slot:unitPrice>
+                                        <el-input
+                                            v-model="billForm.ruleForm.unitPrice"
+                                            size="small"
+                                            style="width: 240px"
+                                            placeholder="请输入"
+                                        >
+                                            <i
+                                                slot="suffix"
+                                                style="font-style: normal"
+                                                class="metre"
+                                                >元/{{billForm.ruleForm.unit}}</i
+                                            >
+                                        </el-input>
+                                    </template>
+                                    <template v-slot:householdConsumption>
+                                        <el-input
+                                            v-model="billForm.ruleForm.householdConsumption"
+                                            size="small"
+                                            style="width: 240px"
+                                            placeholder="请输入"
+                                        >
+                                            <i
+                                                slot="suffix"
+                                                style="font-style: normal"
+                                                class="metre"
+                                                >{{billForm.ruleForm.unit}}</i
+                                            >
+                                        </el-input>
+                                    </template>
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="billSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="DrawerClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
@@ -63,19 +139,22 @@
 
 <script>
 import { DownloadExcel } from '@/plugins/DownloadExcel'
-import {meterReadingRecordUpdateRemakes} from '@/api/charge.js';
+import {
+    meterReadingRecordUpdateRemakes,
+    meterReadingCreateShareBill
+} from '@/api/charge.js'
 export default {
     data() {
         return {
             dialogFormVisible: false,
             form: {
-                remakes:null,
+                remakes: null
             },
             formLabelWidth: '120px',
             isShow: false,
             thatId: null,
             drawerTitle: '',
-            add_vrisible: false,
+            drawer_vrisible: false,
             addDate: null,
             options: [],
             ids: [],
@@ -84,6 +163,99 @@ export default {
             loading: false,
             table_row: [],
             activeName: '0',
+            billForm:{
+                ruleForm:{
+                    meterReadingRecordId:null,
+                    months:null,
+                    consumption:null,
+                    type:null,
+                    unit:null,
+                    unitPrice:null,
+                    householdConsumption:null,
+                    rate:null,
+                    sum:null,
+                    effectiveTimeStart:null,
+                    effectiveTimeEnd:null,
+                    remakes:null
+                },
+                form_item:[
+                    {
+                        type: 'span',
+                        label: '抄表月份',
+                        width: '100%',
+                        prop: 'months'
+                    },
+                    {
+                        type: 'span',
+                        label: '总用量',
+                        width: '100%',
+                        prop: 'consumption'
+                    },
+                    {
+                        type: 'span',
+                        label: '抄表类型',
+                        width: '50%',
+                        prop: 'type'
+                    },
+                    {
+                        type: 'span',
+                        label: '用量单位',
+                        width: '50%',
+                        prop: 'unit'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '用量单价',
+                        width: '50%',
+                        prop: 'unitPrice',
+                        slotName: 'unitPrice'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '住户用量',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'householdConsumption',
+                         slotName: 'householdConsumption'
+                    },
+                    {
+                        type: 'Input',
+                        label: '公共费用',
+                        placeholder: '请输入',
+                        disabled:true,
+                        width: '50%',
+                        prop: 'sum'
+                    },
+                    {
+                        type: 'Slot',
+                        label: '费率',
+                        width: '50%',
+                        prop: 'rate',
+                        slotName: 'rate'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '有效时间开始',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'effectiveTimeStart'
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '有效时间结束',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'effectiveTimeEnd'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '备注',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'remakes'
+                    },
+                ]
+            },
             // json_fields: {
             //     设施设备检查计划编号: 'code',
             //     '设施/设备名称': 'facilitiesName',
@@ -271,22 +443,62 @@ export default {
                 this.isShow = true
             }
         },
-        remakesSubmit(){
+        remakesSubmit() {
             let resData = {
-                id:this.table_row[0].id,
-                remakes:this.form.remakes
+                id: this.table_row[0].id,
+                remakes: this.form.remakes
             }
-            meterReadingRecordUpdateRemakes(resData).then(res=>{
-                if(res.status){
+            meterReadingRecordUpdateRemakes(resData).then((res) => {
+                if (res.status) {
                     this.$message({
-                        message:res.message,
-                        type:'success'
+                        message: res.message,
+                        type: 'success'
                     })
                     this.$refs.table.loadData()
-                    this.isShow=false
-                    this.form.remakes =null
+                    this.isShow = false
+                    this.form.remakes = null
                 }
             })
+        },
+        createShareBill(data) {
+            this.billForm.ruleForm.meterReadingRecordId = data[0].id
+            this.billForm.ruleForm.months = data[0].months
+            this.billForm.ruleForm.consumption = data[0].consumption
+            if(data[0].type == 1){
+                this.billForm.ruleForm.type = '水量'
+            }else if(data[0].type == 2){
+                this.billForm.ruleForm.type = '电量'
+            }else{
+                this.billForm.ruleForm.type = '无'
+            }
+            this.billForm.ruleForm.unit = data[0].unit
+            this.drawer_vrisible = true
+        },
+        billSubmit(){
+            let resData = {
+                meterReadingRecordId:this.billForm.ruleForm.meterReadingRecordId,
+                unitPrice:this.billForm.ruleForm.unitPrice,
+                householdConsumption:this.billForm.ruleForm.householdConsumption,
+                rate:this.billForm.ruleForm.rate,
+                effectiveTimeStart:this.billForm.ruleForm.effectiveTimeStart,
+                effectiveTimeEnd:this.billForm.ruleForm.effectiveTimeEnd,
+                remakes:this.billForm.ruleForm.remakes,
+            }
+            console.log(resData);
+            meterReadingCreateShareBill(resData).then(res=>{
+                if(res.status){
+                    this.$message({
+                        type:'success',
+                        message:res.message
+                    })
+                    this.DrawerClose()
+                    this.$refs.table.requestData()
+                }
+            })
+        },
+        DrawerClose(){
+            this.drawer_vrisible = false
+            this.$refs.VueForm.reset()
         },
         // Excel导出
         // async fetchData() {
@@ -421,25 +633,21 @@ export default {
         //   })
         //   this.$refs.table.requestData()
         // }
-    }
+    },
     //监听设施设备分类从而获取设施设备名称
-    // watch: {
-    //     'addForm.ruleForm.type': {
-    //         handler(newVal) {
-    //             this.addForm.form_item[1].options = []
-    //             console.log(newVal)
-    //             facilitiesManageList({ type: newVal }).then((res) => {
-    //                 console.log(res)
-    //                 res.tableList.forEach((ele) => {
-    //                     let obj = {
-    //                         value: ele.id,
-    //                         label: ele.name
-    //                     }
-    //                     this.addForm.form_item[1].options.push(obj)
-    //                 })
-    //             })
-    //         }
-    //     }
-    // }
+    watch: {
+        // 用量
+        'billForm.ruleForm.householdConsumption': {
+            handler(newVal) {
+               this.billForm.ruleForm.sum =  newVal * this.billForm.ruleForm.unitPrice
+            }
+        },
+        // 单价
+        'billForm.ruleForm.unitPrice': {
+            handler(newVal) {
+                this.billForm.ruleForm.sum =  newVal * this.billForm.ruleForm.householdConsumption
+            }
+        },
+    }
 }
 </script>

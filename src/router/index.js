@@ -528,7 +528,18 @@ const routes = [
                         path: '/charge/MeterReading',
                         component: resolve =>
                             require(['@/views/charge/page/MeterReading'], resolve)
-                    }
+                    },
+                    {
+                        path: '/charge/MeterBil',
+                        component: resolve =>
+                            require(['@/views/charge/page/MeterBil'], resolve)
+                    },
+                    {
+                        path: '/charge/MeterBillDetailList',
+                        name:'MeterBillDetailList',
+                        component: resolve =>
+                            require(['@/views/charge/page/MeterBillDetailList'], resolve)
+                    },
                 ]
             }
         ]

@@ -130,7 +130,17 @@ export default {
           label: '抄表收费',
           iconurl: require('@/assets/images/charge/icon_charge03_nor.png'),
           iconisactive: require('@/assets/images/charge/icon_charge03_sel.png'),
-          isChildren: 0
+          isChildren: 1,
+          children:[
+            {
+              path:'/charge/MeterReading',
+              label:'抄表收费'
+            },
+            {
+              path:'/charge/MeterBil',
+              label:'抄表账单'
+            }
+          ]
         },
       ],
       isCollapse: false

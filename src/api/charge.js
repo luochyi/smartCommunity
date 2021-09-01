@@ -228,3 +228,11 @@ export function meterReadingRecordUpdateRemakes(data) {
         data: data
     })
 }
+// meterReadingRecord/createShareBill
+export function meterReadingCreateShareBill(data) {
+    return service.request({
+        method: 'POST',
+        url: '/meterReadingRecord/createShareBill',
+        data: data
+    })
+}

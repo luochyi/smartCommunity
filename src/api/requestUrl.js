@@ -135,6 +135,8 @@ const requestUrl = {
     dailyPaymentPlanListDelete:"dailyPaymentPlan/delete",
     depositManagementList: '/depositManagement/list',
     workOrderCostList: '/workOrderCost/list',
+    meterReadingRecordShareBillList:'meterReadingRecord/shareBillList',
+    meterReadingRecordFindShareBillDetailsListByShareId:"meterReadingRecord/findShareBillDetailsListByShareId",
     // expenseBillList: '/expenseBill/list',
     announcementManagementList: '/announcementManagement/list',
     announcementManagementListDelete: '/announcementManagement/delete',
