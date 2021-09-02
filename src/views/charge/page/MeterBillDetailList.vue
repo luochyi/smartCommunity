@@ -363,6 +363,18 @@ export default {
                                 case 4:
                                     return '预缴支付'
                                     break
+                                case 5:
+                                    return '银行卡'
+                                    break
+                                case 6:
+                                    return '支票'
+                                    break
+                                case 7:
+                                    return '转账'
+                                    break
+                                case 8:
+                                    return '开发商代付'
+                                    break
                             }
                         }
                     },

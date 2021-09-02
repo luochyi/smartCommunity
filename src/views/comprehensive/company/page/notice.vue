@@ -80,8 +80,8 @@
 </template>
 
 <script>
-import { userResident } from '@/api/basic'
-import {remindInsert} from '@/api/company'
+import { userResident, userResidentListAll } from '@/api/basic'
+import { remindInsert } from '@/api/company'
 export default {
     data() {
         return {
@@ -92,11 +92,11 @@ export default {
                 ruleForm: {
                     name: null,
                     tel: null,
-                    idType:null,
-                    idNumber:null,
+                    idType: null,
+                    idNumber: null,
                     content: null,
-                    title:null,
-                    receiverAccount:null
+                    title: null,
+                    receiverAccount: null
                 },
                 form_item: [
                     {
@@ -148,7 +148,7 @@ export default {
                         placeholder: '请输入',
                         width: '100%',
                         prop: 'content'
-                    },
+                    }
                 ]
             },
             table_row: [],
@@ -258,7 +258,7 @@ export default {
                 name: val
             }
             this.loading = true
-            userResident(reeData).then((res) => {
+            userResidentListAll(reeData).then((res) => {
                 this.options = res.tableList
                 this.loading = false
 
@@ -271,7 +271,7 @@ export default {
                 size: 20
             }
             this.loading = true
-            userResident(reeData).then((res) => {
+            userResidentListAll(reeData).then((res) => {
                 this.options = res.tableList
                 let obj = {
                     id: 0,

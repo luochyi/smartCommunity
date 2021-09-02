@@ -249,6 +249,13 @@ export const userResident = data => {
         params: data
     })
 }
+export const userResidentListAll = data => {
+    return service.request({
+        method: 'GET',
+        url: '/userResident/listAll',
+        params: data
+    })
+}
 //添加业主信息
 export const userResidentInsert = data => {
     return service.request({

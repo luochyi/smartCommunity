@@ -119,6 +119,10 @@
                         <el-radio :label="2">微信</el-radio>
                         <el-radio :label="3">现金</el-radio>
                         <el-radio :label="4">pos</el-radio>
+                        <el-radio :label="5">银行卡</el-radio>
+                        <el-radio :label="6">支票</el-radio>
+                        <el-radio :label="7">转账</el-radio>
+                        <el-radio :label="8">开发商代付</el-radio>
 
                       </el-radio-group>
                     </div>
