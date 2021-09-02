@@ -28,8 +28,18 @@
                             :disabled='item.disabled'
                             v-for="item in headMenu"
                             :key="item.path">{{ item.label }}</el-menu-item>
-              <el-button type="warning" class="exit" @click="exit">退出登录</el-button>
               <i class="el-icon-message-solid notice" @click="noticeDrawer"></i>
+                            <span>
+                              <el-select size="mini" @change='changeSet' v-model="value" style="paddingTop:15px;position:fixed;right: 100px; ">
+                                <el-option
+                                  v-for="item in options"
+                                  :key="item.value"
+                                  :label="item.label"
+                                  :value="item.value">
+                                </el-option>
+                              </el-select>
+                            </span>
+                            <el-button type="warning" class="exit" @click="exit">退出登录</el-button>
             </el-menu>
           </div>
           <div></div>
@@ -110,6 +120,14 @@ export default {
   inject:['reload'],
   data () {
     return {
+      value:1,
+      options:[{
+        label:'2020年账套',
+        value:1
+      },{
+        label:'2021年账套',
+        value:2
+      }],
       sendType:null,
       Typeoptions:[
         {
@@ -176,6 +194,10 @@ export default {
     }
   },
   mounted () {
+    if (localStorage.getItem('ACset') == 1) {
+      this.value = '2020年账套'
+    }else if (localStorage.getItem('ACset') == 2){this.value = '2021年账套'}
+    
     this.getPath()
     this.pageNum = 1
     let resData ={
@@ -210,6 +232,12 @@ export default {
     })
   },
   methods: {
+    changeSet(val){
+      console.log(val);
+      localStorage.setItem('ACset',val)
+      this.reload()
+      // ACset
+    },
     noticeDrawer(){
       this.drawer = true
     },
@@ -400,7 +428,7 @@ export default {
 <style scoped>
 .exit{
     position: fixed !important;
-    right: 200px; 
+    right: 300px; 
     top: 10px;
 }
 .notice{

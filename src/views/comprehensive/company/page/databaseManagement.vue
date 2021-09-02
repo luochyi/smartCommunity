@@ -5,87 +5,96 @@
                 <span>数据库管理</span>
             </div>
             <div class="content">
-                <div>
-                    <div style="background: #f9f9f9; padding: 10px;">
-                        <div style="marginBottom:10px">
-                            <span style="color: #000000; fontweight: 600"
-                                >年份</span
+                <el-row>
+                    <el-col :span="18">
+                        <div class="content-btn">
+                            <el-button
+                                class="init-button"
+                                @click="add()"
+                                icon="el-icon-plus"
+                                >新增数据库</el-button
                             >
-                            <span
-                                v-for="(item, index) in yearchoose"
-                                :key="index"
-                                style="padding: 10px; cursor: pointer"
-                                :class="{ choosed: changeRed == index }"
-                                @click="chooseYears(item, index)"
-                                >{{ item }}</span
+                        </div></el-col
+                    >
+                    <el-col :span="4"
+                        ><div class="content-btn">
+                            <el-button class="init-button" @click="yearover()"
+                                >数据库年结</el-button
                             >
-                        </div>
-                        <span style="color: #000000; fontweight: 600"
-                            >月份</span
-                        >
-                        <span
-                            v-for="(item, indexS) in bilchoose"
-                            :key="indexS"
-                            style="padding: 10px; cursor: pointer"
-                            :class="{ choosed: changeRedS == indexS }"
-                            @click="chooseMon(item, indexS)"
-                            >{{ item + '月' }}</span
-                        >
-                        
-                    </div>
-                    <div>
-                        <span style="padding:10px">
-                            所属模块
-                            <el-select size="mini" v-model="modules">
-                                <el-option
-                                    v-for="item in modulesOptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </span>
-                        <span style="padding:10px">
-                            模块功能
-                            <el-select size="mini" v-model="firstFunction">
-                                <el-option
-                                    v-for="item in firstFunctionOptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </span>
-                        <span style="padding:10px">
-                            二级功能
-                            <el-select size="mini" v-model="secondFunction">
-                                <el-option
-                                    v-for="item in secondFunctionOptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="content">
+                        </div></el-col
+                    >
+                </el-row>
+
                 <div class="">
+                    <el-progress
+                        :percentage="percentage"
+                        v-if="isShow"
+                        style="marginbottom: 20px"
+                    ></el-progress>
                     <VueTable
                         ref="table"
                         :config="config"
                         @tableCheck="tableCheck"
                     >
+                        <!-- <template slot="tabs">
+                            <el-tabs
+                                v-model="activeName"
+                                @tab-click="handleClick"
+                            >
+                                <el-tab-pane
+                                    label="全部"
+                                    name="0"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="待巡检"
+                                    name="1"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已巡检"
+                                    name="2"
+                                ></el-tab-pane>
+                                <el-tab-pane
+                                    label="已完成"
+                                    name="3"
+                                ></el-tab-pane>
+                            </el-tabs>
+                        </template> -->
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button @click="del(table_row)">删除</button> -->
+                                <button @click="del(table_row)">删除</button>
                                 <!-- <button @click="isEnable(table_row)">启用/停用</button> -->
                                 <!-- <button @click="add(table_row)">编辑</button> -->
                             </div>
                         </template>
                     </VueTable>
                 </div>
+                <!-- 新增 -->
+                <Drawer
+                    drawerTitle="新增字典信息"
+                    @drawerClose="addClose"
+                    :drawerVrisible="add_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">数据信息</template>
+                            <template>
+                                <VueForm ref="addForm" :formObj="addForm">
+                                    <!-- Slot -->
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="addSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="addClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
@@ -97,117 +106,44 @@ import { dataBaseInsert } from '@/api/company'
 export default {
     data() {
         return {
-            changeRed: -1,
-            changeRedS:-1,
-            bilchoose: ['全部', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            yearchoose: ['全部', 2021, 2022],
-
-            modulesOptions:[
-                {
-                    label:"系统管理",
-                    path:'/company',
-                    children:[
-                        {
-                            label:"企业资料",
-                            path:'/companyInfo'
-                        },
-                        {
-                            label:"组织架构管理",
-                            path:'/orgManagement'
-                        },
-                        {
-                            label:"员工管理",
-                            path:'/personnelManagement'
-                        },
-                        {
-                            label:"薪资管理",
-                            path:'/salaryManagement'
-                        },
-                        {
-                            label:"员工合同",
-                            path:'/contractManage'
-                        },
-                        {
-                            label:"考勤管理",
-                            path:'/contractManage'
-                        },
-                        {
-                            label:"申请记录",
-                            path:'/contractManage'
-                        },
-                        {
-                            label:"考勤小组",
-                            path:'/attendanceTeam'
-                        },
-                        {
-                            label:"排班计划",
-                            path:'/attendanceTeam'
-                        },
-                        {
-                            label:"培训管理",
-                            path:'/trainManage'
-                        },
-                        {
-                            label:"功能权限管理",
-                            path:'/functionAuthority'
-                        },
-                        {
-                            label:"申请记录",
-                            path:'/contractManage'
-                        },
-                        {
-                            label:"考勤小组",
-                            path:'/attendanceTeam'
-                        },
-                        {
-                            label:"排班计划",
-                            path:'/attendanceTeam'
-                        },
-                        {
-                            label:"培训管理",
-                            path:'/trainManage'
-                        },
-                        {
-                            label:"功能权限管理",
-                            path:'/functionAuthority'
-                        },
-                    ]
-                },
-                {
-                    label:"日常管理",
-                    value:2,
-                    children:[]
-                },
-                {
-                    label:"基础档案",
-                    value:3,
-                    children:[]
-                },
-                {
-                    label:"收费管理",
-                    value:4,
-                    children:[]
-                },
-                {
-                    label:"管家服务",
-                    value:5,
-                    children:[]
-                },
-                {
-                    label:"运营管理",
-                    value:6,
-                    children:[]
-                },
-                {
-                    label:"商品中心",
-                    value:7,
-                    children:[]
-                },
-            ],
-            firstFunctionOptions:[],
-            secondFunctionOptions:[],
-
+            timer: '',
+            isShow: false,
+            percentage: 0,
+            add_vrisible: false,
+            addDate: null,
+            options: [],
+            sysOptions: [],
             loading: false,
+            addForm: {
+                ruleForm: {
+                    functionType: null,
+                    functionName: null,
+                    fieldName: null
+                },
+                form_item: [
+                    {
+                        type: 'Input',
+                        label: '功能大类名称',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'functionType'
+                    },
+                    {
+                        type: 'Input',
+                        label: '功能名',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'functionName'
+                    },
+                    {
+                        type: 'textarea',
+                        label: '字段名称',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'fieldName'
+                    }
+                ]
+            },
             table_row: [],
             activeName: '0',
             config: {
@@ -257,25 +193,76 @@ export default {
             }
         }
     },
+    // mounted(){
+    //     this.timer = setInterval(() => {
+    //             this.percentage += 20
+    //         }, 500)
+    // },
+    // beforeDestroy(){
+    //     clearInterval(this.timer)
+    // },
     methods: {
-        chooseYears(years, index) {
-            this.changeRed = index
-            console.log(years)
-            if (years != '全部') {
-                this.config.data.years = years
-            } else {
-                this.config.data.years = null
-            }
+        
+        add() {
+            this.add_vrisible = true
         },
-        chooseMon(mon, indexS) {
-            this.changeRedS = indexS
-            console.log(mon)
-            if (mon != '全部') {
-                this.config.data.months = mon
-            } else {
-                this.config.data.months = null
-            }
+        yearover() {
+            this.isShow = true
+            var progressnuw = 0
+            var timer = setInterval(() => {
+                progressnuw++
+                if (progressnuw >= 100) {
+                    clearInterval(timer)
+                    this.percentage = 0
+                    progressnuw = 0
+                    this.isShow = false
+                    this.$message({
+                        type: 'error',
+                        message: '年结失败，请于2022年1月1日后年结'
+                    })
+                }
+                this.percentage = progressnuw
+            }, 30)
         },
+        addClose() {
+            this.$refs.addForm.reset()
+            this.add_vrisible = false
+        },
+        addSubmit() {
+            let resData = {
+                ...this.addForm.ruleForm
+            }
+            dataBaseInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.loadData()
+                    this.addClose()
+                }
+            })
+        },
+        dateTimeChange(arr) {
+            this.addForm.ruleForm.openStartDate = arr[0]
+            this.addForm.ruleForm.openEndDate = arr[1]
+        },
+        // tabs切换
+        // handleClick(tab, event) {
+        //     let status = null
+        //     if (this.activeName != 0) {
+        //         status = this.activeName
+        //     } else {
+        //         status = null
+        //     }
+        //     const requestData = {
+        //         pageNum: 1,
+        //         size: 10,
+        //         status: status
+        //     }
+        //     this.$refs.table.requestData(requestData)
+        // },
+
         // 表格选中
         tableCheck(data) {
             this.table_row = data
@@ -302,10 +289,16 @@ export default {
             }
         }
     }
+    // watch:{
+    //     percentage:{
+    //         handler(val){
+    //             if(val>=100){
+    //                 this.percentage = 0
+    //                 this.isShow = false
+    //                 clearInterval(this.timer)
+    //             }
+    //         }
+    //     }
+    // }
 }
 </script>
-<style lang="scss" scoped>
-.choosed {
-    color: #fb4702;
-}
-</style>
