@@ -75,30 +75,56 @@
             <div class="content">
                 <div class="s_title">账单记录</div>
                 
-                <!-- <div  style="width: 50px"><download-excel
-                                class="export-excel-wrapper"
-                                :fetch="fetchData"
-                                :fields="json_fields"
-                                :before-finish="finishDownload"
-                                name="设施设备检查记录.xls"
-                            >
-                                上面可以自定义自己的样式，还可以引用其他组件button
-                                <el-button
-                                    size="mini"
-                                    icon="el-icon-folder-add"
-                                    plain
-                                    >导出Excel</el-button
-                                >
-                            </download-excel></div> -->
+                
                 <div class="">
                     <div>
-                        <div style="background:#F9F9F9;padding:10px">
+                        <div style="background:#F9F9F9;padding:10px;marginBottom:20px">
                             <div style="marginBottom:10px;"><span style="color:#000000;fontWeight:600">年份</span>
                             <span v-for="(item,index) in yearchoose" :key="index" style="padding:10px;cursor:pointer;"  :class="{choosed: changeRed == index}" @click="chooseYears(item,index)">{{item}}</span></div>
                             <span style="color:#000000;fontWeight:600">月份</span>
                             <span v-for="(item,indexS) in bilchoose" :key="indexS" style="padding:10px;cursor:pointer;" :class="{choosed: changeRedS == indexS}" @click="chooseMon(item,indexS)">{{item+'月'}}</span>
                         </div>
-                        <div></div>
+                        <span>请选择财务模板：<el-select size="mini" v-model="tempvalue">
+                            <el-option
+                                v-for="item in templateOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            ></el-option>
+                        </el-select></span>
+                        <!-- 金蝶 -->
+                       <span  style="width: 50px;"  v-if="tempvalue==1"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fieldsjindie"
+                                :before-finish="finishDownload"
+                                 header="广西印象物业服务有限责任公司 -（附单据1张）"
+                                footer="会计主管：___________记账：____________审核：____________制单人:____________"
+                                name="金蝶模板账单.xls"
+                            >
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出金蝶模板账单</el-button
+                                >
+                            </download-excel></span>
+                            <!-- 用友 -->
+                             <span  style="width: 50px" v-else-if="tempvalue==2"><download-excel
+                                class="export-excel-wrapper"
+                                :fetch="fetchData"
+                                :fields="json_fieldsyongyou"
+                                :before-finish="finishDownload"
+                                header="银行对账单--对账单账面余额：____________"
+                                name="用友模板账单.xls"
+                            >
+                                <el-button
+                                    size="mini"
+                                    icon="el-icon-folder-add"
+                                    plain
+                                    >导出用友模板账单</el-button
+                                >
+                            </download-excel></span>
                     </div>
                     <VueTable
                         ref="table"
@@ -157,6 +183,17 @@ import { DownloadExcel } from '@/plugins/DownloadExcel'
 export default {
     data() {
         return {
+            tempvalue:1,
+            templateOptions:[
+                {
+                    label:'金蝶',
+                    value:1
+                },
+                {
+                    label:'用友',
+                    value:2
+                },
+            ],
             expenseId:null,
             remarkshow: false,
             refundPrice:null,
@@ -186,46 +223,21 @@ export default {
             loading: false,
             table_row: [],
             activeName: '0',
-            // json_fields: {
-            //     设施设备检查计划编号: 'code',
-            //     '设施/设备名称': 'facilitiesName',
-            //     检查人姓名: 'examinerName',
-            //     检查人联系方式: 'examinerTel',
-            //     任务状态: {
-            //         field: 'status',
-            //         callback: (value) => {
-            //             switch (value) {
-            //                 case 1:
-            //                     return '开启'
-            //                     break
-            //                 case 2:
-            //                     return '停用'
-            //                     break
-            //             }
-            //         }
-            //     },
-            //     计划开始时间: 'planBeginDate',
-            //     '单次持续时间（单位分钟）': 'spaceTime',
-            //     检查频率: {
-            //         field: 'checkRateType',
-            //         callback: (value) => {
-            //             switch (value) {
-            //                 case 1:
-            //                     return '每天'
-            //                     break
-            //                 case 2:
-            //                     return '每周'
-            //                     break
-            //                 case 3:
-            //                     return '每月'
-            //                     break
-            //                 default:
-            //                     break
-            //             }
-            //         }
-            //     },
-            //     创建人: 'createName'
-            // },
+            json_fieldsjindie: {
+                摘要:'name',
+                总账科目:'name',
+                明细科目:'name',
+                借方金额:'costPrice',
+                贷方金额:'paidPrice',
+            },
+            json_fieldsyongyou:{
+                日期:'createDate',
+                结算方式:'status',
+                票号:'name',
+                借方金额:'costPrice',
+                贷方金额:'paidPrice',
+                余额:'paidPrice'
+            },
             config: {
                 thead: [
                     {
@@ -302,7 +314,6 @@ export default {
                     },
                     {
                         label: '创建人',
-                        prop: 'createName',
                         width: 'auto'
                     },
                     {
@@ -444,34 +455,37 @@ export default {
             this.refundPrice = null
         },
         // Excel导出
-        // async fetchData() {
-        //     let Excel = []
-        //     let params = {
-        //         url: 'sysOperationsList',
-        //         data: {
-        //             pageNum: 1,
-        //             size: 100
-        //         }
-        //     }
-        //     const data = await DownloadExcel(params, this)
-        //     return data
-        // },
+        async fetchData() {
+            let Excel = []
+            let params = {
+                url: 'expenseBillDetailList',
+                data: {
+                    pageNum: 1,
+                    size: 100,
+                    estateId:this.config.data.estateId,
+                    months:this.config.data.months,
+                    years:this.config.data.years,
+                }
+            }
+            const data = await DownloadExcel(params, this)
+            return data
+        },
         // Excel进度
-        // ExcelLoading(page, pageCount) {
-        //     const Loading = this.$loading({
-        //         lock: true,
-        //         text: `正在导出Excel${page}`,
-        //         spinner: 'el-icon-loading',
-        //         background: 'rgba(0, 0, 0, 0.7)'
-        //     })
-        //     Loading.text = `正在导出Excel  ${page}/${pageCount}`
-        //     console.log(Loading.text)
-        // },
-        // // Excel导出结束
-        // finishDownload() {
-        //     const Loading = this.$loading()
-        //     Loading.close()
-        // },
+        ExcelLoading(page, pageCount) {
+            const Loading = this.$loading({
+                lock: true,
+                text: `正在导出Excel${page}`,
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            })
+            Loading.text = `正在导出Excel  ${page}/${pageCount}`
+            console.log(Loading.text)
+        },
+        // Excel导出结束
+        finishDownload() {
+            const Loading = this.$loading()
+            Loading.close()
+        },
 
         // 表格选中
         tableCheck(data) {
@@ -532,6 +546,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.export-excel-wrapper{
+    display: inline;
+    margin-left: 20px;
+}
 .details-box {
     .box-item {
         display: flex;

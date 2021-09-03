@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>抄表收费</span>
+                <span>抄表记录</span>
             </div>
             <div class="content">
                 <!-- <div  style="width: 50px"><download-excel
@@ -35,6 +35,7 @@
                                 <button @click="remakes(table_row)">
                                     添加备注
                                 </button>
+                                
                             </div>
                         </template>
                     </VueTable>
@@ -132,20 +133,27 @@
                         </button>
                     </div>
                 </Drawer>
+                <Preview
+            :dialogVisible="paymentPreview"
+            @dialogPreview="dialogPreview"
+        ></Preview>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import Preview from '@/views/charge/components/meterReading/Preview'
 import { DownloadExcel } from '@/plugins/DownloadExcel'
 import {
     meterReadingRecordUpdateRemakes,
     meterReadingCreateShareBill
 } from '@/api/charge.js'
 export default {
+    
     data() {
         return {
+            
             dialogFormVisible: false,
             form: {
                 remakes: null
@@ -500,6 +508,7 @@ export default {
             this.drawer_vrisible = false
             this.$refs.VueForm.reset()
         },
+        
         // Excel导出
         // async fetchData() {
         //     let Excel = []

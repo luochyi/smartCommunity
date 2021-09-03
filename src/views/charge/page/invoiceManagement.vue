@@ -55,6 +55,7 @@
                                     修改开票信息
                                 </button> -->
                                 <button @click="del(table_row)">删除</button>
+                                <button @click="print">打印</button>
                             </div>
                         </template>
                     </VueTable>
@@ -193,6 +194,8 @@
                 >
             </span>
         </el-dialog>
+        <Preview :dialogVisible="paymentPreview"
+                    @dialogPreview="dialogPreview"></Preview>
         <!-- 查看图片组件 -->
         <!-- <views-photo
             :isVisible="photos_Visible"
@@ -204,7 +207,7 @@
 
 <script>
 // 引入查看照片组件
-// import viewsPhoto from '@/components/dialog/viewsPhoto'
+import Preview from '@/views/charge/components/invoice/Preview'
 // import { DownloadExcel } from '@/plugins/DownloadExcel'
 import { paperRecipients, paperInsert } from '@/api/charge'
 import {
@@ -214,12 +217,13 @@ import {
 } from '@/api/basic'
 // import func from 'vue-editor-bridge'
 export default {
-    // components: {
-    //     viewsPhoto
-    // },
+    components: {
+        Preview
+    },
     data() {
         return {
             //领用
+            paymentPreview:false,
             recipient: null,
             recipientsTel: null,
             thatId: null,
@@ -669,6 +673,12 @@ export default {
         })
     },
     methods: {
+        print(){
+            this.paymentPreview =true
+        },
+        dialogPreview(){
+            this.paymentPreview = false;
+        },
         // getPhotoView(item) {
         //     this.photos_Visible = true
         //     // let resData = {

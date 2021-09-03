@@ -140,7 +140,7 @@
                     
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button @click="pay(table_row)">缴费</button> -->
+                                <button @click="print(table_row)">打印</button>
                                 <!-- <button @click="refund(table_row)">退款备注</button> -->
                             </div>
                         </template>
@@ -180,15 +180,24 @@
                         >
                     </span>
                 </el-dialog>
+                 <Preview
+            :dialogVisible="paymentPreview"
+            @dialogPreview="dialogPreview"
+        ></Preview>
     </div>
 </template>
 
 <script>
+import Preview from '@/views/charge/components/meterbillDetail/Preview'
 import {expenseBillRefund,dailyPaymentFindEnableTempleDetail} from '@/api/charge.js'
 import { DownloadExcel } from '@/plugins/DownloadExcel'
 export default {
+    components: {
+        Preview
+    },
     data() {
         return {
+            paymentPreview: false,
             expenseId:null,
             remarkshow: false,
             refundPrice:null,
@@ -456,6 +465,10 @@ export default {
         back(){
             this.$router.go(-1)
         },
+        // 打印
+        print(){this.paymentPreview = true},
+        dialogPreview(){this.paymentPreview = false},
+        // 选择年份
         chooseYears(years,index){
             this.changeRed=index;
             console.log(years);
@@ -465,6 +478,7 @@ export default {
                 this.config.data.years = null
             }
         },
+        // 选择月份
         chooseMon(mon,indexS){
             this.changeRedS=indexS;
             console.log(mon);

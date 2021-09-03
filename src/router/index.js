@@ -135,9 +135,19 @@ const routes = [
                     {
                         //databaseManagement
                         path: '/company/databaseManagement',
+                        name:'databaseManagement',
                         component: resolve =>
                             require([
                                 '@/views/comprehensive/company/page/databaseManagement'
+                            ], resolve)
+                    },
+                    // src/views/comprehensive/company/page/gentleSearch.vue
+                    {
+                        //gentleSearch
+                        path: '/company/gentleSearch',
+                        component: resolve =>
+                            require([
+                                '@/views/comprehensive/company/page/gentleSearch'
                             ], resolve)
                     },
                     {
@@ -177,6 +187,7 @@ const routes = [
                     },
                     {
                         path: '/company/prohibitedKeywords',
+                        name:'prohibitedKeywords',
                         component: resolve =>
                             require([
                                 '@/views/comprehensive/company/page/prohibitedKeywords'
@@ -222,6 +233,7 @@ const routes = [
                     {
                          //预约管理
                          path:'/daily/bookingManagement',
+                         name:'bookingManagement',
                          component:()=>import('@/views/daily/page/bookingManagement')
                     },
                     {
@@ -273,6 +285,7 @@ const routes = [
                     },
                     {
                         path:'/daily/packageCollection',
+                        name:'packageCollection',
                         component:()=>import('@/views/daily/page/packageCollection')
                     },
                     {
@@ -458,10 +471,18 @@ const routes = [
                         // 收费标准管理
                         path: '/charge',
                         // 路由重定向
-                        redirect: '/charge/chargeStandard',
+                        redirect: '/charge/chargeForm',
                         component: resolve =>
                             require([
-                                '@/views/charge/page/chargeStandard'
+                                '@/views/charge/page/chargeForm'
+                            ], resolve)
+                    },
+                    {
+                        // 财务报表
+                        path: '/charge/chargeForm',
+                        component: resolve =>
+                            require([
+                                '@/views/charge/page/chargeForm'
                             ], resolve)
                     },
                     {
@@ -520,6 +541,7 @@ const routes = [
                     //invoiceManagement发票
                     {
                         path: '/charge/invoiceManagement',
+                        name:'invoiceManagement',
                         component: resolve =>
                             require(['@/views/charge/page/invoiceManagement'], resolve)
                     },
@@ -539,6 +561,14 @@ const routes = [
                         name:'MeterBillDetailList',
                         component: resolve =>
                             require(['@/views/charge/page/MeterBillDetailList'], resolve)
+                    },
+                    {
+                        // 日常缴费
+                        path: '/charge/StandingBook',
+                        component: resolve =>
+                            require([
+                                '@/views/charge/page/StandingBook'
+                            ], resolve)
                     },
                 ]
             }
@@ -617,6 +647,7 @@ const routes = [
                     {
                         // 访客管理
                         path: '/butler/visitorManagement',
+                    name:'visitorManagement',
                         component: resolve =>
                             require([
                                 '@/views/butler/page/visitorManagement'
@@ -641,6 +672,7 @@ const routes = [
                     {
                         // 报事报修
                         path: '/butler/reportRepair',
+                        name:'reportRepair',
                         component: resolve =>
                             require([
                                 '@/views/butler/page/reportRepair'

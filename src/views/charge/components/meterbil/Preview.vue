@@ -18,16 +18,13 @@
           </div>
           <div class="preview_box">
             <div class="preview_item">
-              <span>姓名：王倩</span>
+              <span>月份：202108</span>
             </div>
             <div class="preview_item">
-              <span>房间号：2-2-303</span>
+              <span>抄表类型：水费</span>
             </div>
             <div class="preview_item">
-              <span>付款方式：现金</span>
-            </div>
-            <div class="preview_item">
-              <span>付款时间：2020-09-01 10:22</span>
+              <span>创建时间：2021-09-03 09:33:14</span>
             </div>
           </div>
           <div class="preview_table">
@@ -35,36 +32,27 @@
                       border
                       style="width: 100%">
               <el-table-column prop="table1"
-                               label="收费项目">
-              </el-table-column>
-              <el-table-column prop="table2"
-                               label="起始日期">
-              </el-table-column>
-              <el-table-column prop="table3"
-                               label="截止日期">
-              </el-table-column>
-              <el-table-column prop="table4"
                                label="费用金额">
               </el-table-column>
+              <el-table-column prop="table2"
+                               label="住户用量">
+              </el-table-column>
+              <el-table-column prop="table3"
+                               label="公摊单价">
+              </el-table-column>
+              <el-table-column prop="table4"
+                               label="住户公摊总费用">
+              </el-table-column>
               <el-table-column prop="table5"
-                               label="已缴金额">
+                               label="实收金额">
               </el-table-column>
               <el-table-column prop="table6"
-                               label="应收金额">
+                               label="剩余未缴费用">
               </el-table-column>
             </el-table>
           </div>
           <div>
             <div class="preview_box">
-              <div class="preview_item">
-                <span>实收金额：¥1200</span>
-              </div>
-              <div class="preview_item">
-                <span>实收金额人民币（大写）：壹仟贰佰圆整</span>
-              </div>
-              <div class="preview_item">
-                <span>收款人：吕栋</span>
-              </div>
             </div>
             <div class="preview_box">
               <div class="preview_item">
@@ -90,12 +78,12 @@ export default {
   data () {
     return {
       tableData: [{
-        table1: '2020年物业费',
-        table2: '2020-08-01',
-        table3: '2021-07-31',
-        table4: '¥1200',
-        table5: '0',
-        table6: '¥1200',
+        table1: '1000元',
+        table2: '32毫升',
+        table3: '2.55元',
+        table4: '966.2元',
+        table5: '0元',
+        table6: '966.2元',
       }]
     }
   },

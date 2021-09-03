@@ -110,18 +110,18 @@
                         <el-table-column
                             prop="nickName"
                             label="昵称（系统名）"
-                            width="140"
+                            width="130"
                         ></el-table-column>
                         <el-table-column
                             prop="actualName"
                             label="真实姓名"
-                            width="130"
+                            width="100"
                         ></el-table-column>
                         <el-table-column prop="tel" width="130" label="电话">
                         </el-table-column>
                         <el-table-column
                             prop="organizationName"
-                            width="120"
+                            width="160"
                             label="部门名称"
                         >
                         </el-table-column>
@@ -133,16 +133,17 @@
                         </el-table-column>
                         <el-table-column
                             prop="status"
-                            width="80"
+                            width="70"
                             label="状态"
                             :formatter="statusVal"
                         >
                         </el-table-column>
                         <el-table-column
                             prop="remake"
+                            width="auto"
                             label="备注"
                         ></el-table-column>
-                        <el-table-column width="380" label="操作">
+                        <el-table-column width="280" label="操作">
                             <template slot-scope="scope">
                                 <el-button
                                     @click="edit(scope.row)"
@@ -184,6 +185,18 @@
                                     type="text"
                                     size="small"
                                     >删除</el-button
+                                >
+                                <el-button
+                                    @click="reward(scope.row)"
+                                    type="text"
+                                    size="small"
+                                    >奖惩记录</el-button
+                                >
+                                <el-button
+                                    @click="postchange(scope.row)"
+                                    type="text"
+                                    size="small"
+                                    >岗位变动</el-button
                                 >
                             </template>
                         </el-table-column>

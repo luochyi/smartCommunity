@@ -4,36 +4,9 @@
             <div class="main-content" v-show="!Pay_show">
                 <!-- 日常缴费组件 -->
                 <div class="main-titel">
-                    <span>日常缴费</span>
+                    <span>台账查询</span>
                 </div>
                 <div class="content">
-                    <div class="content-btn flex">
-                        <el-button
-                            class="init-button"
-                            icon="el-icon-plus"
-                            @click="addFee()"
-                            >添加费用</el-button
-                        >
-                        <div style="margin-left: 16px">
-                            <!--  :before-generate="startDownload"
-                              :before-finish="finishDownload" -->
-                            <download-excel
-                                class="export-excel-wrapper"
-                                :fetch="fetchData"
-                                :fields="json_fields"
-                                :before-finish="finishDownload"
-                                name="收费标准.xls"
-                            >
-                                <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
-                                <el-button
-                                    type="init-button2"
-                                    icon="el-icon-folder-add"
-                                    plain
-                                    >导出Excel</el-button
-                                >
-                            </download-excel>
-                        </div>
-                    </div>
                     <!-- 查询重制 -->
                     <div class="">
                         <VueTable
@@ -41,7 +14,7 @@
                             :config="config"
                             @tableCheck="tableCheck"
                         >
-                            <template slot="tabs">
+                            <!-- <template slot="tabs">
                                 <el-tabs
                                     v-model="activeName"
                                     @tab-click="handleClick"
@@ -59,8 +32,8 @@
                                         name="2"
                                     ></el-tab-pane>
                                 </el-tabs>
-                            </template>
-                            <template slot="footer">
+                            </template> -->
+                            <!-- <template slot="footer">
                                 <div class="table-footer">
                                     <button @click="Pay(table_row)">
                                         缴费
@@ -72,7 +45,7 @@
                                         欠费打印
                                     </button>
                                 </div>
-                            </template>
+                            </template> -->
                         </VueTable>
                     </div>
                 </div>
@@ -615,7 +588,7 @@ export default {
                 ],
                 data: {
                     pageNum: 1,
-                    size: 10
+                    size: 10,status:3
                 }
             }
         }

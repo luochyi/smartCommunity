@@ -112,7 +112,7 @@
                         </p>
                     </div>
                     <div class="preview-content-footer">
-                        <span>宁波永成物业 发布于 2020-08-12</span>
+                        <span>广西印象物业服务有限责任公司 发布于 2020-08-12</span>
                     </div>
                 </div>
             </div>

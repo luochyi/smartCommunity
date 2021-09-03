@@ -154,6 +154,14 @@ export default {
 
         },
         {
+          path: '/company/gentleSearch',
+          label: '通用查询',
+          iconurl: require('@/assets/images/company/icon_comprehensive07_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive07_sel.png'),
+          isChildren: 0
+
+        },
+        {
           path: '/company/reportForm',
           label: '报表管理',
           iconurl: require('@/assets/images/company/icon_comprehensive09_nor.png'),

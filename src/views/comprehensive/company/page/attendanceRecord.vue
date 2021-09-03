@@ -10,6 +10,7 @@
                                 :fetch="fetchData"
                                 :fields="json_fields"
                                 :before-finish="finishDownload"
+                               
                                 name="考勤记录.xls"
                             >
                                 <!-- 上面可以自定义自己的样式，还可以引用其他组件button -->
@@ -55,6 +56,7 @@ import {
 export default {
     data() {
         return {
+            
             add_vrisible: false,
             addDate: null,
             options: [],
@@ -148,7 +150,7 @@ export default {
                             }else if(row.cardReplacementDate!=null){
                                 return '已补卡'
                             }else{
-                                return '未打卡'
+                                return '缺席'
                             }
                         }
 
@@ -191,7 +193,7 @@ export default {
                             },
                             {
                                 value: 2,
-                                label: '未打卡'
+                                label: '缺席'
                             },
                             {
                                 value: 3,

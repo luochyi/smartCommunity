@@ -63,6 +63,14 @@ export default {
       activeIndex: this.$route.path,
       asideMenu: [
         {
+          // Chargeform
+          path: '/charge/chargeForm',
+          label: '财务报表',
+          iconurl: require('@/assets/images/charge/icon_charge01_nor.png'),
+          iconisactive: require('@/assets/images/charge/icon_charge01_sel.png'),
+          isChildren: 0
+        },
+        {
           // Charge standard
           path: '/charge/chargeStandard',
           label: '收费标准管理',
@@ -134,13 +142,21 @@ export default {
           children:[
             {
               path:'/charge/MeterReading',
-              label:'抄表收费'
+              label:'抄表记录'
             },
             {
               path:'/charge/MeterBil',
               label:'抄表账单'
             }
           ]
+        },
+        // Standingbook
+        {
+          path: '/charge/StandingBook',
+          label: '台账查询',
+          iconurl: require('@/assets/images/charge/icon_charge03_nor.png'),
+          iconisactive: require('@/assets/images/charge/icon_charge03_sel.png'),
+          isChildren: 0,
         },
       ],
       isCollapse: false

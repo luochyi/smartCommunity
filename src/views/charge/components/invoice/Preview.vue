@@ -24,7 +24,7 @@
               <span>房间号：2-2-303</span>
             </div>
             <div class="preview_item">
-              <span>付款方式：现金</span>
+              <span>项目名称：测试</span>
             </div>
             <div class="preview_item">
               <span>付款时间：2020-09-01 10:22</span>
@@ -35,35 +35,35 @@
                       border
                       style="width: 100%">
               <el-table-column prop="table1"
-                               label="收费项目">
+                               label="开票编号">
               </el-table-column>
               <el-table-column prop="table2"
-                               label="起始日期">
+                               label="开票类型">
               </el-table-column>
               <el-table-column prop="table3"
-                               label="截止日期">
+                               label="购方税号">
               </el-table-column>
               <el-table-column prop="table4"
-                               label="费用金额">
+                               label="总金额">
               </el-table-column>
               <el-table-column prop="table5"
-                               label="已缴金额">
+                               label="税率">
               </el-table-column>
               <el-table-column prop="table6"
-                               label="应收金额">
+                               label="抬头名称">
               </el-table-column>
             </el-table>
           </div>
           <div>
             <div class="preview_box">
               <div class="preview_item">
-                <span>实收金额：¥1200</span>
+                <span>开票类型：增值税专用发票</span>
               </div>
               <div class="preview_item">
                 <span>实收金额人民币（大写）：壹仟贰佰圆整</span>
               </div>
               <div class="preview_item">
-                <span>收款人：吕栋</span>
+                <span>抬头类型：个人</span>
               </div>
             </div>
             <div class="preview_box">
@@ -90,12 +90,12 @@ export default {
   data () {
     return {
       tableData: [{
-        table1: '2020年物业费',
-        table2: '2020-08-01',
-        table3: '2021-07-31',
+        table1: '3y67868d132',
+        table2: '增值税专用发票',
+        table3: 'FEWAZWD89E',
         table4: '¥1200',
-        table5: '0',
-        table6: '¥1200',
+        table5: '13%',
+        table6: '王倩',
       }]
     }
   },

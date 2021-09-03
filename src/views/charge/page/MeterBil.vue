@@ -29,20 +29,32 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="check(table_row)">查看明细</button>
+                                <button @click="print(table_row)">
+                                    打印
+                                </button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
             </div>
         </div>
+        <Preview
+            :dialogVisible="paymentPreview"
+            @dialogPreview="dialogPreview"
+        ></Preview>
     </div>
 </template>
 
 <script>
+import Preview from '@/views/charge/components/meterbil/Preview'
 import { DownloadExcel } from '@/plugins/DownloadExcel'
 export default {
+    components: {
+        Preview
+    },
     data() {
         return {
+            paymentPreview: false,
             thatId: null,
             drawerTitle: '',
             add_vrisible: false,
@@ -323,6 +335,8 @@ export default {
         tableCheck(data) {
             this.table_row = data
         },
+        print(){this.paymentPreview = true},
+        dialogPreview(){this.paymentPreview = false},
         // 删除
         del(data) {
             if (data.length) {
