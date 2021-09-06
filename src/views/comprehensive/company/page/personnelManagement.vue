@@ -295,31 +295,29 @@
                                     <template v-slot:upload>
                                         <!-- uploadBusinessSysUserResume   file-->
                                         <el-upload
-                                                :action="`${$baseUrl}upload/uploadBusinessSysUserResume`"
-                                                :on-success="fileSuccess"
-                                                :on-remove="wordRemove"
-                                                :on-exceed="handleExceed"
-                                                :file-list="wordList"
-                                                accept=".pdf,.PDF,.jpg,.png,.JPG,.PNG"
-                                                :limit="1"
-                                                :before-upload="
-                                                    beforeFileUpload
-                                                "
+                                            :action="`${$baseUrl}upload/uploadBusinessSysUserResume`"
+                                            :on-success="fileSuccess"
+                                            :on-remove="wordRemove"
+                                            :on-exceed="handleExceed"
+                                            :file-list="wordList"
+                                            accept=".pdf,.PDF,.jpg,.png,.JPG,.PNG"
+                                            :limit="1"
+                                            :before-upload="beforeFileUpload"
+                                        >
+                                            <el-button
+                                                icon="el-icon-edit"
+                                                size="small"
+                                                >上传文件</el-button
                                             >
-                                                <el-button
-                                                    icon="el-icon-edit"
-                                                    size="small"
-                                                    >上传文件</el-button
+                                            <div
+                                                slot="tip"
+                                                class="el-upload__tip"
+                                            >
+                                                <span
+                                                    >支持扩展名：pdf,jpg,png</span
                                                 >
-                                                <div
-                                                    slot="tip"
-                                                    class="el-upload__tip"
-                                                >
-                                                    <span
-                                                        >支持扩展名：pdf,jpg,png</span
-                                                    >
-                                                </div>
-                                            </el-upload>
+                                            </div>
+                                        </el-upload>
                                     </template>
                                 </VueForm>
                             </template>
@@ -345,7 +343,10 @@
                         <FromCard>
                             <template slot="title">基本信息</template>
                             <template>
-                                <VueForm ref="identityForm" :formObj="identityForm">
+                                <VueForm
+                                    ref="identityForm"
+                                    :formObj="identityForm"
+                                >
                                 </VueForm>
                             </template>
                         </FromCard>
@@ -357,6 +358,272 @@
                             >
                         </button>
                         <button class="btn-gray" @click="identityClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
+                <Drawer
+                    :drawerVrisible="drawer_reward"
+                    @drawerClose="getClose"
+                    drawerTitle="新增保养记录"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">基本信息</template>
+                            <div style="fontsize: 16px; lineheight: 20px">
+                                <el-row>
+                                    <el-col :span="5"
+                                        >真实姓名：{{ basicInfo.name }}</el-col
+                                    >
+                                    <el-col :span="5"
+                                        >职位：{{
+                                            basicInfo.positionName
+                                        }}</el-col
+                                    >
+                                </el-row>
+                            </div>
+                        </FromCard>
+                        <FromCard style="margintop: 20px">
+                            <template slot="title">奖惩记录</template>
+                            <el-button
+                                size="mini"
+                                type="primary"
+                                @click="addreward()"
+                                >新增奖惩</el-button
+                            >
+                            <el-table :data="rewardList">
+                                <el-table-column
+                                    prop="happenDate"
+                                    label="发生日期"
+                                ></el-table-column>
+                                <el-table-column prop="type" label="类型">
+                                    <template slot-scope="scope">
+                                        <span v-if="scope.row.type === 1"
+                                            >奖励</span
+                                        >
+                                        <span v-else-if="scope.row.type === 2"
+                                            >惩罚</span
+                                        >
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                    prop="content"
+                                    label="内容"
+                                ></el-table-column>
+                                <el-table-column label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button
+                                            size="mini"
+                                            type="danger"
+                                            icon="el-icon-delete"
+                                            circle
+                                            @click="handleDelete(scope.row)"
+                                        ></el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <el-table
+                                :data="addList"
+                                v-if="thisadd"
+                                :show-header="false"
+                            >
+                                <el-table-column
+                                    prop="happenDate"
+                                    label="发生时间"
+                                    width="200"
+                                >
+                                    <template slot-scope="scope">
+                                        <el-date-picker
+                                            v-model="scope.row.happenDate"
+                                            type="date"
+                                            size="mini"
+                                            value-format="yyyy-MM-dd hh:mm:ss"
+                                            style="width: 150px"
+                                            placeholder="选择日期"
+                                        >
+                                        </el-date-picker>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="type" label="奖惩类型">
+                                    <template slot-scope="scope">
+                                        <el-select
+                                            v-model="scope.row.type"
+                                            size="mini"
+                                            placeholder="请选择类型"
+                                        >
+                                            <el-option
+                                                v-for="item in rewardoption"
+                                                :label="item.label"
+                                                :value="item.value"
+                                                :key="item.value"
+                                            ></el-option>
+                                        </el-select>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="content" label="内容">
+                                    <template slot-scope="scope">
+                                        <el-input
+                                            v-model="scope.row.content"
+                                            size="mini"
+                                            placeholder="请输入内容"
+                                        ></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button
+                                            size="mini"
+                                            type="success"
+                                            icon="el-icon-check"
+                                            circle
+                                            @click="sub(scope.row)"
+                                        ></el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-gray" @click="getClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
+                <!--  gangweibiandong-->
+                <Drawer
+                    :drawerVrisible="drawer_post"
+                    @drawerClose="postgetClose"
+                    drawerTitle="新增岗位变动记录"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">基本信息</template>
+                            <div style="fontsize: 16px; lineheight: 20px">
+                                <el-row>
+                                    <el-col :span="5"
+                                        >真实姓名：{{ basicInfo.name }}</el-col
+                                    >
+                                    <el-col :span="5"
+                                        >职位：{{
+                                            basicInfo.positionName
+                                        }}</el-col
+                                    >
+                                </el-row>
+                            </div>
+                        </FromCard>
+                        <FromCard style="margintop: 20px">
+                            <template slot="title">岗位变动记录</template>
+                            <el-button
+                                size="mini"
+                                type="primary"
+                                @click="addpostchange()"
+                                >新增岗位变动</el-button
+                            >
+                            <el-table :data="postList">
+                                <el-table-column
+                                    prop="changeDate"
+                                    label="变动时间"
+                                ></el-table-column>
+                                <el-table-column
+                                    prop="oldStation"
+                                    label="旧岗位信息"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="newStation"
+                                    label="新岗位信息"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="changeReason"
+                                    label="变动原因"
+                                ></el-table-column>
+                                <el-table-column label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button
+                                            size="mini"
+                                            type="danger"
+                                            icon="el-icon-delete"
+                                            circle
+                                            @click="handlepostDelete(scope.row)"
+                                        ></el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <el-table
+                                :data="addpostList"
+                                v-if="thispostadd"
+                                :show-header="false"
+                            >
+                                <el-table-column
+                                    prop="changeDate"
+                                    label="变动时间"
+                                    width="200"
+                                >
+                                    <template slot-scope="scope">
+                                        <el-date-picker
+                                            v-model="scope.row.changeDate"
+                                            type="date"
+                                            size="mini"
+                                            value-format="yyyy-MM-dd hh:mm:ss"
+                                            style="width: 150px"
+                                            placeholder="选择日期"
+                                        >
+                                        </el-date-picker>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                    prop="oldStation"
+                                    label="旧岗位信息"
+                                >
+                                    <template slot-scope="scope">
+                                        <el-input
+                                            v-model="scope.row.oldStation"
+                                            size="mini"
+                                            placeholder="请输入内容"
+                                        ></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                    prop="newStation"
+                                    label="新岗位信息"
+                                >
+                                    <template slot-scope="scope">
+                                        <el-input
+                                            v-model="scope.row.newStation"
+                                            size="mini"
+                                            placeholder="请输入内容"
+                                        ></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                    prop="changeReason"
+                                    label="变动原因"
+                                >
+                                    <template slot-scope="scope">
+                                        <el-input
+                                            v-model="scope.row.changeReason"
+                                            size="mini"
+                                            placeholder="请输入内容"
+                                        ></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button
+                                            size="mini"
+                                            type="success"
+                                            icon="el-icon-check"
+                                            circle
+                                            @click="postsub(scope.row)"
+                                        ></el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-gray" @click="getClose">
                             <span>取消</span>
                         </button>
                     </div>
@@ -380,17 +647,61 @@ import {
     sysUserFindById,
     sysUserUpdate,
     sysUserFalseDelete,
-    identityInsert
+    identityInsert,
+    RPRecordsList,
+    RPRecordsInsert,
+    RPRecordsdelete,
+    stationChangeList,
+    stationChangeInsert,
+    stationChangedelete
 } from '@/api/company'
 import { sysOrganizationFindAllDepartment } from '@/api/daily'
 export default {
-    inject:['reload'],
+    inject: ['reload'],
     data() {
         return {
+            drawer_reward: false,
+            thisadd: false,
+            rewardList: [],
+            tabelstatus: false,
+            rewardoption: [
+                {
+                    value: 1,
+                    label: '奖励'
+                },
+                {
+                    value: 2,
+                    label: '惩罚'
+                }
+            ],
+            basicInfo: {},
+            addList: [{ happenDate: null, type: null, content: null }],
+
+            drawer_post: false,
+            thispostadd: false,
+            postList: [],
+            postoption: [
+                {
+                    value: 1,
+                    label: '奖励'
+                },
+                {
+                    value: 2,
+                    label: '惩罚'
+                }
+            ],
+            addpostList: [
+                {
+                    changeDate: null,
+                    oldStation: null,
+                    newStation: null,
+                    changeReason: null
+                }
+            ],
             wordList: [],
             sysOptions: [],
             add_vrisible: false,
-            identity_vrisible:false,
+            identity_vrisible: false,
             loading: false,
             drawerTitle: null,
             filterText: '',
@@ -420,7 +731,7 @@ export default {
                     positionId: null,
                     entryDate: null,
                     id: null,
-                    imgUrls: [],
+                    imgUrls: []
                 },
                 form_item: [
                     {
@@ -519,14 +830,14 @@ export default {
                         placeholder: '请选择日期',
                         width: '100%',
                         prop: 'imgUrls',
-                        slotName:'upload'
-                    },
+                        slotName: 'upload'
+                    }
                 ]
             },
             identityForm: {
                 ruleForm: {
                     name: null,
-                    remakes: null,
+                    remakes: null
                 },
                 form_item: [
                     {
@@ -542,7 +853,7 @@ export default {
                         placeholder: '请输入',
                         width: '100%',
                         prop: 'remakes'
-                    },
+                    }
                 ]
             },
             currentPage: 1,
@@ -557,7 +868,7 @@ export default {
             statusOptions: [
                 { value: 1, label: '正常' },
                 { value: 2, label: '禁止登录' },
-                { value: 3, label: '停用' },
+                { value: 3, label: '停用' }
             ]
         }
     },
@@ -576,6 +887,141 @@ export default {
         })
     },
     methods: {
+        // 获取奖惩列表
+        getrewardlist() {
+            RPRecordsList({ userId: this.userId }).then((res) => {
+                console.log(res)
+                this.rewardList = res.tableList
+            })
+        },
+        // 保养reward
+        reward(data) {
+            console.log(data)
+            this.drawer_reward = true
+            this.userId = data.id
+            this.basicInfo.name = data.actualName
+            this.basicInfo.positionName = data.positionName
+            this.getrewardlist()
+        },
+        // 新增保养
+        addreward() {
+            this.thisadd = true
+        },
+        // 删除保养
+        handleDelete(row) {
+            RPRecordsdelete({ ids: [row.id] }).then((res) => {
+                console.log(res)
+                if (res.status) {
+                    this.$message({ message: res.message, type: 'success' })
+                    this.getrewardlist()
+                }
+            })
+        },
+        // 提交新增保养
+        sub(row) {
+            console.log(row)
+            let resData = {
+                userId: this.userId,
+                happenDate: row.happenDate,
+                type: row.type,
+                content: row.content
+            }
+            RPRecordsInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({ type: 'success', message: res.message })
+                    this.thisadd = false
+                    this.getrewardlist()
+                    this.addList = [
+                        { happenDate: null, type: null, content: null }
+                    ]
+                }
+            })
+        },
+        // 关闭drawer
+        getClose(data) {
+            this.drawer_reward = false
+            this.userId = null
+            this.thisadd = false
+            this.addList = [
+                {
+                    checkDate: null,
+                    status: null,
+                    administrator: null,
+                    details: null
+                }
+            ]
+        },
+
+        // 获取奖惩列表
+        getpostlist() {
+            stationChangeList({ userId: this.userId }).then((res) => {
+                console.log(res)
+                this.postList = res.tableList
+            })
+        },
+        // 获取奖惩列表
+        postchange(data) {
+            console.log(data)
+            this.drawer_post = true
+            this.userId = data.id
+            this.basicInfo.name = data.actualName
+            this.basicInfo.positionName = data.positionName
+            this.getpostlist()
+        },
+        // 新增变动
+        addpostchange() {
+            this.thispostadd = true
+        },
+        // 删除变动
+        handlepostDelete(row) {
+            stationChangedelete({ ids: [row.id] }).then((res) => {
+                console.log(res)
+                if (res.status) {
+                    this.$message({ message: res.message, type: 'success' })
+                    this.getpostlist()
+                }
+            })
+        },
+        // 提交变动
+        postsub(row) {
+            console.log(row)
+            let resData = {
+                userId: this.userId,
+                changeDate: row.changeDate,
+                oldStation: row.oldStation,
+                newStation: row.newStation,
+                changeReason: row.changeReason
+            }
+            stationChangeInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({ type: 'success', message: res.message })
+                    this.thispostadd = false
+                    this.getpostlist()
+                    this.addpostList = [
+                        {
+                            changeDate: null,
+                            oldStation: null,
+                            newStation: null,
+                            changeReason: null
+                        }
+                    ]
+                }
+            })
+        },
+        // 关闭drawer
+        postgetClose(data) {
+            this.drawer_post = false
+            this.userId = null
+            this.thispostadd = false
+            this.addpostList = [
+                {
+                    changeDate: null,
+                    oldStation: null,
+                    newStation: null,
+                    changeReason: null
+                }
+            ]
+        },
         // word 文件上传成功
         fileSuccess(res, file) {
             this.addForm.ruleForm.imgUrls[0] = file.response.url
@@ -598,7 +1044,12 @@ export default {
             this.addForm.ruleForm.fileDocName = file.name
             const isLt2M = file.size / 1024 / 1024 < 20
             const fileType =
-                file.name.endsWith('.pdf') || file.name.endsWith('.PDF')||file.name.endsWith('.jpg') || file.name.endsWith('.jpg')||file.name.endsWith('.png') || file.name.endsWith('.PNG')
+                file.name.endsWith('.pdf') ||
+                file.name.endsWith('.PDF') ||
+                file.name.endsWith('.jpg') ||
+                file.name.endsWith('.jpg') ||
+                file.name.endsWith('.png') ||
+                file.name.endsWith('.PNG')
             console.log(fileType)
             if (!fileType) {
                 this.$message.error('上传文件只能是 pdf/jpg/png 格式!')
@@ -607,7 +1058,7 @@ export default {
                 this.$message.error('上传文件大小不能超过 20MB!')
             }
             return fileType && isLt2M
-        },  
+        },
 
         // 表格中status的值
         statusVal(row, column) {
@@ -637,30 +1088,30 @@ export default {
                 Math.random() * 100000000
             )
         },
-        addIdentity(){
+        addIdentity() {
             this.identity_vrisible = true
         },
-        identitySubmit(){
+        identitySubmit() {
             let resData = {
-                name:this.identityForm.ruleForm.name,
-                remakes:this.identityForm.ruleForm.remakes,
-                parentId:0
+                name: this.identityForm.ruleForm.name,
+                remakes: this.identityForm.ruleForm.remakes,
+                parentId: 0
             }
-        identityInsert(resData).then(res=>{
-            if (res.status) {
-                this.$message({message:'添加成功',type:'success'})
-                this.identityClose()
-                this.reload()
-            }
-        })
+            identityInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({ message: '添加成功', type: 'success' })
+                    this.identityClose()
+                    this.reload()
+                }
+            })
         },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
             this.addForm.form_item[4].disabled = false
-            this.wordList=[]
+            this.wordList = []
         },
-        identityClose(){
+        identityClose() {
             this.$refs.identityForm.reset()
             this.identity_vrisible = false
         },
@@ -692,7 +1143,6 @@ export default {
                         })
                         this.getTableData()
                         this.addClose()
-                        
                     }
                 })
             }
@@ -719,14 +1169,14 @@ export default {
                 this.addForm.ruleForm.remake = res.remake
                 this.wordList.push(res.imgList[0].url)
                 if (res.imgList.length === 0) {
-                            this.wordList = []
-                        } else {
-                            let obj = {
-                                name: res.imgList[0].url,
-                                url: res.imgList[0].url
-                            }
-                            this.$set(this.wordList, '0', obj)
-                        }
+                    this.wordList = []
+                } else {
+                    let obj = {
+                        name: res.imgList[0].url,
+                        url: res.imgList[0].url
+                    }
+                    this.$set(this.wordList, '0', obj)
+                }
             })
         },
         //允许登录

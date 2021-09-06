@@ -313,7 +313,7 @@ export default {
                         }
                     },
                     {
-                        label: '装修公司名称',
+                        label: '装修公司负责人名称',
                         prop: 'director',
                         width: '130'
                     },
@@ -386,7 +386,7 @@ export default {
                 search_item: [
                     {
                         type: 'Input',
-                        label: '装修公司名称',
+                        label: '装修公司负责人名称',
                         placeholder: '请输入',
                         prop: 'constructionUnit'
                     },

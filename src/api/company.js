@@ -123,6 +123,54 @@ export function identityInsert(data) {
         data: data
     })
 }
+// RPRecordsList
+export function RPRecordsList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/RPRecords/list',
+        params: data
+    })
+}
+// RPRecords/insert
+export function RPRecordsInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/RPRecords/insert',
+        data: data
+    })
+}
+// RPRecordsdelete
+export function RPRecordsdelete(data) {
+    return service.request({
+        method: 'POST',
+        url: '/RPRecords/delete',
+        data: data
+    })
+}
+// RPRecordsList
+export function stationChangeList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/stationChange/list',
+        params: data
+    })
+}
+// RPRecords/insert
+export function stationChangeInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/stationChange/insert',
+        data: data
+    })
+}
+// RPRecordsdelete
+export function stationChangedelete(data) {
+    return service.request({
+        method: 'POST',
+        url: '/stationChange/delete',
+        data: data
+    })
+}
 //允许登录sysUser/allowLogins 禁止登录sysUser/disableLogins 恢复sysUser/recovery 停用sysUser/stop
 export function sysUserAllowLogins(data) {
     return service.request({
@@ -419,5 +467,36 @@ export function prohibitedKeywordsUpdate(data) {
         method: 'POST',
         url: '/prohibitedKeywords/update',
         data: data
+    })
+}
+
+// greenTask/list   hygieneTask/list chargesTemplateId   chargesTemplateDetail/list
+export function greenTaskList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/greenTask/list',
+        params: data
+    })
+}
+export function hygieneTaskList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/hygieneTask/list',
+        params: data
+    })
+}
+export function chargesTemplateDetailList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/chargesTemplateDetail/list',
+        params: data
+    })
+}
+// dailyPayment/list
+export function dailyPaymentList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/dailyPayment/list',
+        params: data
     })
 }

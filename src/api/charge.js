@@ -228,11 +228,26 @@ export function meterReadingRecordUpdateRemakes(data) {
         data: data
     })
 }
-// meterReadingRecord/createShareBill
-export function meterReadingCreateShareBill(data) {
+export function meterReadingRecordCreateShareBill(data) {
     return service.request({
         method: 'POST',
         url: '/meterReadingRecord/createShareBill',
+        data: data
+    })
+}
+// sysMessage/      shareBillDetailsId  danti
+export function meterReadingRecordShareBillPushDetails(data) {
+    return service.request({
+        method: 'POST',
+        url: '/meterReadingRecord/ShareBillPushDetails',
+        data: data
+    })
+}
+// sysMessage:{content:null} shareBillId   dajia
+export function meterReadingRecordShareBillPush(data) {
+    return service.request({
+        method: 'POST',
+        url: '/meterReadingRecord/ShareBillPush',
         data: data
     })
 }

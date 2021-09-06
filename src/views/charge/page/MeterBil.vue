@@ -32,6 +32,7 @@
                                 <button @click="print(table_row)">
                                     打印
                                 </button>
+                                <button @click="notice(table_row)">账单提醒</button>
                             </div>
                         </template>
                     </VueTable>
@@ -46,6 +47,7 @@
 </template>
 
 <script>
+import {meterReadingRecordShareBillPush,meterReadingRecordShareBillPushDetails} from '@/api/charge'
 import Preview from '@/views/charge/components/meterbil/Preview'
 import { DownloadExcel } from '@/plugins/DownloadExcel'
 export default {
@@ -252,6 +254,23 @@ export default {
                 let mes = data[0]
                 this.$router.push({name: 'MeterBillDetailList', params: {data:mes}})
             }
+        },
+        notice(data){
+            if (data.length!=1) {
+                this.$message({
+                    type:'error',
+                    message:"请选择一条数据推送"
+                })
+                return
+            }
+            meterReadingRecordShareBillPush({sysMessage:{content:'您有新的公摊账单请及时查看，避免逾期'},shareBillId:data[0].id}).then(res=>{
+                if(res.status){
+                    this.$message({
+                    type:'success',
+                    message:res.message
+                })
+                }
+            })
         },
         // Excel导出
         // async fetchData() {

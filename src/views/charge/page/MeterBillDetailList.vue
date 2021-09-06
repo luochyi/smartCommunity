@@ -141,6 +141,7 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="print(table_row)">打印</button>
+                                <button @click="notice(table_row)">账单提醒</button>
                                 <!-- <button @click="refund(table_row)">退款备注</button> -->
                             </div>
                         </template>
@@ -188,6 +189,7 @@
 </template>
 
 <script>
+import {meterReadingRecordShareBillPush,meterReadingRecordShareBillPushDetails} from '@/api/charge'
 import Preview from '@/views/charge/components/meterbillDetail/Preview'
 import {expenseBillRefund,dailyPaymentFindEnableTempleDetail} from '@/api/charge.js'
 import { DownloadExcel } from '@/plugins/DownloadExcel'
@@ -338,7 +340,11 @@ export default {
                     {
                         label: '滞纳金',
                         prop: 'lateFee',
-                        width: 'auto'
+                        width: 'auto',
+                        type:'function',
+                        callback:(row,prop)=>{
+                            return (row.lateFee).toFixed(2)
+                        }
                     },
                     {
                         label: '缴费期限',
@@ -351,7 +357,7 @@ export default {
                         width: 'auto'
                     },
                     {
-                        label: '预期天数',
+                        label: '逾期天数',
                         prop: 'expectedDays',
                         width: 'auto'
                     },
@@ -462,6 +468,24 @@ export default {
         })
   },
     methods: {
+        // shareBillDetailsId
+        notice(data){
+            if (data.length!=1) {
+                this.$message({
+                    type:'error',
+                    message:"请选择一条数据推送"
+                })
+                return
+            }
+            meterReadingRecordShareBillPushDetails({sysMessage:{content:'您有新的公摊账单请及时查看，避免逾期'},shareBillDetailsId:data[0].id}).then(res=>{
+                if(res.status){
+                    this.$message({
+                    type:'success',
+                    message:res.message
+                })
+                }
+            })
+        },
         back(){
             this.$router.go(-1)
         },

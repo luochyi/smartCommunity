@@ -133,21 +133,21 @@
                         </button>
                     </div>
                 </Drawer>
-                <Preview
+                <!-- <Preview
             :dialogVisible="paymentPreview"
             @dialogPreview="dialogPreview"
-        ></Preview>
+        ></Preview> -->
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import Preview from '@/views/charge/components/meterReading/Preview'
+// import Preview from '@/views/charge/components/meterReading/Preview'
 import { DownloadExcel } from '@/plugins/DownloadExcel'
 import {
     meterReadingRecordUpdateRemakes,
-    meterReadingCreateShareBill
+    meterReadingRecordCreateShareBill
 } from '@/api/charge.js'
 export default {
     
@@ -493,7 +493,7 @@ export default {
                 remakes:this.billForm.ruleForm.remakes,
             }
             console.log(resData);
-            meterReadingCreateShareBill(resData).then(res=>{
+            meterReadingRecordCreateShareBill(resData).then(res=>{
                 if(res.status){
                     this.$message({
                         type:'success',

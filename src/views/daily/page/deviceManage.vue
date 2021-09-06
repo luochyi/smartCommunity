@@ -254,6 +254,7 @@ export default {
         return {
             basicInfo:{},
             maintainList:[],tabelstatus:false,
+            userId:null,
             addList:[{checkDate:null,status:null,administrator:null,details:null}],
             thisadd:false,
             drawer_maintain: false,
