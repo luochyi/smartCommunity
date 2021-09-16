@@ -335,6 +335,9 @@ export default {
                     leadingId: [
                         { required: true, message: '请选择', trigger: 'change' }
                     ],
+                    categoryId: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
                 },
                 form_item: [
                     {
@@ -569,7 +572,7 @@ export default {
                         message: res.message,
                         type: 'success'
                     })
-                    
+
                     this.addClose()
                    this.getData()
                 }
