@@ -147,7 +147,7 @@
                        name="third"></el-tab-pane> -->
                 </el-tabs>
             </div>
-            <!-- 新增 -->
+            <!-- 新增抽屉 drwaer -->
             <Drawer
                 drawerTitle="新增部门"
                 @drawerClose="addClose"
@@ -157,7 +157,8 @@
                     <FromCard>
                         <template slot="title">部门信息</template>
                         <template>
-                            <VueForm ref="addForm" :formObj="addForm">
+                            <!-- addRuleSuccess函数 -->
+                            <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                 <template v-slot:leadingId>
                                     <el-select
                                         v-model="addForm.ruleForm.leadingId"
@@ -316,6 +317,7 @@ export default {
             add_vrisible: false,
             options: [],
             addForm: {
+                // 添加表单
                 ruleForm: {
                     name: null,
                     parentId: null,
@@ -324,6 +326,15 @@ export default {
                     remake: null,
                     categoryId: null,
                     sort:null
+                },
+                rules: {
+                    // 表单必填
+                    name: [
+                        { required: true, message: '请选择', trigger: 'change' }
+                    ],
+                    leadingId: [
+                        { required: true, message: '请选择', trigger: 'change' }
+                    ],
                 },
                 form_item: [
                     {
@@ -547,7 +558,8 @@ export default {
             this.add_vrisible = false
             this.$refs.addForm.reset()
         },
-        addSubmit() {
+        // 校验成功后调用接口
+        addRuleSuccess() {
             let resData = {
                 ...this.addForm.ruleForm
             }
@@ -562,6 +574,10 @@ export default {
                    this.getData()
                 }
             })
+        },
+        // 提交
+        addSubmit() {
+            this.$refs.addForm.submitForm()
         },
         premoteMethod(val) {
             let reeData = {
