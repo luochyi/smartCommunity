@@ -1,11 +1,14 @@
 <template>
     <div>
         <el-container>
-            <el-aside :width="isCollapse ? '58px' : '200px'"  :style="{backgroundColor: $store.state.bgColor}">
+            <el-aside
+                :width="isCollapse ? '58px' : '200px'"
+                :style="{ backgroundColor: $store.state.bgColor }"
+            >
                 <el-menu
                     :default-active="activeIndex"
                     class="el-menu-vertical-demo"
-                     :style="{backgroundColor: $store.state.bgColor}"
+                    :style="{ backgroundColor: $store.state.bgColor }"
                     text-color="#999999"
                     :collapse-transition="false"
                     active-text-color="#ffd04b"
@@ -73,7 +76,7 @@ export default {
             asideMenu: [
                 {
                     // Facility Booking facilitiesPlanExecuteList
-                    path: '/butler/facilityBooking',
+                    path: '/daily/facilityBooking',
                     label: '公共设施设备',
                     iconurl: require('@/assets/images/daily/ssyy_nor.png'),
                     iconisactive: require('@/assets/images/daily/ssyy_sel.png'),
@@ -82,10 +85,12 @@ export default {
                         {
                             path: '/daily/facilitiesManagement',
                             label: '设施设备管理'
-                        },  {
+                        },
+                        {
                             path: '/daily/sysOperations',
                             label: '运维管理'
-                        },{
+                        },
+                        {
                             path: '/daily/bookingManagement',
                             label: '预约管理'
                         },
@@ -93,10 +98,10 @@ export default {
                             path: '/daily/facilitiesExecute',
                             label: '检查记录'
                         },
-                       
+
                         {
-                          path: '/daily/facilityInspection',
-                          label: '设施设备检查'
+                            path: '/daily/facilityInspection',
+                            label: '设施设备检查'
                         },
                         {
                             path: '/daily/facilityItem',
@@ -127,8 +132,7 @@ export default {
                         {
                             path: '/daily/inspectionPoint',
                             label: '巡检点'
-                        },
-                        
+                        }
                     ]
                 },
                 {
@@ -150,6 +154,25 @@ export default {
                         {
                             path: '/daily/materialManagement',
                             label: '物料管理'
+                        }
+                    ]
+                },
+                {
+                    // Report for repair
+                    path: '/daily/reportRepair',
+                    label: '报事报修',
+                    iconurl: require('@/assets/images/butler/icon_service08_nor.png'),
+                    iconisactive: require('@/assets/images/butler/icon_service08_sel.png'),
+                    isChildren: 1,
+                    children: [
+                        {
+                            path: '/daily/reportRepair',
+                            label: '报事报修'
+                        },
+                        {
+                            // Item management
+                            path: '/daily/engineeringMaintenance',
+                            label: '工程维修'
                         }
                     ]
                 },
@@ -187,6 +210,33 @@ export default {
                     iconurl: require('@/assets/images/daily/zxgl_nor.png'),
                     iconisactive: require('@/assets/images/daily/zxgl_sel.png'),
                     isChildren: 0
+                },
+                {
+                    // Report for repair
+                    path: '/daily/housekeepingServices',
+                    label: '家政服务',
+                    iconurl: require('@/assets/images/butler/jzfw_nor.png'),
+                    iconisactive: require('@/assets/images/butler/jzfw_sel.png'),
+                    isChildren: 0
+                },
+                {
+                    path: '/daily/loanManagement',
+                    // Loan management
+                    label: '借还管理',
+                    iconurl: require('@/assets/images/butler/icon_service12_nor.png'),
+                    iconisactive: require('@/assets/images/butler/icon_service12_sel.png'),
+                    isChildren: 1,
+                    children: [
+                        {
+                            path: '/daily/loanManagement',
+                            label: '物品借还'
+                        },
+                        {
+                            // Item management
+                            path: '/daily/itemManagemsent',
+                            label: '物品管理'
+                        }
+                    ]
                 },
                 {
                     // Business meeting management
@@ -260,13 +310,13 @@ export default {
                         }
                     ]
                 },
-                 {
+                {
                     path: '/daily/safeManage',
                     label: '安全管理',
                     iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
                     iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
                     isChildren: 0
-                },
+                }
             ],
             isCollapse: false
         }

@@ -247,6 +247,31 @@ const routes = [
                         component:()=>import('@/views/daily/page/facilityItem')
                    },
                    {
+                    // 家政housekeepingServices
+                    path: '/daily/housekeepingServices',
+                    component: resolve =>
+                        require([
+                            '@/views/daily/page/housekeepingServices'
+                        ], resolve)
+                },
+                   {
+                    // 借还管理
+                    path: '/daily/loanManagement',
+                    component: resolve =>
+                        require([
+                            '@/views/daily/page/loanManagement'
+                        ], resolve)
+                },
+                // itemManagemsent
+                {
+                    // 物品管理
+                    path: '/daily/itemManagemsent',
+                    component: resolve =>
+                        require([
+                            '@/views/daily/page/itemManagemsent'
+                        ], resolve)
+                },
+                   {
                     //检查记录
                     path:'/daily/facilitiesExecute',
                     component:()=>import('@/views/daily/page/facilitiesExecute')
@@ -303,6 +328,31 @@ const routes = [
                     {
                         path:'/daily/keyExamine',
                         component:()=>import('@/views/daily/page/keyExamine')
+                    },
+                    {
+                        // 报事报修
+                        path: '/daily/reportRepair',
+                        name:'reportRepair',
+                        component: resolve =>
+                            require([
+                                '@/views/daily/page/reportRepair'
+                            ], resolve)
+                    },
+                    {
+                        // 工程维修
+                        path: '/daily/engineeringMaintenance',
+                        component: resolve =>
+                            require([
+                                '@/views/daily/page/engineeringMaintenance'
+                            ], resolve)
+                    },
+                    {
+                        // 工程维修
+                        path: '/butler/engineeringMaintenanceDetail',
+                        component: resolve =>
+                            require([
+                                '@/views/butler/components/engineeringMaintenance/engineeringMaintenanceDetail'
+                            ], resolve)
                     },
                     //CustomerInterview
                     {
@@ -669,31 +719,7 @@ const routes = [
                                 '@/views/butler/page/complainPraise'
                             ], resolve)
                     },
-                    {
-                        // 报事报修
-                        path: '/butler/reportRepair',
-                        name:'reportRepair',
-                        component: resolve =>
-                            require([
-                                '@/views/butler/page/reportRepair'
-                            ], resolve)
-                    },
-                    {
-                        // 工程维修
-                        path: '/butler/engineeringMaintenance',
-                        component: resolve =>
-                            require([
-                                '@/views/butler/page/engineeringMaintenance'
-                            ], resolve)
-                    },
-                    {
-                        // 工程维修
-                        path: '/butler/engineeringMaintenanceDetail',
-                        component: resolve =>
-                            require([
-                                '@/views/butler/components/engineeringMaintenance/engineeringMaintenanceDetail'
-                            ], resolve)
-                    },
+                    
                     // /Users/apple/Desktop/smartCommunity1/src/views/butler/components/engineeringMaintenance/engineeringMaintenanceDetail.vue
                     {
                         // 问卷调查
@@ -744,23 +770,7 @@ const routes = [
                                 '@/views/butler/page/managementSet'
                             ], resolve)
                     },
-                    {
-                        // 借还管理
-                        path: '/butler/loanManagement',
-                        component: resolve =>
-                            require([
-                                '@/views/butler/page/loanManagement'
-                            ], resolve)
-                    },
-                    // itemManagemsent
-                    {
-                        // 物品管理
-                        path: '/butler/itemManagemsent',
-                        component: resolve =>
-                            require([
-                                '@/views/butler/page/itemManagemsent'
-                            ], resolve)
-                    },
+                    
                     
                     {
                         // 语音管家
@@ -770,14 +780,7 @@ const routes = [
                                 '@/views/butler/page/voiceButler'
                             ], resolve)
                     },
-                    {
-                        // 家政housekeepingServices
-                        path: '/butler/housekeepingServices',
-                        component: resolve =>
-                            require([
-                                '@/views/butler/page/housekeepingServices'
-                            ], resolve)
-                    },
+                    
                     
                 ]
             }

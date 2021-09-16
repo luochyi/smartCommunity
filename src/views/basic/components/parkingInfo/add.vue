@@ -230,11 +230,11 @@ export default {
       }
       this.editId = id
       cpmParkingSpaceFindById(findData).then(res => {
-        this.fromjson.ruleForm.code = res.code
-        this.fromjson.ruleForm.status = res.status
-        this.fromjson.ruleForm.type = res.type
+        this.fromjson.ruleForm.code = res.data.code
+        this.fromjson.ruleForm.status = res.data.status
+        this.fromjson.ruleForm.type = res.data.type
         let userData = {
-          id: res.residentId
+          id: res.data.residentId
         }
         userResidentFindByIdOne(userData).then(result => {
           this.addForm.ruleForm.idNumber = result.userResident.idNumber

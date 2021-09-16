@@ -136,7 +136,7 @@
                                     >提交</span
                                 >
                             </button>
-                            <button class="btn-gray" @click="editClose">
+                            <button class="btn-gray" @click="addClose">
                                 <span>取消</span>
                             </button>
                         </div>

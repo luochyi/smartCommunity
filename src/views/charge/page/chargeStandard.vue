@@ -68,7 +68,8 @@
                             size="small"
                             style="width: 240px; padding-right: 24px"
                             prefix-icon="el-icon-search"
-                            v-model="input2"
+                            v-model="config.data.name"
+                            @keyup.enter.native="search()"
                         >
                         </el-input>
                         <el-button class="init-button" @click="add()"
@@ -280,7 +281,8 @@ export default {
                 data: {
                     pageNum: 1,
                     size: 10,
-                    chargesTemplateId:null
+                    chargesTemplateId:null,
+                    name:null
                 },
                 url:'chargesTemplateDetailList',
                 thead: [
@@ -510,6 +512,9 @@ export default {
                 })
                 .catch((action) => {})
             // costActive
+        },
+        search(){
+           this.GetTableData(this.costList[this.costActive].id)
         },
         // 费用版本名称
         getCostType() {

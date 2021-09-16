@@ -125,7 +125,7 @@
 </template>
 <script>
     import {
-        Release,
+        announcementManagementRelease,
         announcementManagementFindById,
         announcementManagementInsert,
         announcementManagementUpdate
@@ -541,7 +541,17 @@
             },
             // 发布
             release(data) {
-                if (data.length) {
+                if(data.length!=1){
+                    this.$message.error('只能选择一条公告发布')
+                    return
+                }
+                    if(data[0].status===2){
+                        this.$message({
+                            type:'error',
+                            message:'已发布'
+                        })
+                        return
+                    }
                     let arr = []
                     for (let i = 0; i < this.table_row.length; i++) {
                         arr.push(this.table_row[i].id)
@@ -569,9 +579,7 @@
                             )
                         })
                         .catch((action) => {})
-                } else {
-                    this.$message.error('请选中需要发布的数据')
-                }
+                    
             }
         },
         watch: {

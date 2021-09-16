@@ -627,7 +627,11 @@ export default {
             this.getUserList('')
         },
         change(value) {
-            console.log(value)
+            this.options.map((item) => {
+                if (item.id === value) {
+                    this.editForm.ruleForm.leadingTel = item.tel
+                }
+            })
         },
         // 关闭
         editClose() {

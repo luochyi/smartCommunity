@@ -578,7 +578,7 @@ export default {
                         label: '费用名称',
                         placeholder: '请输入',
                         value: '',
-                        prop: 'workOrderTypeDetailId',
+                        prop: 'chargesTemplateDetailId',
                         options: []
                     },
                     {

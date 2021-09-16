@@ -29,6 +29,8 @@
             <div class="table-footer">
               <button @click="edit(table_row)">编辑</button>
               <button @click="del(table_row)">删除</button>
+              <button @click="enable(table_row)">启用</button>
+              <button @click="disenable(table_row)">禁用</button>
             </div>
           </template>
         </VueTable>
@@ -44,7 +46,7 @@
 
 <script>
 import addEidt from '@/views/butler/components/topiManagement/addEidt'
-
+// import {} from '@/api/'
 export default {
   data () {
     return {

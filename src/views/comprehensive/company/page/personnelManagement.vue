@@ -1332,6 +1332,7 @@ export default {
         },
         //查询
         search() {
+            this.currentPage =1
             this.getTableData()
         },
         // 重置

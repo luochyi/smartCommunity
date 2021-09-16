@@ -163,15 +163,77 @@ export default {
             imglist: [],
             activeName: '0',
             //表头
-            //     json_fields: {
-            //     家政房产名称:'roomName',
-            //     家政人数:'num',
-            //     家政负责人名称:'leaderName',
-            //     家政负责人手机号:'leaderTel',
-            //     家政内容:'content',
-            //     创建人名称:'createName',
-            //     创建时间:'createDate',
-            // },
+                json_fields: {
+                申请人姓名:'proposerName',
+                申请人手机号:'proposerTel',
+                房屋名称:'roomName',
+                服务类型:{
+                    field: 'type',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                    return '室内清洁'
+                                    break
+                                case 2:
+                                    return '洗涤护理'
+                                    break
+                                default:
+                                    break
+                        }
+                    }
+                },
+                家政内容:'content',
+                状态:{
+                    field: 'status',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '待派单'
+                                break;
+                            case 2:
+                                return '已派单'
+                                break;
+                            case 3:
+                                return '处理中'
+                                break;
+                            case 4:
+                                return '待支付'
+                                break;
+                            case 5:
+                                return '待评价'
+                                break;
+                            case 6:
+                                return '已完成'
+                                break;
+                            case 9:
+                                return '已取消'
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                },
+                // completion
+                完成情况:{
+                    field: 'completion',
+                    callback: (value) => {
+                        switch (value) {
+                            case 1:
+                                return '未完成'
+                                break;
+                            case 2:
+                                return '已完成'
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                },
+                处理人名称:'handlerName',
+                处理人电话:'handlerTel',
+                处理描述:'processDescription',
+                处理时间:'handlingTime',
+            },
             config: {
                 thead: [
                     { label: '序号', type: 'index', width: '80' },
@@ -330,7 +392,7 @@ export default {
         async fetchData() {
             let Excel = []
             let params = {
-                url: 'housekeepingList',
+                url: 'housekeepingServiceList',
                 data: {
                     pageNum: 1,
                     size: 100

@@ -36,12 +36,13 @@
                                 <template v-slot:doc="slotData">
                                     <div
                                         style="color: blue; cursor: pointer"
-                                        v-if="slotData.data.imgList"
+                                        v-if="slotData.data.imgList.length!=0"
                                         @click="
                                             download(slotData.data.imgList)
                                         "
                                     >
-                                        {{ (slotData.data.imgList[0].url).substring(24)}}
+                                        <span v-if="slotData.data.imgList.length==0">无</span>
+                                        <span v-else>{{ (slotData.data.imgList[0].url).substring(24)}}</span>
                                     </div>
                                     <div v-else>无</div>
                                 </template>
@@ -325,13 +326,13 @@ export default {
                         placeholder: '请输入',
                         prop: 'name'
                     },
-                    {
-                        type: 'select',
-                        label: '登记人',
-                        placeholder: '请输入',
-                        prop: 'createId',
-                        options:[]
-                    },
+                    // {
+                    //     type: 'select',
+                    //     label: '登记人',
+                    //     placeholder: '请输入',
+                    //     prop: 'createId',
+                    //     options:[]
+                    // },
                     {
                         type: 'select',
                         label: '事件类型',
@@ -364,15 +365,15 @@ export default {
         }
     },
     mounted(){
-        securityManagementFindAllCreateName().then(res=>{
-            res.data&&res.data.forEach(ele=>{
-                let obj = {
-                    value:ele.value,
-                    label:ele.label
-                }
-                this.config.search_item[1].options.push(obj)
-            })
-        })
+        // securityManagementFindAllCreateName().then(res=>{
+        //     res.data&&res.data.forEach(ele=>{
+        //         let obj = {
+        //             value:ele.value,
+        //             label:ele.label
+        //         }
+        //         this.config.search_item[1].options.push(obj)
+        //     })
+        // })
     },
     methods: {
          // Excel导出   type判断设施还是设备

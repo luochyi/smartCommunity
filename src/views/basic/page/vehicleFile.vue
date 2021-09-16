@@ -552,7 +552,7 @@ export default {
                 code: this.addEidtForm.ruleForm.code,
                 // no: this.addEidtForm.ruleForm.no,
                 type: 1,
-                owner: this.userName,
+                owner:  this.addEidtForm.ruleForm.owner,
                 tel: this.addEidtForm.ruleForm.tel,
                 idType: this.addEidtForm.ruleForm.idType,
                 idNumber: this.addEidtForm.ruleForm.idNumber,
