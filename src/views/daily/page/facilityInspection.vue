@@ -81,7 +81,7 @@
                         <FromCard>
                             <template slot="title">信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template v-slot:date>
                                         <el-time-picker
@@ -166,8 +166,40 @@ export default {
                     code: '',
                     organizationId: null,
                     isSort: '2',
-                    type: null
+                    type: null,
+                    facilitiesManageId: null,
+                    examiner: null,
+                    planBeginDate: null,
+                    spaceTime: null,
+                    checkRateType: null,
                 },
+                rules: {
+                  // 表单必填
+                  type: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  facilitiesManageId: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  name: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  organizationId: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  examiner: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  planBeginDate: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  spaceTime: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  checkRateType: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+              },
                 form_item: [
                     {
                         type: 'Select',
@@ -518,21 +550,24 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
+        addRuleSuccess() {
+          let resData = {
+            ...this.addForm.ruleForm
+          }
+          facilitiesPlanInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
+            }
+          })
+        },
         // 提交
         addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
-            }
-            facilitiesPlanInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          this.$refs.addForm.submitForm()
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
