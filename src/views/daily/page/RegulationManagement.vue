@@ -58,7 +58,7 @@
                         <FromCard>
                             <template slot="title">规程信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <template slot="fileDocUrl">
                                         <template>
                                             <el-upload
@@ -181,10 +181,24 @@ export default {
              wordList: [],
             addForm: {
                 ruleForm: {
+                    title: null,
+                    content: null,
+                    status: null,
                     fileDocUrl: null,
                     fileDocName: null
                 },
-                rules: {},
+                rules: {
+                  // 表单必填
+                  title: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  content: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  status: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                },
                 form_item: [
                     {
                         type: 'Input',
@@ -384,20 +398,23 @@ export default {
             this.wordList = []
             this.add_vrisible = false
         },
-        addSubmit() {
+        addRuleSuccess() {
             let resData = {
-                ...this.addForm.ruleForm
+              ...this.addForm.ruleForm
             }
             regulationManagementInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
             })
+        },
+        addSubmit() {
+            this.$refs.addForm.submitForm()
         },
         edit(data) {
             if (data.length != 1) {
@@ -409,7 +426,7 @@ export default {
                 this.edit_vrisible = true
                 console.log(data[0].id)
                 this.editForm.ruleForm.id = data[0].id
-                
+
                 regulationManagementFindById({ id: data[0].id }).then((res) => {
                     console.log(res.data)
                     this.editForm.ruleForm.title = res.data.title
