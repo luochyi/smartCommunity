@@ -97,7 +97,7 @@
                                     <template>
                                         <VueForm
                                             ref="addForm"
-                                            :formObj="addForm"
+                                            :formObj="addForm" @ruleSuccess="addRuleSuccess"
                                         >
                                             <!-- Slot -->
                                             <template v-slot:date>
@@ -334,6 +334,21 @@ export default {
                     validityStart: null,
                     validityEnd: null,
                     remakes: null
+                },
+                rules: {
+                  // 表单必填
+                  name: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  code: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  facilitiesCategoryId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  address: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -703,7 +718,7 @@ export default {
                    this.addList=[{checkDate:null,status:null,administrator:null,details:null}]
                }
             })
-        }, 
+        },
         // 关闭drawer
         getClose(data) {
             this.drawer_maintain = false
@@ -828,39 +843,45 @@ export default {
             this.add_vrisible = false
             this.wordList = []
         },
+
+        // 校验成功后调用接口
+        addRuleSuccess() {
+          // 判断是修改的表单还是新增，修改要传主键id
+          if (this.drawerTitle == '修改设施信息') {
+            let resData = {
+              ...this.addForm.ruleForm,
+              id: this.addForm.ruleForm.id
+            }
+            facilitiesManageUpdate(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          } else {
+            let resData = {
+              ...this.addForm.ruleForm
+            }
+            facilitiesManageInsert(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          }
+        },
+
         // 提交表单
         addSubmit() {
-            // 判断是修改的表单还是新增，修改要传主键id
-            if (this.drawerTitle == '修改设施信息') {
-                let resData = {
-                    ...this.addForm.ruleForm,
-                    id: this.addForm.ruleForm.id
-                }
-                facilitiesManageUpdate(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
-            } else {
-                let resData = {
-                    ...this.addForm.ruleForm
-                }
-                facilitiesManageInsert(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
-            }
+          this.$refs.addForm.submitForm()
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
