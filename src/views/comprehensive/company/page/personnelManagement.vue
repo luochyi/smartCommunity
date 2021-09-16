@@ -268,7 +268,7 @@
                         <FromCard>
                             <template slot="title">员工基本信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <template v-slot:sysOrganization>
                                         <el-select
                                             v-model="
@@ -725,6 +725,7 @@ export default {
                     actualName: null,
                     tel: null,
                     sex: null,
+                    pwd: null,
                     organizationId: null,
                     idCard: null,
                     userCode: null,
@@ -732,6 +733,33 @@ export default {
                     entryDate: null,
                     id: null,
                     imgUrls: []
+                },
+                rules: {
+                  // 表单必填
+                  nickName: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  actualName: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  tel: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  sex: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  pwd: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  organizationId: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  idCard: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  positionId: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -1092,18 +1120,18 @@ export default {
             this.identity_vrisible = true
         },
         identitySubmit() {
-            let resData = {
-                name: this.identityForm.ruleForm.name,
-                remakes: this.identityForm.ruleForm.remakes,
-                parentId: 0
+          let resData = {
+            name: this.identityForm.ruleForm.name,
+            remakes: this.identityForm.ruleForm.remakes,
+            parentId: 0
+          }
+          identityInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({ message: '添加成功', type: 'success' })
+              this.identityClose()
+              this.reload()
             }
-            identityInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({ message: '添加成功', type: 'success' })
-                    this.identityClose()
-                    this.reload()
-                }
-            })
+          })
         },
         addClose() {
             this.$refs.addForm.reset()
@@ -1115,37 +1143,43 @@ export default {
             this.$refs.identityForm.reset()
             this.identity_vrisible = false
         },
-        addSubmit() {
-            if (this.drawerTitle == '新建员工') {
-                let resData = {
-                    ...this.addForm.ruleForm
-                }
-                sysUserInsert(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.getTableData()
-                        this.addClose()
-                    }
-                })
-            } else {
-                let resData = {
-                    ...this.addForm.ruleForm,
-                    id: this.addForm.ruleForm.id
-                }
-                sysUserUpdate(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.getTableData()
-                        this.addClose()
-                    }
-                })
+
+        // 校验成功后调用接口
+        addRuleSuccess() {
+          if (this.drawerTitle == '新建员工') {
+            let resData = {
+              ...this.addForm.ruleForm
             }
+            sysUserInsert(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.getTableData()
+                this.addClose()
+              }
+            })
+          } else {
+            let resData = {
+              ...this.addForm.ruleForm,
+              id: this.addForm.ruleForm.id
+            }
+            sysUserUpdate(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.getTableData()
+                this.addClose()
+              }
+            })
+          }
+        },
+
+        addSubmit() {
+            this.$refs.addForm.submitForm()
         },
         //编辑
         edit(row) {
