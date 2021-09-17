@@ -43,7 +43,7 @@
               <template slot="title">基本信息</template>
               <template>
                 <VueForm ref="addEidtVueForm"
-                         :formObj='addEidtForm'>
+                         :formObj='addEidtForm' @ruleSuccess="addRuleSuccess">
                   <template slot='fileUrls'>
                     <template>
                       <el-upload :action="`${$baseUrl}upload/uploadActivity`"
@@ -203,6 +203,48 @@ export default {
           refund: null,
           name: null,
           tel: null
+        },
+        rules: {
+          // 表单必填
+          sponsorId: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ],
+          title: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ],
+          content: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          location: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          registrationStartTime: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          registrationEndTime: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ],
+          activityStartTime: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          activityEndTime: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          participantsNumber: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          chargesTemplateDetailId: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          refund: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ],
+          name: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          tel: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ]
         },
         form_item: [
           {
@@ -433,8 +475,7 @@ export default {
         this.addEidtForm.ruleForm.file = []
       }
     },
-    // 提交
-    addEidtSubmit () {
+    addRuleSuccess() {
       if (!this.editID) {
         activityManagementInsert(this.addEidtForm.ruleForm).then((res) => {
           if (res.status) {
@@ -462,7 +503,10 @@ export default {
           }
         })
       }
-
+    },
+    // 提交
+    addEidtSubmit () {
+      this.$refs.addEidtVueForm.submitForm()
     },
     // 修改
     edit (data) {

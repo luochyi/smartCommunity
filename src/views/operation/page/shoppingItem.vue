@@ -45,7 +45,7 @@
               <template slot="title">填写分类信息</template>
               <template>
                 <VueForm ref="addForm"
-                         :formObj='addForm'>
+                         :formObj='addForm' @ruleSuccess="addRuleSuccess">
                   <!-- Slot -->
                   <!-- <template v-slot:date>
                     <el-time-picker is-range
@@ -57,7 +57,7 @@
                                     end-placeholder="结束时间"
                                     placeholder="选择时间范围">
                     </el-time-picker>
-                  </template> 
+                  </template>
                    <template slot='imgUrls'>
                     <template>
                       <el-upload :action="`${$baseUrl}upload/uploadAnnouncement`"
@@ -108,6 +108,12 @@ export default {
           // openStartDate: null,
           // openEndDate: null,
           // imgUrls: []
+        },
+        rules: {
+          // 表单必填
+          name: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ]
         },
         form_item: [
           {
@@ -171,16 +177,16 @@ export default {
       this.$refs.addForm.reset()
       this.add_vrisible = false
     },
-    addSubmit () {
+    addRuleSuccess() {
       // this.add_vrisible = false
       /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
+       *
+       *  code	       :null, 设施分类编号	是	[string]
+       2	name	       :null,   设施分类名称	是	[string]
+       3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
+       4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
+       5	imgUrls:null,
+       *
        * **/
       let resData = {
         ...this.addForm.ruleForm
@@ -200,6 +206,9 @@ export default {
           this.addClose()
         }
       })
+    },
+    addSubmit () {
+      this.$refs.addForm.submitForm()
     },
     dateTimeChange (arr) {
       this.addForm.ruleForm.openStartDate = arr[0]

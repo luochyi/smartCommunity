@@ -45,7 +45,7 @@
               <template slot="title">填写供应商信息</template>
               <template>
                 <VueForm ref="addForm"
-                         :formObj='addForm'>
+                         :formObj='addForm' @ruleSuccess="addRuleSuccess">
                   <!-- Slot -->
                   <template v-slot:date>
                     <el-time-picker is-range
@@ -108,6 +108,21 @@ export default {
           tel:null,
           address:null,
           imgUrls: []
+        },
+        rules: {
+          // 表单必填
+          name: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ],
+          director: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ],
+          tel: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ],
+          address: [
+            { required: true, message: '请选择', trigger: 'change' }
+          ]
         },
         form_item: [
           {
@@ -188,16 +203,16 @@ export default {
       this.$refs.addForm.reset()
       this.add_vrisible = false
     },
-    addSubmit () {
+    addRuleSuccess() {
       // this.add_vrisible = false
       /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
+       *
+       *  code	       :null, 设施分类编号	是	[string]
+       2	name	       :null,   设施分类名称	是	[string]
+       3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
+       4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
+       5	imgUrls:null,
+       *
        * **/
       let resData = {
         ...this.addForm.ruleForm
@@ -217,6 +232,9 @@ export default {
           this.addClose()
         }
       })
+    },
+    addSubmit () {
+      this.$refs.addForm.submitForm()
     },
     dateTimeChange (arr) {
       this.addForm.ruleForm.openStartDate = arr[0]

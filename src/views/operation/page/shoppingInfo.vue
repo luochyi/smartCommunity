@@ -61,7 +61,7 @@
                         <FromCard>
                             <template slot="title">信息内容</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template v-slot:date>
                                         <el-time-picker
@@ -171,6 +171,18 @@ export default {
                     content:null,
                     electronicCommerceCategoryId:null,
                     imgUrls:[]
+                },
+                rules: {
+                  // 表单必填
+                  title: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  electronicCommerceCategoryId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  content: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -308,25 +320,28 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
-        addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
+        addRuleSuccess() {
+          let resData = {
+            ...this.addForm.ruleForm
+            // code: this.addForm.ruleForm.code,
+            // name: this.addForm.ruleForm.name,
+            // openStartDate: this.openStartDate,
+            // openEndDate:  this.openEndDate,
+            // imgUrls:this.addForm.ruleForm.imgUrls,
+          }
+          electronicCommerceInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
             }
-            electronicCommerceInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          })
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
