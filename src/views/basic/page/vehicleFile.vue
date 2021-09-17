@@ -38,7 +38,7 @@
                     <template>
                         <VueForm
                             ref="childFrom"
-                            @ruleSubmit="ruleSubmit"
+                             @ruleSuccess="addRuleSuccess"
                             :formObj="addEidtForm"
                         >
                             <template v-slot:hours>
@@ -71,7 +71,7 @@
                                     </el-option>
                                 </el-select>
                                 <el-select
-                                    v-model="hoursValue"
+                                    v-model="buildingUnitEstateId"
                                     filterable
                                     style="width: 30%"
                                     placeholder="房间号"
@@ -88,7 +88,7 @@
                             <!-- chewei -->
                             <template v-slot:cpmParkingSpaceList>
                                 <el-select
-                                    v-model="addEidtForm.ruleForm.cpmParkingSpaceList"
+                                    v-model="addEidtForm.ruleForm.parkingSpaceId"
                                     :remote-method="remoteMethod"
                                     @change="change"
                                     @focus="sefocus"
@@ -101,8 +101,8 @@
                                     <el-option
                                         v-for="item in parkOptions"
                                         :key="item.id"
-                                        :label="item.name"
-                                        :value="item.code"
+                                        :label="item.code"
+                                        :value="item.id"
                                     >
                                     </el-option>
                                 </el-select>
@@ -144,7 +144,6 @@ export default {
             unitValue: null,
             unitOptions: [],
             // 房屋
-            hoursValue: null,
             hoursOptions: [],
             parkOptions: [],
             loading: false,
@@ -159,7 +158,7 @@ export default {
             addEidtForm: {
                 ruleForm: {
                     code: null,
-                    no: null,
+                    parkingSpaceId: null,
                     owner: null,
                     tel: null,
                     idType: null,
@@ -184,7 +183,7 @@ export default {
                         label: '车位号',
                         placeholder: '请输入车位号',
                         width: '50%',
-                        prop: 'no',
+                        prop: 'parkingSpaceId',
                         slotName: 'cpmParkingSpaceList'
                     },
                     {
@@ -348,13 +347,48 @@ export default {
                             trigger: 'blur'
                         }
                     ],
-                    no: [
+                    parkingSpaceId: [
                         {
                             required: true,
                             message: '请输入车位号',
                             trigger: 'blur'
                         }
-                    ]
+                    ],
+                    owner: [
+                        {
+                            required: true,
+                            message: '请输入所属人',
+                            trigger: 'blur'
+                        }
+                    ],
+                    tel: [
+                        {
+                            required: true,
+                            message: '请输入手机号',
+                            trigger: 'blur'
+                        }
+                    ],
+                    idType: [
+                        {
+                            required: true,
+                            message: '请选择证件类型',
+                            trigger: 'blur'
+                        }
+                    ],
+                    idNumber: [
+                        {
+                            required: true,
+                            message: '请输入证件号',
+                            trigger: 'blur'
+                        }
+                    ],
+                    status: [
+                        {
+                            required: true,
+                            message: '请选择状态',
+                            trigger: 'blur'
+                        }
+                    ],
                 }
             },
             config: {
@@ -547,10 +581,17 @@ export default {
         },
 
         onSubmit() {
+            this.$refs.childFrom.submitForm()
+        },
+        addRuleSuccess(val) {
+            if(this.buildingUnitEstateId==null||this.buildingUnitEstateId==''){
+                this.$message.error('请选择房产')
+                return
+            }
             let resData = {
-                buildingUnitEstateId: 57,
+                buildingUnitEstateId: this.buildingUnitEstateId,
                 code: this.addEidtForm.ruleForm.code,
-                // no: this.addEidtForm.ruleForm.no,
+                parkingSpaceId: this.addEidtForm.ruleForm.parkingSpaceId,
                 type: 1,
                 owner:  this.addEidtForm.ruleForm.owner,
                 tel: this.addEidtForm.ruleForm.tel,
@@ -561,7 +602,6 @@ export default {
                 brand: this.addEidtForm.ruleForm.brand,
                 model: this.addEidtForm.ruleForm.status,
                 color: this.addEidtForm.ruleForm.status,
-                parkingSpaceId: 1
             }
             userCarInsert(resData).then((res) => {
                 if (res.status) {
@@ -574,10 +614,10 @@ export default {
                 }
             })
         },
-        ruleSubmit() {},
         // 弹窗关闭
         drawerClose() {
             this.drawer_vrisible = false
+            this.$refs.childFrom.reset()
         },
         revises(data) {
             if (data.length) {
@@ -662,7 +702,7 @@ export default {
         unitValue: {
             handler(newValue) {
                 this.hoursData(newValue)
-                this.hoursValue = null
+                this.buildingUnitEstateId = null
             },
             deep: true
         }

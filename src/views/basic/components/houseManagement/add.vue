@@ -6,7 +6,7 @@
       <FromCard style="margin:30px">
         <span slot="title">基本信息</span>
         <VueForm ref="childFroms"
-                 :formObj='fromjson'>
+                 :formObj='fromjson' @ruleSuccess="addRuleSuccess">
           <template v-slot:constructionArea>
             <el-input v-model="fromjson.ruleForm.constructionArea"
                       size="small"
@@ -87,10 +87,59 @@ export default {
           deviceNumber:null
         },
         rules: {
-          buildingName: [
+          buildingId: [
             {
               required: true,
               message: '请填楼栋',
+              trigger: 'blur'
+            }
+          ],
+          buildingUnitId: [
+            {
+              required: true,
+              message: '请填单元号',
+              trigger: 'blur'
+            }
+          ],
+          roomNumber: [
+            {
+              required: true,
+              message: '请填房间号',
+              trigger: 'blur'
+            }
+          ],
+          status: [
+            {
+              required: true,
+              message: '请选择',
+              trigger: 'blur'
+            }
+          ],
+          type: [
+            {
+              required: true,
+              message: '请选择类型',
+              trigger: 'blur'
+            }
+          ],
+          constructionArea: [
+            {
+              required: true,
+              message: '请填写建筑面积',
+              trigger: 'blur'
+            }
+          ],
+          indoorArea: [
+            {
+              required: true,
+              message: '请填室内面积',
+              trigger: 'blur'
+            }
+          ],
+          deviceNumber: [
+            {
+              required: true,
+              message: '请填写设备号',
               trigger: 'blur'
             }
           ],
@@ -203,8 +252,11 @@ export default {
     ruleSubmit (val) {
       this.bool = val;
     },
+    onSubmit(){
+      this.$refs.childFroms.submitForm()
+    },
     // 提交
-    onSubmit () {
+    addRuleSuccess () {
       // 检查form表单校验
       let resList = []
       this.froms.map(item => {
@@ -280,8 +332,14 @@ export default {
                 trigger: 'blur'
               }
             ],
-            no: [
-              { required: true, message: '请填写楼栋名称', trigger: 'blur' }
+            tel: [
+              { required: true, message: '请填写手机号', trigger: 'blur' }
+            ],
+            idType: [
+              { required: true, message: '请选择证件类型', trigger: 'blur' }
+            ],
+            idNumber: [
+              { required: true, message: '请填写证件号码', trigger: 'blur' }
             ],
           },
           form_item: [

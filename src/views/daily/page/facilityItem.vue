@@ -386,6 +386,10 @@ export default {
             this.addDate = ''
         },
         addRuleSuccess() {
+            if(this.addDate==null){
+                this.$message.error('请选择开放时间')
+                return
+            }
           let resData = {
             ...this.addForm.ruleForm
           }

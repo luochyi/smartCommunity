@@ -6,7 +6,7 @@
       <FromCard style="margin:30px">
         <span slot="title">基本信息</span>
         <VueForm ref="childFroms"
-                 :formObj='fromjson'>
+                 :formObj='fromjson'  @ruleSuccess="addRuleSuccess">
         </VueForm>
       </FromCard>
       <div style="margin:30px">
@@ -74,6 +74,29 @@ export default {
           code: null,
           status: null,
           type: null,
+        },
+        rules: {
+          code: [
+            {
+              required: true,
+              message: '请填写编号',
+              trigger: 'blur'
+            }
+          ],
+          status: [
+            {
+              required: true,
+              message: '请选择状态',
+              trigger: 'blur'
+            }
+          ],
+          type: [
+            {
+              required: true,
+              message: '请选择类型',
+              trigger: 'blur'
+            }
+          ],
         },
         form_item: [
           {
@@ -216,6 +239,44 @@ export default {
         }
       })
     },
+    addRuleSuccess () {
+      let requestData = {
+        code: this.fromjson.ruleForm.code,
+        status: this.fromjson.ruleForm.status,
+        type: this.fromjson.ruleForm.type,
+        residentId: this.addForm.ruleForm.residentId,
+      }
+      //  editId true 修改 否则添加
+      if (this.editId) {
+        requestData.id = this.editId;
+        cpmParkingSpaceUpdate(requestData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$emit('addEidtSuccess')
+            this.drawerClose()
+          }
+          console.log(res)
+        })
+      } else {
+        cpmParkingSpaceInsert(requestData).then(res => {
+          if (res.status) {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$emit('addEidtSuccess')
+            this.drawerClose()
+          }
+          console.log(res)
+        })
+      }
+    },
+    onSubmit(){
+      this.$refs.childFroms.submitForm()
+    },
     drawerClose () {
       this.drawer_vrisible = false;
       this.editId = null;
@@ -251,41 +312,6 @@ export default {
       this.bool = val;
     },
     // 提交
-    onSubmit () {
-      let requestData = {
-        code: this.fromjson.ruleForm.code,
-        status: this.fromjson.ruleForm.status,
-        type: this.fromjson.ruleForm.type,
-        residentId: this.addForm.ruleForm.residentId,
-      }
-      //  editId true 修改 否则添加
-      if (this.editId) {
-        requestData.id = this.editId;
-        cpmParkingSpaceUpdate(requestData).then(res => {
-          if (res.status) {
-            this.$message({
-              message: res.message,
-              type: 'success'
-            })
-            this.$emit('addEidtSuccess')
-            this.drawerClose()
-          }
-          console.log(res)
-        })
-      } else {
-        cpmParkingSpaceInsert(requestData).then(res => {
-          if (res.status) {
-            this.$message({
-              message: res.message,
-              type: 'success'
-            })
-            this.$emit('addEidtSuccess')
-            this.drawerClose()
-          }
-          console.log(res)
-        })
-      }
-    }
   },
   watch: {
     drawerVrisible: {
