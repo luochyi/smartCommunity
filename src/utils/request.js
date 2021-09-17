@@ -66,7 +66,7 @@ service.interceptors.response.use(
             return response
         }
         if (data.status != true && data.status != null) {
-            ElementUI.Message.error(data.message)
+            ElementUI.Message({message:data.message,type:'error'})
             return data
         } else {
             return data // return Promise.resolve(data);

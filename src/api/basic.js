@@ -147,6 +147,14 @@ export const houseManagementInsert = data => {
         data: data
     })
 }
+//cpmBuildingUnitEstate/update
+export const houseManagementUpdate = data => {
+    return service.request({
+        method: 'post',
+        url: '/cpmBuildingUnitEstate/update',
+        data: data
+    })
+}
 //查询房屋类型 状态 dataDictionary/findEstateStatus
 export const dataDictionaryFindEstateType = data => {
     return service.request({

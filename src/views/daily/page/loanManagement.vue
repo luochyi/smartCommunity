@@ -147,16 +147,16 @@ export default {
     methods: {
         // tab切换
         handleClick(tab, event) {
-            let status = null
+            let borrowStatus = null
             if (this.activeName != 0) {
-                status = this.activeName
+                borrowStatus = this.activeName
             } else {
-                status = null
+                borrowStatus = null
             }
             const requestData = {
                 pageNum: 1,
                 size: 10,
-                status: status
+                borrowStatus: borrowStatus
             }
             this.$refs.table.requestData(requestData)
         },
@@ -165,27 +165,15 @@ export default {
         },
         // 提醒
         msg(data) {
-            // if (data.length) {
-            //   if (data.length > 1) {
-            //     this.$message.error('用户数量不能多个提醒');
-            //   }
-            // } else {
-            //   this.$message.error('请选中需要提醒的用户');
-
-            // }
-            let arr = []
-            for (let i = 0; i < this.table_row.length; i++) {
-                arr.push(this.table_row[i].id)
+            if(data.length!=1){
+                this.$message.error('只能对一条记录进行操作')
+                return
             }
-            this.$confirm('提醒成功，已将信息发送给用户', '提醒', {
-                confirmButtonText: '确定',
-                showCancelButton: false
-                // cancelButtonText: '取消',
-                // confirmButtonClass: 'confirmButton',
-                // cancelButtonClass: 'cancelButton'
+            borrowRemind({borrowId:data[0].id,sysMessage:{title:'物品归还提醒',content:'您有一件物品借取还未归还'}}).then(res=>{
+                if(res.status){
+                    this.$message.success(res.message)
+                }
             })
-                .then(() => {})
-                .catch((action) => {})
         }
     }
 }

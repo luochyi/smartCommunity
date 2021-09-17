@@ -561,3 +561,18 @@ export function borrowRemind(data) {
         data: data
     })
 }
+//  gambit/enableGambit   disableGambit
+export function gambitEnableGambit(data) {
+    return service.request({
+        method: 'GET',
+        url: '/gambit/enableGambit',
+        params: data
+    })
+}
+export function gambitDisableGambit(data) {
+    return service.request({
+        method: 'GET',
+        url: '/gambit/disableGambit',
+        params: data
+    })
+}

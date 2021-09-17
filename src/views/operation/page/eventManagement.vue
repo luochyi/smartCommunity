@@ -435,18 +435,6 @@ export default {
     },
     // 提交
     addEidtSubmit () {
-      // for (let key in this.addEidtForm.ruleForm) {
-      //   if (!this.addEidtForm.ruleForm[key]) {
-      //     let data = this.addEidtForm.form_item.find(item => key === item.prop)
-      //     this.$message.error(`请填写${data.label}`)
-      //     return
-      //   }
-      // }
-      // if (!this.addEidtForm.ruleForm.fileUrls.length) {
-      //   this.$message.error(`请上传图片`)
-      //   return
-      // }
-      // console.log(this.addEidtForm.ruleForm)
       if (!this.editID) {
         activityManagementInsert(this.addEidtForm.ruleForm).then((res) => {
           if (res.status) {
@@ -492,6 +480,7 @@ export default {
           message:'该状态不可修改',
           type:'error'
         })
+        return
       }
       activityManagementFindById({ id:data[0].id }).then(res => {
         console.log(res)
@@ -549,7 +538,7 @@ export default {
 
     // 上传限制提示
     handleExceed (files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      this.$message.error(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
 
   }

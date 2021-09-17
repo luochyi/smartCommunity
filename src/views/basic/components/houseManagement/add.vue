@@ -59,7 +59,7 @@
   </div>
 </template>
 <script>
-import { houseManagementInsert, cpmBuildingUnitFindAll, cpmBuildingUnitEstateFindById, findByBuildingId ,dataDictionaryFindEstateType,dataDictionaryFindEstateStatus} from '@/api/basic'
+import { houseManagementInsert, cpmBuildingUnitFindAll, cpmBuildingUnitEstateFindById, findByBuildingId ,dataDictionaryFindEstateType,dataDictionaryFindEstateStatus,houseManagementUpdate} from '@/api/basic'
 export default {
   props: {
     drawerVrisible: {
@@ -253,6 +253,7 @@ export default {
         console.log(res.userResidentList)
       })
       this.drawer_vrisible = true;
+      
     },
     del (item) {
       console.log(item)
