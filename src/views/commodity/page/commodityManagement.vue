@@ -61,7 +61,7 @@
                         <FromCard>
                             <template slot="title">填写商品信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template slot="imgUrls">
                                         <template>
@@ -186,6 +186,42 @@ export default {
             addForm: {
                 ruleForm: {
                     imgUrls: []
+                },
+                rules: {
+                  // 表单必填
+                  category: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  categoryId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  title: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  recommend: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  supplierId: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  detail: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  sellingPrice: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  markingPrice: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  stock: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  status: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  arrivalTime: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -440,20 +476,23 @@ export default {
             this.add_vrisible = false
             this.$refs.myUpload1.clearFiles()
         },
-        addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
+        addRuleSuccess() {
+          let resData = {
+            ...this.addForm.ruleForm
+          }
+          shopGoodsInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
             }
-            shopGoodsInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          })
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         //shangija
         sploading(data) {
