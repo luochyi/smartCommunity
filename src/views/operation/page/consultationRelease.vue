@@ -62,7 +62,7 @@
                         <FromCard>
                             <template slot="title">资讯内容</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <template slot="imgUrls">
                                         <template>
                                             <el-upload
@@ -247,6 +247,18 @@ export default {
                     newsCategoryId: null,
                     imgUrls: [],
                 },
+                rules: {
+                  // 表单必填
+                  title: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  newsCategoryId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  content: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ]
+                },
                 form_item: [
                     {
                         type: 'Input',
@@ -408,7 +420,7 @@ export default {
                 }
             })
         },
-        
+
         // 获取用户列表
         getUserList(val) {
             let reeData = {
@@ -440,25 +452,28 @@ export default {
             this.add_vrisible = false
             this.imglist = []
         },
-        addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
+        addRuleSuccess() {
+          let resData = {
+            ...this.addForm.ruleForm
+            // code: this.addForm.ruleForm.code,
+            // name: this.addForm.ruleForm.name,
+            // openStartDate: this.openStartDate,
+            // openEndDate:  this.openEndDate,
+            // imgUrls:this.addForm.ruleForm.imgUrls,
+          }
+          newsManagementInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
             }
-            newsManagementInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          })
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         edit(data) {
             if (data.length != 1) {
