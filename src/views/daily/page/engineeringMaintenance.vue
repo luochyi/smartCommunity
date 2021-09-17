@@ -118,7 +118,7 @@ export default {
       config: {
         thead: [
           { label: '序号', type: 'index', width: '80' },
-          { label: '工程报修单号', prop: 'code', width: 'auto' 
+          { label: '工程报修单号', prop: 'code', width: 'auto'
           },
           { label: '报修区域', prop: 'repairArea', width: 'auto' },
           // { label: '性别', prop: 'sexId', width: 'auto',
@@ -237,6 +237,13 @@ export default {
         ],
         rules: {
           // residentId: [{ required: true, message: '请输入姓名', trigger: 'change' }],
+          // 表单必填
+          repairArea: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ],
+          reportDetail: [
+            { required: true, message: '请输入', trigger: 'change' }
+          ]
         }
       },
       ownersObj: {}
