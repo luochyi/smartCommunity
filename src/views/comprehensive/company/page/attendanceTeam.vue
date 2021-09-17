@@ -19,6 +19,7 @@
                         ref="table"
                         :config="config"
                         @tableCheck="tableCheck"
+                        
                     >
                         <template slot="tabs">
                             <el-tabs
@@ -54,7 +55,7 @@
                         <FromCard>
                             <template slot="title">小组信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                 </VueForm>
                                 <template>
                                     <div>
@@ -241,19 +242,20 @@ export default {
                     organizationId:null
                 },
                 rules: {
-                    tel: [
-                        // {
-                        //     required: true,
-                        //     message: '请输入手机号',
-                        //     trigger: 'blur'
-                        // },
+                    name: [
                         {
-                            min: 11,
-                            max: 11,
-                            message: '请输入正确的手机号',
+                            required: true,
+                            message: '请输入名称',
                             trigger: 'blur'
-                        }
-                    ]
+                        },
+                    ],
+                    organizationId: [
+                        {
+                            required: true,
+                            message: '请选择部门',
+                            trigger: 'blur'
+                        },
+                    ],
                 },
                 form_item: [
                     {
@@ -372,7 +374,7 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
-        addSubmit() {
+        addRuleSuccess(){
             let resData = {
                 ...this.addForm.ruleForm,
                 teamMembers:this.peopleArr.toString()
@@ -388,6 +390,10 @@ export default {
                     this.addClose()
                 }
             })
+        },
+        addSubmit() {
+            this.$refs.addForm.submitForm()
+
         },
         edit(data) {
             if (data.length != 1) {

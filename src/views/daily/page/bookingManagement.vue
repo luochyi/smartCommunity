@@ -53,15 +53,15 @@
                         </template>
                         <template slot="footer">
                             <div class="table-footer">
-                                <!-- <button>编辑</button> -->
-                                <!-- <button @click="del(table_row)">作废</button> -->
+                                <button @click="edit(table_row)">编辑</button>
+                                <button @click="del(table_row)">删除</button>
                             </div>
                         </template>
                     </VueTable>
                 </div>
-                <!-- 新增 -->
+                <!-- 编辑 -->
                 <Drawer
-                    drawerTitle="新增预约"
+                    drawerTitle="编辑预约"
                     @drawerClose="addClose"
                     :drawerVrisible="add_vrisible"
                 >
@@ -130,8 +130,8 @@
 
 <script>
 import {
-    facilitiesAppointmentInsert,
-    facilitiesCategoryList
+    facilitiesAppointmentUpdate,
+    facilitiesCategoryList,facilitiesManageList
 } from '@/api/daily'
 export default {
     data() {
@@ -141,49 +141,57 @@ export default {
             options: [],
             addForm: {
                 ruleForm: {
-                    name: null,
-                    code: 'hdede',
-                    facilitiesCategoryId: null,
-                    address: null
+                    id:null,
+                    code:null,
+                    appointmentName:null,
+                    appointmentTel:null,
+                    facilitiesName:null,
+                    appointmentStartDate:null,
+                    appointmentEndDate:null,
                 },
                 form_item: [
                     {
-                        type: 'Input',
-                        label: '名称',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'estateId'
+                        type: 'span',
+                        label: '预约编号',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'code',
                     },
                     {
-                        type: 'Input',
+                        type: 'span',
                         label: '预约人',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'appointmentId'
-                    },
-                    {
-                        type: 'Slot',
-                        label: '设施类型',
-                        placeholder: '请输入',
+                        placeholder: '请选择',
                         width: '50%',
-                        prop: 'facilitiesCategoryId',
-                        slotName: 'facilitiesCategoryId'
+                        prop: 'appointmentName',
                     },
                     {
-                        type: 'Input',
-                        label: '设施编号',
-                        placeholder: '请输入',
+                        type: 'span',
+                        label: '预约人电话',
+                        placeholder: '请选择',
                         width: '50%',
-                        prop: 'facilitiesManageId'
+                        prop: 'appointmentTel',
                     },
                     {
-                        type: 'Slot',
-                        label: '预约时间',
-                        placeholder: '请输入',
-                        width: '100%',
-                        prop: 'date',
-                        slotName: 'date'
-                    }
+                        type: 'span',
+                        label: '预约设施',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'facilitiesName',
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '预约开始时间',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'appointmentStartDate',
+                    },
+                    {
+                        type: 'DateTime',
+                        label: '预约结束时间',
+                        placeholder: '请选择',
+                        width: '50%',
+                        prop: 'appointmentEndDate',
+                    },
                 ]
             },
             table_row: [],
@@ -336,19 +344,30 @@ export default {
         change(value) {
             console.log(value)
         },
-        add() {
-            this.add_vrisible = true
-        },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
+        },
+        edit(data){
+            if(data.length!=1){
+                this.$message.error('只能编辑一条')
+                return
+            }
+            this.add_vrisible = true
+            this.addForm.ruleForm.id = data[0].id
+            this.addForm.ruleForm.code = data[0].code
+            this.addForm.ruleForm.appointmentName = data[0].appointmentName
+            this.addForm.ruleForm.appointmentTel = data[0].appointmentTel
+            this.addForm.ruleForm.facilitiesName = data[0].facilitiesName
+            this.addForm.ruleForm.appointmentStartDate = data[0].appointmentStartDate
+            this.addForm.ruleForm.appointmentEndDate = data[0].appointmentEndDate
         },
         // 新增预约提交
         addSubmit() {
             let resData = {
                 ...this.addForm.ruleForm
             }
-            facilitiesAppointmentInsert(resData).then((res) => {
+            facilitiesAppointmentUpdate(resData).then((res) => {
                 if (res.status) {
                     this.$message({
                         message: res.message,
@@ -402,6 +421,24 @@ export default {
                     .catch((action) => {})
             } else {
                 this.$message.error('请选中需要删除的数据')
+            }
+        }
+    },
+    watch: {
+        'addForm.ruleForm.type': {
+            handler(newVal) {
+                this.addForm.form_item[1].options = []
+                console.log(newVal)
+                facilitiesManageList({ type: newVal }).then((res) => {
+                    console.log(res)
+                    res.tableList.forEach((ele) => {
+                        let obj = {
+                            value: ele.id,
+                            label: ele.name
+                        }
+                        this.addForm.form_item[1].options.push(obj)
+                    })
+                })
             }
         }
     }

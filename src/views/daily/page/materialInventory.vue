@@ -75,7 +75,7 @@
                         <template slot="footer">
                             <div class="table-footer">
                                 <button @click="detail(table_row)">详情</button>
-                                <!-- <button @click="edit(table_row)">修改</button> -->
+                                
                             </div>
                         </template>
                     </VueTable>
@@ -90,11 +90,14 @@
                         <FromCard>
                             <template slot="title">盘点信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm
+                                    ref="addForm"
+                                    :formObj="addForm"
+                                    @ruleSuccess="addRuleSuccess"
+                                >
                                 </VueForm>
                                 <template>
                                     <div>
-                                        
                                         <div>
                                             <div class="add">
                                                 <span @click="addMaterial"
@@ -104,7 +107,9 @@
                                             <div class="content-table">
                                                 <template>
                                                     <el-table
-                                                        :data="materialInventoryDetailList"
+                                                        :data="
+                                                            materialInventoryDetailList
+                                                        "
                                                         highlight-current-row
                                                         :header-cell-style="{
                                                             background:
@@ -128,7 +133,11 @@
                                                             >
                                                                 <el-select
                                                                     size="small"
-                                                                    @change="currStationChange(scope.row)"
+                                                                    @change="
+                                                                        currStationChange(
+                                                                            scope.row
+                                                                        )
+                                                                    "
                                                                     v-model="
                                                                         scope
                                                                             .row
@@ -136,7 +145,7 @@
                                                                     "
                                                                     placeholder="请输入"
                                                                 >
-                                                                     <el-option
+                                                                    <el-option
                                                                         v-for="item in materialOptions"
                                                                         :key="
                                                                             item.value
@@ -156,11 +165,11 @@
                                                             prop="shouldInventory"
                                                             label="应有库存"
                                                         >
-                                                           <template
+                                                            <template
                                                                 slot-scope="scope"
                                                             >
                                                                 <el-input
-                                                                disabled
+                                                                    disabled
                                                                     size="small"
                                                                     v-model="
                                                                         scope
@@ -171,12 +180,16 @@
                                                                 ></el-input>
                                                             </template>
                                                         </el-table-column>
-                                                        <el-table-column prop="danwei" width="120" label="单位">
-                                                           <template
+                                                        <el-table-column
+                                                            prop="danwei"
+                                                            width="120"
+                                                            label="单位"
+                                                        >
+                                                            <template
                                                                 slot-scope="scope"
                                                             >
                                                                 <el-input
-                                                                disabled
+                                                                    disabled
                                                                     size="small"
                                                                     v-model="
                                                                         scope
@@ -201,8 +214,12 @@
                                                                             .row
                                                                             .actualInventory
                                                                     "
-                                                                    @change="actualInventoryChanged(scope)"
-                                                                    onkeyup="value=value.replace(/[^\d]/g,'')" 
+                                                                    @change="
+                                                                        actualInventoryChanged(
+                                                                            scope
+                                                                        )
+                                                                    "
+                                                                    onkeyup="value=value.replace(/[^\d]/g,'')"
                                                                     placeholder="请输入"
                                                                 ></el-input>
                                                             </template>
@@ -289,83 +306,92 @@
                 <div class="head-box">
                     <div class="titel">
                         <span>盘点明细</span>
-                        <button     style="marginLeft:50px"
-                                    class="btn-orange"
-                                    @click="handleChangeShow = true"
-                                >
-                                    <span> 返回</span>
-                                </button>
+                        <button
+                            style="marginleft: 50px"
+                            class="btn-orange"
+                            @click="handleChangeShow = true"
+                        >
+                            <span> 返回</span>
+                        </button>
                     </div>
                     <div class="content">
                         <!-- detailData -->
-                    <div class="box-item">
-                        <div class="item">
-                            <div class="span">
-                                <span>盘点期次</span>
+                        <div class="box-item">
+                            <div class="item">
+                                <div class="span">
+                                    <span>盘点期次</span>
+                                </div>
+                                <div>
+                                    <span>{{ detailData.periodTime }}</span>
+                                </div>
                             </div>
-                            <div>
-                                <span>{{detailData.periodTime}}</span>
+                            <div class="item">
+                                <div class="span">
+                                    <span>盘点种类数量</span>
+                                </div>
+                                <div>
+                                    <span>{{ detailData.speciesNum }}</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="span">
+                                    <span>盘点时间</span>
+                                </div>
+                                <div>
+                                    <span
+                                        >{{ detailData.inventoryDateStart }}-{{
+                                            detailData.inventoryDateEnd
+                                        }}</span
+                                    >
+                                </div>
                             </div>
                         </div>
-                        <div class="item">
-                            <div class="span">
-                                <span>盘点种类数量</span>
-                            </div>
-                            <div>
-                                <span>{{
-                                    detailData.speciesNum
-                                }}</span>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="span">
-                                <span>盘点时间</span>
-                            </div>
-                            <div>
-                                <span>{{ detailData.inventoryDateStart}}-{{detailData.inventoryDateEnd}}</span>
-                            </div>
-                        </div>
-                        
-                    </div>
                     </div>
                 </div>
                 <div class="box">
-                             <template>
-                            <el-table
+                    <template>
+                        <el-table
                             :data="detailData.materialInventoryDetailList"
-                            style="width: 100%">
+                            style="width: 100%"
+                        >
                             <el-table-column
                                 type="index"
                                 label="序号"
-                                width="80">
+                                width="80"
+                            >
                             </el-table-column>
                             <el-table-column
                                 prop="name"
                                 label="物资名称"
-                                width="130">
+                                width="130"
+                            >
                             </el-table-column>
                             <el-table-column
                                 prop="shouldInventory"
                                 label="应有库存"
-                                width="130">
+                                width="130"
+                            >
                             </el-table-column>
                             <el-table-column
                                 prop="unit"
                                 label="单位"
-                                width="100">
+                                width="100"
+                            >
                             </el-table-column>
                             <el-table-column
                                 prop="actualInventory"
                                 label="实际库存"
-                                 width="130">
+                                width="130"
+                            >
                             </el-table-column>
                             <el-table-column
                                 prop="inventorySurplusLosses"
                                 label="盘盈/盘亏"
-                                 width="130">
+                                width="130"
+                            >
                             </el-table-column>
-                            </el-table>
-                        </template>
+                        </el-table>
+                    </template>
                 </div>
             </div>
         </div>
@@ -374,18 +400,21 @@
 
 <script>
 import {
-    materialList,materialInventoryInsert,materialInventoryUpdate,materialInventoryFindById
+    materialList,
+    materialInventoryInsert,
+    materialInventoryUpdate,
+    materialInventoryFindById
 } from '@/api/daily'
 export default {
-    inject:['reload'],
+    inject: ['reload'],
     data() {
         return {
-            detailData:{
-                periodTime:null,
-                speciesNum:null,
-                inventoryDateStart:null,
-                inventoryDateEnd:null,
-                materialInventoryDetailList:[]
+            detailData: {
+                periodTime: null,
+                speciesNum: null,
+                inventoryDateStart: null,
+                inventoryDateEnd: null,
+                materialInventoryDetailList: []
             },
             handleChangeShow: true,
 
@@ -394,22 +423,34 @@ export default {
             addDate: null,
             materialOptions: [],
             addForm: {
-                ruleForm: {},
-                // rules: {
-                //     tel: [
-                //         // {
-                //         //     required: true,
-                //         //     message: '请输入手机号',
-                //         //     trigger: 'blur'
-                //         // },
-                //         {
-                //             min: 11,
-                //             max: 11,
-                //             message: '请输入正确的手机号',
-                //             trigger: 'blur'
-                //         }
-                //     ]
-                // },
+                ruleForm: {
+                    periodTime: null,
+                    inventoryDateStart: null,
+                    inventoryDateEnd: null
+                },
+                rules: {
+                    periodTime: [
+                        {
+                            required: true,
+                            message: '请输入期次',
+                            trigger: 'blur'
+                        }
+                    ],
+                    inventoryDateStart: [
+                        {
+                            required:  true,
+                            message: '请选择时间',
+                            trigger: 'blur'
+                        }
+                    ],
+                    inventoryDateEnd: [
+                        {
+                            required:  true,
+                            message: '请选择时间',
+                            trigger: 'blur'
+                        }
+                    ]
+                },
                 form_item: [
                     {
                         type: 'Input',
@@ -431,7 +472,7 @@ export default {
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'inventoryDateEnd'
-                    },
+                    }
                 ]
             },
             table_row: [],
@@ -483,55 +524,59 @@ export default {
                 shouldInventory: null,
                 actualInventory: null,
                 inventorySurplusLosses: null,
-                unit:null,
+                unit: null
             })
         },
         add() {
             this.add_vrisible = true
             this.materialOptions = []
             // this.materialOptions
-            materialList().then(res=>{
-                console.log(res.tableList);
+            materialList().then((res) => {
+                console.log(res.tableList)
                 let material = res.tableList
-                material && material.forEach(ele => {
-                    let obj = {
-                        label:ele.name,
-                        value:ele.name
-                    }
-                    this.materialOptions.push(obj)
-                });
+                material &&
+                    material.forEach((ele) => {
+                        let obj = {
+                            label: ele.name,
+                            value: ele.name
+                        }
+                        this.materialOptions.push(obj)
+                    })
             })
         },
-        deleteRow (index, rows) {
-      rows.splice(index, 1);
-    },
+        deleteRow(index, rows) {
+            rows.splice(index, 1)
+        },
         addClose() {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
         addSubmit() {
-            console.log(this.materialInventoryDetailList,this.addForm.ruleForm);
+            this.$refs.addForm.submitForm()
+        },
+        addRuleSuccess() {
+            console.log(this.materialInventoryDetailList, this.addForm.ruleForm)
             let resData = {
-                periodTime :this.addForm.ruleForm.periodTime,
-                inventoryDateStart :this.addForm.ruleForm.inventoryDateStart,
-                inventoryDateEnd :this.addForm.ruleForm.inventoryDateEnd,
-                materialInventoryDetailList:this.materialInventoryDetailList
+                periodTime: this.addForm.ruleForm.periodTime,
+                inventoryDateStart: this.addForm.ruleForm.inventoryDateStart,
+                inventoryDateEnd: this.addForm.ruleForm.inventoryDateEnd,
+                materialInventoryDetailList: this.materialInventoryDetailList
             }
-            console.log(resData);
-            materialInventoryInsert(resData).then(res=>{
-                if(res.status){
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.requestData()
-                        this.add_vrisible = false
-                    }else{
-                        this.$message({
-                            message: res.message,
-                            type: 'error'
-                        })
-                    }
+            console.log(resData)
+            materialInventoryInsert(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.$refs.table.requestData()
+                    this.add_vrisible = false
+                } else {
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    })
+                }
             })
         },
         dateTimeChange(arr) {
@@ -555,62 +600,93 @@ export default {
         },
 
         // 物资种类更换获取现存量，单位
-        currStationChange(a){
-            console.log(a);
-            materialList().then(res=>{
-                console.log(res);
-                res.tableList.forEach( ele =>{
-                    // console.log(ele); 
-                       for(let i=0;i<this.materialInventoryDetailList.length;i++){
-                           if(this.materialInventoryDetailList[i].name == ele.name){
-                               console.log(i);
-                               this.materialInventoryDetailList[i].shouldInventory = ele.stock
-                               this.materialInventoryDetailList[i].unit = ele.unit
-                               console.log(this.materialInventoryDetailList);
-                           }
-                       }
-                    
+        currStationChange(a) {
+            console.log(a)
+            materialList().then((res) => {
+                console.log(res)
+                res.tableList.forEach((ele) => {
+                    // console.log(ele);
+                    for (
+                        let i = 0;
+                        i < this.materialInventoryDetailList.length;
+                        i++
+                    ) {
+                        if (
+                            this.materialInventoryDetailList[i].name == ele.name
+                        ) {
+                            console.log(i)
+                            this.materialInventoryDetailList[
+                                i
+                            ].shouldInventory = ele.stock
+                            this.materialInventoryDetailList[i].unit = ele.unit
+                            console.log(this.materialInventoryDetailList)
+                        }
+                    }
                 })
             })
         },
         // 实际库存改变时候计算
-        actualInventoryChanged(scope){
-            console.log(scope);
+        actualInventoryChanged(scope) {
+            console.log(scope)
             // 当前行的盘盈/亏 = 当前行的实际库存 - 应有库存
-            this.materialInventoryDetailList[scope.$index].inventorySurplusLosses = this.materialInventoryDetailList[scope.$index].actualInventory - this.materialInventoryDetailList[scope.$index].shouldInventory
-            
+            this.materialInventoryDetailList[
+                scope.$index
+            ].inventorySurplusLosses =
+                this.materialInventoryDetailList[scope.$index].actualInventory -
+                this.materialInventoryDetailList[scope.$index].shouldInventory
         },
         // 表格选中
         tableCheck(data) {
             this.table_row = data
         },
-        detail(data){
-            if(data.length!=1){
-                this.$message({type:'error',message:'请选择一条数据查看'})
-            }else{
+        detail(data) {
+            if (data.length != 1) {
+                this.$message({ type: 'error', message: '请选择一条数据查看' })
+            } else {
                 this.handleChangeShow = false
-                materialInventoryFindById({id:data[0].id}).then(res=>{
-                    console.log(res.data);
+                materialInventoryFindById({ id: data[0].id }).then((res) => {
+                    console.log(res.data)
                     let pddata = res.data
-                   this.detailData.inventoryDateEnd= pddata.inventoryDateEnd 
-                  this.detailData.inventoryDateStart = pddata.inventoryDateStart
-                   this.detailData.periodTime= pddata.periodTime
-                    this.detailData.speciesNum= pddata.speciesNum
-                    this.detailData.materialInventoryDetailList = pddata.voMaterialInventoryDetailList
-                    console.log(this.detailData);
+                    this.detailData.inventoryDateEnd = pddata.inventoryDateEnd
+                    this.detailData.inventoryDateStart =
+                        pddata.inventoryDateStart
+                    this.detailData.periodTime = pddata.periodTime
+                    this.detailData.speciesNum = pddata.speciesNum
+                    this.detailData.materialInventoryDetailList =
+                        pddata.voMaterialInventoryDetailList
+                    console.log(this.detailData)
                 })
             }
         },
+        del(data) {
+            if (data.length) {
+                let arr = []
+                for (let i = 0; i < this.table_row.length; i++) {
+                    arr.push(this.table_row[i].id)
+                }
+                this.$confirm('是否确认删除？删除不可恢复', '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    confirmButtonClass: 'confirmButton',
+                    cancelButtonClass: 'cancelButton'
+                })
+                    .then(() => {
+                        this.$refs.table.tableDelete(arr)
+                    })
+                    .catch((action) => {})
+            } else {
+                this.$message.error('请选中需要删除的数据')
+            }
+        }
         // edit(data){
         //     if(data.length!=1){
         //         this.$message({type:'error',message:'请选择一条数据修改'})
         //     }else{
-                
+
         //     }
         // },
     },
-    watch:{
-    }
+    watch: {}
 }
 </script>
 

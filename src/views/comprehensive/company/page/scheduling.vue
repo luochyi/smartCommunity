@@ -93,7 +93,7 @@
                         <FromCard>
                             <template slot="title">基本信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                 </VueForm>
                                 <template>
                                     <div>
@@ -791,21 +791,22 @@ export default {
                     teamId: null,
                     status: 2
                 },
-                // rules: {
-                //     tel: [
-                //         // {
-                //         //     required: true,
-                //         //     message: '请输入手机号',
-                //         //     trigger: 'blur'
-                //         // },
-                //         {
-                //             min: 11,
-                //             max: 11,
-                //             message: '请输入正确的手机号',
-                //             trigger: 'blur'
-                //         }
-                //     ]
-                // },
+                rules: {
+                    name: [
+                        {
+                            required: true,
+                            message: '请输入名称',
+                            trigger: 'blur'
+                        },
+                    ],
+                     teamId: [
+                        {
+                            required: true,
+                            message: '请选择小组',
+                            trigger: 'blur'
+                        },
+                    ],
+                },
                 form_item: [
                     {
                         type: 'Input',
@@ -942,7 +943,11 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
-        addSubmit() {
+        addSubmit(){
+            this.$refs.addForm.submitForm()
+
+        },
+        addRuleSuccess() {
             console.log(this.sysAttendanceSchedulingPlanDetails)
             console.log(this.sysAttendanceSchedulingPlanExceptionList)
             let resData = {

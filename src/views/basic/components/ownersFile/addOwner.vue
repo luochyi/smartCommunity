@@ -399,6 +399,7 @@ export default {
           },
         ],
        * */
+      this.$refs.childFrom.reset()
       this.parkingArray = [{
         parkingValue: null,
       }]

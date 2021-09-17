@@ -15,7 +15,7 @@ const requestUrl = {
     attendanceTeamList:'attendanceTeam/list',
     attendanceTeamListDelete:'attendanceTeam/delete',
     attendanceSchedulingPlanList:'attendanceSchedulingPlan/list',
-    attendanceSchedulingPlanListDelect:'attendanceSchedulingPlan/delete',
+    attendanceSchedulingPlanListDelete:'attendanceSchedulingPlan/delete',
     prohibitedKeywordsList:'prohibitedKeywords/list',
     prohibitedKeywordsListDelete:'prohibitedKeywords/delete',
     //提醒
@@ -57,6 +57,7 @@ const requestUrl = {
     facilitiesCategoryListDelete: '/facilitiesCategory/delete',
     facilitiesManageListDelete: '/facilitiesManage/delete',
     facilitiesAppointmentList: 'facilitiesAppointment/list',
+    facilitiesAppointmentListDelete: 'facilitiesAppointment/delete',
     facilitiesPlanExecuteList:'facilitiesPlan/executeList',
     facilitiesPlanList:'facilitiesPlan/list',
     facilitiesPlanListDelete:'facilitiesPlan/delete',
@@ -72,6 +73,7 @@ const requestUrl = {
     materialList: 'material/list',
     materialListDelete: 'material/delete',
     materialRecordList: 'materialRecord/list',
+    materialRecordListDelete: 'materialRecord/delete',
     materialInventoryList:'materialInventory/list',
     //钥匙
     keyManagementList: '/keyManagement/list',
@@ -131,6 +133,7 @@ const requestUrl = {
     chargesTemplateDetailList: '/chargesTemplateDetail/list',
     chargesTemplateDetailListDelete: '/chargesTemplateDetail/list',
     dailyPaymentList: '/dailyPayment/list',
+    dailyPaymentListDelete: '/dailyPayment/delete',
     dailyPaymentPlanList:"dailyPaymentPlan/list",
     dailyPaymentPlanListDelete:"dailyPaymentPlan/delete",
     depositManagementList: '/depositManagement/list',

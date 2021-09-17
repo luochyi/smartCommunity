@@ -16,6 +16,14 @@ export function facilitiesAppointmentInsert(data) {
         data: data
     })
 }
+// facilitiesAppointment/update
+export function facilitiesAppointmentUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: 'facilitiesAppointment/update',
+        data: data
+    })
+}
 // 、、sysOperations/insert  /sysOperations/update
 export function sysOperationsInsert(data) {
     return service.request({

@@ -50,6 +50,7 @@
                                 <button @click="inspection(table_row)">
                                     指派完工检查人
                                 </button>
+                                <button @click="detail(table_row)">详情</button>
                             </div>
                         </template>
                     </VueTable>
@@ -174,6 +175,7 @@ export default {
                     label: '装修驳回'
                 }
             ],
+            detaillist:{},
             optionsVal: null,
             inspection_vrisible: false,
             sysOptions: [],
@@ -462,6 +464,10 @@ export default {
                 // console.log(this.sysOptions);
                 this.loading = false
             })
+        },
+        detail(data){
+            if(data.length!=1){this.$message.error('只能查看一条数据')}
+            // this.detaillist.
         },
         remoteMethod(val) {
             this.getUserList(val)
