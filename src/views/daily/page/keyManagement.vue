@@ -55,7 +55,7 @@
                         <FromCard>
                             <template slot="title">钥匙信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template v-slot:date>
                                         <el-time-picker
@@ -159,11 +159,28 @@ export default {
                         //     trigger: 'blur'
                         // },
                         {
+                            required: true,
                             min: 11,
                             max: 11,
                             message: '请输入正确的手机号',
                             trigger: 'blur'
                         }
+                    ],
+                    // 表单必填
+                    facilityName: [
+                      { required: true, message: '请输入', trigger: 'change' }
+                    ],
+                    num: [
+                      { required: true, message: '请输入', trigger: 'change' }
+                    ],
+                    correspondingPosition: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
+                    storageLocation: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
+                    administrator: [
+                      { required: true, message: '请选择', trigger: 'change' }
                     ]
                 },
                 form_item: [
@@ -344,35 +361,38 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
-        addSubmit() {
-            // this.add_vrisible = false
-            /**
-       * 
-       *  code	       :null, 设施分类编号	是	[string]		
-        2	name	       :null,   设施分类名称	是	[string]		
-        3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
-        4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
-        5	imgUrls:null,
-       * 
-       * **/
-            let resData = {
-                ...this.addForm.ruleForm
-                // code: this.addForm.ruleForm.code,
-                // name: this.addForm.ruleForm.name,
-                // openStartDate: this.openStartDate,
-                // openEndDate:  this.openEndDate,
-                // imgUrls:this.addForm.ruleForm.imgUrls,
+        addRuleSuccess() {
+          // this.add_vrisible = false
+          /**
+           *
+           *  code	       :null, 设施分类编号	是	[string]
+           2	name	       :null,   设施分类名称	是	[string]
+           3	openStartDate:null,	      开放开始时间	是	[datetime]	"3:41:44"	查看
+           4	openEndDate	 :null,     开放结束时间	是	[datetime]	"21:41:44"	查看
+           5	imgUrls:null,
+           *
+           * **/
+          let resData = {
+            ...this.addForm.ruleForm
+            // code: this.addForm.ruleForm.code,
+            // name: this.addForm.ruleForm.name,
+            // openStartDate: this.openStartDate,
+            // openEndDate:  this.openEndDate,
+            // imgUrls:this.addForm.ruleForm.imgUrls,
+          }
+          keyManagementInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
             }
-            keyManagementInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          })
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         detail(data) {
             if (data.length != 1) {
