@@ -330,11 +330,20 @@ export default {
                 rules: {
                     // 表单必填
                     name: [
-                        { required: true, message: '请选择', trigger: 'change' }
+                        { required: true, message: '请输入', trigger: 'change' }
                     ],
                     leadingId: [
-                        { required: true, message: '请选择', trigger: 'change' }
+                        { required: true, message: '请输入', trigger: 'change' }
                     ],
+                    categoryId: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
+                    parentId: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
+                    sort: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ]
                 },
                 form_item: [
                     {
@@ -569,7 +578,7 @@ export default {
                         message: res.message,
                         type: 'success'
                     })
-                    
+
                     this.addClose()
                    this.getData()
                 }

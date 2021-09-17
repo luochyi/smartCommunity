@@ -62,7 +62,7 @@
                         <FromCard>
                             <template slot="title">培训信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template v-slot:date>
                                         <el-time-picker
@@ -167,6 +167,18 @@ export default {
                     content: null,
                     director: null,
                     endDate:null
+                },
+                rules: {
+                  // 表单必填
+                  organizationId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  trainPerson: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  trainDate: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -277,7 +289,7 @@ export default {
                     }
                      this.config.search_item[0].options.push(obj)
                 });
-               
+
                 // console.log(this.sysOptions);
             })
     },
@@ -305,7 +317,7 @@ export default {
         change(value) {
             console.log(value)//sysUserList
 
-            
+
         },
         //根据部门获取人员
         sChange(value){
@@ -317,7 +329,7 @@ export default {
              }
              sysUserList(sData).then((res) => {
                 console.log(res)
-                
+
                  res.tableList.forEach(element => {
                      let obj = {
                          value: element.id,
@@ -337,20 +349,23 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
-        addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
+        addRuleSuccess() {
+          let resData = {
+            ...this.addForm.ruleForm
+          }
+          trainInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
             }
-            trainInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          })
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]

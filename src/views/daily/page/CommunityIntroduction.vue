@@ -39,7 +39,7 @@
                         <FromCard>
                             <template slot="title">介绍内容</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <template slot="imgUrls">
                                         <template>
                                             <el-upload
@@ -179,7 +179,15 @@ export default {
                 ruleForm: {
                     imgUrls: []
                 },
-                rules: {},
+                rules: {
+                  // 表单必填
+                  name: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  content: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                },
                 form_item: [
                     {
                         type: 'Input',
@@ -343,21 +351,25 @@ export default {
             this.add_vrisible = false
             this.$refs.myUpload1.clearFiles()
         },
-        addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
+        addRuleSuccess() {
+          let resData = {
+            ...this.addForm.ruleForm
+          }
+          communityIntroductionInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              console.log(resData)
+              this.$refs.table.loadData()
+              this.addClose()
             }
-            communityIntroductionInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    console.log(resData)
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          })
+        },
+
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         edit(data) {
             if (data.length != 1) {
@@ -382,7 +394,7 @@ export default {
                             // this.$set(this.imglist, 0, obj)
                             this.imglist.push(obj)
                           });
-                            
+
                             // this.editForm.ruleForm.imgUrls = [
                             //     res.data.imgList[0].url
                             // ]
@@ -403,7 +415,7 @@ export default {
             this.$refs.myUpload.clearFiles()
         },
         editSubmit() {
-            
+
             let resData = {
                 ...this.editForm.ruleForm,
                 id: this.editForm.ruleForm.id,

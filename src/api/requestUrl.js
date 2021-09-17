@@ -83,7 +83,7 @@ const requestUrl = {
     securityManagementList:'securityManagement/list',
     securityManagementListDelete:'securityManagement/delete',
 
-    userDecorationList: 'userDecoration/list',
+    // userDecorationList: 'userDecoration/list',
     voteList: '/vote/list',
     voteListDelete: '/vote/falseDelete',
     voteListDetailList: '/vote/listDetailCandidate',

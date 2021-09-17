@@ -44,7 +44,7 @@
                                     <template>
                                         <VueForm
                                             ref="addForm"
-                                            :formObj="addForm"
+                                            :formObj="addForm" @ruleSuccess="addRuleSuccess"
                                         >
                                             <!-- Slot -->
                                             <template v-slot:date>
@@ -246,6 +246,15 @@ export default {
                     imgUrls: [],
                     type:1
                 },
+                rules: {
+                  // 表单必填
+                  code: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  name: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ]
+                },
                 form_item: [
                     {
                         type: 'Input',
@@ -376,22 +385,25 @@ export default {
             this.imglist = []
             this.addDate = ''
         },
+        addRuleSuccess() {
+          let resData = {
+            ...this.addForm.ruleForm
+          }
+          facilitiesCategoryInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
+
+            }
+          })
+        },
         // 新增提交
         addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
-            }
-            facilitiesCategoryInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                    
-                }
-            })
+          this.$refs.addForm.submitForm()
         },
         // 编辑
         edit(data) {

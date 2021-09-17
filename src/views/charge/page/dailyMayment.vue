@@ -378,12 +378,12 @@ export default {
                     }
                 ],
                 rules: {
-                    // buildingUnitEstateId: [
-                    //     { required: true, message: '请选择', trigger: 'blur' }
-                    // ],
-                    // chargesTemplateDetailId: [
-                    //     { required: true, message: '请选择', trigger: 'change' }
-                    // ],
+                    buildingUnitEstateId: [
+                        { required: true, message: '请选择', trigger: 'blur' }
+                    ],
+                    chargesTemplateDetailId: [
+                        { required: true, message: '请选择', trigger: 'change' }
+                    ],
                     beginDate: [
                         { required: true, message: '请选择', trigger: 'change' }
                     ],
@@ -402,7 +402,16 @@ export default {
                             message: '请输入面积/用量',
                             trigger: 'change'
                         }
-                    ]
+                    ],
+                    totalPrice: [
+                      { required: true, message: '请输入', trigger: 'change' }
+                    ],
+                    rate: [
+                      { required: true, message: '请输入', trigger: 'change' }
+                    ],
+                    paymentTerm: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
                 }
             },
             receiverForm: {

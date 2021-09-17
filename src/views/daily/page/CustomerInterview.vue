@@ -54,7 +54,7 @@
                         <FromCard>
                             <template slot="title">访谈内容</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template slot="date">
                                         <el-date-picker
@@ -129,6 +129,27 @@ export default {
                     interviewers:null,
                     content:null,
                     interviewDate:null
+                },
+                rules: {
+                  // 表单必填
+                  name: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  tel: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  organizationId: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  interviewers: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  content: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  interviewDate: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -328,21 +349,24 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
+        addRuleSuccess() {
+          // this.addForm.ruleForm.interviewDate
+          let resData = {
+            ...this.addForm.ruleForm
+          }
+          interviewInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
+            }
+          })
+        },
         addSubmit() {
-            // this.addForm.ruleForm.interviewDate
-            let resData = {
-                    ...this.addForm.ruleForm
-                }
-                interviewInsert(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
+          this.$refs.addForm.submitForm()
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]

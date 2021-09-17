@@ -72,7 +72,7 @@
                         <FromCard>
                             <template slot="title">合同信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template v-slot:date>
                                         <el-time-picker
@@ -205,6 +205,16 @@ export default {
                     entryDate: null
                 },
                 rules: {
+                    // 表单必填
+                    organizationId: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
+                    contractPerson: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
+                    entryDate: [
+                      { required: true, message: '请选择', trigger: 'change' }
+                    ],
                     fileDocUrl: [
                         {
                             required: true,
@@ -453,27 +463,30 @@ export default {
             this.add_vrisible = false
             this.wordList = []
         },
-        addSubmit() {
-            if (this.addForm.ruleForm.fileDocUrl == null) {
-                this.$message({
-                    type: 'error',
-                    message: '请上传文件'
-                })
-            } else {
-                let resData = {
-                    ...this.addForm.ruleForm
-                }
-                contractInsert(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
+        addRuleSuccess() {
+          if (this.addForm.ruleForm.fileDocUrl == null) {
+            this.$message({
+              type: 'error',
+              message: '请上传文件'
+            })
+          } else {
+            let resData = {
+              ...this.addForm.ruleForm
             }
+            contractInsert(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          }
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]

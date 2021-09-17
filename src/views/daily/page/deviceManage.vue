@@ -8,7 +8,7 @@
                     icon="el-icon-plus"
                     >新增设备</el-button
                 >
-                
+
             </div>
             <div  style="width: 50px"><download-excel
                                 class="export-excel-wrapper"
@@ -68,7 +68,7 @@
                     <FromCard>
                         <template slot="title">基本信息</template>
                         <template>
-                            <VueForm ref="addForm" :formObj="addForm">
+                            <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                 <!-- Slot -->
                                 <template v-slot:date>
                                     <el-time-picker
@@ -282,6 +282,21 @@ export default {
                     validityEnd: null,
                     remakes:null
                 },
+                rules: {
+                  // 表单必填
+                  name: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  code: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  facilitiesCategoryId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  address: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ]
+                },
                 form_item: [
                     {
                         type: 'Input',
@@ -310,7 +325,7 @@ export default {
                         type: 'Input',
                         label: '设备地址',
                         placeholder: '请输入',
-                        width: '100%',
+                        width: '50%',
                         prop: 'address'
                     },
                     {
@@ -622,7 +637,7 @@ export default {
                    this.addList=[{checkDate:null,status:null,administrator:null,details:null}]
                }
             })
-        }, 
+        },
         // 关闭drawer
         getClose(data) {
             this.drawer_maintain = false
@@ -696,38 +711,41 @@ export default {
             this.add_vrisible = false
              this.wordList = []
         },
+        addRuleSuccess() {
+          if (this.drawerTitle == '修改设备信息') {
+            let resData = {
+              ...this.addForm.ruleForm,
+              id: this.addForm.ruleForm.id
+            }
+            facilitiesManageUpdate(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          } else {
+            let resData = {
+              ...this.addForm.ruleForm
+            }
+            facilitiesManageInsert(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          }
+        },
         // 提交判断是修改还是新增
         addSubmit() {
-            if (this.drawerTitle == '修改设备信息') {
-                let resData = {
-                    ...this.addForm.ruleForm,
-                    id: this.addForm.ruleForm.id
-                }
-                facilitiesManageUpdate(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
-            } else {
-                let resData = {
-                    ...this.addForm.ruleForm
-                }
-                facilitiesManageInsert(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
-            }
+          this.$refs.addForm.submitForm()
         },
         edit(data) {
             if (data.length != 1) {

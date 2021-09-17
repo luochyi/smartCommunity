@@ -71,7 +71,7 @@
                             <!-- slot上传 -->
                             <template slot="title">票据信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template v-slot:hours>
                                         <el-select
@@ -247,6 +247,54 @@ export default {
                 ruleForm: {
                     rate: null,
                     estateId: null
+                },
+                rules: {
+                  // 表单必填
+                  estateId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  code: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  type: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  name: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  totalPrice: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  rate: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  remake: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  invoiceTitleType: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  invoiceTitleName: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  tel: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  acquiringEin: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  bank: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  account: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  drawer: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  invoiceDate: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -731,21 +779,24 @@ export default {
             this.buildValue = null
             this.wordList = []
         },
+        addRuleSuccess() {
+          let resData = {
+            ...this.addForm.ruleForm
+          }
+          paperInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
+            }
+          })
+        },
         // 提交
         addSubmit() {
-            let resData = {
-                ...this.addForm.ruleForm
-            }
-            paperInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          this.$refs.addForm.submitForm()
         },
         // 单元楼栋
         unitData(value) {
