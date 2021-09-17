@@ -85,7 +85,7 @@
                         <FromCard>
                             <template slot="title">缴费计划</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <template v-slot:rate>
                                         <el-input
                                             v-model="addForm.ruleForm.rate"
@@ -264,7 +264,7 @@ export default {
             // 房屋
             hoursValue: null,
             hoursOptions: [],
-            addDate: null, 
+            addDate: null,
             feeData: {},
             loading: false,
             roominfo:null,
@@ -282,6 +282,39 @@ export default {
                     rate: null,
                     paymentTime: null,
                     remake: null
+                },
+                rules: {
+                  // 表单必填
+                  buildingUnitEstateId: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  chargesTemplateDetailId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  beginPlanDate: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  endPlanDate: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  num: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  costPrice: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  cycle: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  rate: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  paymentTime: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  remake: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -686,41 +719,44 @@ export default {
             this.unitValue = null
             this.hoursValue = null
         },
-        addSubmit() {
-            if (this.drawerTitle == '新增缴费计划') {
-                let resData = {
-                    ...this.addForm.ruleForm,
-                    unitPrice: this.feeData.unitPrice,
-                    type: this.feeData.type
-                }
-                dailyPaymentPlanInsert(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
-            } else if (this.drawerTitle == '修改缴费计划') {
-                let resData = {
-                    id: this.addForm.ruleForm.id,
-                    ...this.addForm.ruleForm,
-                    unitPrice: this.feeData.unitPrice,
-                    type: this.feeData.type
-                }
-                dailyPaymentPlanUpdate(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
+        addRuleSuccess() {
+          if (this.drawerTitle == '新增缴费计划') {
+            let resData = {
+              ...this.addForm.ruleForm,
+              unitPrice: this.feeData.unitPrice,
+              type: this.feeData.type
             }
+            dailyPaymentPlanInsert(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          } else if (this.drawerTitle == '修改缴费计划') {
+            let resData = {
+              id: this.addForm.ruleForm.id,
+              ...this.addForm.ruleForm,
+              unitPrice: this.feeData.unitPrice,
+              type: this.feeData.type
+            }
+            dailyPaymentPlanUpdate(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          }
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         edit(data) {
             if (data.length != 1) {
