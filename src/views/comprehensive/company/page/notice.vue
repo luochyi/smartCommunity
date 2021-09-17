@@ -37,7 +37,7 @@
                         <FromCard>
                             <template slot="title">提醒内容</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <template v-slot:name>
                                         <el-select
                                             v-model="addForm.ruleForm.name"
@@ -97,6 +97,18 @@ export default {
                     content: null,
                     title: null,
                     receiverAccount: null
+                },
+                rules: {
+                  // 表单必填
+                  name: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  title: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  content: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -310,21 +322,24 @@ export default {
             this.$refs.addForm.reset()
             this.add_vrisible = false
         },
-        addSubmit() {
-            // this.addForm.ruleForm.interviewDate
-            let resData = {
-                ...this.addForm.ruleForm
+        addRuleSuccess() {
+          // this.addForm.ruleForm.interviewDate
+          let resData = {
+            ...this.addForm.ruleForm
+          }
+          remindInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.addClose()
             }
-            remindInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    this.$refs.table.loadData()
-                    this.addClose()
-                }
-            })
+          })
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
