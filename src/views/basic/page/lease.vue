@@ -212,7 +212,7 @@
                         <FromCard>
                             <template slot="title">租赁信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template v-slot:hours>
                                         <el-select
@@ -403,7 +403,7 @@ import {
     findByBuildingId,
     UnitEstateFindById,
     leaseReviewer,
-    reviewTerminationApplication, 
+    reviewTerminationApplication,
     reviewDepositRefundApplication //reviewDepositRefundApplication保证金退还
 } from '@/api/basic'
 // import func from 'vue-editor-bridge'
@@ -464,7 +464,55 @@ export default {
                     margin: null,
                     leaseDateStart: null,
                     leaseDateEnd: null,
-                    
+
+                },
+                rules: {
+                  // 表单必填
+                  code: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  name: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  sex: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  idCard: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  tel: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  estateId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  type: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  estateType: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  estateStructure: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  constructionArea: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  indoorArea: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  rentStandard: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  margin: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  leaseDateStart: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ],
+                  leaseDateEnd: [
+                    { required: true, message: '请选择', trigger: 'change' }
+                  ]
                 },
                 form_item: [
                     {
@@ -842,7 +890,7 @@ export default {
                     //     width: '50%',
                     //     prop: 'idCardBackImgNewUrl'
                     // },
-                    
+
                 ]
             },
             table_row: [],
@@ -1302,7 +1350,7 @@ export default {
                     this.leaseParentId = data[0].id
                 })
         },
-        // 变更  父类租赁主键id 负整数代表是续签租赁 
+        // 变更  父类租赁主键id 负整数代表是续签租赁
         alter(data){
             if (data.length != 1) {
                 this.$message({
@@ -1410,7 +1458,7 @@ export default {
                     label: '申请终止通过'
                 }
                 ]
-                
+
                  this.thatId = data[0].id
             })
             this.endDialog = true
@@ -1559,38 +1607,41 @@ export default {
             this.hourValue = null
             this.leaseParentId = null
         },
-        addSubmit() {
-            if (this.drawerTitle == '新增租赁信息') {
-                let resData = {
-                    ...this.addForm.ruleForm,
-                    leaseParentId:0
-                }
-                leaseInsert(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
-            } else if (this.drawerTitle == '修改租赁信息') {
-                let resData = {
-                    id: this.addForm.ruleForm.id,
-                    ...this.addForm.ruleForm
-                }
-                leaseUpdate(resData).then((res) => {
-                    if (res.status) {
-                        this.$message({
-                            message: res.message,
-                            type: 'success'
-                        })
-                        this.$refs.table.loadData()
-                        this.addClose()
-                    }
-                })
+        addRuleSuccess() {
+          if (this.drawerTitle == '新增租赁信息') {
+            let resData = {
+              ...this.addForm.ruleForm,
+              leaseParentId:0
             }
+            leaseInsert(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          } else if (this.drawerTitle == '修改租赁信息') {
+            let resData = {
+              id: this.addForm.ruleForm.id,
+              ...this.addForm.ruleForm
+            }
+            leaseUpdate(resData).then((res) => {
+              if (res.status) {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$refs.table.loadData()
+                this.addClose()
+              }
+            })
+          }
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         edit(data) {
             if (data.length != 1) {
