@@ -87,7 +87,7 @@
                             <FromCard>
                                 <template slot="title">填写分类信息</template>
                                 <template>
-                                    <VueForm ref="addForm" :formObj="addForm">
+                                    <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                         <template slot="imgUrls">
                                             <template>
                                                 <el-upload
@@ -258,6 +258,15 @@ export default {
                     imgUrls: [],
                     idPath: null
                 },
+                rules: {
+                  // 表单必填
+                  parentId: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ],
+                  name: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ]
+                },
                 form_item: [
                     {
                         type: 'Select',
@@ -321,24 +330,27 @@ export default {
             this.add_vrisible = false
             this.imglist = []
         },
-        addSubmit() {
-            let resData = {
-                name: this.addForm.ruleForm.name,
-                parentId: this.addForm.ruleForm.parentId,
-                imgUrls: this.addForm.ruleForm.imgUrls,
-                idPath: this.addForm.ruleForm.idPath
+        addRuleSuccess() {
+          let resData = {
+            name: this.addForm.ruleForm.name,
+            parentId: this.addForm.ruleForm.parentId,
+            imgUrls: this.addForm.ruleForm.imgUrls,
+            idPath: this.addForm.ruleForm.idPath
+          }
+          shopCategoryInsert(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              // this.$refs.table.loadData()
+              this.addClose()
+              this.getDate()
             }
-            shopCategoryInsert(resData).then((res) => {
-                if (res.status) {
-                    this.$message({
-                        message: res.message,
-                        type: 'success'
-                    })
-                    // this.$refs.table.loadData()
-                    this.addClose()
-                    this.getDate()
-                }
-            })
+          })
+        },
+        addSubmit() {
+          this.$refs.addForm.submitForm()
         },
         handleEdit(data) {
             console.log(data)
@@ -448,7 +460,7 @@ export default {
                         this.getDate()
                         this.getChild(data.id)
                         }
-                        
+
                     })
                 }).catch(action => { })
         }
