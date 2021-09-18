@@ -5,7 +5,7 @@
            alt="">
       <div class="banner-title">
         <h1>为物业企业赋能 打造数字化转型</h1>
-        <p>数据开放平台 凯达来智慧社区的引领者</p>
+        <p>数据开放平台 凯达来智慧小区的引领者</p>
       </div>
       <!-- <div class="btn-box">
         <el-button type="primary" style="width:158px;height: 50px">点击查询</el-button>

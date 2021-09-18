@@ -428,7 +428,7 @@ export default {
           date: '2020-05-09 15:32',
           control: '金茂府',
           content: '文明城市',
-          way: '社区',
+          way: '小区',
         },
         {
           id: '4',

@@ -378,7 +378,7 @@ export function articleFindById(data) {
     })
 }
 //
-// 社区话题管理：添加话题信息(物业后台添加)
+// 小区话题管理：添加话题信息(物业后台添加)
 export function gambitInsert(data) {
     return service.request({
         method: 'POST',
@@ -386,7 +386,7 @@ export function gambitInsert(data) {
         data: data
     })
 }
-// 社区话题管理：修改话题信息(物业后台修改)
+// 小区话题管理：修改话题信息(物业后台修改)
 export function gambitUpdate(data) {
     return service.request({
         method: 'POST',
@@ -394,7 +394,7 @@ export function gambitUpdate(data) {
         data: data
     })
 }
-// 社区话题管理
+// 小区话题管理
 export function gambitFindById(data) {
     return service.request({
         method: 'GET',

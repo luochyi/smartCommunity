@@ -90,7 +90,7 @@
               <!-- <div class="flex"
                    style="padding:10px 0">
                 <div style="width:60px;">活动类型</div>
-                <div style="flex:1;padding-left:10px">社区问</div>
+                <div style="flex:1;padding-left:10px">小区问</div>
               </div> -->
               <div class="flex"
                    style="padding:10px 0">

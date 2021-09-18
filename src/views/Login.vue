@@ -5,7 +5,7 @@
     <div class="login-right">
       <div class="login-box">
         <div class="login-titel">
-          <p>小蜜蜂智慧社区综合平台</p>
+          <p>小蜜蜂智慧小区综合平台</p>
           <span>链接你我 让您品味生活每一天</span>
         </div>
         <div class="login-content">

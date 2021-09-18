@@ -138,7 +138,7 @@ export default {
         {
           // Community topic
           path: '/butler/communityTopic',
-          label: '社区话题',
+          label: '小区话题',
           iconurl: require('@/assets/images/butler/icon_service10_nor.png'),
           iconisactive: require('@/assets/images/butler/icon_service10_sel.png'),
           isChildren: 1,

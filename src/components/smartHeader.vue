@@ -10,7 +10,7 @@
             </div>
             <div class="logo-txt">
               <div class="txt-big">
-                <span>智慧社区</span>
+                <span>智慧小区</span>
               </div>
               <div class="txt-small">
                 <span>Beta版本</span>

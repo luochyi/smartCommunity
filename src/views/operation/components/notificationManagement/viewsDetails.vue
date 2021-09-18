@@ -21,7 +21,7 @@
                 >
               </el-form-item>
               <el-form-item label="通知后缀  ">
-                <span>智慧社区</span>
+                <span>智慧小区</span>
               </el-form-item>
               <el-form-item label="推送对象">
                 <div>

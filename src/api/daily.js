@@ -553,7 +553,7 @@ export function serviceBrowsingFindById(data) {
         params: data
     })
 }
-//社区介绍 communityIntroduction/findById communityIntroduction/update
+//小区介绍 communityIntroduction/findById communityIntroduction/update
 export function communityIntroductionInsert(data) {
     return service.request({
         method: 'POST',

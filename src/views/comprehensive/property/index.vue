@@ -298,7 +298,7 @@
         </div>
         <div class="dev_Community">
           <div class="dev_box_title">
-            <p>社区活动 <span>Community activities</span></p>
+            <p>小区活动 <span>Community activities</span></p>
           </div>
           <div class="dev_card">
             <div class="dev_table">

@@ -4,7 +4,7 @@ Vue.use(Vuex)
 // import {sysUserList} from '@/api/company.js'
 export default new Vuex.Store({
   state: {
-    title: '智慧社区',
+    title: '智慧小区',
     bgColor:localStorage.getItem("bgColor"),
     fontWeight:localStorage.getItem("fontWeight"),
   },

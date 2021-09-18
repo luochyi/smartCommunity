@@ -251,7 +251,7 @@ export default {
       //   {
       //     // community activity
       //     path: '/operation/communityActivity',
-      //     label: '社区活动',
+      //     label: '小区活动',
       //     iconurl: require('@/assets/images/operation/icon_operate02_nor.png'),
       //     iconisactive: require('@/assets/images/operation/icon_operate02_sel.png'),
       //     icon: 'el-icon-message',

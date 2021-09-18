@@ -257,7 +257,7 @@ export default {
                 //CommunityIntroduction
                 {
                     path: '/daily/CommunityIntroduction',
-                    label: '社区介绍',
+                    label: '小区介绍',
                     iconurl: require('@/assets/images/daily/sqjs_nor.png'),
                     iconisactive: require('@/assets/images/daily/sqjs_sel.png'),
                     isChildren: 0

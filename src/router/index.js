@@ -740,7 +740,7 @@ const routes = [
                             ], resolve)
                     },
                     {
-                        // 社区管理
+                        // 小区管理
                         // 话题管理
                         path: '/butler/topiManagement',
                         component: resolve =>
@@ -833,7 +833,7 @@ const routes = [
                             ], resolve)
                     },
                     {
-                        // 社区活动
+                        // 小区活动
                         // 活动管理
                         path: '/operation/eventManagement',
                         component: resolve =>
