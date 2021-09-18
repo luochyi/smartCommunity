@@ -413,14 +413,14 @@ export default {
                                     label: '业主姓名',
                                     placeholder: '请输入',
                                     width: '50%',
-                                    prop: 'name'
+                                    prop: 'name',disabled:'true'
                                 },
                                 {
                                     type: 'Int',
                                     label: '联系方式',
                                     placeholder: '请输入',
                                     width: '50%',
-                                    prop: 'tel'
+                                    prop: 'tel',disabled:'true'
                                 },
                                 {
                                     type: 'Select',
@@ -431,14 +431,14 @@ export default {
                                         { value: 2, label: '营业执照' }
                                     ],
                                     width: '50%',
-                                    prop: 'idType'
+                                    prop: 'idType',disabled:'true'
                                 },
                                 {
                                     type: 'Input',
                                     label: '证件号码',
                                     placeholder: '请输入',
                                     width: '50%',
-                                    prop: 'idNumber'
+                                    prop: 'idNumber',disabled:'true'
                                 }
                             ]
                         },
