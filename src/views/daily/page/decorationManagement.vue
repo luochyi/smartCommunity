@@ -466,9 +466,13 @@ export default {
             })
         },
         detail(data){
-            if(data.length!=1){this.$message.error('只能查看一条数据')}
-            // this.detaillist.
-        },
+      if(data.length!=1){
+        this.$message({message:'请选择一条数据查看'})
+        return
+      }
+    //   /Users/apple/Desktop/smartCommunity1/src/views/daily/page/decorationManagement.vue
+      this.$router.push({ path:'/daily/decorationManagementDetail',query:{id:data[0].id}})
+    },
         remoteMethod(val) {
             this.getUserList(val)
         },

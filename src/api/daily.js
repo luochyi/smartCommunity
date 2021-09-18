@@ -613,3 +613,11 @@ export function securityManagementFindAllCreateName(data) {
         params: data
     })
 }
+// /userDecorationNew/list
+export function userDecorationNewList(data) {
+    return service.request({
+        method: 'GET',
+        url: '/userDecorationNew/list',
+        params: data
+    })
+}

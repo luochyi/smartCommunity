@@ -402,7 +402,15 @@ const routes = [
                     {
                         path:'/daily/safeManage',
                         component:()=>import('@/views/daily/page/safeManage')
-                    }
+                    },
+                    {
+                        // 装修管理
+                        path: '/daily/decorationManagementDetail',
+                        component: resolve =>
+                            require([
+                                '@/views/daily/page/decorationManagementDetail'
+                            ], resolve)
+                    },
                 ]
             }
         ]
@@ -667,6 +675,8 @@ const routes = [
                                 '@/views/butler/page/decorationManagement'
                             ], resolve)
                     },
+                    // /Users/apple/Desktop/smartCommunity1/src/views/daily/page/decorationManagementDetail.vue
+                    
                     {
                         // 投票管理
                         path: '/butler/votingManagement',

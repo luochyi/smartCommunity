@@ -33,6 +33,7 @@
     <addEidt :drawerTitle="drawerTitle"
              ref="addEidt"
              @handleClose="handleClose"
+             @addEidtSuccess='addEidtSuccess'
              :drawerVrisible='drawer_vrisible'></addEidt>
   </div>
 </template>
@@ -134,8 +135,12 @@ export default {
         return
       }
 
-      this.$refs.addEidt.edit(data[0].id)
+      this.$refs.addEidt.edit(data[0].id,data[0])
       this.drawerTitle = '修改房屋'
+    },
+    addEidtSuccess () {
+      console.log(1);
+      this.$refs.table.loadData()
     },
     add () {
       this.drawerTitle = '新增房屋',

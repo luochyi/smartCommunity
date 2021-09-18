@@ -106,6 +106,7 @@ import { dataBaseInsert } from '@/api/company'
 export default {
     data() {
         return {
+            flag:true,
             timer: '',
             isShow: false,
             percentage: 0,
@@ -207,6 +208,7 @@ export default {
             this.add_vrisible = true
         },
         yearover() {
+            
             this.isShow = true
             var progressnuw = 0
             var timer = setInterval(() => {
@@ -216,10 +218,18 @@ export default {
                     this.percentage = 0
                     progressnuw = 0
                     this.isShow = false
-                    this.$message({
-                        type: 'error',
-                        message: '年结失败，请于2022年1月1日后年结'
+                   if(this.flag){
+                       this.flag = false
+                        this.$message({
+                        type: 'success',
+                        message: '年结成功'
                     })
+                   }else{
+                        this.$message({
+                        type: 'error',
+                        message: '年结失败，本年度已年结'
+                    })
+                   }
                 }
                 this.percentage = progressnuw
             }, 30)
