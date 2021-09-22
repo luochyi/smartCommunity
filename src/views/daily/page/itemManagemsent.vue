@@ -416,13 +416,16 @@ export default {
                     this.fileUrls = res.imgUrl[0].url
                 }
                 for (let i = 0; i < res.quantity; i++) {
-                    this.VotingUserList[i]={
-                        id:res.voFindByIdArticleDetailList[i].id,
-                        fileUrls: [res.voFindByIdArticleDetailList[i].imgUrl[0].url],
-                        name: res.voFindByIdArticleDetailList[i].name,
-                        code: res.voFindByIdArticleDetailList[i].code
-                    }
+                    this.VotingUserList[i].id = res.voFindByIdArticleDetailList[i].id
+                    this.VotingUserList[i].fileUrls = [res.voFindByIdArticleDetailList[i].imgUrl[0].url]
+                    this.VotingUserList[i].name = res.voFindByIdArticleDetailList[i].name
+                    this.VotingUserList[i].code = res.voFindByIdArticleDetailList[i].code
+                        // id:res.voFindByIdArticleDetailList[i].id,
+                        // fileUrls: [res.voFindByIdArticleDetailList[i].imgUrl[0].url],
+                        // name: res.voFindByIdArticleDetailList[i].name,
+                        // code: res.voFindByIdArticleDetailList[i].code
                 }
+                console.log(this.VotingUserList);
             })
         },
         // vueForm 验证提交
