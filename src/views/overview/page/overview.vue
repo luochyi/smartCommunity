@@ -75,11 +75,11 @@ export default {
               value: '/butler/complainPraise',
               label: '投诉表扬',
             },
-            {
-              // Report for repair
-              value: '/butler/reportRepair',
-              label: '报事报修',
-            },
+            // {
+            //   // Report for repair
+            //   value: '/butler/reportRepair',
+            //   label: '报事报修',
+            // },
             {
               // Questionnaire
               value: '/butler/Questionnaire',
@@ -102,21 +102,21 @@ export default {
             //   value: '/butler/managementSet',
             //   label: '工单设置'
             // },
-            {
-              value: '/butler/loanManagement',
-              label: '物品借还'
-            },
-            {
-              // Item management
-              value: '/butler/itemManagemsent',
-              label: '物品管理'
-            },
-            {
-              // Item management
-              value: '/butler/housekeepingServices',
-              label: '家政服务'
-            }
-            ,
+            // {
+            //   value: '/butler/loanManagement',
+            //   label: '物品借还'
+            // },
+            // {
+            //   // Item management
+            //   value: '/butler/itemManagemsent',
+            //   label: '物品管理'
+            // },
+            // {
+            //   // Item management
+            //   value: '/butler/housekeepingServices',
+            //   label: '家政服务'
+            // }
+            // ,
             // {
             //   // /Voice Butler
             //   value: '/butler/voiceButler',

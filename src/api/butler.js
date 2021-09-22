@@ -270,6 +270,13 @@ export function articleInsert(data) {
         data: data
     })
 }
+export function articleUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/article/update',
+        data: data
+    })
+}
 // 报事报修：添加报事报修信息
 export function reportRepairInsert(data) {
     return service.request({

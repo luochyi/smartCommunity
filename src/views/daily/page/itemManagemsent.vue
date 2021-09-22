@@ -79,7 +79,7 @@
                                                 <!-- editBool -->
                                                 <div v-else>
                                                     <el-image
-                                                        v-if="!editBool"
+                                                        v-if="this.addEidtTitle=='添加物品'"
                                                         :src="`${$ImgUrl}/temp${fileUrls}`"
                                                         style="
                                                             width: 104px;
@@ -197,7 +197,7 @@
                                                                     <!-- 非临时地址 -->
                                                                     <el-image
                                                                         v-else
-                                                                        :src="`${$ImgUrl}${item.fileUrls[0]}`"
+                                                                        :src="`${$ImgUrl}${item.fileUrls}`"
                                                                         style="
                                                                             width: 80px;
                                                                             height: 80px;
@@ -246,12 +246,13 @@
 </template>
 <script>
 import viewsPhoto from '@/components/dialog/viewsPhoto'
-import { articleFindById, articleInsert } from '@/api/butler'
+import { articleFindById, articleInsert,articleUpdate } from '@/api/butler'
 export default {
     data() {
         return {
             // 选中表格数据
             table_row: [],
+            thatID:null,
             imageShow: true,
             telShow: true,
             editBool: false, //是否为编辑
@@ -301,6 +302,15 @@ export default {
                     quantity: null,
                     articleDetailList: []
                     // sysVoteCandidateList: []
+                },
+                rules:{
+                    name: [
+                        {
+                            required: true,
+                            message: '请填名称',
+                            trigger: 'blur'
+                        }
+                    ],
                 },
                 form_item: [
                     {
@@ -396,13 +406,43 @@ export default {
                 this.$message.error('请选择')
                 return
             }
+            this.thatID = data[0].id
+            this.addEidtTitle = '修改物品'
             this.addEidt_vrisible =true
-            articleFindById({ id: data[0].id }).then((result) => {
-                console.log(result)
+            articleFindById({ id: data[0].id }).then((res) => {
+                console.log(res)
+                this.addEidtForm.ruleForm.name = res.name
+                if(res.imgUrl.length){
+                    this.fileUrls = res.imgUrl[0].url
+                }
+                for (let i = 0; i < res.quantity; i++) {
+                    this.VotingUserList[i]={
+                        id:res.voFindByIdArticleDetailList[i].id,
+                        fileUrls: [res.voFindByIdArticleDetailList[i].imgUrl[0].url],
+                        name: res.voFindByIdArticleDetailList[i].name,
+                        code: res.voFindByIdArticleDetailList[i].code
+                    }
+                }
             })
         },
         // vueForm 验证提交
         addEidtSubmit() {
+            if(this.addEidtTitle=='添加物品'){
+                if(this.addEidtForm.ruleForm.name==''||this.addEidtForm.ruleForm.name==null){
+                this.$message.error('物品名称不能为空')
+                return
+            }
+            for (let i = 0; i < this.VotingUserList.length; i++) {
+                if(this.VotingUserList[i].name ==''||this.VotingUserList[i].name ==null){
+                    this.$message.error('物品明细名称不能为空')
+                return
+                }
+                if(this.VotingUserList[i].code ==''||this.VotingUserList[i].code ==null){
+                    this.$message.error('物品单号不能为空')
+                return
+                }
+                
+            }
             let resData = {
                 name: this.addEidtForm.ruleForm.name,
                 fileUrls: this.addEidtForm.ruleForm.fileUrls,
@@ -410,7 +450,7 @@ export default {
                 articleDetailList: this.VotingUserList
             }
             articleInsert(resData).then((res) => {
-                if (res.status == 200) {
+                if (res.status == true) {
                     this.$message({
                         message: res.message,
                         type: 'success'
@@ -423,13 +463,44 @@ export default {
                         type: 'error'
                     })
                 }
+                this.addEidtClose()
             })
+            }else{
+                let resData = {
+                id:this.thatID,
+                name: this.addEidtForm.ruleForm.name,
+                fileUrls: [this.fileUrls],
+                quantity: this.VotingUserList.length,
+                articleDetailList: this.VotingUserList
+            }
+            articleUpdate(resData).then((res) => {
+                if (res.status == true) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.addEidtClose()
+                    this.$refs.table.loadData()
+                } else if (res.status == 500) {
+                    this.$message({
+                        message: '添加失败',
+                        type: 'error'
+                    })
+                }
+                this.addEidtClose()
+            })
+            }
         },
         addEidtClose() {
             this.addEidt_vrisible = false
             this.fileUrls = ''
             this.$refs.addEidtFrom.reset()
             this.addEidtForm.ruleForm.fileUrls = []
+            this.VotingUserList=[{
+                fileUrls: [],
+                name: null,
+                code: null
+            }]
         },
         // 查看图片
         getPhotoView(item) {

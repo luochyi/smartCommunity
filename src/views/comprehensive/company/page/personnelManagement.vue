@@ -731,6 +731,7 @@ export default {
                     userCode: null,
                     positionId: null,
                     entryDate: null,
+                    remake:null,
                     id: null,
                     imgUrls: []
                 },
@@ -1201,7 +1202,7 @@ export default {
                 this.addForm.ruleForm.entryDate = res.entryDate
                 this.addForm.ruleForm.id = res.id
                 this.addForm.ruleForm.remake = res.remake
-                this.wordList.push(res.imgList[0].url)
+                if(res.imgList.length){this.wordList.push(res.imgList[0].url)}
                 if (res.imgList.length === 0) {
                     this.wordList = []
                 } else {
@@ -1444,6 +1445,27 @@ export default {
         // 树形结构过滤
         filterText(val) {
             this.$refs.tree.filter(val)
+        },
+        drawerTitle:{
+            handler(newV){
+                if(newV=='修改员工信息'){
+                    this.addForm.form_item[4]={
+                        type: '',
+                        label: '',
+                        placeholder: '',
+                        width: '0%',
+                        prop: ''
+                    }
+                }else{
+                    this.addForm.form_item[4]={
+                        type: 'Input',
+                        label: '密码',
+                        placeholder: '请输入',
+                        width: '50%',
+                        prop: 'pwd'
+                    }
+                }
+            }
         }
     }
 }
