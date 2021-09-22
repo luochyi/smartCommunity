@@ -205,13 +205,13 @@
                     <template>
                         <div class="pagination-box">
                             <div class="pagination-item">
-                                <p>当前1-4，共4条 <span>每页显示10条</span></p>
+                                <p>当前1-{{Math.ceil(rowCount/pageSize)}},共{{rowCount}}条<span> 每页显示{{pageSize}}条</span></p>
                             </div>
                             <div class="pagination-item">
                                 <div class="block">
                                     <el-pagination
                                         @current-change="handleCurrentChange"
-                                        :page-size="10"
+                                        :page-size="pageSize"
                                         :current-page="currentPage"
                                         background
                                         :pager-count="9"
@@ -887,6 +887,7 @@ export default {
             },
             currentPage: 1,
             limit: 10,
+            pageSize:10,
             pageCount: null,
             rowCount: null,
             organizationId: null,
