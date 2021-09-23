@@ -71,6 +71,7 @@
                                         <VueForm
                                             ref="addForm"
                                             :formObj="addForm"
+                                             @ruleSuccess="addRuleSuccess"
                                         >
                                             <!-- Slot -->
                                             <template v-slot:date>
@@ -193,6 +194,43 @@ export default {
                     imgUrls: [],
                     fileDocName: null,
                     happenDate:null
+                },
+                rules:{
+                    name: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
+                    type: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
+                    details: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
+                    happenDate: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
+                    name: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
                 },
                 form_item: [
                     {
@@ -462,6 +500,7 @@ export default {
                         this.addForm.ruleForm.type = detail.type
                         this.addForm.ruleForm.details = detail.details
                         this.addForm.ruleForm.happenDate = detail.happenDate
+                        this.addForm.ruleForm.id = data[0].id
                         if (detail.imgList == null) {
                             this.wordList = []
                         } else {
@@ -518,8 +557,11 @@ export default {
             this.add_vrisible = false
             this.wordList = []
         },
+        addSubmit(){
+      this.$refs.addForm.submitForm()
+    },
         // 提交表单
-        addSubmit() {
+        addRuleSuccess() {
             // 判断是修改的表单还是新增，修改要传主键id
             if (this.drawerTitle == '修改安全管理信息') {
                 let resData = {

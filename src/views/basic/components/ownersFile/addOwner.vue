@@ -98,7 +98,7 @@
              :key='index'>
           <template>
             <div class="label-span">
-              <span>房屋信息<span v-show="index !== 0">{{index+1}}</span></span>
+              <span style="color:red">*</span><span>房屋信息<span v-show="index !== 0">{{index+1}}</span></span>
             </div>
             <div>
               <!-- @change='(value) => change(froms[index].addForm.ruleForm.residentId,index,value)' -->
@@ -262,6 +262,36 @@ export default {
           name: null,
           idType: null,
           idNumber: null,
+        },
+        rules:{
+          name: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
+                    tel: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
+                    idType: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
+                    idNumber: [
+                        {
+                            required: true,
+                            message: '请选择',
+                            trigger: 'blur',
+                        },
+                    ],
         },
         form_item: [
           {

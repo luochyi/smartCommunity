@@ -131,6 +131,7 @@ import {
     findByBuildingId,
     findUserCarStatus,
     userCarInsert,
+    userCarUpdate,
     cpmParkingSpaceList
 } from '@/api/basic'
 
@@ -157,6 +158,7 @@ export default {
             table_row: [],
             addEidtForm: {
                 ruleForm: {
+                    id:null,
                     code: null,
                     parkingSpaceId: null,
                     owner: null,
@@ -169,6 +171,7 @@ export default {
                     brand: null,
                     model: null,
                     color: null,
+                    hours:null,
                 },
                 form_item: [
                     {
@@ -584,7 +587,8 @@ export default {
             this.$refs.childFrom.submitForm()
         },
         addRuleSuccess(val) {
-            if(this.buildingUnitEstateId==null||this.buildingUnitEstateId==''){
+            if(this.drawerTitle == '新增车辆'){
+                if(this.buildingUnitEstateId==null||this.buildingUnitEstateId==''){
                 this.$message.error('请选择房产')
                 return
             }
@@ -613,11 +617,42 @@ export default {
                     this.$refs.table.loadData()
                 }
             })
+            }else{
+                let resData = {
+                id:this.addEidtForm.ruleForm.id,
+                buildingUnitEstateId: this.buildingUnitEstateId,
+                code: this.addEidtForm.ruleForm.code,
+                parkingSpaceId: this.addEidtForm.ruleForm.parkingSpaceId,
+                type: 1,
+                owner:  this.addEidtForm.ruleForm.owner,
+                tel: this.addEidtForm.ruleForm.tel,
+                idType: this.addEidtForm.ruleForm.idType,
+                idNumber: this.addEidtForm.ruleForm.idNumber,
+                status: this.addEidtForm.ruleForm.status,
+                type: this.addEidtForm.ruleForm.type,
+                brand: this.addEidtForm.ruleForm.brand,
+                model: this.addEidtForm.ruleForm.status,
+                color: this.addEidtForm.ruleForm.status,
+            }
+            userCarUpdate(resData).then((res) => {
+                if (res.status) {
+                    this.$message({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    this.drawerClose()
+                    this.$refs.table.loadData()
+                }
+            })
+            }
         },
         // 弹窗关闭
         drawerClose() {
             this.drawer_vrisible = false
             this.$refs.childFrom.reset()
+            this.buildValue = null
+            this.unitValue = null 
+            this.buildingUnitEstateId = null
         },
         revises(data) {
             if (data.length) {
@@ -633,7 +668,26 @@ export default {
             let resData = {
                 id: data[0].id
             }
-            userCarFindById(resData).then((res) => {})
+            userCarFindById(resData).then((res) => {
+                this.addEidtForm.ruleForm.id = data[0].id
+                 this.addEidtForm.ruleForm.code = res.code
+                  this.addEidtForm.ruleForm.parkingSpaceId = res.parkingSpaceId
+                   this.addEidtForm.ruleForm.owner= res.owner
+                    this.addEidtForm.ruleForm.tel= res.tel
+                     this.addEidtForm.ruleForm.idType= res.idType
+                      this.addEidtForm.ruleForm.idNumber= res.idNumber
+                       this.addEidtForm.ruleForm.status= res.status
+                    //    this.addEidtForm.ruleForm.cpmParkingSpaceList= res.cpmParkingSpaceList
+                       this.addEidtForm.ruleForm.type= res.type
+                       this.addEidtForm.ruleForm.brand= res.brand
+                       this.addEidtForm.ruleForm.model= res.model
+                       this.addEidtForm.ruleForm.color= res.color
+
+                       this.buildValue = res.buildingId
+                       this.unitValue = res.buildingUnitId
+                       this.buildingUnitEstateId = res.buildingUnitEstateId
+                    
+            })
         },
         add() {
             ((this.drawerTitle = '新增车辆')),
@@ -695,18 +749,23 @@ export default {
         buildValue: {
             handler(newValue) {
                 this.unitData(newValue)
-                this.unitValue = null
             },
             deep: true
         },
         unitValue: {
             handler(newValue) {
                 this.hoursData(newValue)
-                this.buildingUnitEstateId = null
             },
             deep: true
-        }
-    }
+        },
+        hoursValue: {
+            handler(newValue) {
+                this.addForm.ruleForm.hours = newValue
+                console.log(this.addForm.ruleForm.hours)
+                },
+            deep: true
+        },
+    },
 }
 </script>
 <style scoped lang='scss'>

@@ -605,18 +605,18 @@ export default {
                         placeholder: '结束时间',
                         prop: 'endDate'
                     },
-                    {
-                        type: 'Input',
-                        label: '缴费人',
-                        placeholder: '请选择',
-                        prop: 'payName'
-                    },
-                    {
-                        type: 'Input',
-                        label: '联系方式',
-                        placeholder: '请输入',
-                        prop: 'tel'
-                    },
+                    // {
+                    //     type: 'Input',
+                    //     label: '缴费人',
+                    //     placeholder: '请选择',
+                    //     prop: 'payName'
+                    // },
+                    // {
+                    //     type: 'Input',
+                    //     label: '联系方式',
+                    //     placeholder: '请输入',
+                    //     prop: 'tel'
+                    // },
                     {
                         type: 'Input',
                         label: '房屋信息',

@@ -187,9 +187,12 @@ export default {
     },
     // 切换页码
     handleCurrentChange (val) {
-      // this.currentPage = val
+      if(val){// this.currentPage = val
       this.table_config.data.pageNum = val;
-      this.loadData()
+      this.loadData()}else{
+        this.$message.error('页码不能为空')
+      }
+      
     },
     // 查询
     search (data) {

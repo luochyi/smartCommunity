@@ -1077,7 +1077,7 @@ export default {
                 file.name.endsWith('.pdf') ||
                 file.name.endsWith('.PDF') ||
                 file.name.endsWith('.jpg') ||
-                file.name.endsWith('.jpg') ||
+                file.name.endsWith('.JPG') ||
                 file.name.endsWith('.png') ||
                 file.name.endsWith('.PNG')
             console.log(fileType)

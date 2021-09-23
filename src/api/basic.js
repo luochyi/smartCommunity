@@ -178,7 +178,13 @@ export const userCarInsert = data => {
         data: data
     })
 }
-
+export const userCarUpdate = data => {
+    return service.request({
+        method: 'post',
+        url: '/userCar/update',
+        data: data
+    })
+}
 // 根据id查询车辆信息
 export const userCarFindById = data => {
     return service.request({
