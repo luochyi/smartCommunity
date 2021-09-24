@@ -126,7 +126,25 @@ export default {
           iconisactive: require('@/assets/images/butler/icon_service07_sel.png'),
           isChildren: 0
         },
-        
+        {
+                    path: '/butler/loanManagement',
+                    // Loan management
+                    label: '借还管理',
+                    iconurl: require('@/assets/images/butler/icon_service12_nor.png'),
+                    iconisactive: require('@/assets/images/butler/icon_service12_sel.png'),
+                    isChildren: 1,
+                    children: [
+                        {
+                            path: '/butler/loanManagement',
+                            label: '物品借还'
+                        },
+                        {
+                            // Item management
+                            path: '/butler/itemManagemsent',
+                            label: '物品管理'
+                        }
+                    ]
+                },
         {
           // Questionnaire
           path: '/butler/Questionnaire',

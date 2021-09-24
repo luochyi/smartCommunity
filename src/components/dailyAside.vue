@@ -219,25 +219,7 @@ export default {
                     iconisactive: require('@/assets/images/butler/jzfw_sel.png'),
                     isChildren: 0
                 },
-                {
-                    path: '/daily/loanManagement',
-                    // Loan management
-                    label: '借还管理',
-                    iconurl: require('@/assets/images/butler/icon_service12_nor.png'),
-                    iconisactive: require('@/assets/images/butler/icon_service12_sel.png'),
-                    isChildren: 1,
-                    children: [
-                        {
-                            path: '/daily/loanManagement',
-                            label: '物品借还'
-                        },
-                        {
-                            // Item management
-                            path: '/daily/itemManagemsent',
-                            label: '物品管理'
-                        }
-                    ]
-                },
+                
                 {
                     // Business meeting management
                     path: '/daily/CustomerInterview',

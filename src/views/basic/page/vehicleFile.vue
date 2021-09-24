@@ -604,7 +604,7 @@ export default {
                 status: this.addEidtForm.ruleForm.status,
                 type: this.addEidtForm.ruleForm.type,
                 brand: this.addEidtForm.ruleForm.brand,
-                model: this.addEidtForm.ruleForm.status,
+                model: this.addEidtForm.ruleForm.model,
                 color: this.addEidtForm.ruleForm.status,
             }
             userCarInsert(resData).then((res) => {
@@ -631,7 +631,7 @@ export default {
                 status: this.addEidtForm.ruleForm.status,
                 type: this.addEidtForm.ruleForm.type,
                 brand: this.addEidtForm.ruleForm.brand,
-                model: this.addEidtForm.ruleForm.status,
+                model: this.addEidtForm.ruleForm.model,
                 color: this.addEidtForm.ruleForm.status,
             }
             userCarUpdate(resData).then((res) => {

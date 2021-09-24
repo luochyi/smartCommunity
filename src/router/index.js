@@ -254,23 +254,7 @@ const routes = [
                             '@/views/daily/page/housekeepingServices'
                         ], resolve)
                 },
-                   {
-                    // 借还管理
-                    path: '/daily/loanManagement',
-                    component: resolve =>
-                        require([
-                            '@/views/daily/page/loanManagement'
-                        ], resolve)
-                },
-                // itemManagemsent
-                {
-                    // 物品管理
-                    path: '/daily/itemManagemsent',
-                    component: resolve =>
-                        require([
-                            '@/views/daily/page/itemManagemsent'
-                        ], resolve)
-                },
+                   
                    {
                     //检查记录
                     path:'/daily/facilitiesExecute',
@@ -780,7 +764,23 @@ const routes = [
                                 '@/views/butler/page/managementSet'
                             ], resolve)
                     },
-                    
+                    {
+                        // 借还管理
+                        path: '/butler/loanManagement',
+                        component: resolve =>
+                            require([
+                                '@/views/daily/page/loanManagement'
+                            ], resolve)
+                    },
+                    // itemManagemsent
+                    {
+                        // 物品管理
+                        path: '/butler/itemManagemsent',
+                        component: resolve =>
+                            require([
+                                '@/views/daily/page/itemManagemsent'
+                            ], resolve)
+                    },
                     
                     {
                         // 语音管家
