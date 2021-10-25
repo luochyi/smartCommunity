@@ -247,35 +247,35 @@ export default {
                     name: [
                         {
                             required: true,
-                            message: '请填写楼栋名称',
+                            message: '请填写联系名称',
                             trigger: 'blur'
                         }
                     ],
                     status: [
                         {
                             required: true,
-                            message: '请填写楼栋名称',
+                            message: '请填写状态',
                             trigger: 'blur'
                         }
                     ],
                     tel: [
                         {
                             required: true,
-                            message: '请填写楼栋名称',
+                            message: '请填写联系方式',
                             trigger: 'blur'
                         }
                     ],
                     weight: [
                         {
                             required: true,
-                            message: '请填写楼栋名称',
+                            message: '请填写权重',
                             trigger: 'blur'
                         }
                     ],
                     type: [
                         {
                             required: true,
-                            message: '请填写楼栋名称',
+                            message: '请填写类型',
                             trigger: 'blur'
                         }
                     ]
