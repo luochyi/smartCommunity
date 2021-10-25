@@ -38,7 +38,7 @@ export default {
             path: 'wss://test.kaidalai.cn/websocket/web/admin',
             socket: '',
             lockReconnect: false, //是否真正建立连接
-            timeout: 40 * 1000, //40秒一次心跳
+            timeout: 30 * 1000, //40秒一次心跳
             timeoutObj: null, //心跳心跳倒计时
             serverTimeoutObj: null, //心跳倒计时
             timeoutnum: null, //断开 重连倒计时
