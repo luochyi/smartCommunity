@@ -260,7 +260,7 @@ export default {
                 },
                 {
                     path: '/daily/ComIntroduction',
-                    label: '社区介绍',
+                    label: '住房说明',
                     iconurl: require('@/assets/images/daily/sqjs_nor.png'),
                     iconisactive: require('@/assets/images/daily/sqjs_sel.png'),
                     isChildren: 0

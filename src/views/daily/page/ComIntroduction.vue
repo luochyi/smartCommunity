@@ -2,7 +2,7 @@
   <div>
     <div class="main-content">
       <div class="main-titel">
-        <span>户型说明</span>
+        <span>住房说明</span>
       </div>
       <div class="content">
         <div class="content-btn">
