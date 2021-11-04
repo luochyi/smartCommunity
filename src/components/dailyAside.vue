@@ -259,6 +259,13 @@ export default {
                     isChildren: 0
                 },
                 {
+                    path: '/daily/ComIntroduction',
+                    label: '社区介绍',
+                    iconurl: require('@/assets/images/daily/sqjs_nor.png'),
+                    iconisactive: require('@/assets/images/daily/sqjs_sel.png'),
+                    isChildren: 0
+                },
+                {
                     path: '/daily/greening',
                     label: '绿化管理',
                     iconurl: require('@/assets/images/daily/lhgl_nor.png'),

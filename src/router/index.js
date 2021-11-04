@@ -361,7 +361,11 @@ const routes = [
                         path:'/daily/RegulationManagement',
                         component:()=>import('@/views/daily/page/RegulationManagement')
                     },
-                    
+                    //社区介绍Community introduction
+                    {
+                        path:'/daily/ComIntroduction',
+                        component:()=>import('@/views/daily/page/ComIntroduction')
+                    },
                     //服务浏览Service browsing
                     {
                         path:'/daily/ServiceBrowsing',

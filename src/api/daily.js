@@ -380,6 +380,13 @@ export function keyBorrowExamine(data) {
         data: data
     })
 }
+export function keyBorrowreturnExamine(data) {
+    return service.request({
+        method: 'POST',
+        url: '/keyBorrow/returnExamine',
+        data: data
+    })
+}
 //keyManagement/findById 
 export function keyManagementFindById(data) {
     return service.request({
@@ -566,6 +573,42 @@ export function communityIntroductionUpdate(data) {
         method: 'POST',
         url: '/communityIntroduction/update',
         data: data
+    })
+}
+//社区介绍
+export function houseTypeDescriptionInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/houseTypeDescription/insert',
+        data: data
+    })
+}
+export function houseTypeDescriptionFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/houseTypeDescription/findById',
+        params: data
+    })
+}
+export function houseTypeDescriptionUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/houseTypeDescription/update',
+        data: data
+    })
+}
+export function houseTypeDescriptionRelease(data) {
+    return service.request({
+        method: 'GET',
+        url: '/houseTypeDescription/release',
+        params: data
+    })
+}
+export function houseTypeDescriptionCancelRelease(data) {
+    return service.request({
+        method: 'GET',
+        url: '/houseTypeDescription/cancelRelease',
+        params: data
     })
 }
 //介绍启用

@@ -69,9 +69,10 @@
                 >
                     <div style="padding: 30px">
                         <FromCard>
+                            <!-- {{inspectionArr}} -->
                             <template slot="title">巡检点信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- 检查项 -->
                                     <template v-slot:itemsList>
                                         <Button @click="addInt">添加</Button>
@@ -164,6 +165,7 @@ export default {
             isShow: false,
             link: '',
             add_vrisible: false,
+            add_flag: true,
             edit_vrisible: false,
             addDate: null,
             addForm: {
@@ -171,6 +173,10 @@ export default {
                     name: null,
                     code: '',
                     type: '1'
+                },
+                rules: {
+                    code: [{ required: true, message: '请输入', trigger: 'change' }],
+                    name: [{ required: true, message: '请输入', trigger: 'change' }]
                 },
                 form_item: [
                     {
@@ -332,8 +338,19 @@ export default {
             this.add_vrisible = false
             this.inspectionArr = [{ name: null }]
         },
-        addSubmit() {
-            let resData = {
+        addRuleSuccess() {
+            this.inspectionArr.forEach(el => {
+                if (el.name === null){
+                    this.add_flag = false
+                    this.$message({
+                        type:'error',
+                        message:'检查项不能为空'
+                    })
+                    return
+                }
+            })
+            if (this.add_flag){
+                let resData = {
                 ...this.addForm.ruleForm,
                 type: this.addForm.ruleForm.type,
                 itemsList: this.inspectionArr
@@ -348,6 +365,10 @@ export default {
                     this.addClose()
                 }
             })
+            }
+        },
+        addSubmit() {
+            this.$refs.addForm.submitForm()
         },
         edit(data) {
             if (data.length != 1) {

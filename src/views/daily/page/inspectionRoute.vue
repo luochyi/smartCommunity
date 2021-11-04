@@ -46,9 +46,10 @@
                 >
                     <div style="padding: 30px">
                         <FromCard>
+                            11{{inspectionArr}}
                             <template slot="title">路线信息</template>
                             <template>
-                                <VueForm ref="addForm" :formObj="addForm">
+                                <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <template v-slot:inspectionPonitId>
                                         <el-button size="mini" @click="addInt">添加</el-button>
                                         <div
@@ -166,8 +167,7 @@ import {
 export default {
     data() {
         return {
-            inspectionArr: [
-            ],
+            inspectionArr: [],
             options: [],
             add_vrisible: false,
             edit_vrisible: false,
@@ -175,6 +175,13 @@ export default {
             addForm: {
                 ruleForm: {
                     name: null
+                },
+                rules: {
+                    code: [{ required: true, message: '请输入', trigger: 'change' }],
+                    name: [{ required: true, message: '请输入', trigger: 'change' }],
+                    describes: [{ required: true, message: '请输入', trigger: 'change' }],
+                    status: [{ required: true, message: '请输入', trigger: 'change' }],
+                    spaceTime: [{ required: true, message: '请输入', trigger: 'change' }]
                 },
                 form_item: [
                     {
@@ -368,11 +375,49 @@ export default {
             ]
         },
         addSubmit() {
-            for(let i=0;i<this.inspectionArr.length;i++){
-                if(this.inspectionArr[i].inspectionPointId ==null){
-                    this.$message({
+            this.$refs.addForm.submitForm()
+            // for(let i=0;i<this.inspectionArr.length;i++){
+            //     if(this.inspectionArr[i].inspectionPointId ==null){
+            //         this.$message({
+            //             type:'error',
+            //             message:'巡检点不能为空'
+            //         })
+            //         return
+            //     }
+            // }
+            // let resData = {
+            //     ...this.addForm.ruleForm,
+            //     pointRouteList: this.inspectionArr
+            //     // code: this.addForm.ruleForm.code,
+            //     // name: this.addForm.ruleForm.name,
+            //     // openStartDate: this.openStartDate,
+            //     // openEndDate:  this.openEndDate,
+            //     // imgUrls:this.addForm.ruleForm.imgUrls,
+            // }
+            // inspectionRouteInsert(resData).then((res) => {
+            //     if (res.status) {
+            //         this.$message({
+            //             message: res.message,
+            //             type: 'success'
+            //         })
+            //         this.$refs.table.loadData()
+            //         this.addClose()
+            //     }
+            // })
+        },
+        addRuleSuccess() {
+            if (this.inspectionArr.length === 0) {
+                this.$message({
                         type:'error',
                         message:'巡检点不能为空'
+                    })
+                    return
+            } else {
+                for(let i=0;i<this.inspectionArr.length;i++){
+                if(this.inspectionArr[i].inspectionPointId === null || this.inspectionArr[i].inspectionPointId === undefined){
+                    this.$message({
+                        type:'error',
+                        message:'请填写完所有巡检点'
                     })
                     return
                 }
@@ -396,6 +441,7 @@ export default {
                     this.addClose()
                 }
             })
+            }
         },
         edit(data) {
             if (data.length != 1) {

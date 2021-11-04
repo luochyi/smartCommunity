@@ -84,6 +84,9 @@ const requestUrl = {
     packageCollectionListDelete: '/packageCollection/delete',
     securityManagementList:'securityManagement/list',
     securityManagementListDelete:'securityManagement/delete',
+    //社区介绍
+    houseTypeDescriptionList: 'houseTypeDescription/list',
+    houseTypeDescriptionListDelete: 'houseTypeDescription/delete',
 
     // userDecorationList: 'userDecoration/list',
     voteList: '/vote/list',

@@ -17,6 +17,13 @@
                     <template v-slot:borrowDate='slotData'>
                         <div>{{Number(slotData.data.borrowDate/24).toFixed(1)+'天'}}</div>
                     </template>
+                    <template v-slot:borrowStatus = "slotData">
+                        <span v-if="slotData.data.borrowStatus === -1" style="color:#FF8200">出借审核中</span>
+                        <span v-else-if="slotData.data.borrowStatus === 0" style="color:#E60E0E">出借审核失败</span>
+                        <span v-else-if="slotData.data.borrowStatus === 1">出借中</span>
+                        <span v-else-if="slotData.data.borrowStatus === 2" style="color:#00000073">已归还</span>
+                        <span v-else-if="slotData.data.borrowStatus === 3">待检查</span>
+                    </template>
                     <template v-slot:remake="slotData">
                         <div>
                             <el-tooltip
@@ -35,6 +42,10 @@
                             </el-tooltip>
                             <span v-else>-</span>
                         </div>
+                    </template>
+                    <template v-slot:status = "slotData">
+                        <span v-if="slotData.data.status === 1">正常</span>
+                        <span v-else-if="slotData.data.status === 2" style="color:#E60E0E">报损</span>
                     </template>
                     <template slot="footer">
                         <div class="table-footer">
@@ -67,33 +78,35 @@ export default {
                     },
                     { label: '出借时长', prop: 'borrowDate', width: '180' ,type:'slot',slotName:'borrowDate'},
                     {
-                        label: '借取状态',
+                        label: '申请状态',
                         prop: 'borrowStatus',
                         width: 'auto',
-                        type: 'function',
-                        callback: (row, prop) => {
-                            switch (row.borrowStatus) {
-                                case 1:
-                                    return '出借中'
-                                    break
-                                case 2:
-                                    return '已还'
-                                    break
-                            }
-                        }
+                        type: 'slot',
+                        slotName: 'borrowStatus'
+                        // callback: (row, prop) => {
+                        //     switch (row.borrowStatus) {
+                        //         case 1:
+                        //             return '出借中'
+                        //             break
+                        //         case 2:
+                        //             return '已还'
+                        //             break
+                        //     }
+                        // }
                     },
                     { label: '物品状态', prop: 'status', width: 'auto' ,
-                      type: 'function',
-                        callback: (row, prop) => {
-                            switch (row.status) {
-                                case 1:
-                                    return '正常'
-                                    break
-                                case 2:
-                                    return '报损'
-                                    break
-                            }
-                        }
+                      type: 'slot',
+                      slotName: 'status'
+                        // callback: (row, prop) => {
+                        //     switch (row.status) {
+                        //         case 1:
+                        //             return '正常'
+                        //             break
+                        //         case 2:
+                        //             return '报损'
+                        //             break
+                        //     }
+                        // }
                     },
                     {
                         label: '备注',
@@ -124,17 +137,26 @@ export default {
                         placeholder: '请输入',
                         prop: 'tel'
                     },
+                    // {
+                    //     type: 'startDate',
+                    //     label: '借用时间',
+                    //     placeholder: '请选择开始日期',
+                    //     prop: 'beginDate'
+                    // },
+                    // {
+                    //     type: 'endDate',
+                    //     label: '借用时间',
+                    //     placeholder: '请选择结束时间',
+                    //     prop: 'endDate'
+                    // },
                     {
-                        type: 'startDate',
-                        label: '借用时间',
-                        placeholder: '请选择开始日期',
-                        prop: 'beginDate'
-                    },
-                    {
-                        type: 'endDate',
-                        label: '借用时间',
-                        placeholder: '请选择结束时间',
-                        prop: 'endDate'
+                        type: 'picker',
+                        label: '申请时间',
+                        placeholder: '请输入',
+                        prop: 'date',
+                        startDate: 'beginDate',
+                        endDate: 'endDate',
+                        width: '400px'
                     }
                 ],
                 data: {

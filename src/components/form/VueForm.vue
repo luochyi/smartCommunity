@@ -36,6 +36,13 @@
                         :disabled="item.disabled"
                         style="width: 240px;"
                         :placeholder="item.placeholder"></el-date-picker>
+        <el-date-picker v-else-if="item.type === 'Date'"
+                        value-format="yyyy-MM-dd"
+                        type="date"
+                        v-model="configObj.ruleForm[item.prop]"
+                        :disabled="item.disabled"
+                        style="width: 240px;"
+                        :placeholder="item.placeholder"></el-date-picker>
         <el-input v-else-if="item.type === 'Int'"
                   oninput="value=value.replace(/[^\d]/g,'')"
                   v-model.trim="configObj.ruleForm[item.prop]"
