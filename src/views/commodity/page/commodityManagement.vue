@@ -310,7 +310,7 @@ export default {
                     },
                     {
                         type: 'Date',
-                        label: '到货时间说明',
+                        label: '取货时间',
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'arrivalTime'

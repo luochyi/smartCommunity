@@ -153,7 +153,7 @@ export default {
           },
           { label: '报名人数', prop: 'registrationNumber', width: ' 180' },
           { label: '收费标准', prop: 'participantsNumber', width: '120' },
-          { label: '退费', prop: 'refund', width: '120' },
+          // { label: '退费', prop: 'refund', width: '120' },
           { label: '创建人', prop: 'createName', width: '100' },
           { label: '更新时间', prop: 'updateDate', width: '180' },
         ],
@@ -200,7 +200,7 @@ export default {
           participantsNumber: null,
           chargesTemplateDetailId: null,
           status: 0,
-          refund: null,
+          refund: 0,
           name: null,
           tel: null
         },
@@ -236,9 +236,9 @@ export default {
           chargesTemplateDetailId: [
             { required: true, message: '请选择', trigger: 'change' }
           ],
-          refund: [
-            { required: true, message: '请输入', trigger: 'change' }
-          ],
+          // refund: [
+          //   { required: true, message: '请输入', trigger: 'change' }
+          // ],
           name: [
             { required: true, message: '请选择', trigger: 'change' }
           ],
@@ -339,13 +339,13 @@ export default {
               }
             ]
           },
-          {
-            type: 'Input',
-            label: '退费',
-            width: '50%',
-            placeholder: '请输入',
-            prop: 'refund'
-          },
+          // {
+          //   type: 'Input',
+          //   label: '退费',
+          //   width: '50%',
+          //   placeholder: '请输入',
+          //   prop: 'refund'
+          // },
           {
             type: 'Input',
             label: '联系人',
@@ -476,6 +476,7 @@ export default {
       }
     },
     addRuleSuccess() {
+      this.addEidtForm.ruleForm.refund = 0
       if (!this.editID) {
         activityManagementInsert(this.addEidtForm.ruleForm).then((res) => {
           if (res.status) {
