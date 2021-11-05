@@ -230,3 +230,11 @@ export function electronicCommerceFindById(data) {
         params: data
     })
 }
+//资讯发布轮播
+export function newsManagementSettingRotation(data) {
+    return service.request({
+        method: 'POST',
+        url: '/newsManagement/settingRotation',
+        data: data
+    })
+}
