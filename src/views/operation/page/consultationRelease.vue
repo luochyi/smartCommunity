@@ -381,11 +381,11 @@ export default {
                         prop: 'isRotation',
                         options: [
                             {
-                                label: '轮播',
+                                label: '是',
                                 value: 1
                             },
                             {
-                                label: '不轮播',
+                                label: '否',
                                 value: 0
                             }
                         ]
@@ -422,10 +422,10 @@ export default {
                         callback(row, prop) {
                             switch (row.isRotation) {
                                 case 1:
-                                    return '轮播'
+                                    return '是'
                                     break
                                 case 0:
-                                    return '不轮播'
+                                    return '否'
                                     break
                             }
                         }
@@ -467,8 +467,8 @@ export default {
                         placeholder: '请选择',
                         value: null,
                         options: [
-                            { value: 1, label: '轮播' },
-                            { value: 0, label: '不轮播' }
+                            { value: 1, label: '是' },
+                            { value: 0, label: '否' }
                         ],
                         prop: 'isRotation'
                     },
