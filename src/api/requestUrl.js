@@ -88,6 +88,13 @@ const requestUrl = {
     houseTypeDescriptionList: 'houseTypeDescription/list',
     houseTypeDescriptionListDelete: 'houseTypeDescription/delete',
 
+    //地理信息
+    geographyList: 'geography/list',
+    geographyListDelete: 'geography/delete',
+    //周边企业
+    surroundingEnterprisesList: 'surroundingEnterprises/list',
+    surroundingEnterprisesListDelete: 'surroundingEnterprises/delete',
+
     // userDecorationList: 'userDecoration/list',
     voteList: '/vote/list',
     voteListDelete: '/vote/falseDelete',

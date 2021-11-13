@@ -366,6 +366,16 @@ const routes = [
                         path:'/daily/ComIntroduction',
                         component:()=>import('@/views/daily/page/ComIntroduction')
                     },
+                    //地理信息geographicInformation
+                    {
+                        path:'/daily/geographicInformation',
+                        component:()=>import('@/views/daily/page/geographicInformation')
+                    },
+                    //周边企业Surrounding enterprises
+                    {
+                        path:'/daily/SurroundingEnterprises',
+                        component:()=>import('@/views/daily/page/SurroundingEnterprises')
+                    },
                     //服务浏览Service browsing
                     {
                         path:'/daily/ServiceBrowsing',

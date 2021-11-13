@@ -305,6 +305,20 @@ export default {
                     iconurl: require('@/assets/images/daily/icon_service13_nor.png'),
                     iconisactive: require('@/assets/images/daily/icon_service13_sel.png'),
                     isChildren: 0
+                },
+                {
+                    path: '/daily/geographicInformation',
+                    label: '地理信息',
+                    iconurl: require('@/assets/images/daily/lhgl_nor.png'),
+                    iconisactive: require('@/assets/images/daily/lhgl_sel.png'),
+                    isChildren: 0
+                },
+                {
+                    path: '/daily/SurroundingEnterprises',
+                    label: '周边企业',
+                    iconurl: require('@/assets/images/daily/sqjs_nor.png'),
+                    iconisactive: require('@/assets/images/daily/sqjs_sel.png'),
+                    isChildren: 0
                 }
             ],
             isCollapse: false
