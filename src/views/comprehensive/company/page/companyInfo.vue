@@ -7,7 +7,7 @@
       <div class="cart-box">
         <div class="cart-item cart-item_l">
           <div class="item-headImg">
-            <img src="https://test.kaidalai.cn/static/img/homePage/homePage.png"
+            <img src="https://shop.kaidalai.cn/static/img/homePage/homePage.png"
                  alt="">
           </div>
           <div class="item-txt">

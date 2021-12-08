@@ -512,11 +512,11 @@ export default {
                 })
                 this.detailForm.ruleForm.imgUrls = arr
             } else {
-                console.log(file.url.split('https://test.kaidalai.cn/static')[1])
+                console.log(file.url.split('https://shop.kaidalai.cn/static')[1])
                 console.log(fileList)
                 let arr = []
                 this.detailForm.ruleForm.imgUrls.forEach((el) => {
-                    if (el !== file.url.split('https://test.kaidalai.cn/static')[1]) {
+                    if (el !== file.url.split('https://shop.kaidalai.cn/static')[1]) {
                         arr.push(el)
                     }
                 })

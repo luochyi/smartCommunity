@@ -256,35 +256,35 @@ export default {
                     index: '1',
                     type: '基础档案',
                     name: '房产管理',
-                    url: 'https://test.kaidalai.cn/static/excel-model/%E6%88%BF%E5%B1%8B%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
+                    url: 'https://shop.kaidalai.cn/static/excel-model/%E6%88%BF%E5%B1%8B%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
                     upload: 'uploadFile/UploadEstateFile'
                 },
                 {
                     index: '2',
                     type: '日常管理',
                     name: '服务浏览',
-                    url: 'https://test.kaidalai.cn/static/excel-model/%E6%9C%8D%E5%8A%A1%E6%B5%8F%E8%A7%88%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
+                    url: 'https://shop.kaidalai.cn/static/excel-model/%E6%9C%8D%E5%8A%A1%E6%B5%8F%E8%A7%88%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
                     upload: 'uploadFile/UploadServiceBrowsingFile'
                 },
                 {
                     index: '3',
                     type: '日常管理',
                     name: '钥匙管理',
-                    url: 'https://test.kaidalai.cn/static/excel-model/%E9%92%A5%E5%8C%99%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
+                    url: 'https://shop.kaidalai.cn/static/excel-model/%E9%92%A5%E5%8C%99%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
                     upload: 'uploadFile/UploadKeyFile'
                 },
                 {
                     index: '4',
                     type: '日常管理',
                     name: '绿化区域',
-                    url: 'https://test.kaidalai.cn/static/excel-model/%E7%BB%BF%E5%8C%96%E5%8C%BA%E5%9F%9F%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
+                    url: 'https://shop.kaidalai.cn/static/excel-model/%E7%BB%BF%E5%8C%96%E5%8C%BA%E5%9F%9F%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
                     upload: 'uploadFile/UploadGreenAreaFile'
                 },
                 {
                     index: '5',
                     type: '收费管理',
                     name: '欠费记录',
-                    url: 'https://test.kaidalai.cn/static/excel-model/%E6%AC%A0%E8%B4%B9%E8%AE%B0%E5%BD%95%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
+                    url: 'https://shop.kaidalai.cn/static/excel-model/%E6%AC%A0%E8%B4%B9%E8%AE%B0%E5%BD%95%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88.xlsx',
                     upload: 'uploadFile/UploadDailyPaymentFile'
                 }
             ],
@@ -293,7 +293,7 @@ export default {
                     index: '1',
                     type: '日常管理',
                     name: '绿化区域',
-                    url: 'https://test.kaidalai.cn/static/excel-model/绿化任务导出模版.xls',
+                    url: 'https://shop.kaidalai.cn/static/excel-model/绿化任务导出模版.xls',
                     upload: 'upload/uploadModelExcel',
                     filename: '绿化任务导出模版.xls',
                     dataurl: 'greenTaskList',
@@ -327,7 +327,7 @@ export default {
                     index: '2',
                     type: '日常管理',
                     name: '卫生任务',
-                    url: 'https://test.kaidalai.cn/static/excel-model/卫生任务导出模版.xls',
+                    url: 'https://shop.kaidalai.cn/static/excel-model/卫生任务导出模版.xls',
                     upload: 'upload/uploadModelExcel',
                     filename: '卫生任务导出模版.xls',
                     json_fields: {
@@ -360,7 +360,7 @@ export default {
                     index: '3',
                     type: '收费管理',
                     name: '日常缴费',
-                    url: 'https://test.kaidalai.cn/static/excel-model/日常缴费导出模版.xls',
+                    url: 'https://shop.kaidalai.cn/static/excel-model/日常缴费导出模版.xls',
                     upload: 'upload/uploadModelExcel',
                     filename: '日常缴费导出模版.xls',
                     json_fields: {
