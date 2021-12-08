@@ -40,6 +40,34 @@ export function shopCategoryList(data){
         params: data
     })
 }
+export function jcookCategoryListAll(data){
+    return service.request({
+        method:'GET',
+        url:'jcookCategory/listAll',
+        params: data
+    })
+}
+export function jcookCategoryListByParentId(data){
+    return service.request({
+        method:'GET',
+        url:'jcookCategory/listByParentId',
+        params: data
+    })
+}
+export function jcookCategoryShow(data){
+    return service.request({
+        method:'GET',
+        url:'jcookCategory/show',
+        params: data
+    })
+}
+export function jcookCategoryHide(data){
+    return service.request({
+        method:'GET',
+        url:'jcookCategory/hide',
+        params: data
+    })
+}
 //shop/category/update
 export function shopCategoryUpdate(data){
     return service.request({
@@ -109,5 +137,92 @@ export function shopEvaluationReply(data){
         method:'POST',
         url:'shop/evaluation/reply',
         data: data
+    })
+}
+// Jcook 商品
+export function jcookGoodsOnShelf(data){
+    return service.request({
+        method:'POST',
+        url:'jcookGoods/onShelf',
+        data: data
+    })
+}
+export function jcookGoodsOffShelf(data){
+    return service.request({
+        method:'POST',
+        url:'jcookGoods/offShelf',
+        data: data
+    })
+}
+export function jcookGoodsFindDetailById(data){
+    return service.request({
+        method:'GET',
+        url:'jcookGoods/findDetailById',
+        params:data
+    })
+}
+export function jcookGoodsFindGoodsDetailBigInfo(data){
+    return service.request({
+        method:'GET',
+        url:'jcookGoods/findGoodsDetailBigInfo',
+        params:data
+    })
+}
+export function jcookGoodsUpdatePrice(data){
+    return service.request({
+        method:'POST',
+        url:'jcookGoods/updatePrice',
+        data: data
+    })
+}
+// jcook订单
+export function jcookOrderCancel(data){
+    return service.request({
+        method:'GET',
+        url:'jcookOrder/cancel',
+        params:data
+    })
+}
+export function jcookOrderFindDetail(data){
+    return service.request({
+        method:'GET',
+        url:'jcookOrder/findDetail',
+        params:data
+    })
+}
+export function jcookCategoryUpdateCategoryImg(data){
+    return service.request({
+        method:'POST',
+        url:'jcookCategory/updateCategoryImg',
+        data: data
+    })
+}
+// 商城配置
+export function jcookRotationFindRotationList(data){
+    return service.request({
+        method:'GET',
+        url:'jcookRotation/findRotationList',
+        params:data
+    })
+}
+export function jcookRotationInsert(data){
+    return service.request({
+        method:'POST',
+        url:'jcookRotation/insert',
+        data: data
+    })
+}
+export function jcookRotationUpdate(data){
+    return service.request({
+        method:'POST',
+        url:'jcookRotation/update',
+        data: data
+    })
+}
+export function jcookRotationDelete(data){
+    return service.request({
+        method:'GET',
+        url:'jcookRotation/delete',
+        params:data
     })
 }

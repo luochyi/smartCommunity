@@ -922,9 +922,9 @@ const routes = [
                         // 商品
                         path: '/commodity',
                         // 路由重定向
-                        redirect: '/commodity/home',
+                        redirect: '/commodity/newCommodity',
                         component: resolve =>
-                            require(['@/views/commodity/page/home'], resolve)
+                            require(['@/views/commodity/newPage/Commodity'], resolve)
                     },
                     {
                         // 商品
@@ -1005,6 +1005,39 @@ const routes = [
                     //     path:'/commodity/businessManagement',
                     //      component:()=>import('@/views/commodity/page/businessManagement')
                     // },
+
+                    // 商品管理
+                    {
+                        path: '/commodity/newCommodity',
+                        component: resolve =>
+                            require([
+                                '@/views/commodity/newPage/Commodity'
+                            ], resolve)
+                    },
+                    // 类目管理
+                    {
+                        path: '/commodity/newCategory',
+                        component: resolve =>
+                            require([
+                                '@/views/commodity/newPage/Category'
+                            ], resolve)
+                    },
+                    // 订单管理
+                    {
+                        path: '/commodity/newOrder',
+                        component: resolve =>
+                            require([
+                                '@/views/commodity/newPage/Order'
+                            ], resolve)
+                    },
+                    // 商城配置
+                    {
+                        path: '/commodity/Configuration',
+                        component: resolve =>
+                            require([
+                                '@/views/commodity/newPage/Configuration'
+                            ], resolve)
+                    },
                 ]
             }
         ]

@@ -205,7 +205,7 @@ export default {
                     name: null,
                     content: null,
                     imgUrls: [],
-                    releaseStatus: null
+                    releaseStatus: 2
                 },
                 rules: {
                     name: [

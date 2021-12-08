@@ -204,6 +204,9 @@ const requestUrl = {
     shopOrderList: 'shop/order/list',
     shopRefundList: 'shop/refund/list',
     //评价
-    shopEvaluationList:'shop/evaluation/list'
+    shopEvaluationList:'shop/evaluation/list',
+    //京库克
+    jcookGoodsList: 'jcookGoods/list',
+    jcookOrderList: 'jcookOrder/list'
 }
 export default requestUrl
