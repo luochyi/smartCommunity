@@ -161,6 +161,11 @@ export default {
                     this.tips = '请注意：'
                     this.imgSrc = require('./assets/images/todoList.png')
                     this.alertMsg = '于'+mes.alarmNo+'的'+mes.deviceNo+'使用了一键报警功能！'
+                } else if (mes.type === 4) {
+                    this.title = '跌倒报警'
+                    this.tips = '请注意：'
+                    this.imgSrc = require('./assets/images/todoList.png')
+                    this.alertMsg = '有住户'+mes.userName+'发生跌倒情况，请及时上门或联系人员前往查看，住户联系方式：'+mes.tel+'如未能联系到住户，可择情报警'
                 }
                 this.isShow = true
             }
