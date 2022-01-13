@@ -165,7 +165,7 @@ export default {
                     this.title = '跌倒报警'
                     this.tips = '请注意：'
                     this.imgSrc = require('./assets/images/todoList.png')
-                    this.alertMsg = '有住户'+mes.userName+'发生跌倒情况，请及时上门或联系人员前往查看，住户联系方式：'+mes.tel+'如未能联系到住户，可择情报警'
+                    this.alertMsg = '有住户'+mes.userName+'发生跌倒情况，请及时上门或联系人员前往查看，住户联系方式：'+mes.tel+'如未能联系到住户，可择情报警。最后一次位置:'+mes.address+',经度：'+mes.lon+',纬度：'+mes.lat
                 }
                 this.isShow = true
             }
