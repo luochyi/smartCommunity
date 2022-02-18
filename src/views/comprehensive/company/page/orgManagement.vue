@@ -755,7 +755,7 @@ export default {
                 if (newVal == 2) {
                     // this.addForm.ruleForm.parentId == 1
                     let obj = {
-                        label: '广西印象物业服务有限责任公司',
+                        label: '河北远德物业服务集团有限公司',
                         value: 1
                     }
                     this.addForm.form_item[4].options=[]

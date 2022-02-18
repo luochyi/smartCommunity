@@ -98,7 +98,7 @@
                                 :fetch="fetchData"
                                 :fields="json_fieldsjindie"
                                 :before-finish="finishDownload"
-                                 header="广西印象物业服务有限责任公司 -（附单据1张）"
+                                 header="河北远德物业服务集团有限公司 -（附单据1张）"
                                 footer="会计主管：___________记账：____________审核：____________制单人:____________"
                                 name="金蝶模板账单.xls"
                             >

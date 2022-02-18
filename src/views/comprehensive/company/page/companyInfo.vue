@@ -7,17 +7,17 @@
       <div class="cart-box">
         <div class="cart-item cart-item_l">
           <div class="item-headImg">
-            <img src="https://shop.kaidalai.cn/static/img/homePage/homePage.png"
+            <img src="https://hmxc.kaidalai.cn/static/img/homePage/homePage.png"
                  alt="">
           </div>
           <div class="item-txt">
             <div class="txt-title">
-              <span>南宁金融人才公寓智慧小区</span>
+              <span>华脉新村小区</span>
             </div>
             <div class="txt-small">
               <p><span><i class="el-icon-suitcase"></i></span> 计算机/互联网 计算机软件</p>
               <p><span><i class="el-icon-phone"></i></span>-</p>
-              <p><span><i class="el-icon-location-outline"></i></span>广西南宁市五象新区</p>
+              <p><span><i class="el-icon-location-outline"></i></span>河北省石家庄市裕华区槐中路116号</p>
             </div>
           </div>
         </div>

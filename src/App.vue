@@ -35,7 +35,7 @@ export default {
     data() {
         return {
             isRouterAlive: true,
-            path: 'wss://shop.kaidalai.cn/websocket/web/admin',
+            path: 'wss://hmxc.kaidalai.cn/websocket/web/admin',
             socket: '',
             lockReconnect: false, //是否真正建立连接
             timeout: 40 * 1000, //40秒一次心跳
