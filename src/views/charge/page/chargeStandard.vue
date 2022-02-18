@@ -198,9 +198,8 @@ export default {
                             { label: '维修费', value: 2 },
                             { label: '装修押金', value: 3 },
                             { label: '活动报名费', value: 4 },
-                            { label: '日常费用', value: 5 },
-                            { label: '停车费', value: 6 },
-                            { label: '有偿服务费', value: 7 }
+                            { label: '垃圾清运费', value: 6 },
+                            { label: '其他费用', value: 5 }
                         ],
                         width: '100%',
                         prop: 'marker'

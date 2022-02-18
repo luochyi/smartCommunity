@@ -147,6 +147,11 @@ export default {
                       }
                     },
                     {
+                        label: '退货原因',
+                        prop: 'backReason',
+                        width: 'auto'
+                    },
+                    {
                         label: '退换货状态',
                         prop: 'status',
                         width: 'auto',

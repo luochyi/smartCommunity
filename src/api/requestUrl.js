@@ -84,6 +84,16 @@ const requestUrl = {
     packageCollectionListDelete: '/packageCollection/delete',
     securityManagementList:'securityManagement/list',
     securityManagementListDelete:'securityManagement/delete',
+    //社区介绍
+    houseTypeDescriptionList: 'houseTypeDescription/list',
+    houseTypeDescriptionListDelete: 'houseTypeDescription/delete',
+
+    //地理信息
+    geographyList: 'geography/list',
+    geographyListDelete: 'geography/delete',
+    //周边企业
+    surroundingEnterprisesList: 'surroundingEnterprises/list',
+    surroundingEnterprisesListDelete: 'surroundingEnterprises/delete',
 
     // userDecorationList: 'userDecoration/list',
     voteList: '/vote/list',
@@ -194,6 +204,9 @@ const requestUrl = {
     shopOrderList: 'shop/order/list',
     shopRefundList: 'shop/refund/list',
     //评价
-    shopEvaluationList:'shop/evaluation/list'
+    shopEvaluationList:'shop/evaluation/list',
+    //京库克
+    jcookGoodsList: 'jcookGoods/list',
+    jcookOrderList: 'jcookOrder/list'
 }
 export default requestUrl

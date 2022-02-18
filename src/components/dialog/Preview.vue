@@ -14,7 +14,7 @@
       <div class="preview_body">
         <div class="preview_content">
           <div class="preview_title">
-            <span>广西印象物业服务有限责任公司</span>
+            <span>河北远德物业服务集团有限公司</span>
           </div>
           <div class="preview_box">
             <div class="preview_item">

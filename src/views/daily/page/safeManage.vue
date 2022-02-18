@@ -458,7 +458,7 @@ export default {
                         message: '下载成功'
                     })
                     console.log(data);
-                    window.open('https://test.kaidalai.cn/static' + data[0].url)
+                    window.open('https://shop.kaidalai.cn/static' + data[0].url)
                 })
                 .catch(() => {
                     this.$message({

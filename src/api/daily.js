@@ -380,6 +380,13 @@ export function keyBorrowExamine(data) {
         data: data
     })
 }
+export function keyBorrowreturnExamine(data) {
+    return service.request({
+        method: 'POST',
+        url: '/keyBorrow/returnExamine',
+        data: data
+    })
+}
 //keyManagement/findById 
 export function keyManagementFindById(data) {
     return service.request({
@@ -568,6 +575,42 @@ export function communityIntroductionUpdate(data) {
         data: data
     })
 }
+//社区介绍
+export function houseTypeDescriptionInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/houseTypeDescription/insert',
+        data: data
+    })
+}
+export function houseTypeDescriptionFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/houseTypeDescription/findById',
+        params: data
+    })
+}
+export function houseTypeDescriptionUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/houseTypeDescription/update',
+        data: data
+    })
+}
+export function houseTypeDescriptionRelease(data) {
+    return service.request({
+        method: 'GET',
+        url: '/houseTypeDescription/release',
+        params: data
+    })
+}
+export function houseTypeDescriptionCancelRelease(data) {
+    return service.request({
+        method: 'GET',
+        url: '/houseTypeDescription/cancelRelease',
+        params: data
+    })
+}
 //介绍启用
 export function communityIntroductionEnable(data) {
     return service.request({
@@ -618,6 +661,71 @@ export function userDecorationNewList(data) {
     return service.request({
         method: 'GET',
         url: '/userDecorationNew/list',
+        params: data
+    })
+}
+// 地理信息
+export function geographyInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/geography/insert',
+        data: data
+    })
+}
+export function geographyFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/geography/findById',
+        params: data
+    })
+}
+export function geographyUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/geography/update',
+        data: data
+    })
+}
+export function geographyEnable(data) {
+    return service.request({
+        method: 'GET',
+        url: '/geography/enable',
+        params: data
+    })
+}
+//周边企业
+export function surroundingEnterprisesInsert(data) {
+    return service.request({
+        method: 'POST',
+        url: '/surroundingEnterprises/insert',
+        data: data
+    })
+}
+export function surroundingEnterprisesFindById(data) {
+    return service.request({
+        method: 'GET',
+        url: '/surroundingEnterprises/findById',
+        params: data
+    })
+}
+export function surroundingEnterprisesUpdate(data) {
+    return service.request({
+        method: 'POST',
+        url: '/surroundingEnterprises/update',
+        data: data
+    })
+}
+export function surroundingEnterprisesRelease(data) {
+    return service.request({
+        method: 'GET',
+        url: '/surroundingEnterprises/release',
+        params: data
+    })
+}
+export function surroundingEnterprisesNoRelease(data) {
+    return service.request({
+        method: 'GET',
+        url: '/surroundingEnterprises/noRelease',
         params: data
     })
 }

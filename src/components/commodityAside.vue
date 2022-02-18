@@ -62,46 +62,54 @@ export default {
     return {
       activeIndex: this.$route.path,
       asideMenu: [
+        // {
+        //   //
+        //   path: '/commodity/home',
+        //   label: '首页',
+        //   iconurl: require('@/assets/images/commodity/icon_shopping01_nor.png'),
+        //   iconisactive: require('@/assets/images/commodity/icon_shopping01_sel.png'),
+        //   isChildren: 0
+        // },
         {
-          //
-          path: '/commodity/home',
-          label: '首页',
-          iconurl: require('@/assets/images/commodity/icon_shopping01_nor.png'),
-          iconisactive: require('@/assets/images/commodity/icon_shopping01_sel.png'),
-          isChildren: 0
-        },
-        {
-          path: '/commodity/commodity',
-          label: '商品',
+          path: '/commodity/newCommodity',
+          label: '商品管理',
           iconurl: require('@/assets/images/commodity/icon_shopping02_nor.png'),
           iconisactive: require('@/assets/images/commodity/icon_shopping02_sel.png'),
-          isChildren: 1,
-          children: [
-            {
-              // Commodity creation
-              path: '/commodity/commodityManagement',
-              label: '商品管理'
-            },
-            {
-              // Category managemen
-              path: '/commodity/categoryManagemen',
-              label: '类目管理'
-            },
-            {
-              // Supplier Management
-              path: '/commodity/supplierManagement',
-              label: '供应商管理'
-            },
+          isChildren: 0,
+          // children: [
+          //   {
+          //     // Commodity creation
+          //     path: '/commodity/commodityManagement',
+          //     label: '商品管理'
+          //   },
+          //   {
+          //     // Category managemen
+          //     path: '/commodity/categoryManagemen',
+          //     label: '类目管理'
+          //   },
+          //   {
+          //     // Supplier Management
+          //     path: '/commodity/supplierManagement',
+          //     label: '供应商管理'
+          //   },
             // {
             //   // Brand qualification
             //   path: '/commodity/brandQualification',
             //   label: '品牌资质'
             // }
-          ]
+          // ]
+        },
+        {
+          // After sale
+          path: '/commodity/newCategory',
+          label: '类目管理',
+          iconurl: require('@/assets/images/commodity/icon_shopping04_nor.png'),
+          iconisactive: require('@/assets/images/commodity/icon_shopping04_sel.png'),
+          isChildren: 0,
         },
         {
           // community activity
-          path: '/commodity/orderManagement',
+          path: '/commodity/newOrder',
           label: '订单管理',
           iconurl: require('@/assets/images/commodity/icon_shopping03_nor.png'),
           iconisactive: require('@/assets/images/commodity/icon_shopping03_sel.png'),
@@ -136,21 +144,29 @@ export default {
         },
         {
           // After sale
-          path: '/commodity/unshippedRefund',
-          label: '退换申请',
-          iconurl: require('@/assets/images/commodity/icon_shopping04_nor.png'),
-          iconisactive: require('@/assets/images/commodity/icon_shopping04_sel.png'),
+          path: '/commodity/Configuration',
+          label: '商城配置',
+          iconurl: require('@/assets/images/company/icon_comprehensive07_nor.png'),
+          iconisactive: require('@/assets/images/company/icon_comprehensive07_sel.png'),
           isChildren: 0,
         },
-        //evaluationList
-         {
-          // After sale
-          path: '/commodity/evaluationList',
-          label: '评价管理',
-          iconurl: require('@/assets/images/commodity/pjgl_nor.png'),
-          iconisactive: require('@/assets/images/commodity/pjgl_sel.png'),
-          isChildren: 0,
-        },
+        // {
+        //   // After sale
+        //   path: '/commodity/unshippedRefund',
+        //   label: '退换申请',
+        //   iconurl: require('@/assets/images/commodity/icon_shopping04_nor.png'),
+        //   iconisactive: require('@/assets/images/commodity/icon_shopping04_sel.png'),
+        //   isChildren: 0,
+        // },
+        // //evaluationList
+        //  {
+        //   // After sale
+        //   path: '/commodity/evaluationList',
+        //   label: '评价管理',
+        //   iconurl: require('@/assets/images/commodity/pjgl_nor.png'),
+        //   iconisactive: require('@/assets/images/commodity/pjgl_sel.png'),
+        //   isChildren: 0,
+        // },
         // {
         //   // community activity
         //   path: '/commodity/activity',

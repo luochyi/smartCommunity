@@ -35,7 +35,7 @@ export default {
     data() {
         return {
             isRouterAlive: true,
-            path: 'wss://test.kaidalai.cn/websocket/web/admin',
+            path: 'wss://hmxc.kaidalai.cn/websocket/web/admin',
             socket: '',
             lockReconnect: false, //是否真正建立连接
             timeout: 40 * 1000, //40秒一次心跳
@@ -52,6 +52,10 @@ export default {
     mounted() {
         // 初始化
         this.init()
+        // console.log('1')
+        //         var a = '{\"alarmNo\":\"3025\",\"alarmType\":\"X\",\"deviceName\":\"测试\",\"deviceNo\":\"3025\",\"time\":\"2021-08-10 15:13:49\",\"type\":1}'
+        //         a = a.replace('\\', '')
+        //         console.log(JSON.parse(a))
     },
     components: {},
     methods: {
@@ -129,21 +133,40 @@ export default {
             console.log('连接错误')
         },
         getMessage: function (msg) {
-            if (msg.data == '心跳正常') {
+            if (msg.data === '心跳正常') {
+                // this.isShow = true
                 console.log(msg)
+                // console.log('1')
+                // var a = '{\"alarmNo\":\"3025\",\"alarmType\":\"X\",\"deviceName\":\"测试\",\"deviceNo\":\"3025\",\"time\":\"2021-08-10 15:13:49\",\"type\":1}'
+                // a = a.replace('\\', '')
+                // console.log(JSON.parse(a))
             } else {
                 console.log(msg)
                 //判断不同的报警内容
-                if (msg.data.indexOf('未处理工单') != -1) {
-                    this.title = '工单警报'
-                    this.tips = '注意：'
-                    this.imgSrc = require('./assets/images/todoList.png')
-                } else {
-                    this.title = '紧急警报'
+                let mes = JSON.parse(msg.data.replace('\\', ''))
+                console.log('mes')
+                console.log(mes)
+                if (mes.type === 1) {
+                    this.title = '火灾报警'
                     this.tips = '各单位注意：'
                     this.imgSrc = require('./assets/images/sos.png')
+                    this.alertMsg = '于'+mes.time+',小区内'+mes.deviceName+'附近出现了火灾报警，请各位业主、租户保持镇静，不要慌乱，有序开始撤离！'
+                } else if (mes.type === 2) {
+                    this.title = '设备故障'
+                    this.tips = '请注意：'
+                    this.imgSrc = require('./assets/images/warning.png')
+                    this.alertMsg = '于'+mes.time+',小区内'+mes.deviceName+'发生了报警，请物业人员尽快前往现场排查故障！'
+                } else if (mes.type === 3) {
+                    this.title = '人员报警'
+                    this.tips = '请注意：'
+                    this.imgSrc = require('./assets/images/todoList.png')
+                    this.alertMsg = '于'+mes.alarmNo+'的'+mes.deviceNo+'使用了一键报警功能！'
+                } else if (mes.type === 4) {
+                    this.title = '跌倒报警'
+                    this.tips = '请注意：'
+                    this.imgSrc = require('./assets/images/todoList.png')
+                    this.alertMsg = '有住户'+mes.userName+'发生跌倒情况，请及时上门或联系人员前往查看，住户联系方式：'+mes.tel+'如未能联系到住户，可择情报警。最后一次位置:'+mes.address+',经度：'+mes.lon+',纬度：'+mes.lat
                 }
-                this.alertMsg = msg.data
                 this.isShow = true
             }
 

@@ -61,6 +61,7 @@
                         <FromCard>
                             <template slot="title">填写商品信息</template>
                             <template>
+                                <!-- {{addForm}} -->
                                 <VueForm ref="addForm" :formObj="addForm" @ruleSuccess="addRuleSuccess">
                                     <!-- Slot -->
                                     <template slot="imgUrls">
@@ -271,14 +272,14 @@ export default {
                     },
                     {
                         type: 'Input',
-                        label: '售卖价',
+                        label: '原价',
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'sellingPrice'
                     },
                     {
                         type: 'Input',
-                        label: '划线价',
+                        label: '优惠价',
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'markingPrice'
@@ -308,8 +309,8 @@ export default {
                         ]
                     },
                     {
-                        type: 'Input',
-                        label: '到货时间说明',
+                        type: 'Date',
+                        label: '取货时间',
                         placeholder: '请输入',
                         width: '50%',
                         prop: 'arrivalTime'

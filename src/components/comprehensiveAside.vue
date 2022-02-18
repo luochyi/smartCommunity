@@ -209,7 +209,7 @@ export default {
             {
               // Notification management
               path: '/company/fireAlarm',
-              label: '火灾报警记录'
+              label: '设备报警记录'
             }
           ]
         },

@@ -48,6 +48,7 @@
                                  <button @click="getNews">获取最新资讯</button>
                                 <button @click="edit(table_row)">编辑</button>
                                 <button @click="del(table_row)">删除</button>
+                                <button @click="roedit(table_row)">app首页轮播设置</button>
                             </div>
                         </template>
                     </VueTable>
@@ -224,6 +225,32 @@
                         </button>
                     </div>
                 </Drawer>
+                <!-- 轮播抽屉 -->
+                <Drawer
+                    drawerTitle="设置"
+                    @drawerClose="roeditClose"
+                    :drawerVrisible="rotation_vrisible"
+                >
+                    <div style="padding: 30px">
+                        <FromCard>
+                            <template slot="title">设置内容</template>
+                            <template>
+                                <VueForm ref="isRotationForm" :formObj="isRotationForm" @ruleSuccess="roeditRuleSuccess">
+                                </VueForm>
+                            </template>
+                        </FromCard>
+                    </div>
+                    <div slot="footer">
+                        <button class="btn-orange" @click="roeditSubmit()">
+                            <span>
+                                <i class="el-icon-circle-check"></i>提交</span
+                            >
+                        </button>
+                        <button class="btn-gray" @click="roeditClose">
+                            <span>取消</span>
+                        </button>
+                    </div>
+                </Drawer>
             </div>
         </div>
     </div>
@@ -232,12 +259,13 @@
 <script>
 import {
     newsManagementInsert,
-    newsCategoryManagementList,newsManagementFindById,newsManagementUpdate,newsManagementUpdateCrawling
+    newsCategoryManagementList,newsManagementFindById,newsManagementUpdate,newsManagementUpdateCrawling,
+    newsManagementSettingRotation
 } from '@/api/operation'
 export default {
     data() {
         return {
-            add_vrisible: false,edit_vrisible: false,
+            add_vrisible: false,edit_vrisible: false,rotation_vrisible: false,
             addDate: null,
             options: [],
             addForm: {
@@ -332,6 +360,45 @@ export default {
                     }
                 ]
             },
+            isRotationForm: {
+                ruleForm: {
+                    newsId: null,
+                    isRotation: null,
+                    rotationWeight: null
+                },
+                rules: {
+                  // 表单必填
+                  rotationWeight: [
+                    { required: true, message: '请输入', trigger: 'change' }
+                  ]
+                },
+                form_item: [
+                    {
+                        type: 'Select',
+                        label: '是否轮播',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'isRotation',
+                        options: [
+                            {
+                                label: '是',
+                                value: 1
+                            },
+                            {
+                                label: '否',
+                                value: 0
+                            }
+                        ]
+                    },
+                    {
+                        type: 'Int',
+                        label: '轮播权重',
+                        placeholder: '请输入',
+                        width: '100%',
+                        prop: 'rotationWeight'
+                    }
+                ]
+            },
             table_row: [],
             // 上传img文件
             imglist: [],
@@ -346,10 +413,35 @@ export default {
                     //     width: 'auto'
                     // },
                     { label: '资讯标题', prop: 'title', width: 'auto' },
+                    { label: '资讯类型名称',prop: 'newsCategoryName',width: 'auto'},
                     {
-                        label: '资讯类型名称',
-                        prop: 'newsCategoryName',
-                        width: 'auto'
+                        label: '是否为轮播',
+                        prop: 'isRotation',
+                        width: 'auto',
+                        type: 'function',
+                        callback(row, prop) {
+                            switch (row.isRotation) {
+                                case 1:
+                                    return '是'
+                                    break
+                                case 0:
+                                    return '否'
+                                    break
+                            }
+                        }
+                    },
+                    { label: '轮播权重', prop: 'rotationWeight', width: 'auto',
+                        type: 'function',
+                        callback(row, prop) {
+                            switch (row.rotationWeight) {
+                                case null:
+                                    return '-'
+                                    break
+                                default:
+                                    return row.rotationWeight
+                                    break
+                            }
+                        }
                     },
                     { label: '发布人', prop: 'createName', width: 'auto' },
                     { label: '发布时间', prop: 'createDate', width: '220' }
@@ -369,18 +461,17 @@ export default {
                         placeholder: '请输入',
                         prop: 'title'
                     },
-                    // {
-                    //     type: 'select',
-                    //     label: '设施状态',
-                    //     placeholder: '请选择',
-                    //     value: null,
-                    //     options: [
-                    //         { value: 1, label: '空置中' },
-                    //         { value: 2, label: '使用中' },
-                    //         { value: 3, label: '已停用' }
-                    //     ],
-                    //     prop: 'status'
-                    // },
+                    {
+                        type: 'select',
+                        label: '是否为轮播',
+                        placeholder: '请选择',
+                        value: null,
+                        options: [
+                            { value: 1, label: '是' },
+                            { value: 0, label: '否' }
+                        ],
+                        prop: 'isRotation'
+                    },
                     {
                         type: 'Input',
                         label: '发布人',
@@ -532,6 +623,42 @@ export default {
         dateTimeChange(arr) {
             this.addForm.ruleForm.openStartDate = arr[0]
             this.addForm.ruleForm.openEndDate = arr[1]
+        },
+        roedit(data) {
+            if (data.length != 1) {
+                this.$message({
+                    message: '只能编辑一条数据',
+                    type: 'error'
+                })
+            } else {
+                this.rotation_vrisible = true
+                this.isRotationForm.ruleForm.newsId = data[0].id
+                this.isRotationForm.ruleForm.isRotation = data[0].isRotation
+                this.isRotationForm.ruleForm.rotationWeight = data[0].rotationWeight
+                console.log(data)
+            }
+        },
+        roeditClose() {
+            this.$refs.isRotationForm.reset()
+            this.rotation_vrisible = false
+        },
+        roeditSubmit() {
+          this.$refs.isRotationForm.submitForm()
+        },
+        roeditRuleSuccess() {
+            let resData = {
+            ...this.isRotationForm.ruleForm
+          }
+          newsManagementSettingRotation(resData).then((res) => {
+            if (res.status) {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
+              this.$refs.table.loadData()
+              this.roeditClose()
+            }
+          })
         },
         // 图片上传成功
         ImgeSuccess(res, file) {

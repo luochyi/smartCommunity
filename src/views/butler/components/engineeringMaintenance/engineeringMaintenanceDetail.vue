@@ -39,7 +39,7 @@
                     <span>无</span>
                 </el-col>
                  <el-col :span="10" v-else>
-                    <img style="width:200px;height:160px;marginRight:5px" :src="'https://test.kaidalai.cn/static'+item.url" v-for="(item,index) in imglist" :key="index">
+                    <img style="width:200px;height:160px;marginRight:5px" :src="'https://shop.kaidalai.cn/static'+item.url" v-for="(item,index) in imglist" :key="index">
                 </el-col>
             </el-row>
       </FromCard>

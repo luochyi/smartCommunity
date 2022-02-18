@@ -67,7 +67,7 @@ router.beforeEach((to, from, next) => {
         next()
     } else {
         if (to.path === '/Login') {
-            //这就是跳出循环的关键
+            //这是跳出循环的关键
             next()
         } else {
             // router.replace({

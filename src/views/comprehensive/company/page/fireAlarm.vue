@@ -2,7 +2,7 @@
     <div>
         <div class="main-content">
             <div class="main-titel">
-                <span>火灾报警记录</span>
+                <span>设备报警记录</span>
             </div>
             <div class="content">
                 <div class="">
